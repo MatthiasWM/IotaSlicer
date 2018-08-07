@@ -56,7 +56,6 @@
 		C9D3872B211A43D0009F7580 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
 		C9D3872D211A43F2009F7580 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
 		C9D3872F211A450A009F7580 /* UserInterface.fl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.fluid; path = UserInterface.fl; sourceTree = "<group>"; };
-		C9D38735211A4ABC009F7580 /* Iota.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = Iota.entitlements; sourceTree = "<group>"; };
 		C9D38736211A4B75009F7580 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../../README.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -105,7 +104,6 @@
 			isa = PBXGroup;
 			children = (
 				C96B1438211A3E9F00978AC7 /* Info.plist */,
-				C9D38735211A4ABC009F7580 /* Iota.entitlements */,
 				C96B1433211A3E9F00978AC7 /* Assets.xcassets */,
 				C9D38724211A4355009F7580 /* Frameworks */,
 			);
