@@ -1,0 +1,10 @@
+
+matrix:
+  include:
+    - os: osx
+      xcode_project: platforms/MacOS/Iota.xcodeproj
+      xcode_scheme: Iota
+    after_script:
+      pwd
+      find . -name "Iota*"
+      echo "Wonko was here."
