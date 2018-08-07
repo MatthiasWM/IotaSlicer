@@ -3,3 +3,6 @@ os: osx
 language: objective-c
 xcode_project: platforms/MacOS/Iota.xcodeproj
 xcode_scheme: Iota
+script:
+  - xcodebuild -project platforms/MacOS/Iota.xcodeproj -scheme Iota CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO ONLY_ACTIVE_ARCH=NO -quiet
+  
