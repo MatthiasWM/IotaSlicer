@@ -1,0 +1,408 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 50;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		C96B1434211A3E9F00978AC7 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C96B1433211A3E9F00978AC7 /* Assets.xcassets */; };
+		C96B1446211A403E00978AC7 /* hello.cxx in Sources */ = {isa = PBXBuildFile; fileRef = C96B1445211A403E00978AC7 /* hello.cxx */; };
+		C9D3871E211A425E009F7580 /* libfltk_images.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C9D38718211A425E009F7580 /* libfltk_images.a */; };
+		C9D3871F211A425E009F7580 /* libfltk_png.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C9D38719211A425E009F7580 /* libfltk_png.a */; };
+		C9D38720211A425E009F7580 /* libfltk.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C9D3871A211A425E009F7580 /* libfltk.a */; };
+		C9D38721211A425E009F7580 /* libfltk_jpeg.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C9D3871B211A425E009F7580 /* libfltk_jpeg.a */; };
+		C9D38722211A425E009F7580 /* libfltk_gl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C9D3871C211A425E009F7580 /* libfltk_gl.a */; };
+		C9D38723211A425E009F7580 /* libfltk_z.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C9D3871D211A425E009F7580 /* libfltk_z.a */; };
+		C9D38726211A4355009F7580 /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C9D38725211A4355009F7580 /* CoreFoundation.framework */; };
+		C9D38728211A4363009F7580 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C9D38727211A4363009F7580 /* CoreGraphics.framework */; };
+		C9D3872A211A436F009F7580 /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C9D38729211A436F009F7580 /* CoreText.framework */; };
+		C9D3872C211A43D0009F7580 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C9D3872B211A43D0009F7580 /* OpenGL.framework */; };
+		C9D3872E211A43F2009F7580 /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C9D3872D211A43F2009F7580 /* AppKit.framework */; };
+		C9D38730211A450B009F7580 /* UserInterface.fl in Sources */ = {isa = PBXBuildFile; fileRef = C9D3872F211A450A009F7580 /* UserInterface.fl */; };
+		C9D38737211A4B75009F7580 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = C9D38736211A4B75009F7580 /* README.md */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXBuildRule section */
+		C9D38731211A4565009F7580 /* PBXBuildRule */ = {
+			isa = PBXBuildRule;
+			compilerSpec = com.apple.compilers.proxy.script;
+			filePatterns = "*.fl";
+			fileType = pattern.proxy;
+			isEditable = 1;
+			outputFiles = (
+				"${INPUT_FILE_DIR}/${INPUT_FILE_BASE}.cpp",
+				"${INPUT_FILE_DIR}/${INPUT_FILE_BASE}.h",
+			);
+			script = "cd ${INPUT_FILE_DIR} && ${PROJECT_DIR}/bin/fluid -c ${INPUT_FILE_NAME}";
+		};
+/* End PBXBuildRule section */
+
+/* Begin PBXFileReference section */
+		C96B142D211A3E9E00978AC7 /* Iota.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Iota.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		C96B1433211A3E9F00978AC7 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		C96B1438211A3E9F00978AC7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		C96B1445211A403E00978AC7 /* hello.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = hello.cxx; sourceTree = "<group>"; };
+		C9D38718211A425E009F7580 /* libfltk_images.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libfltk_images.a; path = lib/libfltk_images.a; sourceTree = "<group>"; };
+		C9D38719211A425E009F7580 /* libfltk_png.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libfltk_png.a; path = lib/libfltk_png.a; sourceTree = "<group>"; };
+		C9D3871A211A425E009F7580 /* libfltk.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libfltk.a; path = lib/libfltk.a; sourceTree = "<group>"; };
+		C9D3871B211A425E009F7580 /* libfltk_jpeg.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libfltk_jpeg.a; path = lib/libfltk_jpeg.a; sourceTree = "<group>"; };
+		C9D3871C211A425E009F7580 /* libfltk_gl.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libfltk_gl.a; path = lib/libfltk_gl.a; sourceTree = "<group>"; };
+		C9D3871D211A425E009F7580 /* libfltk_z.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libfltk_z.a; path = lib/libfltk_z.a; sourceTree = "<group>"; };
+		C9D38725211A4355009F7580 /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
+		C9D38727211A4363009F7580 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		C9D38729211A436F009F7580 /* CoreText.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreText.framework; path = System/Library/Frameworks/CoreText.framework; sourceTree = SDKROOT; };
+		C9D3872B211A43D0009F7580 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
+		C9D3872D211A43F2009F7580 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
+		C9D3872F211A450A009F7580 /* UserInterface.fl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.fluid; path = UserInterface.fl; sourceTree = "<group>"; };
+		C9D38736211A4B75009F7580 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../../README.md; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		C96B142A211A3E9E00978AC7 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C9D3872E211A43F2009F7580 /* AppKit.framework in Frameworks */,
+				C9D3872C211A43D0009F7580 /* OpenGL.framework in Frameworks */,
+				C9D3872A211A436F009F7580 /* CoreText.framework in Frameworks */,
+				C9D38728211A4363009F7580 /* CoreGraphics.framework in Frameworks */,
+				C9D38726211A4355009F7580 /* CoreFoundation.framework in Frameworks */,
+				C9D3871F211A425E009F7580 /* libfltk_png.a in Frameworks */,
+				C9D3871E211A425E009F7580 /* libfltk_images.a in Frameworks */,
+				C9D38721211A425E009F7580 /* libfltk_jpeg.a in Frameworks */,
+				C9D38722211A425E009F7580 /* libfltk_gl.a in Frameworks */,
+				C9D38720211A425E009F7580 /* libfltk.a in Frameworks */,
+				C9D38723211A425E009F7580 /* libfltk_z.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		C96B1424211A3E9E00978AC7 = {
+			isa = PBXGroup;
+			children = (
+				C9D38736211A4B75009F7580 /* README.md */,
+				C96B1444211A402900978AC7 /* src */,
+				C96B1447211A422D00978AC7 /* libs */,
+				C96B142F211A3E9E00978AC7 /* MacOS */,
+				C96B142E211A3E9E00978AC7 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		C96B142E211A3E9E00978AC7 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				C96B142D211A3E9E00978AC7 /* Iota.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		C96B142F211A3E9E00978AC7 /* MacOS */ = {
+			isa = PBXGroup;
+			children = (
+				C96B1438211A3E9F00978AC7 /* Info.plist */,
+				C96B1433211A3E9F00978AC7 /* Assets.xcassets */,
+				C9D38724211A4355009F7580 /* Frameworks */,
+			);
+			name = MacOS;
+			sourceTree = "<group>";
+		};
+		C96B1444211A402900978AC7 /* src */ = {
+			isa = PBXGroup;
+			children = (
+				C9D3872F211A450A009F7580 /* UserInterface.fl */,
+				C96B1445211A403E00978AC7 /* hello.cxx */,
+			);
+			name = src;
+			path = ../../src;
+			sourceTree = "<group>";
+		};
+		C96B1447211A422D00978AC7 /* libs */ = {
+			isa = PBXGroup;
+			children = (
+				C9D3871C211A425E009F7580 /* libfltk_gl.a */,
+				C9D38718211A425E009F7580 /* libfltk_images.a */,
+				C9D3871B211A425E009F7580 /* libfltk_jpeg.a */,
+				C9D38719211A425E009F7580 /* libfltk_png.a */,
+				C9D3871D211A425E009F7580 /* libfltk_z.a */,
+				C9D3871A211A425E009F7580 /* libfltk.a */,
+			);
+			name = libs;
+			sourceTree = "<group>";
+		};
+		C9D38724211A4355009F7580 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				C9D3872D211A43F2009F7580 /* AppKit.framework */,
+				C9D3872B211A43D0009F7580 /* OpenGL.framework */,
+				C9D38729211A436F009F7580 /* CoreText.framework */,
+				C9D38727211A4363009F7580 /* CoreGraphics.framework */,
+				C9D38725211A4355009F7580 /* CoreFoundation.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		C96B142C211A3E9E00978AC7 /* Iota */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C96B143E211A3E9F00978AC7 /* Build configuration list for PBXNativeTarget "Iota" */;
+			buildPhases = (
+				C96B1429211A3E9E00978AC7 /* Sources */,
+				C96B142A211A3E9E00978AC7 /* Frameworks */,
+				C96B142B211A3E9E00978AC7 /* Resources */,
+			);
+			buildRules = (
+				C9D38731211A4565009F7580 /* PBXBuildRule */,
+			);
+			dependencies = (
+			);
+			name = Iota;
+			productName = Iota;
+			productReference = C96B142D211A3E9E00978AC7 /* Iota.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		C96B1425211A3E9E00978AC7 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0940;
+				ORGANIZATIONNAME = "Matthias Melcher";
+				TargetAttributes = {
+					C96B142C211A3E9E00978AC7 = {
+						CreatedOnToolsVersion = 9.4.1;
+						SystemCapabilities = {
+							com.apple.Sandbox = {
+								enabled = 0;
+							};
+						};
+					};
+				};
+			};
+			buildConfigurationList = C96B1428211A3E9E00978AC7 /* Build configuration list for PBXProject "Iota" */;
+			compatibilityVersion = "Xcode 9.3";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = C96B1424211A3E9E00978AC7;
+			productRefGroup = C96B142E211A3E9E00978AC7 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				C96B142C211A3E9E00978AC7 /* Iota */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		C96B142B211A3E9E00978AC7 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C9D38737211A4B75009F7580 /* README.md in Resources */,
+				C96B1434211A3E9F00978AC7 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		C96B1429211A3E9E00978AC7 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C9D38730211A450B009F7580 /* UserInterface.fl in Sources */,
+				C96B1446211A403E00978AC7 /* hello.cxx in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		C96B143C211A3E9F00978AC7 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = NO;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "Mac Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = ../../;
+				MACOSX_DEPLOYMENT_TARGET = 10.13;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		C96B143D211A3E9F00978AC7 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = NO;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "Mac Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = ../../;
+				MACOSX_DEPLOYMENT_TARGET = 10.13;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		C96B143F211A3E9F00978AC7 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = BK4ST6N599;
+				INFOPLIST_FILE = "$(SRCROOT)/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/lib",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.matthiasm.iota.Iota;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		C96B1440211A3E9F00978AC7 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = BK4ST6N599;
+				INFOPLIST_FILE = "$(SRCROOT)/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/lib",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.matthiasm.iota.Iota;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		C96B1428211A3E9E00978AC7 /* Build configuration list for PBXProject "Iota" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C96B143C211A3E9F00978AC7 /* Debug */,
+				C96B143D211A3E9F00978AC7 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		C96B143E211A3E9F00978AC7 /* Build configuration list for PBXNativeTarget "Iota" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C96B143F211A3E9F00978AC7 /* Debug */,
+				C96B1440211A3E9F00978AC7 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = C96B1425211A3E9E00978AC7 /* Project object */;
+}

@@ -1,0 +1,22 @@
+
+os: osx
+language: objective-c
+xcode_project: platforms/MacOS/Iota.xcodeproj
+xcode_scheme: Iota
+script:
+  - xcodebuild -project platforms/MacOS/Iota.xcodeproj -scheme Iota -derivedDataPath 'build' CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO ONLY_ACTIVE_ARCH=NO -quiet
+  - find . -name "Iota*"
+  - pushd ./build/Build/Products/Debug/ ; zip -r Iota.app.zip Iota.app ; popd
+  - mv ./build/Build/Products/Debug/Iota.app.zip ./html/
+deploy:
+  provider: pages
+  verbose: true
+  skip-cleanup: true
+  github-token: $GITHUB_API_KEY
+  keep-history: true
+  local-dir: html
+  target_branch: master
+  on:
+    branch: master
+
+# App is in "./build/Build/Products/Debug/Iota.app"
