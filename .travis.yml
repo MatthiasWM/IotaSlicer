@@ -15,7 +15,5 @@ deploy:
   github-token: $GITHUB_API_KEY
   keep-history: true
   local-dir: html
-  on:
-    branch: master
 
 # App is in "./build/Build/Products/Debug/Iota.app"
