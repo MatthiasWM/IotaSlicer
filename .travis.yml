@@ -6,7 +6,7 @@ xcode_scheme: Iota
 script:
   - xcodebuild -project platforms/MacOS/Iota.xcodeproj -scheme Iota -derivedDataPath 'build' CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO ONLY_ACTIVE_ARCH=NO -quiet
   - find . -name "Iota*"
-  - cd ./build/Build/Products/Debug/ && zip -r Iota.app.zip Iota.app
+  - pushd ./build/Build/Products/Debug/ ; zip -r Iota.app.zip Iota.app ; popd
   - mv ./build/Build/Products/Debug/Iota.app.zip ./html/
 deploy:
   provider: pages
