@@ -22,6 +22,7 @@
 		C9D3872E211A43F2009F7580 /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C9D3872D211A43F2009F7580 /* AppKit.framework */; };
 		C9D38730211A450B009F7580 /* UserInterface.fl in Sources */ = {isa = PBXBuildFile; fileRef = C9D3872F211A450A009F7580 /* UserInterface.fl */; };
 		C9D38737211A4B75009F7580 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = C9D38736211A4B75009F7580 /* README.md */; };
+		C9DC51B9211A7CE000AE069F /* index.html in Resources */ = {isa = PBXBuildFile; fileRef = C9DC51B8211A7CDF00AE069F /* index.html */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXBuildRule section */
@@ -57,6 +58,7 @@
 		C9D3872D211A43F2009F7580 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
 		C9D3872F211A450A009F7580 /* UserInterface.fl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.fluid; path = UserInterface.fl; sourceTree = "<group>"; };
 		C9D38736211A4B75009F7580 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../../README.md; sourceTree = "<group>"; };
+		C9DC51B8211A7CDF00AE069F /* index.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = index.html; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -86,6 +88,7 @@
 			children = (
 				C9D38736211A4B75009F7580 /* README.md */,
 				C96B1444211A402900978AC7 /* src */,
+				C9DC51B7211A7CDF00AE069F /* html */,
 				C96B1447211A422D00978AC7 /* libs */,
 				C96B142F211A3E9E00978AC7 /* MacOS */,
 				C96B142E211A3E9E00978AC7 /* Products */,
@@ -143,6 +146,15 @@
 				C9D38725211A4355009F7580 /* CoreFoundation.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		C9DC51B7211A7CDF00AE069F /* html */ = {
+			isa = PBXGroup;
+			children = (
+				C9DC51B8211A7CDF00AE069F /* index.html */,
+			);
+			name = html;
+			path = ../../html;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -208,6 +220,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C9DC51B9211A7CE000AE069F /* index.html in Resources */,
 				C9D38737211A4B75009F7580 /* README.md in Resources */,
 				C96B1434211A3E9F00978AC7 /* Assets.xcassets in Resources */,
 			);
