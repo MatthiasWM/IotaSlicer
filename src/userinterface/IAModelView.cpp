@@ -184,9 +184,6 @@ void IAModelView::draw()
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     pCamera->draw();
-    
-//    glMatrixMode(GL_MODELVIEW);
-//    glLoadIdentity();
     glPushMatrix();
 
     if (gShowSlice) {
@@ -232,13 +229,13 @@ void IAModelView::draw()
     } else {
         // show the 3d model
         gPrinter.draw();
-//        glRotated(-dy, 1.0, 0.0, 0.0);
-//        glRotated(-dx, 0.0, 1.0, 0.0);
         glEnable(GL_LIGHTING);
         glEnable(GL_DEPTH_TEST);
-//        gMeshList.drawGouraud();
-//        glEnable(GL_TEXTURE_2D);
+        if (gShowTexture)
+            glEnable(GL_TEXTURE_2D);
         gMeshList.drawFlat(0x00cccccc);
+        if (gShowTexture)
+            glDisable(GL_TEXTURE_2D);
     }
     glPopMatrix();
 

@@ -7,6 +7,8 @@
 
 #include "IAVertex.h"
 
+#include "main.h"
+
 
 IAVertex::IAVertex()
 {
@@ -49,5 +51,18 @@ void IAVertex::shrinkTo(double s)
                   pInitialPosition.y() - pNormal.y() * s,
                   pInitialPosition.z() - pNormal.z() * s
                   );
+}
+
+void IAVertex::projectTexture(double w, double h, int type)
+{
+    switch (type) {
+        case IA_PROJECTION_FRONT:
+            pTex.set(pPosition.x()/w+0.5, -pPosition.z()/h+0.5, 0.0);
+            break;
+        case IA_PROJECTION_CYLINDER:
+            break;
+        case IA_PROJECTION_SPHERE:
+            break;
+    }
 }
 

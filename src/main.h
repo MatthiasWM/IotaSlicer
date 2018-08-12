@@ -19,6 +19,7 @@ extern IAMeshList gMeshList;
 extern IASlice gMeshSlice;
 extern IAPrinter gPrinter;
 extern bool gShowSlice;
+extern bool gShowTexture;
 extern FILE *gOutFile;
 extern double minX, maxX, minY, maxY, minZ, maxZ;
 
@@ -29,5 +30,9 @@ extern float max(float a, float b);
 
 extern void sliceAll();
 extern void menuQuit();
+
+const int IA_PROJECTION_FRONT       = 0;
+const int IA_PROJECTION_CYLINDER    = 1;
+const int IA_PROJECTION_SPHERE      = 2;
 
 #endif /* MAIN_H */

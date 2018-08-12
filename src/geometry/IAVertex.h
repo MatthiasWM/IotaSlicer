@@ -22,6 +22,7 @@ public:
     void averageNormal();
     void print();
     void shrinkTo(double s);
+    void projectTexture(double w, double h, int type);
 
     IAVector3d pInitialPosition;
     IAVector3d pPosition;

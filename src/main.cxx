@@ -35,6 +35,7 @@ IASlice gMeshSlice;
 IAPrinter gPrinter; // Allocate default printer
 
 bool gShowSlice = false;
+bool gShowTexture = false;
 FILE *gOutFile;
 
 double minX = 0.0, maxX = 0.0, minY = 0.0, maxY = 0.0, minZ = 0.0, maxZ = 0.0;
@@ -88,6 +89,7 @@ int main (int argc, char **argv)
 //    loadStl("/Users/matt/dev/IotaSlicer/data/xyz.stl");
 //    loadStl("/Users/matt/dev/IotaSlicer/src/data/suzanne.stl");
     loadStl(defaultModel);
+    gMeshList.projectTexture(100.0, 100.0, IA_PROJECTION_FRONT);
 
     glView->redraw();
 

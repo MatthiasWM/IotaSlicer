@@ -62,28 +62,42 @@ Function {createIotaAppWindow()} {open
         xywh {0 28 600 572} resizable
         class IAModelView
       } {}
-      Fl_Group {} {open
+      Fl_Group {} {open selected
         xywh {600 28 200 572} box FLAT_BOX
       } {
         Fl_Group {} {open
           xywh {605 33 190 562} box FLAT_BOX resizable
         } {
-          Fl_Slider zSlider1 {
-            callback {sliceAll();
+          Fl_Group {} {open
+            xywh {605 33 40 562}
+          } {
+            Fl_Group {} {open
+              xywh {605 33 40 502} resizable
+            } {
+              Fl_Slider zSlider1 {
+                callback {sliceAll();
     gShowSlice = true;
     glView->redraw();}
-            tooltip {Slice layer at Z mm} xywh {605 33 20 532} minimum 110 maximum -110 step 1
-          }
-          Fl_Slider zSlider2 {
-            callback {gShowSlice = true;
+                tooltip {Slice layer at Z mm} xywh {605 33 20 502} minimum 110 maximum -110 step 1
+              }
+              Fl_Slider zSlider2 {
+                callback {gShowSlice = true;
     glView->redraw();}
-            tooltip {Thickness of slice in mm} xywh {625 33 20 532} minimum 10 maximum -10 step 1
-          }
-          Fl_Button {} {
-            label SLC
-            callback {gShowSlice = false;
-    glView->redraw();} selected
-            tooltip {Stop slicing the model} xywh {605 565 40 30}
+                tooltip {Thickness of slice in mm} xywh {625 33 20 502} minimum 10 maximum -10 step 1
+              }
+            }
+            Fl_Button {} {
+              label TXT
+              callback {gShowTexture = !gShowTexture;
+glView->redraw();}
+              tooltip {Toggle Rendering Texture} xywh {605 535 40 30} type Toggle
+            }
+            Fl_Button {} {
+              label SLC
+              callback {gShowSlice = false;
+    glView->redraw();}
+              tooltip {Stop slicing the model} xywh {605 565 40 30}
+            }
           }
           Fl_Group {} {open
             xywh {645 33 150 562} resizable

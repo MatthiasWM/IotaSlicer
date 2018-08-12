@@ -352,6 +352,17 @@ void IAMesh::drawEdges() {
     glEnd();
 }
 
+void IAMesh::projectTexture(double w, double h, int type)
+{
+    int i, n = (int)vertexList.size();
+    for (i=0; i<n; i++) {
+        IAVertex *IAVertex = vertexList.at(i);
+        IAVertex->projectTexture(w, h, type);
+    }
+}
+
+
+
 // -----------------------------------------------------------------------------
 
 void IAMeshList::shrinkTo(double s)
@@ -379,6 +390,16 @@ void IAMeshList::drawGouraud()
         IAMesh *IAMesh = meshList[i];
         glDepthRange (0.1, 1.0);
         IAMesh->drawGouraud();
+    }
+}
+
+
+void IAMeshList::projectTexture(double w, double h, int type)
+{
+    int i, n = size();
+    for (i=0; i<n; i++) {
+        IAMesh *IAMesh = meshList[i];
+        IAMesh->projectTexture(w, h, type);
     }
 }
 

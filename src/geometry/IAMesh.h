@@ -36,6 +36,7 @@ public:
     void fixHoles();
     void fixHole(IAEdge*);
     void shrinkTo(double s);
+    void projectTexture(double w, double h, int type);
     IAEdge *findEdge(IAVertex*, IAVertex*);
     IAEdge *addEdge(IAVertex*, IAVertex*, IATriangle*);
 
@@ -58,6 +59,7 @@ public:
     void drawFlat(unsigned int color);
     void drawGouraud();
     void shrinkTo(double s);
+    void projectTexture(double w, double h, int type);
 private:
     IAMeshVector meshList;
 };
