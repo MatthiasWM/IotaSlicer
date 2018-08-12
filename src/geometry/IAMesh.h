@@ -56,6 +56,7 @@ public:
     IAMesh *operator[](int ix) { return meshList[ix]; }
     void push_back(IAMesh *mesh) { meshList.push_back(mesh); }
     void drawFlat(unsigned int color);
+    void drawGouraud();
     void shrinkTo(double s);
 private:
     IAMeshVector meshList;

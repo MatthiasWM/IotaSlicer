@@ -378,4 +378,13 @@ void IAMeshList::drawFlat(unsigned int color)
     }
 }
 
+void IAMeshList::drawGouraud()
+{
+    int i, n = size();
+    for (i=0; i<n; i++) {
+        IAMesh *IAMesh = meshList[i];
+        glDepthRange (0.1, 1.0);
+        IAMesh->drawGouraud();
+    }
+}
 
