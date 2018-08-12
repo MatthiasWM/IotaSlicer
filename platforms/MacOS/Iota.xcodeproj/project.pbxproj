@@ -18,6 +18,7 @@
 		C97632DD211E357500D9D4B5 /* IASlice.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C97632DC211E357500D9D4B5 /* IASlice.cpp */; };
 		C97632E0211E395200D9D4B5 /* lib3ds.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C97632DF211E395200D9D4B5 /* lib3ds.a */; };
 		C97632EB211F685100D9D4B5 /* binaryData.fl in Sources */ = {isa = PBXBuildFile; fileRef = C97632EA211F685100D9D4B5 /* binaryData.fl */; };
+		C97632EF211FA7CC00D9D4B5 /* IAPrinter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C97632ED211FA7CC00D9D4B5 /* IAPrinter.cpp */; };
 		C9D3871E211A425E009F7580 /* libfltk_images.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C9D38718211A425E009F7580 /* libfltk_images.a */; };
 		C9D3871F211A425E009F7580 /* libfltk_png.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C9D38719211A425E009F7580 /* libfltk_png.a */; };
 		C9D38720211A425E009F7580 /* libfltk.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C9D3871A211A425E009F7580 /* libfltk.a */; };
@@ -71,6 +72,8 @@
 		C97632E6211E41F700D9D4B5 /* testcard1024.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = testcard1024.jpg; sourceTree = "<group>"; };
 		C97632E7211F67F200D9D4B5 /* monkey.stl */ = {isa = PBXFileReference; lastKnownFileType = file; path = monkey.stl; sourceTree = "<group>"; };
 		C97632EA211F685100D9D4B5 /* binaryData.fl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.fluid; path = binaryData.fl; sourceTree = "<group>"; };
+		C97632ED211FA7CC00D9D4B5 /* IAPrinter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = IAPrinter.cpp; sourceTree = "<group>"; };
+		C97632EE211FA7CC00D9D4B5 /* IAPrinter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IAPrinter.h; sourceTree = "<group>"; };
 		C9D38718211A425E009F7580 /* libfltk_images.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libfltk_images.a; path = lib/libfltk_images.a; sourceTree = "<group>"; };
 		C9D38719211A425E009F7580 /* libfltk_png.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libfltk_png.a; path = lib/libfltk_png.a; sourceTree = "<group>"; };
 		C9D3871A211A425E009F7580 /* libfltk.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libfltk.a; path = lib/libfltk.a; sourceTree = "<group>"; };
@@ -143,6 +146,7 @@
 		C96B1444211A402900978AC7 /* src */ = {
 			isa = PBXGroup;
 			children = (
+				C97632EC211FA7CC00D9D4B5 /* printer */,
 				C97632CE211E2FFA00D9D4B5 /* geometry */,
 				C97632C5211E2DD000D9D4B5 /* main.cxx */,
 				C97632DE211E394000D9D4B5 /* lib3ds.h */,
@@ -194,6 +198,15 @@
 			);
 			name = data;
 			path = ../../data;
+			sourceTree = "<group>";
+		};
+		C97632EC211FA7CC00D9D4B5 /* printer */ = {
+			isa = PBXGroup;
+			children = (
+				C97632ED211FA7CC00D9D4B5 /* IAPrinter.cpp */,
+				C97632EE211FA7CC00D9D4B5 /* IAPrinter.h */,
+			);
+			path = printer;
 			sourceTree = "<group>";
 		};
 		C9D38724211A4355009F7580 /* Frameworks */ = {
@@ -298,6 +311,7 @@
 				C97632EB211F685100D9D4B5 /* binaryData.fl in Sources */,
 				C97632D4211E325C00D9D4B5 /* IAEdge.cpp in Sources */,
 				C97632CA211E2DD000D9D4B5 /* main.cxx in Sources */,
+				C97632EF211FA7CC00D9D4B5 /* IAPrinter.cpp in Sources */,
 				C97632DD211E357500D9D4B5 /* IASlice.cpp in Sources */,
 				C97632D7211E33B000D9D4B5 /* IAMesh.cpp in Sources */,
 				C97632CD211E2DD000D9D4B5 /* IAVector3d.cpp in Sources */,

@@ -4,12 +4,16 @@
 //  Copyright (c) 2013-2018 Matthias Melcher. All rights reserved.
 //
 
-#define M_MONKEY
+//#define M_MONKEY
 //#define M_DRAGON
+#define M_XYZ
 
 #include "binaryData.h"
 
 static int kNDrops = 10;
+
+static double min(double a, double b) { return a<b?a:b; }
+static double max(double a, double b) { return a>b?a:b; }
 
 /*
 
@@ -157,6 +161,8 @@ static int kNDrops = 10;
 #include "IAMesh.h"
 #include "IASlice.h"
 
+#include "printer/IAPrinter.h"
+
 
 #ifdef _MSC_VER
 #pragma warning ( disable : 4996 )
@@ -167,6 +173,7 @@ Fl_RGB_Image *texture = 0L;
 
 IAMeshList gMeshList;
 IASlice gMeshSlice;
+IAPrinter gPrinter; // Allocate default printer
 
 GLUtesselator *gGluTess = 0;
 
@@ -316,6 +323,10 @@ public:
     {
     }
     int handle(int event) {
+        // click to select
+        // shift to drag
+        // ctrl to rotate
+        // scroll to dolly fraction of distance
         static int px = 0, py = 0;
         switch (event) {
             case FL_PUSH:
@@ -383,7 +394,7 @@ public:
             static GLfloat mat_specular[] = { 1.0, 1.0, 1.0, 1.0 };
             static GLfloat mat_shininess[] = { 50.0 };
             //static GLfloat light_position[] = { 1.0, 1.0, 1.0, 0.0 };
-            static GLfloat light_position[] = { 1.0, 1.0, 1.0, 0.0 };
+            static GLfloat light_position[] = { 1.0, 1.0, -1.0, 0.0 };
             static GLfloat light_ambient[] = { 0.3, 0.3, 0.3, 1.0};
 
             gl_font(FL_HELVETICA_BOLD, 16 );
@@ -425,7 +436,13 @@ public:
         if (gShowSlice) {
             glOrtho(-66.1,66.1,-66.1,66.1, -z1, -z1-z2); // mm
         } else {
-            glOrtho(-66.1,66.1,-66.1,66.1,-66.1,66.1); // mm
+            const double dist = 400.0;
+//            glOrtho(-66.1,66.1,-66.1,66.1,-66.1,66.1); // mm
+//            gluPerspective(40.0, (double(w()))/(double(h())), dist-gPrinter.pBuildVolumeRadius, dist+gPrinter.pBuildVolumeRadius);
+            gluPerspective(50.0, (double(w()))/(double(h())), max(dist-gPrinter.pBuildVolumeRadius, 5.0), dist+gPrinter.pBuildVolumeRadius);
+            // http://nehe.gamedev.net/article/replacement_for_gluperspective/21002/
+            glTranslated(0.0, 0.0, -dist);
+            glRotated(-90, 1.0, 0.0, 0.0);
         }
         glMatrixMode(GL_MODELVIEW);
         glLoadIdentity();
@@ -474,6 +491,7 @@ public:
 #endif
         } else {
             // show the 3d model
+            gPrinter.draw();
             glRotated(-dy, 1.0, 0.0, 0.0);
             glRotated(-dx, 0.0, 1.0, 0.0);
             glEnable(GL_LIGHTING);
@@ -646,8 +664,6 @@ MyGLView *glView = 0L;
 
 double minX = 0.0, maxX = 0.0, minY = 0.0, maxY = 0.0, minZ = 0.0, maxZ = 0.0;
 
-static double min(double a, double b) { return a<b?a:b; }
-static double max(double a, double b) { return a>b?a:b; }
 
 /**
  Load a single node from a 3ds file.
@@ -710,7 +726,7 @@ void load3ds(Lib3dsFile *f, Lib3dsMeshInstanceNode *node) {
             isPoint->pInitialPosition = isPoint->pPosition;
 #elif defined M_DRAGON
             isPoint->pPosition *= 1; // dragon (z=-5...+5)
-#elif defined M_PEPSI
+#elif defined M_XYZ
             isPoint->pPosition *= 1; // pepsi (z=-5...+5)
 #endif
             msh->vertexList.push_back(isPoint);
@@ -825,6 +841,13 @@ int getShort(FILE *f) {
     return ret;
 }
 
+int getShort(const unsigned char *&d) {
+    int ret = 0;
+    ret |= *d++;
+    ret |= (*d++)<<8;
+    return ret;
+}
+
 int getInt(FILE *f) {
     int ret = 0;
     ret |= fgetc(f);
@@ -834,9 +857,24 @@ int getInt(FILE *f) {
     return ret;
 }
 
+int getInt(const unsigned char *&d) {
+    int ret = 0;
+    ret |= *d++;
+    ret |= (*d++)<<8;
+    ret |= (*d++)<<16;
+    ret |= (*d++)<<24;
+    return ret;
+}
+
 float getFloat(FILE *f) {
     float ret;
     fread(&ret, 4, 1, f);
+    return ret;
+}
+
+float getFloat(const unsigned char *&d) {
+    float ret = *(const float*)d;
+    d+=4;
     return ret;
 }
 
@@ -857,6 +895,70 @@ int addPoint(IAMesh *IAMesh, float x, float y, float z)
     IAMesh->vertexList.push_back(v);
     return n;
 }
+
+
+// STL triangles ar CCW, normals are pointing outward
+void loadStl(const unsigned char *d) {
+    const float SCL = 30;
+    d+=0x50;
+    IAMesh *msh = new IAMesh();
+    gMeshList.push_back(msh);
+
+    int nFaces = getInt(d);
+    for (int i=0; i<nFaces; i++) {
+        float x, y, z;
+        int p1, p2, p3;
+        // face normal
+        getFloat(d);
+        getFloat(d);
+        getFloat(d);
+        // point 1
+        x = getFloat(d);
+        y = getFloat(d);
+        z = getFloat(d);
+        p1 = addPoint(msh, x*SCL, z*SCL, -y*SCL);
+        msh->vertexList[p1]->pTex.set(x*0.8+0.5, -z*0.8+0.5, 0.0);
+        // point 2
+        x = getFloat(d);
+        y = getFloat(d);
+        z = getFloat(d);
+        p2 = addPoint(msh, x*SCL, z*SCL, -y*SCL);
+        msh->vertexList[p2]->pTex.set(x*0.8+0.5, -z*0.8+0.5, 0.0);
+        // point 3
+        x = getFloat(d);
+        y = getFloat(d);
+        z = getFloat(d);
+        p3 = addPoint(msh, x*SCL, z*SCL, -y*SCL);
+        msh->vertexList[p3]->pTex.set(x*0.8+0.5, -z*0.8+0.5, 0.0);
+        // add face
+        IATriangle *t = new IATriangle();
+        t->pVertex[0] = msh->vertexList[p1];
+        t->pVertex[1] = msh->vertexList[p2];
+        t->pVertex[2] = msh->vertexList[p3];
+        msh->addFace(t);
+        // color
+
+        minX = min(minX, msh->vertexList[p1]->pPosition.x());
+        maxX = max(maxX, msh->vertexList[p1]->pPosition.x());
+        minY = min(minY, msh->vertexList[p1]->pPosition.y());
+        maxY = max(maxY, msh->vertexList[p1]->pPosition.y());
+        minZ = min(minZ, msh->vertexList[p1]->pPosition.z());
+        maxZ = max(maxZ, msh->vertexList[p1]->pPosition.z());
+
+        getShort(d);
+    }
+
+    msh->validate();
+    // TODO: fix seams
+    // TODO: fix zero size holes
+    // TODO: fix degenrate triangles
+    msh->fixHoles();
+    msh->validate();
+
+    msh->clearNormals();
+    msh->calculateNormals();
+}
+
 
 /**
  Load a single node from a binary stl file.
@@ -910,7 +1012,9 @@ void loadStl(const char *filename) {
     // TODO: fix seams
     // TODO: fix zero size holes
     // TODO: fix degenrate triangles
+#ifndef M_XYZ
     msh->fixHoles();
+#endif
     msh->validate();
 
     msh->clearNormals();
@@ -918,9 +1022,6 @@ void loadStl(const char *filename) {
 
     fclose(f);
 }
-
-
-
 
 
 /**
@@ -1016,8 +1117,8 @@ static void writeSliceCB(Fl_Widget*, void*)
     double lastLayer   =  14.0;
     double layerHeight =   0.1;
     gOutFile = fopen("/Users/matt/dragon.3dp", "wb");
-#elif defined M_PEPSI
-    double firstLayer  = -20.0;
+#elif defined M_XYZ
+    double firstLayer  =   0.0;
     double lastLayer   =  14.0;
     double layerHeight =   0.1;
     gOutFile = fopen("/Users/matt/pepsi.3dp", "wb");
@@ -1062,8 +1163,8 @@ static void writePrnSliceCB(Fl_Widget*, void*)
     double firstLayer  = -20.0;
     double lastLayer   =  14.0;
     double layerHeight =   0.1;
-#elif defined M_PEPSI
-    double firstLayer  = -20.0;
+#elif defined M_XYZ
+    double firstLayer  =   0.0;
     double lastLayer   =  14.0;
     double layerHeight =   0.1;
 #endif
@@ -1122,8 +1223,11 @@ int main (int argc, char **argv)
     Fl::flush();
 #ifdef M_MONKEY
     load3ds("/Users/matt/Desktop/Machine Shop/Machine Pwdr/lib3ds-20080909/monkey.3ds");
+    //loadStl(defaultModel);
 #elif defined M_DRAGON
     loadStl("/Users/matt/Desktop/Machine Shop/Machine Pwdr/0.02_dragon_2.stl");
+#elif defined M_XYZ
+    loadStl("/Users/matt/dev/IotaSlicer/data/xyz.stl");
 #endif
     //load3ds("/Users/matt/squirrel/NewSquirrel.3ds");
     //load3ds("/Users/matt/Desktop/Machine Shop/Machine Pwdr/0.02_dragon_2.3ds");

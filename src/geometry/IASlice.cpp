@@ -126,6 +126,9 @@ void tessErrorCallback(GLenum errorCode)
     fprintf (stderr, "Tessellation Error: %s\n", estring);
 }
 
+// http://www.cs.man.ac.uk/~toby/alan/software/
+// http://www.flipcode.com/archives/Efficient_Polygon_Triangulation.shtml
+// https://github.com/greenm01/poly2tri
 void IASlice::tesselate()
 {
     if (!gGluTess)
