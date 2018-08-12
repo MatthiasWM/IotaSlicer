@@ -4,6 +4,20 @@
 //  Copyright (c) 2013-2018 Matthias Melcher. All rights reserved.
 //
 
+// TODO: add navigation to the IAModelView
+// TODO: add drag'n'drop of STL files to IAModelView
+// TODO: create a model class that contains meshes
+// TODO: position new models in the center and drop them on the build plane
+// TODO: fix STL importer to generate only watertight models
+// TODO: render textures as slices in IAModelView
+// TODO: generate slices as OpenGL Textures
+// TODO: write slices to disk as images
+// TODO: create vector outline from slices
+// TODO: shring slices
+// TODO: create vector infills from slices
+// TODO: create GCode from vectors
+// Done (LOL)
+
 //#define M_MONKEY
 //#define M_DRAGON
 #define M_XYZ
