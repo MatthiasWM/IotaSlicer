@@ -23,7 +23,7 @@ public:
     virtual void clear();
     bool validate();
     void drawGouraud();
-    void drawFlat(unsigned int);
+    void drawFlat(float r=0.8f, float g=0.8, float b=0.8, float a=1.0);
     void drawShrunk(unsigned int, double);
     void drawEdges();
     void addFace(IATriangle*);
@@ -56,7 +56,7 @@ public:
     int size() { return (int)meshList.size(); }
     IAMesh *operator[](int ix) { return meshList[ix]; }
     void push_back(IAMesh *mesh) { meshList.push_back(mesh); }
-    void drawFlat(unsigned int color);
+    void drawFlat(bool textured=false, float r=0.6f, float g=0.6, float b=0.6, float a=1.0);
     void drawGouraud();
     void shrinkTo(double s);
     void projectTexture(double w, double h, int type);

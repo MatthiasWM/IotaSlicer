@@ -99,13 +99,9 @@ void IAModelView::draw(IAMeshList *meshList, IASlice *meshSlice)
     if (meshList) {
         clipToSlice(z1, z2);
 #if 0
-        glDisable(GL_TEXTURE_2D);
-        meshList->drawFlat(FL_RED);
-        glDisable(GL_TEXTURE_2D);
+        meshList->drawFlat(false);
 #else
-        glEnable(GL_TEXTURE_2D);
-        meshList->drawFlat(FL_WHITE);
-        glDisable(GL_TEXTURE_2D);
+        meshList->drawFlat(true);
 #endif
     }
 
@@ -147,7 +143,7 @@ void IAModelView::draw()
         static GLfloat light_position[] = { 1.0, -1.0, 1.0, 0.0 };
         static GLfloat light_ambient[] = { 0.3, 0.3, 0.3, 1.0};
 
-        gl_font(FL_HELVETICA_BOLD, 16 );
+        gl_font(FL_HELVETICA, 16 );
 
         glClearColor (0.9, 0.9, 0.9, 0.0);
         glShadeModel (GL_SMOOTH);
@@ -186,6 +182,7 @@ void IAModelView::draw()
     pCamera->draw();
     glPushMatrix();
 
+#if 0
     if (gShowSlice) {
         // show just the slice
         glDisable(GL_LIGHTING);
@@ -195,9 +192,9 @@ void IAModelView::draw()
         // change the z range to disable clipping
         dontClipToSlice();
 #if 0
-        gMeshSlice.drawFlat(FL_GREEN);
+        gMeshSlice.drawFlat(false, 0.0, 1.0, 0.0);
 #else
-        gMeshSlice.drawFlat(FL_DARK3);
+        gMeshSlice.drawFlat(false, 0.4, 0.4, 0.4);
 #endif
 
         for (int n = 10; n>0; --n) {
@@ -231,11 +228,32 @@ void IAModelView::draw()
         gPrinter.draw();
         glEnable(GL_LIGHTING);
         glEnable(GL_DEPTH_TEST);
-        if (gShowTexture)
-            glEnable(GL_TEXTURE_2D);
-        gMeshList.drawFlat(0x00cccccc);
-        if (gShowTexture)
-            glDisable(GL_TEXTURE_2D);
+        gMeshList.drawFlat(gShowTexture);
+    }
+#endif
+
+    gPrinter.draw();
+    glEnable(GL_LIGHTING);
+    glEnable(GL_COLOR_MATERIAL);
+    glEnable(GL_DEPTH_TEST);
+    if (gShowSlice) {
+        GLdouble equationLowerHalf[4] = { 0.0, 0.0, -1.0, zSlider1->value() };
+        GLdouble equationUpperHalf[4] = { 0.0, 0.0, 1.0, -zSlider1->value() };
+        glClipPlane(GL_CLIP_PLANE0, equationLowerHalf);
+        glEnable(GL_CLIP_PLANE0);
+        gMeshList.drawFlat(gShowTexture);
+
+        glClipPlane(GL_CLIP_PLANE0, equationUpperHalf);
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        glEnable(GL_CULL_FACE);
+
+        gMeshList.drawFlat(false, 0.6, 0.6, 0.6, 0.1);
+
+        glDisable(GL_CULL_FACE);
+        glDisable(GL_CLIP_PLANE0);
+    } else {
+        gMeshList.drawFlat(gShowTexture);
     }
     glPopMatrix();
 
@@ -243,6 +261,7 @@ void IAModelView::draw()
     glLoadIdentity();
     glOrtho(0, pixel_w(), 0, pixel_h(), -10, 10); // mm
     glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
     gl_color(FL_WHITE);
     char buf[1024];
     sprintf(buf, "Slice at %.4gmm", z1); gl_draw(buf, 10, 50);

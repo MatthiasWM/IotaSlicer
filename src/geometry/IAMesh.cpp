@@ -299,11 +299,9 @@ void IAMesh::drawGouraud() {
     glEnd();
 }
 
-void IAMesh::drawFlat(unsigned int color) {
+void IAMesh::drawFlat(float r, float g, float b, float a) {
     int i, j, n = (int)faceList.size();
-    unsigned char r, g, b;
-    Fl::get_color(color, r, g, b);
-    glColor3f(r/266.0, g/266.0, b/266.0);
+    glColor4f(r, g, b, a);
     glBegin(GL_TRIANGLES);
     for (i = 0; i < n; i++) {
         IATriangle *IATriangle = faceList[i];
@@ -374,12 +372,21 @@ void IAMeshList::shrinkTo(double s)
     }
 }
 
-void IAMeshList::drawFlat(unsigned int color)
+void IAMeshList::drawFlat(bool textured, float r, float g, float b, float a)
 {
+    if (textured) {
+        glEnable(GL_TEXTURE_2D);
+        r = g = b = 1.0;
+    } else {
+        glDisable(GL_TEXTURE_2D);
+    }
     int i, n = size();
     for (i=0; i<n; i++) {
         IAMesh *IAMesh = meshList[i];
-        IAMesh->drawFlat(color);
+        IAMesh->drawFlat(r, g, b, a);
+    }
+    if (textured) {
+        glDisable(GL_TEXTURE_2D);
     }
 }
 

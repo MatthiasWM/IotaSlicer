@@ -62,7 +62,7 @@ Function {createIotaAppWindow()} {open
         xywh {0 28 600 572} resizable
         class IAModelView
       } {}
-      Fl_Group {} {open selected
+      Fl_Group {} {open
         xywh {600 28 200 572} box FLAT_BOX
       } {
         Fl_Group {} {open
@@ -77,7 +77,7 @@ Function {createIotaAppWindow()} {open
               Fl_Slider zSlider1 {
                 callback {sliceAll();
     gShowSlice = true;
-    glView->redraw();}
+    glView->redraw();} selected
                 tooltip {Slice layer at Z mm} xywh {605 33 20 502} minimum 110 maximum -110 step 1
               }
               Fl_Slider zSlider2 {
