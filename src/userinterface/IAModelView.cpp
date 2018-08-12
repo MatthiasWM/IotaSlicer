@@ -8,6 +8,7 @@
 #include "IAModelView.h"
 
 #include "../main.h"
+#include "IACamera.h"
 #include "../geometry/IAMesh.h"
 #include "../geometry/IASlice.h"
 #include "../printer/IAPrinter.h"
@@ -19,36 +20,77 @@
 #include <FL/Fl_Slider.H>
 
 
+/**
+ * Create a new OpenGL scene view.
+ *
+ * When constructed, the widget will connect itself with the current Fl_Group
+ * in FLTK.
+ */
 IAModelView::IAModelView(int x, int y, int w, int h, const char *l)
-: Fl_Gl_Window(x, y, w, h, l),
-dx(0.0), dy(0.0)
+:   Fl_Gl_Window(x, y, w, h, l),
+    pCamera( new IACamera(this) )
 {
 }
 
 
+/**
+ * Release all allocated resources.
+ */
+IAModelView::~IAModelView()
+{
+    delete pCamera;
+}
+
+
+/**
+ * Handle all events that FLTK sends here.
+ *
+ * \todo FIXME: Handle all mouse input for manipulating the scene or the camera.
+ * \todo Handle drag'n'drop events to add new models or textures.
+ * \todo Handle copy and paste events.
+ * \todo Handle context menus.
+ */
 int IAModelView::handle(int event) {
     // click to select
     // shift to drag
     // ctrl to rotate
     // scroll to dolly fraction of distance
     static int px = 0, py = 0;
+    double dx, dy;
     switch (event) {
+        case FL_MOUSEWHEEL:
+            pCamera->dolly(Fl::event_dx()*1.5, Fl::event_dy()*1.5);
+            redraw();
+            return 1;
         case FL_PUSH:
             px = Fl::event_x();
             py = Fl::event_y();
             return 1;
         case FL_DRAG:
         case FL_RELEASE:
-            dx = dx + (px - Fl::event_x())*0.3;
-            dy = dy + (py - Fl::event_y())*0.3;
+            dx = px - Fl::event_x();
+            dy = py - Fl::event_y();
             px = Fl::event_x();
             py = Fl::event_y();
+            if ( (Fl::event_state()&(FL_SHIFT|FL_CTRL|FL_ALT|FL_META)) == FL_SHIFT) {
+                pCamera->rotate(dx, dy);
+            } else if ( (Fl::event_state()&(FL_SHIFT|FL_CTRL|FL_ALT|FL_META)) == FL_CTRL) {
+                pCamera->drag(dx, dy);
+            } else if ( (Fl::event_state()&(FL_SHIFT|FL_CTRL|FL_ALT|FL_META)) == (FL_CTRL|FL_SHIFT)) {
+                pCamera->dolly(dx, dy);
+            }
             redraw();
             return 1;
     }
     return Fl_Gl_Window::handle(event);
 }
 
+
+/**
+ * Draw the current mesh list and the current slice.
+ *
+ * \todo This function needs work.
+ */
 void IAModelView::draw(IAMeshList *meshList, IASlice *meshSlice)
 {
     double z1 = zSlider1->value();
@@ -86,6 +128,10 @@ void IAModelView::draw(IAMeshList *meshList, IASlice *meshSlice)
     dontClipToSlice();
 }
 
+
+/**
+ * Draw the entire scene.
+ */
 void IAModelView::draw()
 {
     static bool firstTime = true;
@@ -130,27 +176,17 @@ void IAModelView::draw()
                          0, GL_RGB, GL_UNSIGNED_BYTE, *texture->data());
             glEnable(GL_TEXTURE_2D);
         }
+        valid(1);
     }
 
     double z1 = zSlider1->value();
     double z2 = zSlider2->value();
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glMatrixMode (GL_PROJECTION);
-    glLoadIdentity();
-    if (gShowSlice) {
-        glOrtho(-66.1,66.1,-66.1,66.1, -z1, -z1-z2); // mm
-    } else {
-        const double dist = 400.0;
-        //            glOrtho(-66.1,66.1,-66.1,66.1,-66.1,66.1); // mm
-        //            gluPerspective(40.0, (double(w()))/(double(h())), dist-gPrinter.pBuildVolumeRadius, dist+gPrinter.pBuildVolumeRadius);
-        gluPerspective(50.0, (double(pixel_w()))/(double(pixel_h())), max(dist-gPrinter.pBuildVolumeRadius, 5.0), dist+gPrinter.pBuildVolumeRadius);
-        // http://nehe.gamedev.net/article/replacement_for_gluperspective/21002/
-        glTranslated(0.0, 0.0, -dist);
-        glRotated(-90, 1.0, 0.0, 0.0);
-    }
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
+    pCamera->draw();
+    
+//    glMatrixMode(GL_MODELVIEW);
+//    glLoadIdentity();
     glPushMatrix();
 
     if (gShowSlice) {
@@ -196,8 +232,8 @@ void IAModelView::draw()
     } else {
         // show the 3d model
         gPrinter.draw();
-        glRotated(-dy, 1.0, 0.0, 0.0);
-        glRotated(-dx, 0.0, 1.0, 0.0);
+//        glRotated(-dy, 1.0, 0.0, 0.0);
+//        glRotated(-dx, 0.0, 1.0, 0.0);
         glEnable(GL_LIGHTING);
         glEnable(GL_DEPTH_TEST);
 //        gMeshList.drawGouraud();
@@ -212,11 +248,14 @@ void IAModelView::draw()
     glMatrixMode(GL_MODELVIEW);
     gl_color(FL_WHITE);
     char buf[1024];
-    sprintf(buf, "Slice at %.4gmm", z1); gl_draw(buf, 10, 40);
+    sprintf(buf, "Slice at %.4gmm", z1); gl_draw(buf, 10, 50);
     sprintf(buf, "%.4gmm thick", z2); gl_draw(buf, 10, 20);
 }
 
 
+/**
+ * Enable clipping for the current slice (deprecated)
+ */
 void IAModelView::clipToSlice(double z1, double z2)
 {
     glMatrixMode (GL_PROJECTION);
@@ -225,6 +264,10 @@ void IAModelView::clipToSlice(double z1, double z2)
     glMatrixMode(GL_MODELVIEW);
 }
 
+
+/**
+ * Disable clipping for the current slice (deprecated)
+ */
 void IAModelView::dontClipToSlice()
 {
     glMatrixMode (GL_PROJECTION);

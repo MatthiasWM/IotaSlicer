@@ -27,7 +27,7 @@ void IAPrinter::draw()
     glDisable(GL_LIGHTING);
     glDisable(GL_DEPTH_TEST);
 
-    glLoadIdentity();
+    glPushMatrix();
     glTranslated(pBuildVolumeOffset.x(), pBuildVolumeOffset.y(), pBuildVolumeOffset.z());
 
     // bottom plate
@@ -106,6 +106,8 @@ void IAPrinter::draw()
     glVertex3d(0, 0, 0);
     glVertex3d(0, 0, 50);
     glEnd();
+
     glLineWidth(1.0);
+    glPopMatrix();
 }
 

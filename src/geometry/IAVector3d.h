@@ -25,11 +25,15 @@ public:
     void write(double*);
     void read(float*);
     void read(double*);
+    double length();
     double x() { return pV[0]; }
     double y() { return pV[1]; }
     double z() { return pV[2]; }
     void set(double, double, double);
-    
+    void xRotate(double);
+    void yRotate(double);
+    void zRotate(double);
+
     double pV[3] = { 0.0, 0.0, 0.0 };
 };
 

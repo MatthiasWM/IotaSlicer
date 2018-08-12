@@ -62,9 +62,14 @@ void IAVector3d::write(double *v)
     v[2] = pV[2];
 }
 
+double IAVector3d::length()
+{
+    return sqrt(pV[0]*pV[0]+pV[1]*pV[1]+pV[2]*pV[2]);
+}
+
 double IAVector3d::normalize()
 {
-    double len = sqrt(pV[0]*pV[0]+pV[1]*pV[1]+pV[2]*pV[2]);
+    double len = length();
     if (len==0.0) {
         len = 1.0;
     } else {
@@ -115,4 +120,41 @@ void IAVector3d::zero()
     pV[1] = 0.0;
     pV[2] = 0.0;
 }
+
+void IAVector3d::xRotate(double a)
+{
+    double s = sin(a);
+    double c = cos(a);
+
+    double yy = pV[1] * c - pV[2] * s;
+    double zz = pV[1] * s + pV[2] * c;
+
+    pV[1] = yy;
+    pV[2] = zz;
+}
+
+void IAVector3d::yRotate(double a)
+{
+    double s = sin(a);
+    double c = cos(a);
+
+    double zz = pV[2] * c - pV[0] * s;
+    double xx = pV[2] * s + pV[0] * c;
+
+    pV[2] = zz;
+    pV[0] = xx;
+}
+
+void IAVector3d::zRotate(double a)
+{
+    double s = sin(a);
+    double c = cos(a);
+
+    double xx = pV[0] * c - pV[1] * s;
+    double yy = pV[0] * s + pV[1] * c;
+
+    pV[0] = xx;
+    pV[1] = yy;
+}
+
 

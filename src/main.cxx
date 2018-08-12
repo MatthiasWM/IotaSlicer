@@ -4,7 +4,6 @@
 //  Copyright (c) 2013-2018 Matthias Melcher. All rights reserved.
 //
 
-// TODO: add navigation to the IAModelView
 // TODO: add drag'n'drop of STL files to IAModelView
 // TODO: create a model class that contains meshes
 // TODO: position new models in the center and drop them on the build plane
@@ -17,6 +16,8 @@
 // TODO: create vector infills from slices
 // TODO: create GCode from vectors
 // Done (LOL)
+
+// TODO: port to Linux and MSWindows
 
 //#define M_MONKEY
 //#define M_DRAGON
