@@ -237,24 +237,29 @@ void IAModelView::draw()
     glEnable(GL_COLOR_MATERIAL);
     glEnable(GL_DEPTH_TEST);
     if (gShowSlice) {
+        // draw the opaque lower half of the model
         GLdouble equationLowerHalf[4] = { 0.0, 0.0, -1.0, zSlider1->value() };
         GLdouble equationUpperHalf[4] = { 0.0, 0.0, 1.0, -zSlider1->value() };
         glClipPlane(GL_CLIP_PLANE0, equationLowerHalf);
         glEnable(GL_CLIP_PLANE0);
         gMeshList.drawFlat(gShowTexture);
+//        glEnable(GL_TEXTURE_2D);
+//        gMeshList[0]->drawShrunk(FL_WHITE, -2.0);
 
+
+        // draw the lid
         glDisable(GL_CLIP_PLANE0);
         gMeshSlice.drawFlat(1.0, 0.0, 0.0);
         glDisable(GL_DEPTH_TEST);
         gMeshSlice.drawLidEdge();
         glEnable(GL_DEPTH_TEST);
 
+        // draw a ghoste upper half of the mode
         glClipPlane(GL_CLIP_PLANE0, equationUpperHalf);
         glEnable(GL_CLIP_PLANE0);
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         glEnable(GL_CULL_FACE);
-
         gMeshList.drawFlat(false, 0.6, 0.6, 0.6, 0.1);
 
         glDisable(GL_CULL_FACE);

@@ -222,11 +222,11 @@ IAEdge *IAMesh::findEdge(IAVertex *v0, IAVertex *v1)
 {
     int i, n = (int)edgeList.size();
     for (i=0; i<n; i++) {
-        IAEdge *IAEdge = edgeList.at(i);
-        IAVertex *ev0 = IAEdge->pVertex[0];
-        IAVertex *ev1 = IAEdge->pVertex[1];
+        IAEdge *e = edgeList.at(i);
+        IAVertex *ev0 = e->pVertex[0];
+        IAVertex *ev1 = e->pVertex[1];
         if ((ev0==v0 && ev1==v1)||(ev0==v1 && ev1==v0))
-            return IAEdge;
+            return e;
     }
     return 0;
 }
@@ -235,8 +235,8 @@ void IAMesh::clearFaceNormals()
 {
     int i, n = (int)faceList.size();
     for (i=0; i<n; i++) {
-        IATriangle *IATriangle = faceList.at(i);
-        IATriangle->pNNormal = 0;
+        IATriangle *t = faceList.at(i);
+        t->pNNormal = 0;
     }
 }
 
@@ -244,8 +244,8 @@ void IAMesh::clearVertexNormals()
 {
     int i, n = (int)vertexList.size();
     for (i=0; i<n; i++) {
-        IAVertex *IAVertex = vertexList.at(i);
-        IAVertex->pNNormal = 0;
+        IAVertex *v = vertexList.at(i);
+        v->pNNormal = 0;
     }
 }
 
@@ -253,16 +253,16 @@ void IAMesh::calculateFaceNormals()
 {
     int i, n = (int)faceList.size();
     for (i=0; i<n; i++) {
-        IATriangle *IATriangle = faceList.at(i);
-        IAVector3d p0(IATriangle->pVertex[0]->pPosition);
-        IAVector3d p1(IATriangle->pVertex[1]->pPosition);
-        IAVector3d p2(IATriangle->pVertex[2]->pPosition);
+        IATriangle *t = faceList.at(i);
+        IAVector3d p0(t->pVertex[0]->pPosition);
+        IAVector3d p1(t->pVertex[1]->pPosition);
+        IAVector3d p2(t->pVertex[2]->pPosition);
         p1 -= p0;
         p2 -= p0;
         IAVector3d n = p1.cross(p2);
         n.normalize();
-        IATriangle->pNormal = n;
-        IATriangle->pNNormal = 1;
+        t->pNormal = n;
+        t->pNNormal = 1;
     }
 }
 
@@ -270,16 +270,16 @@ void IAMesh::calculateVertexNormals()
 {
     int i, n = (int)faceList.size();
     for (i=0; i<n; i++) {
-        IATriangle *IATriangle = faceList.at(i);
-        IAVector3d n(IATriangle->pNormal);
-        IATriangle->pVertex[0]->addNormal(n);
-        IATriangle->pVertex[1]->addNormal(n);
-        IATriangle->pVertex[2]->addNormal(n);
+        IATriangle *t = faceList.at(i);
+        IAVector3d n(t->pNormal);
+        t->pVertex[0]->addNormal(n);
+        t->pVertex[1]->addNormal(n);
+        t->pVertex[2]->addNormal(n);
     }
     n = (int)vertexList.size();
     for (i=0; i<n; i++) {
-        IAVertex *IAVertex = vertexList.at(i);
-        IAVertex->averageNormal();
+        IAVertex *v = vertexList.at(i);
+        v->averageNormal();
     }
 }
 
@@ -288,12 +288,12 @@ void IAMesh::drawGouraud() {
     glColor3f(1.0f, 1.0f, 1.0f);
     glBegin(GL_TRIANGLES);
     for (i = 0; i < n; i++) {
-        IATriangle *IATriangle = faceList[i];
+        IATriangle *t = faceList[i];
         for (j = 0; j < 3; ++j) {
-            IAVertex *IAVertex = IATriangle->pVertex[j];
-            glNormal3dv(IAVertex->pNormal.dataPointer());
-            glTexCoord2dv(IAVertex->pTex.dataPointer());
-            glVertex3dv(IAVertex->pPosition.dataPointer());
+            IAVertex *v = t->pVertex[j];
+            glNormal3dv(v->pNormal.dataPointer());
+            glTexCoord2dv(v->pTex.dataPointer());
+            glVertex3dv(v->pPosition.dataPointer());
         }
     }
     glEnd();
@@ -304,12 +304,12 @@ void IAMesh::drawFlat(float r, float g, float b, float a) {
     glColor4f(r, g, b, a);
     glBegin(GL_TRIANGLES);
     for (i = 0; i < n; i++) {
-        IATriangle *IATriangle = faceList[i];
-        glNormal3dv(IATriangle->pNormal.dataPointer());
+        IATriangle *t = faceList[i];
+        glNormal3dv(t->pNormal.dataPointer());
         for (j = 0; j < 3; ++j) {
-            IAVertex *IAVertex = IATriangle->pVertex[j];
-            glTexCoord2dv(IAVertex->pTex.dataPointer());
-            glVertex3dv(IAVertex->pPosition.dataPointer());
+            IAVertex *v = t->pVertex[j];
+            glTexCoord2dv(v->pTex.dataPointer());
+            glVertex3dv(v->pPosition.dataPointer());
         }
     }
     glEnd();
@@ -322,13 +322,15 @@ void IAMesh::drawShrunk(unsigned int color, double scale) {
     glColor3f(r/266.0, g/266.0, b/266.0);
     glBegin(GL_TRIANGLES);
     for (i = 0; i < n; i++) {
-        IATriangle *IATriangle = faceList[i];
+        IATriangle *t = faceList[i];
+        glNormal3dv(t->pNormal.dataPointer());
         for (j = 0; j < 3; ++j) {
-            IAVertex *IAVertex = IATriangle->pVertex[j];
-            IAVector3d p = IAVertex->pPosition;
-            IAVector3d n = IAVertex->pNormal;
+            IAVertex *v = t->pVertex[j];
+            IAVector3d p = v->pPosition;
+            IAVector3d n = v->pNormal;
             n *= scale;
             p -= n;
+            glTexCoord2dv(v->pTex.dataPointer());
             glVertex3dv(p.dataPointer());
         }
     }
@@ -338,7 +340,6 @@ void IAMesh::drawShrunk(unsigned int color, double scale) {
 void IAMesh::drawEdges() {
     int i, j, n = (int)edgeList.size();
     glColor3f(0.8f, 1.0f, 1.0f);
-#if 0
     glBegin(GL_LINES);
     for (i = 0; i < n; i++) {
         IAEdge *e = edgeList[i];
@@ -349,27 +350,14 @@ void IAMesh::drawEdges() {
         }
     }
     glEnd();
-#else
-    n = (int)faceList.size();
-    for (i = 0; i < n; i++) {
-        IATriangle *t = faceList[i];
-        glBegin(GL_LINES);
-        for (j = 0; j < 3; ++j) {
-            IAVertex *v = t->pVertex[j];
-            glTexCoord2dv(v->pTex.dataPointer());
-            glVertex3dv(v->pPosition.dataPointer());
-        }
-        glEnd();
-    }
-#endif
 }
 
 void IAMesh::projectTexture(double w, double h, int type)
 {
     int i, n = (int)vertexList.size();
     for (i=0; i<n; i++) {
-        IAVertex *IAVertex = vertexList.at(i);
-        IAVertex->projectTexture(w, h, type);
+        IAVertex *v = vertexList.at(i);
+        v->projectTexture(w, h, type);
     }
 }
 
@@ -381,8 +369,8 @@ void IAMeshList::shrinkTo(double s)
 {
     int i, n = size();
     for (i=0; i<n; i++) {
-        IAMesh *IAMesh = meshList[i];
-        IAMesh->shrinkTo(s);
+        IAMesh *m = meshList[i];
+        m->shrinkTo(s);
     }
 }
 
@@ -396,8 +384,8 @@ void IAMeshList::drawFlat(bool textured, float r, float g, float b, float a)
     }
     int i, n = size();
     for (i=0; i<n; i++) {
-        IAMesh *IAMesh = meshList[i];
-        IAMesh->drawFlat(r, g, b, a);
+        IAMesh *m = meshList[i];
+        m->drawFlat(r, g, b, a);
     }
     if (textured) {
         glDisable(GL_TEXTURE_2D);
@@ -408,9 +396,9 @@ void IAMeshList::drawGouraud()
 {
     int i, n = size();
     for (i=0; i<n; i++) {
-        IAMesh *IAMesh = meshList[i];
+        IAMesh *m = meshList[i];
         glDepthRange (0.1, 1.0);
-        IAMesh->drawGouraud();
+        m->drawGouraud();
     }
 }
 
@@ -419,8 +407,8 @@ void IAMeshList::projectTexture(double w, double h, int type)
 {
     int i, n = size();
     for (i=0; i<n; i++) {
-        IAMesh *IAMesh = meshList[i];
-        IAMesh->projectTexture(w, h, type);
+        IAMesh *m = meshList[i];
+        m->projectTexture(w, h, type);
     }
 }
 
