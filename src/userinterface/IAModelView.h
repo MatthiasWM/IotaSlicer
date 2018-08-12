@@ -20,8 +20,6 @@ public:
     int handle(int event);
     void draw(IAMeshList *meshList, IASlice *meshSlice);
     void draw();
-    void writeSlice(int nDrops = 10, int interleave=4);
-    void writePrnSlice();
     void clipToSlice(double z1, double z2);
     void dontClipToSlice();
 };

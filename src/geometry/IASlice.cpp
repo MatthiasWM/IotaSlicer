@@ -7,14 +7,13 @@
 
 #include "IASlice.h"
 
+#include "main.h"
 #include "IAMesh.h"
 
 #include <FL/gl.h>
 #include <FL/glu.h>
 
-
-extern IASlice gMeshSlice;
-extern GLUtesselator *gGluTess;
+GLUtesselator *gGluTess = nullptr;
 
 
 IASlice::IASlice()

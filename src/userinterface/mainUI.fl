@@ -2,14 +2,94 @@
 version 1.0304
 header_name {.h}
 code_name {.cpp}
-Function {make_window()} {open
+decl {\#include "../main.h"} {public global
+}
+
+decl {\#include "IAModelView.h"} {public global
+}
+
+Function {createIotaAppWindow()} {open
 } {
-  Fl_Window {} {open
-    xywh {506 444 536 333} type Double visible
+  Fl_Window {} {
+    label {Iota Slicer V0.1a} open
+    xywh {472 202 800 600} type Double resizable visible
   } {
-    Fl_Box {} {
-      label {Hello FLTK!}
-      xywh {24 24 480 236} box ROUND_UP_BOX labelfont 2 labelsize 64
+    Fl_Menu_Bar {} {open
+      xywh {0 0 800 28}
+    } {
+      Submenu {} {
+        label File open
+        xywh {0 0 100 20}
+      } {
+        MenuItem {} {
+          label Quit
+          callback {menuQuit();}
+          xywh {0 0 100 20} shortcut 0x400071
+        }
+      }
+      Submenu {} {
+        label Edit open
+        xywh {0 0 100 20}
+      } {
+        MenuItem {} {
+          label {Preferences...}
+          xywh {0 0 100 20} deactivate
+        }
+      }
+      Submenu {} {
+        label View open
+        xywh {0 0 100 20}
+      } {
+        MenuItem {} {
+          label Reset
+          xywh {0 0 100 20} deactivate
+        }
+      }
+      Submenu {} {
+        label Help open
+        xywh {0 0 100 20}
+      } {
+        MenuItem {} {
+          label {About...}
+          xywh {0 0 100 20} deactivate
+        }
+      }
+    }
+    Fl_Tile {} {open
+      xywh {0 28 800 572} resizable
+    } {
+      Fl_Group glView {open selected
+        xywh {0 28 600 572} resizable
+        class IAModelView
+      } {}
+      Fl_Group {} {open
+        xywh {600 28 200 572} box FLAT_BOX
+      } {
+        Fl_Group {} {open
+          xywh {605 33 190 562} box FLAT_BOX resizable
+        } {
+          Fl_Slider zSlider1 {
+            callback {sliceAll();
+    gShowSlice = true;
+    glView->redraw();}
+            xywh {605 33 20 532} minimum 30 maximum -30 step 0.25
+          }
+          Fl_Slider zSlider2 {
+            callback {gShowSlice = true;
+    glView->redraw();}
+            xywh {625 33 20 532} minimum 10 maximum -10 step 0.25
+          }
+          Fl_Button {} {
+            label SLC
+            callback {gShowSlice = false;
+    glView->redraw();}
+            xywh {605 565 40 30}
+          }
+          Fl_Group {} {open
+            xywh {645 33 150 562} resizable
+          } {}
+        }
+      }
     }
   }
 }
