@@ -98,7 +98,7 @@ void IAModelView::draw()
         static GLfloat mat_specular[] = { 1.0, 1.0, 1.0, 1.0 };
         static GLfloat mat_shininess[] = { 50.0 };
         //static GLfloat light_position[] = { 1.0, 1.0, 1.0, 0.0 };
-        static GLfloat light_position[] = { 1.0, 1.0, -1.0, 0.0 };
+        static GLfloat light_position[] = { 1.0, -1.0, 1.0, 0.0 };
         static GLfloat light_ambient[] = { 0.3, 0.3, 0.3, 1.0};
 
         gl_font(FL_HELVETICA_BOLD, 16 );
@@ -135,6 +135,7 @@ void IAModelView::draw()
     double z1 = zSlider1->value();
     double z2 = zSlider2->value();
 
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glMatrixMode (GL_PROJECTION);
     glLoadIdentity();
     if (gShowSlice) {
@@ -150,7 +151,6 @@ void IAModelView::draw()
     }
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glPushMatrix();
 
     if (gShowSlice) {
@@ -200,7 +200,8 @@ void IAModelView::draw()
         glRotated(-dx, 0.0, 1.0, 0.0);
         glEnable(GL_LIGHTING);
         glEnable(GL_DEPTH_TEST);
-        gMeshList.drawGouraud();
+//        gMeshList.drawGouraud();
+        gMeshList.drawFlat(0x00cccccc);
     }
     glPopMatrix();
 

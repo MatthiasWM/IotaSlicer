@@ -314,6 +314,7 @@ void IAMesh::drawFlat(unsigned int color) {
     glBegin(GL_TRIANGLES);
     for (i = 0; i < n; i++) {
         IATriangle *IATriangle = faceList[i];
+        glNormal3dv(IATriangle->pNormal.dataPointer());
         for (j = 0; j < 3; ++j) {
             IAVertex *IAVertex = IATriangle->pVertex[j];
             glTexCoord2dv(IAVertex->pTex.dataPointer());
