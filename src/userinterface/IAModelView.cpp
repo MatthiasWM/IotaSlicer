@@ -103,7 +103,7 @@ void IAModelView::draw()
 
         gl_font(FL_HELVETICA_BOLD, 16 );
 
-        glClearColor (0.0, 0.0, 0.0, 0.0);
+        glClearColor (0.9, 0.9, 0.9, 0.0);
         glShadeModel (GL_SMOOTH);
 
         glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);

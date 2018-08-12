@@ -30,7 +30,40 @@ void IAPrinter::draw()
     glLoadIdentity();
     glTranslated(pBuildVolumeOffset.x(), pBuildVolumeOffset.y(), pBuildVolumeOffset.z());
 
-    glColor3ub(230, 230, 230);
+    // bottom plate
+    glColor3ub(200, 200, 200);
+    glBegin(GL_POLYGON);
+    glVertex3d(pBuildVolumeMin.x(), pBuildVolumeMin.y(), pBuildVolumeMin.z());
+    glVertex3d(pBuildVolumeMax.x(), pBuildVolumeMin.y(), pBuildVolumeMin.z());
+    glVertex3d(pBuildVolumeMax.x(), pBuildVolumeMax.y(), pBuildVolumeMin.z());
+    glVertex3d(pBuildVolumeMin.x(), pBuildVolumeMax.y(), pBuildVolumeMin.z());
+    glEnd();
+
+    // bottom grid
+    glColor3ub(70, 70, 70);
+    int i;
+    int xmin = (int)ceil(pBuildVolumeMin.x()/10.0)*10;
+    int xmax = (int)floor(pBuildVolumeMax.x()/10.0)*10;
+    glBegin(GL_LINES);
+    for (i=xmin; i<=xmax; i+=10) {
+        if (i==0) { glEnd(); glLineWidth(2.5); glBegin(GL_LINES); }
+        glVertex3d(i, pBuildVolumeMin.y(), pBuildVolumeMin.z());
+        glVertex3d(i, pBuildVolumeMax.y(), pBuildVolumeMin.z());
+        if (i==0) { glEnd(); glLineWidth(1.0); glBegin(GL_LINES); }
+    }
+    glEnd();
+    int ymin = (int)ceil(pBuildVolumeMin.y()/10.0)*10;
+    int ymax = (int)floor(pBuildVolumeMax.y()/10.0)*10;
+    glBegin(GL_LINES);
+    for (i=ymin; i<=ymax; i+=10) {
+        if (i==0) { glEnd(); glLineWidth(2.5); glBegin(GL_LINES); }
+        glVertex3d(pBuildVolumeMin.x(), i, pBuildVolumeMin.z());
+        glVertex3d(pBuildVolumeMax.x(), i, pBuildVolumeMin.z());
+        if (i==0) { glEnd(); glLineWidth(1.0); glBegin(GL_LINES); }
+    }
+    glEnd();
+
+    glColor3ub(70, 70, 70);
 
     // top
     glBegin(GL_LINE_LOOP);
@@ -60,46 +93,19 @@ void IAPrinter::draw()
     glVertex3d(pBuildVolumeMin.x(), pBuildVolumeMax.y(), pBuildVolumeMin.z());
     glEnd();
 
-    // bottom plate
-    glColor3ub(128, 128, 128);
-    glBegin(GL_POLYGON);
-    glVertex3d(pBuildVolumeMin.x(), pBuildVolumeMin.y(), pBuildVolumeMin.z());
-    glVertex3d(pBuildVolumeMax.x(), pBuildVolumeMin.y(), pBuildVolumeMin.z());
-    glVertex3d(pBuildVolumeMax.x(), pBuildVolumeMax.y(), pBuildVolumeMin.z());
-    glVertex3d(pBuildVolumeMin.x(), pBuildVolumeMax.y(), pBuildVolumeMin.z());
-    glEnd();
-
-    // bottom grid
-    glColor3ub(200, 200, 200);
-    int i;
-    int xmin = (int)ceil(pBuildVolumeMin.x()/10.0)*10;
-    int xmax = (int)floor(pBuildVolumeMax.x()/10.0)*10;
-    glBegin(GL_LINES);
-    for (i=xmin; i<=xmax; i+=10) {
-        glVertex3d(i, pBuildVolumeMin.y(), pBuildVolumeMin.z());
-        glVertex3d(i, pBuildVolumeMax.y(), pBuildVolumeMin.z());
-    }
-    glEnd();
-    int ymin = (int)ceil(pBuildVolumeMin.y()/10.0)*10;
-    int ymax = (int)floor(pBuildVolumeMax.y()/10.0)*10;
-    glBegin(GL_LINES);
-    for (i=ymin; i<=ymax; i+=10) {
-        glVertex3d(pBuildVolumeMin.x(), i, pBuildVolumeMin.z());
-        glVertex3d(pBuildVolumeMax.x(), i, pBuildVolumeMin.z());
-    }
-    glEnd();
-
     // origin and coordinate system
+    glLineWidth(2.5);
     glBegin(GL_LINES);
     glColor3ub(255, 0, 0);
     glVertex3d(0, 0, 0);
-    glVertex3d(10, 0, 0);
+    glVertex3d(50, 0, 0);
     glColor3ub(0, 255, 0);
     glVertex3d(0, 0, 0);
-    glVertex3d(0, 10, 0);
+    glVertex3d(0, 50, 0);
     glColor3ub(0, 0, 255);
     glVertex3d(0, 0, 0);
-    glVertex3d(0, 0, 10);
+    glVertex3d(0, 0, 50);
     glEnd();
+    glLineWidth(1.0);
 }
 
