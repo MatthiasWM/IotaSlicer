@@ -75,7 +75,7 @@
 		C97632DE211E394000D9D4B5 /* lib3ds.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = lib3ds.h; sourceTree = "<group>"; };
 		C97632DF211E395200D9D4B5 /* lib3ds.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = lib3ds.a; path = lib/lib3ds.a; sourceTree = "<group>"; };
 		C97632E6211E41F700D9D4B5 /* testcard1024.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = testcard1024.jpg; sourceTree = "<group>"; };
-		C97632E7211F67F200D9D4B5 /* monkey.stl */ = {isa = PBXFileReference; lastKnownFileType = file; path = monkey.stl; sourceTree = "<group>"; };
+		C97632E7211F67F200D9D4B5 /* suzanne.stl */ = {isa = PBXFileReference; lastKnownFileType = file; path = suzanne.stl; sourceTree = "<group>"; };
 		C97632EA211F685100D9D4B5 /* binaryData.fl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.fluid; path = binaryData.fl; sourceTree = "<group>"; };
 		C97632ED211FA7CC00D9D4B5 /* IAPrinter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = IAPrinter.cpp; sourceTree = "<group>"; };
 		C97632EE211FA7CC00D9D4B5 /* IAPrinter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IAPrinter.h; sourceTree = "<group>"; };
@@ -214,7 +214,7 @@
 			isa = PBXGroup;
 			children = (
 				C97632EA211F685100D9D4B5 /* binaryData.fl */,
-				C97632E7211F67F200D9D4B5 /* monkey.stl */,
+				C97632E7211F67F200D9D4B5 /* suzanne.stl */,
 				C98C66B32120550C00BD3ACE /* xyz.stl */,
 				C97632E6211E41F700D9D4B5 /* testcard1024.jpg */,
 			);

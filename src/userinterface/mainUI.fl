@@ -58,7 +58,7 @@ Function {createIotaAppWindow()} {open
     Fl_Tile {} {open
       xywh {0 28 800 572} resizable
     } {
-      Fl_Group glView {open selected
+      Fl_Group glView {open
         xywh {0 28 600 572} resizable
         class IAModelView
       } {}
@@ -72,18 +72,18 @@ Function {createIotaAppWindow()} {open
             callback {sliceAll();
     gShowSlice = true;
     glView->redraw();}
-            xywh {605 33 20 532} minimum 30 maximum -30 step 0.25
+            tooltip {Slice layer at Z mm} xywh {605 33 20 532} minimum 110 maximum -110 step 1
           }
           Fl_Slider zSlider2 {
             callback {gShowSlice = true;
     glView->redraw();}
-            xywh {625 33 20 532} minimum 10 maximum -10 step 0.25
+            tooltip {Thickness of slice in mm} xywh {625 33 20 532} minimum 10 maximum -10 step 1
           }
           Fl_Button {} {
             label SLC
             callback {gShowSlice = false;
-    glView->redraw();}
-            xywh {605 565 40 30}
+    glView->redraw();} selected
+            tooltip {Stop slicing the model} xywh {605 565 40 30}
           }
           Fl_Group {} {open
             xywh {645 33 150 562} resizable

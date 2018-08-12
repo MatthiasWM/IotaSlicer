@@ -7,5 +7,5 @@ data defaultTexture {
 }
 
 data defaultModel {
-  comment {Use this model for testing} public local filename {./xyz.stl}
+  comment {Use this model for testing} public local filename {./suzanne.stl}
 }

@@ -68,7 +68,7 @@ void load3ds(Lib3dsFile *f, Lib3dsMeshInstanceNode *node) {
             //isPoint->pPosition *= 10;
             //isPoint->pPosition *= 40; // mokey full size
             //isPoint->pPosition *= 5; // mokey tiny (z=-5...+5)
-#ifdef M_MONKEY
+#if 0
             isPoint->pTex.set(
                               isPoint->pPosition.x() * 0.8 + 0.5,
                               -isPoint->pPosition.y() * 0.8 + 0.5,
@@ -77,10 +77,6 @@ void load3ds(Lib3dsFile *f, Lib3dsMeshInstanceNode *node) {
             //isPoint->pPosition *= 10; // mokey tiny (z=-5...+5)
             isPoint->pPosition *= 30; // mokey tiny (z=-5...+5)
             isPoint->pInitialPosition = isPoint->pPosition;
-#elif defined M_DRAGON
-            isPoint->pPosition *= 1; // dragon (z=-5...+5)
-#elif defined M_XYZ
-            isPoint->pPosition *= 1; // pepsi (z=-5...+5)
 #endif
             msh->vertexList.push_back(isPoint);
         }

@@ -123,13 +123,6 @@ bool IAMesh::validate()
 void IAMesh::fixHoles()
 {
     printf("Fixing holes...\n");
-#ifdef M_MONKEY
-    fixHole(edgeList[21]);
-#elif defined M_DRAGON
-    return;
-#elif defined M_PEPSI
-    return;
-#endif
     int i;
     for (i=0; i<(int)edgeList.size(); i++) {
         IAEdge *e = edgeList[i];

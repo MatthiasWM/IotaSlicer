@@ -5,9 +5,9 @@
 //
 
 // TODO: add drag'n'drop of STL files to IAModelView
+// TODO: fix STL importer to generate only watertight models
 // TODO: create a model class that contains meshes
 // TODO: position new models in the center and drop them on the build plane
-// TODO: fix STL importer to generate only watertight models
 // TODO: render textures as slices in IAModelView
 // TODO: generate slices as OpenGL Textures
 // TODO: write slices to disk as images
@@ -18,10 +18,6 @@
 // Done (LOL)
 
 // TODO: port to Linux and MSWindows
-
-//#define M_MONKEY
-//#define M_DRAGON
-#define M_XYZ
 
 #include "main.h"
 
@@ -89,15 +85,9 @@ int main (int argc, char **argv)
     Fl::flush();
 
     loadTexture("testcard1024.jpg", defaultTexture);
-#ifdef M_MONKEY
-    load3ds("/Users/matt/Desktop/Machine Shop/Machine Pwdr/lib3ds-20080909/monkey.3ds");
-    //loadStl(defaultModel);
-#elif defined M_DRAGON
-    loadStl("/Users/matt/Desktop/Machine Shop/Machine Pwdr/0.02_dragon_2.stl");
-#elif defined M_XYZ
-    //    loadStl("/Users/matt/dev/IotaSlicer/data/xyz.stl");
+//    loadStl("/Users/matt/dev/IotaSlicer/data/xyz.stl");
+//    loadStl("/Users/matt/dev/IotaSlicer/src/data/suzanne.stl");
     loadStl(defaultModel);
-#endif
 
     glView->redraw();
 

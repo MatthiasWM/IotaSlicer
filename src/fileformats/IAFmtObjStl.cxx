@@ -129,7 +129,7 @@ void loadStl(const unsigned char *d) {
     // TODO: fix seams
     // TODO: fix zero size holes
     // TODO: fix degenrate triangles
-    //msh->fixHoles();
+    msh->fixHoles();
     msh->validate();
 
     msh->clearNormals();
