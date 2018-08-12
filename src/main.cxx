@@ -825,6 +825,7 @@ int main (int argc, char **argv)
      */
     loadTexture("testcard1024.jpg", defaultTexture);
 
+    Fl::use_high_res_GL(1);
     Fl_Window win(840, 800, "Iota Slice");
     win.begin();
     Fl_Group *g = new Fl_Group(0, 0, 800, 800);

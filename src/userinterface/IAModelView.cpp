@@ -118,7 +118,7 @@ void IAModelView::draw()
         //      glBlendFunc(GL_ONE, GL_ZERO);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-        glViewport(0,0,w(),h());
+        glViewport(0,0,pixel_w(),pixel_h());
 
         if (texture) {
             static GLuint tex = 0;
@@ -144,7 +144,7 @@ void IAModelView::draw()
         const double dist = 400.0;
         //            glOrtho(-66.1,66.1,-66.1,66.1,-66.1,66.1); // mm
         //            gluPerspective(40.0, (double(w()))/(double(h())), dist-gPrinter.pBuildVolumeRadius, dist+gPrinter.pBuildVolumeRadius);
-        gluPerspective(50.0, (double(w()))/(double(h())), max(dist-gPrinter.pBuildVolumeRadius, 5.0), dist+gPrinter.pBuildVolumeRadius);
+        gluPerspective(50.0, (double(pixel_w()))/(double(pixel_h())), max(dist-gPrinter.pBuildVolumeRadius, 5.0), dist+gPrinter.pBuildVolumeRadius);
         // http://nehe.gamedev.net/article/replacement_for_gluperspective/21002/
         glTranslated(0.0, 0.0, -dist);
         glRotated(-90, 1.0, 0.0, 0.0);
@@ -201,6 +201,7 @@ void IAModelView::draw()
         glEnable(GL_LIGHTING);
         glEnable(GL_DEPTH_TEST);
 //        gMeshList.drawGouraud();
+//        glEnable(GL_TEXTURE_2D);
         gMeshList.drawFlat(0x00cccccc);
     }
     glPopMatrix();
@@ -215,7 +216,7 @@ void IAModelView::draw()
 
     glMatrixMode (GL_PROJECTION);
     glLoadIdentity();
-    glOrtho(0, w(), 0, h(), -10, 10); // mm
+    glOrtho(0, pixel_w(), 0, pixel_h(), -10, 10); // mm
     glMatrixMode(GL_MODELVIEW);
     gl_color(FL_WHITE);
     char buf[1024];
