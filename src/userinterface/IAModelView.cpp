@@ -243,7 +243,14 @@ void IAModelView::draw()
         glEnable(GL_CLIP_PLANE0);
         gMeshList.drawFlat(gShowTexture);
 
+        glDisable(GL_CLIP_PLANE0);
+        gMeshSlice.drawFlat(1.0, 0.0, 0.0);
+        glDisable(GL_DEPTH_TEST);
+        gMeshSlice.drawLidEdge();
+        glEnable(GL_DEPTH_TEST);
+
         glClipPlane(GL_CLIP_PLANE0, equationUpperHalf);
+        glEnable(GL_CLIP_PLANE0);
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         glEnable(GL_CULL_FACE);

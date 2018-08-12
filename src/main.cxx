@@ -59,7 +59,9 @@ void menuQuit()
 
 void sliceAll()
 {
+#if 1
     gMeshSlice.generateFrom(gMeshList, zSlider1->value());
+#else
     // start a new slice. A slice holds the information from all meshes.
     gMeshSlice.clear();
     // get the number of meshes in this model
@@ -73,6 +75,7 @@ void sliceAll()
         gMeshSlice.tesselate();
     }
     glView->redraw();
+#endif
 }
 
 int main (int argc, char **argv)

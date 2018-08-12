@@ -338,16 +338,30 @@ void IAMesh::drawShrunk(unsigned int color, double scale) {
 void IAMesh::drawEdges() {
     int i, j, n = (int)edgeList.size();
     glColor3f(0.8f, 1.0f, 1.0f);
+#if 0
     glBegin(GL_LINES);
     for (i = 0; i < n; i++) {
-        IAEdge *IAEdge = edgeList[i];
+        IAEdge *e = edgeList[i];
         for (j = 0; j < 2; ++j) {
-            IAVertex *IAVertex = IAEdge->pVertex[j];
-            glTexCoord2dv(IAVertex->pTex.dataPointer());
-            glVertex3dv(IAVertex->pPosition.dataPointer());
+            IAVertex *v = e->pVertex[j];
+            glTexCoord2dv(v->pTex.dataPointer());
+            glVertex3dv(v->pPosition.dataPointer());
         }
     }
     glEnd();
+#else
+    n = (int)faceList.size();
+    for (i = 0; i < n; i++) {
+        IATriangle *t = faceList[i];
+        glBegin(GL_LINES);
+        for (j = 0; j < 3; ++j) {
+            IAVertex *v = t->pVertex[j];
+            glTexCoord2dv(v->pTex.dataPointer());
+            glVertex3dv(v->pPosition.dataPointer());
+        }
+        glEnd();
+    }
+#endif
 }
 
 void IAMesh::projectTexture(double w, double h, int type)
