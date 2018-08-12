@@ -27,4 +27,7 @@ extern float min(float a, float b);
 extern float max(float a, float b);
 extern void writeInt(FILE *f, int32_t x);
 
+extern double minX, maxX, minY, maxY, minZ, maxZ;
+
+
 #endif /* MAIN_H */
