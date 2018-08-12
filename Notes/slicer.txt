@@ -1,0 +1,170 @@
+
+Slicing Strategy:
+
+We need two sets of information in a slice.
+
+Set one defines what is inside and outside of the slice. This is where binder
+needs to go to make the model complete. Missing triangles in non-manifold
+models cause missing layers and broken models. The slicer must not crash
+on missing or deformed triangles. It should instead fill holes in some way.
+
+Set two calculates the shell color. The color layer is only a few millimeters
+thick to give a deep color, but it must not overlap with other triangles. The
+surface color pixels are extended into the model, following the interopolated
+point normals.
+
+Slices always have a thickness! The binder slice is generated using two boolean
+operations that cut above and below the slice while maintaining a close
+surface (the resulting slice has a lid at the top and bottom. The slice is then
+rendered from Z to generate the binder voxel layer.
+
+The color slice is basically a binder slice minus the top and bottom lid, plus
+color and texture information. It is rendered viewing from the top. Only pure
+binder voxels can be changed (no outside voxels, no voxels that were already
+colored).
+
+To generate a thickness in the color shell, all model vertices are moved by
+half a voxel radius along their negtive point normal, and the color information
+is rendered again. This is repeated until the shell has the required thickness.
+
+
+Advanced options:
+
+We can support known point normals by creating convex and concave surfaces
+that will give a shading similar to what the point-normal-interpolation
+would achieve.
+
+We can apply bump maps to the model by generating appropriate structures
+in the voxels.
+
+
+Support / packaging:
+
+We can generate support structures for the model while printing it, without
+generating a physical connection to the model. For shipping, the model can then
+be wrapped in a thin foam and placed back in the support structure.
+
+
+Dimensions:
+
++-V----------+    +-----+        o----> x
+|ooo         |  ==| | | |==      |
+| +--------+ |    |:|:|:|        |     z points up
+> |o       | |    +-----+        V y
+| |        | |
+| |        | |
+| +--------+ |
+| |o       | |
+| |        | |
+| |        | |
+| +--------+ |
+| +--------+ |
+|            |
++------------+
+
+physical range rect
+supply box
+build box
+carriage rect
+nozzle rect
+carriage park pos
+roller y pos
+powder collector y pos
+
+rect: x, y, w, h in relation to end stops
+box: x, y, z, w, h, d in relation to end stops
+pos: x, y
+
+all measurements are in step of the corresponding axis
+steps per mm are stored seperately
+
+
+Test Patterns:
+
+- Layer height vs. ink per dot
+print 5x5x100mm columns, ten next to each other with 1..10 drops
+print ten layers of that, with smaller layer height every time
+*/
+
+/*
+
+X range is 0...18500, 18500 steps or 512 dots
+y range is 21500...??
+
+*/
+
+/*
+
+Aug 6th 2017
+
+- for every slice, we have a zMin and zMax, and a color depth
+- calculate the outline of the zMin slice
+we need the outline to make sure that we have a textured outer surface
+on vertical faces
+- calculate the polygon to fill the zMin slice
+we need the slice polygon to create the infill and possibly a drawing mask
+- clear the drawing area (all transparent)
+use the alpha channel to indicate the amount of binder
+- draw the zMin polygon in infill color
+this is the lower end of the slice
+- render the zMin outline in textured mode
+this is required to make vertical polygons have a minimum thickness
+- set near and far plane and render the entire model in textured mode
+this fills polygons that are not at a vertical angle
+- shrink the geometry by half a pixel and repeat the previous two steps until
+we have the required shell thickness
+(this step may be better in reverse in overdraw mode: inner shell to outer shell)
+
+* PROBLEM: if structures are smaller than the shell depth, geometry
+shrinking will "flip". One help is to draw a clipping plane with the
+maximum size of the geometry slice. This will not fix self-intersecting
+geometry issues.
+
+
+Arbitrary code fragments:
+
+void setShaders() {
+
+GLuint v, f, p;
+
+v = glCreateShader(GL_VERTEX_SHADER);
+f = glCreateShader(GL_FRAGMENT_SHADER);
+
+/*
+vec4 v = vec4(gl_Vertex);
+v.z = 0.0;
+gl_Position = gl_ModelViewProjectionMatrix * v;
+*/
+const char * vv =
+"void main(void) {\n"
+"    gl_Position = ftransform();\n"
+"}";
+
+//  "void main()\n"
+//  "{\n"
+//  "  gl_Position = ftransform();\n"
+//  "}\n"
+//  ;
+
+// if (pixelIsSilly) dicard;
+const char * ff =
+"void main() {\n"
+"    gl_FragColor = vec4( 1, 1, 0, 1);\n"
+"}"
+;
+
+glShaderSource(v, 1, &vv,NULL);
+glShaderSource(f, 1, &ff,NULL);
+
+glCompileShader(v);
+glCompileShader(f);
+
+p = glCreateProgram();
+
+glAttachShader(p,v);
+glAttachShader(p,f);
+
+glLinkProgram(p);
+glUseProgram(p);
+}
+
