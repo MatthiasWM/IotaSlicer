@@ -44,7 +44,7 @@ void IAVertex::print()
     printf("v=[%g, %g, %g]\n", pPosition.x(), pPosition.y(), pPosition.z());
 }
 
-void IAVertex::shrinkTo(double s)
+void IAVertex::shrinkBy(double s)
 {
     pPosition.set(
                   pInitialPosition.x() - pNormal.x() * s,

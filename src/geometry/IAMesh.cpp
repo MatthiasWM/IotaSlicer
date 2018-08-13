@@ -38,11 +38,11 @@ void IAMesh::clear()
 }
 
 
-void IAMesh::shrinkTo(double s)
+void IAMesh::shrinkBy(double s)
 {
     int i, n = (int)vertexList.size();
     for (i=0; i<n; i++) {
-        vertexList[i]->shrinkTo(s);
+        vertexList[i]->shrinkBy(s);
     }
 }
 
@@ -365,12 +365,12 @@ void IAMesh::projectTexture(double w, double h, int type)
 
 // -----------------------------------------------------------------------------
 
-void IAMeshList::shrinkTo(double s)
+void IAMeshList::shrinkBy(double s)
 {
     int i, n = size();
     for (i=0; i<n; i++) {
         IAMesh *m = meshList[i];
-        m->shrinkTo(s);
+        m->shrinkBy(s);
     }
 }
 

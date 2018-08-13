@@ -115,6 +115,10 @@ void loadStl(const unsigned char *d) {
         msh->addFace(t);
         // color
 
+        msh->vertexList[p1]->pInitialPosition = msh->vertexList[p1]->pPosition;
+        msh->vertexList[p2]->pInitialPosition = msh->vertexList[p2]->pPosition;
+        msh->vertexList[p3]->pInitialPosition = msh->vertexList[p3]->pPosition;
+
         minX = min(minX, msh->vertexList[p1]->pPosition.x());
         maxX = max(maxX, msh->vertexList[p1]->pPosition.x());
         minY = min(minY, msh->vertexList[p1]->pPosition.y());

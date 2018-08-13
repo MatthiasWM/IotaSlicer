@@ -97,7 +97,7 @@ void IAModelView::draw(IAMeshList *meshList, IASlice *meshSlice)
     double z2 = zSlider2->value();
     //---- draw the model using the near and far plane for clipping
     if (meshList) {
-        clipToSlice(z1, z2);
+//        clipToSlice(z1, z2);
 #if 0
         meshList->drawFlat(false);
 #else
@@ -107,7 +107,7 @@ void IAModelView::draw(IAMeshList *meshList, IASlice *meshSlice)
 
     //---- draw the lid outline
     if (meshSlice) {
-        dontClipToSlice();
+//        dontClipToSlice();
 #if 0
         glDisable(GL_TEXTURE_2D);
         glColor3ub(128, 255, 255);
@@ -115,13 +115,13 @@ void IAModelView::draw(IAMeshList *meshList, IASlice *meshSlice)
         glDisable(GL_TEXTURE_2D);
 #else
         glEnable(GL_TEXTURE_2D);
-        glColor3ub(255, 255, 255);
+        glColor3ub(128, 128, 128);
         meshSlice->drawLidEdge();
         glDisable(GL_TEXTURE_2D);
 #endif
     }
 
-    dontClipToSlice();
+//    dontClipToSlice();
 }
 
 
@@ -130,6 +130,7 @@ void IAModelView::draw(IAMeshList *meshList, IASlice *meshSlice)
  */
 void IAModelView::draw()
 {
+    static Fl_RGB_Image *lTexture = nullptr;
     static bool firstTime = true;
     if (firstTime) {
         firstTime = false;
@@ -137,13 +138,11 @@ void IAModelView::draw()
     }
 
     if (!valid()) {
+        gl_font(FL_HELVETICA, 16 );
         static GLfloat mat_specular[] = { 1.0, 1.0, 1.0, 1.0 };
         static GLfloat mat_shininess[] = { 50.0 };
-        //static GLfloat light_position[] = { 1.0, 1.0, 1.0, 0.0 };
         static GLfloat light_position[] = { 1.0, -1.0, 1.0, 0.0 };
         static GLfloat light_ambient[] = { 0.3, 0.3, 0.3, 1.0};
-
-        gl_font(FL_HELVETICA, 16 );
 
         glClearColor (0.9, 0.9, 0.9, 0.0);
         glShadeModel (GL_SMOOTH);
@@ -157,22 +156,23 @@ void IAModelView::draw()
         glEnable(GL_NORMALIZE);
 
         glEnable(GL_BLEND);
-        //      glBlendFunc(GL_ONE, GL_ZERO);
+        // glBlendFunc(GL_ONE, GL_ZERO);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
         glViewport(0,0,pixel_w(),pixel_h());
 
-        if (texture) {
-            static GLuint tex = 0;
-            glGenTextures(1, &tex);
-            glBindTexture(GL_TEXTURE_2D, tex);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB8, texture->w(), texture->h(),
-                         0, GL_RGB, GL_UNSIGNED_BYTE, *texture->data());
-            glEnable(GL_TEXTURE_2D);
-        }
         valid(1);
+    }
+    if (lTexture != texture) {
+        static GLuint tex = 0;
+        glGenTextures(1, &tex);
+        glBindTexture(GL_TEXTURE_2D, tex);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB8, texture->w(), texture->h(),
+                     0, GL_RGB, GL_UNSIGNED_BYTE, *texture->data());
+        glEnable(GL_TEXTURE_2D);
+        lTexture = texture;
     }
 
     double z1 = zSlider1->value();
@@ -182,55 +182,6 @@ void IAModelView::draw()
     pCamera->draw();
     glPushMatrix();
 
-#if 0
-    if (gShowSlice) {
-        // show just the slice
-        glDisable(GL_LIGHTING);
-        glDisable(GL_DEPTH_TEST);
-
-        //---- draw the untextured lid surface
-        // change the z range to disable clipping
-        dontClipToSlice();
-#if 0
-        gMeshSlice.drawFlat(false, 0.0, 1.0, 0.0);
-#else
-        gMeshSlice.drawFlat(false, 0.4, 0.4, 0.4);
-#endif
-
-        for (int n = 10; n>0; --n) {
-            gMeshList.shrinkTo(0.2*n);
-            IASlice meshSlice;
-            meshSlice.generateFrom(gMeshList, zSlider1->value());
-            draw(&gMeshList, &meshSlice);
-        }
-        gMeshList.shrinkTo(0.0);
-
-        draw(&gMeshList, &gMeshSlice);
-
-#if 0
-        // set the z range again to enable drawing the shell
-        glMatrixMode (GL_PROJECTION);
-        glLoadIdentity();
-        glOrtho(-66.1,66.1,-66.1,66.1, -z1, -z1-z2); // mm
-        glMatrixMode(GL_MODELVIEW);
-        // the following code guarantees a hull of at least 1mm width
-        //      double sd;
-        //      glHint(GL_POLYGON_SMOOTH_HINT, );
-        //      glDisable (GL_POLYGON_SMOOTH);
-        //      glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-        //      for (sd = 0.2; sd<gMinimumShell; sd+=0.2) {
-        //        drawModelShrunk(Fl_WHITE, sd);
-        //      }
-        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-#endif
-    } else {
-        // show the 3d model
-        gPrinter.draw();
-        glEnable(GL_LIGHTING);
-        glEnable(GL_DEPTH_TEST);
-        gMeshList.drawFlat(gShowTexture);
-    }
-#endif
 
     gPrinter.draw();
     glEnable(GL_LIGHTING);
@@ -248,13 +199,31 @@ void IAModelView::draw()
 //        gMeshList[0]->drawShrunk(FL_WHITE, -2.0);
 
 
-        // draw the lid
-        glDisable(GL_CLIP_PLANE0);
-        gMeshSlice.drawFlat(1.0, 0.0, 0.0);
-        glDisable(GL_DEPTH_TEST);
-        gMeshSlice.drawLidEdge();
+#if 1   // draw the shell
+        // FIXME: this messes up tesselation for the lid!
+        // FIXME: we do not need to tesselate at all!
+        glDisable(GL_LIGHTING);
+        glEnable(GL_TEXTURE_2D);
+        glLineWidth(2.0);
+        for (int n = 10; n>0; --n) {
+            gMeshList.shrinkBy(0.2*n);
+            IASlice meshSlice;
+            meshSlice.generateFrom(gMeshList, zSlider1->value());
+            draw(&gMeshList, &meshSlice);
+        }
+        gMeshList.shrinkBy(0.0);
+        glLineWidth(1.0);
+        glDisable(GL_TEXTURE_2D);
+        glEnable(GL_LIGHTING);
         glEnable(GL_DEPTH_TEST);
+#endif
 
+#if 0   // draw the lid
+        glDisable(GL_CLIP_PLANE0);
+        gMeshSlice.drawFlat(1.0, 0.9, 0.9);
+#endif
+
+#if 0
         // draw a texture map on the lid
         glDisable(GL_TEXTURE_2D);
         glColor4f(0.0, 1.0, 0.0, 0.1);
@@ -275,6 +244,7 @@ void IAModelView::draw()
                    zPlane);
         glEnd();
         glPopMatrix();
+#endif
 
         // draw a ghoste upper half of the mode
         glClipPlane(GL_CLIP_PLANE0, equationUpperHalf);

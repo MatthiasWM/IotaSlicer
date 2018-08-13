@@ -21,7 +21,7 @@ public:
     void addNormal(const IAVector3d&);
     void averageNormal();
     void print();
-    void shrinkTo(double s);
+    void shrinkBy(double s);
     void projectTexture(double w, double h, int type);
 
     IAVector3d pInitialPosition;

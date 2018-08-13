@@ -35,7 +35,7 @@ public:
     void calculateNormals() { calculateFaceNormals(); calculateVertexNormals(); }
     void fixHoles();
     void fixHole(IAEdge*);
-    void shrinkTo(double s);
+    void shrinkBy(double s);
     void projectTexture(double w, double h, int type);
     IAEdge *findEdge(IAVertex*, IAVertex*);
     IAEdge *addEdge(IAVertex*, IAVertex*, IATriangle*);
@@ -58,7 +58,7 @@ public:
     void push_back(IAMesh *mesh) { meshList.push_back(mesh); }
     void drawFlat(bool textured=false, float r=0.6f, float g=0.6, float b=0.6, float a=1.0);
     void drawGouraud();
-    void shrinkTo(double s);
+    void shrinkBy(double s);
     void projectTexture(double w, double h, int type);
 private:
     IAMeshVector meshList;
