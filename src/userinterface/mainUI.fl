@@ -77,13 +77,13 @@ Function {createIotaAppWindow()} {open
               Fl_Slider zSlider1 {
                 callback {sliceAll();
     gShowSlice = true;
-    glView->redraw();} selected
+    glView->redraw();}
                 tooltip {Slice layer at Z mm} xywh {605 33 20 502} minimum 110 maximum -110 step 1
               }
               Fl_Slider zSlider2 {
                 callback {gShowSlice = true;
     glView->redraw();}
-                tooltip {Thickness of slice in mm} xywh {625 33 20 502} minimum 10 maximum -10 step 1
+                tooltip {Thickness of slice in mm} xywh {625 33 20 502} minimum 10 maximum -10 step 1 deactivate
               }
             }
             Fl_Button {} {
@@ -94,8 +94,8 @@ glView->redraw();}
             }
             Fl_Button {} {
               label SLC
-              callback {gShowSlice = false;
-    glView->redraw();}
+              callback {gShowSlice = !gShowSlice;
+    glView->redraw();} selected
               tooltip {Stop slicing the model} xywh {605 565 40 30}
             }
           }
