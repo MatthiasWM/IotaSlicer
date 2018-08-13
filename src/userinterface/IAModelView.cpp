@@ -237,9 +237,10 @@ void IAModelView::draw()
     glEnable(GL_COLOR_MATERIAL);
     glEnable(GL_DEPTH_TEST);
     if (gShowSlice) {
+        double zPlane = zSlider1->value();
         // draw the opaque lower half of the model
-        GLdouble equationLowerHalf[4] = { 0.0, 0.0, -1.0, zSlider1->value() };
-        GLdouble equationUpperHalf[4] = { 0.0, 0.0, 1.0, -zSlider1->value() };
+        GLdouble equationLowerHalf[4] = { 0.0, 0.0, -1.0, zPlane };
+        GLdouble equationUpperHalf[4] = { 0.0, 0.0, 1.0, -zPlane };
         glClipPlane(GL_CLIP_PLANE0, equationLowerHalf);
         glEnable(GL_CLIP_PLANE0);
         gMeshList.drawFlat(gShowTexture);
@@ -253,6 +254,27 @@ void IAModelView::draw()
         glDisable(GL_DEPTH_TEST);
         gMeshSlice.drawLidEdge();
         glEnable(GL_DEPTH_TEST);
+
+        // draw a texture map on the lid
+        glDisable(GL_TEXTURE_2D);
+        glColor4f(0.0, 1.0, 0.0, 0.1);
+        glPushMatrix();
+        glTranslated(gPrinter.pBuildVolumeOffset.x(), gPrinter.pBuildVolumeOffset.x(), 0.01);
+        glBegin(GL_POLYGON);
+        glVertex3d(gPrinter.pBuildVolumeMin.x(),
+                   gPrinter.pBuildVolumeMin.y(),
+                   zPlane);
+        glVertex3d(gPrinter.pBuildVolumeMax.x(),
+                   gPrinter.pBuildVolumeMin.y(),
+                   zPlane);
+        glVertex3d(gPrinter.pBuildVolumeMax.x(),
+                   gPrinter.pBuildVolumeMax.y(),
+                   zPlane);
+        glVertex3d(gPrinter.pBuildVolumeMin.x(),
+                   gPrinter.pBuildVolumeMax.y(),
+                   zPlane);
+        glEnd();
+        glPopMatrix();
 
         // draw a ghoste upper half of the mode
         glClipPlane(GL_CLIP_PLANE0, equationUpperHalf);
