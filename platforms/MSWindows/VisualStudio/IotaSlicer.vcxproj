@@ -186,6 +186,7 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
       <TreatOutputAsContent Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</TreatOutputAsContent>
     </CustomBuild>
     <None Include="..\..\..\html\helpAbout.html" />
+    <None Include="..\..\..\html\helpLicenses.html" />
     <None Include="..\..\..\html\index.html" />
     <None Include="..\..\..\src\data\suzanne.stl" />
     <None Include="..\..\..\src\data\xyz.stl" />
