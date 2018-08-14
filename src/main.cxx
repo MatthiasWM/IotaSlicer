@@ -12,7 +12,7 @@
 // TODO: generate slices as OpenGL Textures
 // TODO: write slices to disk as images
 // TODO: create vector outline from slices
-// TODO: shring slices
+// TODO: shrink slices
 // TODO: create vector infills from slices
 // TODO: create GCode from vectors
 // Done (LOL)
