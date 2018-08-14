@@ -115,6 +115,9 @@ glView->redraw();}
 data sHelpAbout {private local filename {../../html/helpAbout.html}
 }
 
+data sHelpLicenses {private local filename {../../html/helpLicenses.html}
+}
+
 Function {createIotaAboutWindow()} {open
 } {
   Fl_Window {} {
@@ -128,18 +131,27 @@ Function {createIotaAboutWindow()} {open
         xywh {10 10 580 340} resizable
       } {
         Fl_Group {} {
-          label About open
+          label About open selected
           xywh {10 35 580 315} box UP_BOX resizable
         } {
-          Fl_Help_View {} {selected
-            xywh {10 35 580 315} resizable
+          Fl_Help_View {} {
+            xywh {12 37 576 311} box FLAT_BOX color 49 labelfont 8 resizable
             code0 {o->value((const char*)sHelpAbout);}
+            code1 {o->textsize(14);}
+            code2 {o->textfont(FL_HELVETICA);}
           }
         }
         Fl_Group {} {
           label Licenses open
-          xywh {14 39 580 315} box UP_BOX hide
-        } {}
+          xywh {10 35 580 315} box UP_BOX hide
+        } {
+          Fl_Help_View {} {
+            xywh {12 37 576 311} box FLAT_BOX color 49 resizable
+            code0 {o->value((const char*)sHelpLicenses);}
+            code1 {o->textsize(14);}
+            code2 {o->textfont(FL_HELVETICA);}
+          }
+        }
       }
     }
     Fl_Group {} {open
