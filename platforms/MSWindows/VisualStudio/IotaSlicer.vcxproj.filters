@@ -144,6 +144,9 @@
     <None Include="..\..\..\html\helpAbout.html">
       <Filter>html</Filter>
     </None>
+    <None Include="..\..\..\html\helpLicenses.html">
+      <Filter>html</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\..\..\src\data\testcard1024.jpg">
