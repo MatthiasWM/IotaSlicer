@@ -12,9 +12,6 @@
     <Filter Include="src\printer">
       <UniqueIdentifier>{1a2c747e-9a82-41c1-ad25-901075f0a367}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\geometry">
-      <UniqueIdentifier>{c49362c6-655a-4751-b98c-8e221a986b2c}</UniqueIdentifier>
-    </Filter>
     <Filter Include="src\fileformats">
       <UniqueIdentifier>{9afd96bc-d90d-44a8-9b96-3f0b53448f9d}</UniqueIdentifier>
     </Filter>
@@ -26,6 +23,12 @@
     </Filter>
     <Filter Include="libs">
       <UniqueIdentifier>{2f67ad00-e7bd-467f-b0b2-acedc3ff11c0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\geometry">
+      <UniqueIdentifier>{c49362c6-655a-4751-b98c-8e221a986b2c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="html">
+      <UniqueIdentifier>{0ad20a25-205e-4f09-a4dd-e1908078299d}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -66,6 +69,12 @@
       <Filter>src\userInterface</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\userinterface\IAModelView.cpp">
+      <Filter>src\userInterface</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\data\binaryData.cpp">
+      <Filter>src\data</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\userinterface\mainUI.cpp">
       <Filter>src\userInterface</Filter>
     </ClCompile>
   </ItemGroup>
@@ -112,13 +121,16 @@
     <ClInclude Include="..\..\..\src\userinterface\IAModelView.h">
       <Filter>src\userInterface</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\src\data\binaryData.h">
+      <Filter>src\data</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\userinterface\mainUI.h">
+      <Filter>src\userInterface</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\..\src\UserInterface.fl">
       <Filter>src</Filter>
-    </None>
-    <None Include="..\..\..\src\data\binaryData.fl">
-      <Filter>src\data</Filter>
     </None>
     <None Include="..\..\..\src\data\suzanne.stl">
       <Filter>src\data</Filter>
@@ -126,8 +138,11 @@
     <None Include="..\..\..\src\data\xyz.stl">
       <Filter>src\data</Filter>
     </None>
-    <None Include="..\..\..\src\userinterface\mainUI.fl">
-      <Filter>src\userInterface</Filter>
+    <None Include="..\..\..\html\index.html">
+      <Filter>html</Filter>
+    </None>
+    <None Include="..\..\..\html\helpAbout.html">
+      <Filter>html</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
@@ -154,5 +169,13 @@
     <Library Include="..\lib\fltk_z.lib">
       <Filter>libs</Filter>
     </Library>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="..\..\..\src\data\binaryData.fl">
+      <Filter>src\data</Filter>
+    </CustomBuild>
+    <CustomBuild Include="..\..\..\src\userinterface\mainUI.fl">
+      <Filter>src\userInterface</Filter>
+    </CustomBuild>
   </ItemGroup>
 </Project>

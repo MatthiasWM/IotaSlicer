@@ -75,17 +75,21 @@ void IASlice::drawLidEdge()
 int tessVertexCount = 0;
 IAVertex *tessV0, *tessV1, *tessV2;
 
-void tessBeginCallback(GLenum which)
+#ifdef __APPLE__
+#define __stdcall
+#endif
+
+void __stdcall tessBeginCallback(GLenum which)
 {
     tessVertexCount = 0;
 }
 
-void tessEndCallback()
+void __stdcall tessEndCallback()
 {
     // tessVertexCount must be 0!
 }
 
-void tessVertexCallback(GLvoid *vertex)
+void __stdcall tessVertexCallback(GLvoid *vertex)
 {
     if (tessVertexCount==0) {
         tessV0 = (IAVertex*)vertex;
@@ -104,7 +108,7 @@ void tessVertexCallback(GLvoid *vertex)
     }
 }
 
-void tessCombineCallback(GLdouble coords[3],
+void __stdcall tessCombineCallback(GLdouble coords[3],
                          IAVertex *vertex_data[4],
                          GLfloat weight[4], IAVertex **dataOut )
 {
@@ -114,11 +118,11 @@ void tessCombineCallback(GLdouble coords[3],
     *dataOut = v;
 }
 
-void tessEdgeFlagCallback(GLboolean flag)
+void __stdcall tessEdgeFlagCallback(GLboolean flag)
 {
 }
 
-void tessErrorCallback(GLenum errorCode)
+void __stdcall tessErrorCallback(GLenum errorCode)
 {
     const GLubyte *estring;
     estring = gluErrorString(errorCode);
@@ -133,13 +137,21 @@ void IASlice::tesselate()
     if (!gGluTess)
         gGluTess = gluNewTess();
     
-    gluTessCallback(gGluTess, GLU_TESS_VERTEX, (GLvoid (*) ()) &tessVertexCallback);
-    gluTessCallback(gGluTess, GLU_TESS_BEGIN, (GLvoid (*) ()) &tessBeginCallback);
+#ifdef __APPLE__
+	gluTessCallback(gGluTess, GLU_TESS_VERTEX, (GLvoid(*) ()) &tessVertexCallback);
+	gluTessCallback(gGluTess, GLU_TESS_BEGIN, (GLvoid (*) ()) &tessBeginCallback);
     gluTessCallback(gGluTess, GLU_TESS_END, (GLvoid (*) ()) &tessEndCallback);
     gluTessCallback(gGluTess, GLU_TESS_ERROR, (GLvoid (*) ()) &tessErrorCallback);
     gluTessCallback(gGluTess, GLU_TESS_COMBINE, (GLvoid (*) ()) &tessCombineCallback);
     gluTessCallback(gGluTess, GLU_TESS_EDGE_FLAG, (GLvoid (*) ()) &tessEdgeFlagCallback);
-    
+#else
+	gluTessCallback(gGluTess, GLU_TESS_VERTEX, (void(__stdcall*)()) &tessVertexCallback);
+	gluTessCallback(gGluTess, GLU_TESS_BEGIN, (void(__stdcall*)()) &tessBeginCallback);
+	gluTessCallback(gGluTess, GLU_TESS_END, (void(__stdcall*)()) &tessEndCallback);
+	gluTessCallback(gGluTess, GLU_TESS_ERROR, (void(__stdcall*)()) &tessErrorCallback);
+	gluTessCallback(gGluTess, GLU_TESS_COMBINE, (void(__stdcall*)()) &tessCombineCallback);
+	gluTessCallback(gGluTess, GLU_TESS_EDGE_FLAG, (void(__stdcall*)()) &tessEdgeFlagCallback);
+#endif
     gluTessProperty(gGluTess, GLU_TESS_WINDING_RULE, GLU_TESS_WINDING_POSITIVE);
     
     int i, n = (int)pLid.size();

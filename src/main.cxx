@@ -21,7 +21,7 @@
 
 #include "main.h"
 
-#include "binaryData.h"
+#include "data/binaryData.h"
 #include "userinterface/mainUI.h"
 #include "fileformats/IAFmtTexJpeg.h"
 #include "fileformats/IAFmtObj3ds.h"

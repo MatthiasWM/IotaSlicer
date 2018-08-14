@@ -51,7 +51,11 @@ Function {createIotaAppWindow()} {open
       } {
         MenuItem {} {
           label {About...}
-          xywh {0 0 100 20} deactivate
+          callback {static Fl_Window *aboutWindow = nullptr;
+if (!aboutWindow)
+  aboutWindow = createIotaAboutWindow();
+aboutWindow->show();}
+          xywh {0 0 100 20}
         }
       }
     }
@@ -95,7 +99,7 @@ glView->redraw();}
             Fl_Button {} {
               label SLC
               callback {gShowSlice = !gShowSlice;
-    glView->redraw();} selected
+    glView->redraw();}
               tooltip {Stop slicing the model} xywh {605 565 40 30}
             }
           }
@@ -103,6 +107,51 @@ glView->redraw();}
             xywh {645 33 150 562} resizable
           } {}
         }
+      }
+    }
+  }
+}
+
+data sHelpAbout {private local filename {../../html/helpAbout.html}
+}
+
+Function {createIotaAboutWindow()} {open
+} {
+  Fl_Window {} {
+    label {About Iota} open
+    xywh {643 176 600 400} type Double resizable modal visible
+  } {
+    Fl_Group {} {open
+      xywh {10 10 584 344} resizable
+    } {
+      Fl_Tabs {} {open
+        xywh {10 10 580 340} resizable
+      } {
+        Fl_Group {} {
+          label About open
+          xywh {10 35 580 315} box UP_BOX resizable
+        } {
+          Fl_Help_View {} {selected
+            xywh {10 35 580 315} resizable
+            code0 {o->value((const char*)sHelpAbout);}
+          }
+        }
+        Fl_Group {} {
+          label Licenses open
+          xywh {14 39 580 315} box UP_BOX hide
+        } {}
+      }
+    }
+    Fl_Group {} {open
+      xywh {10 360 580 28}
+    } {
+      Fl_Button {} {
+        label OK
+        callback {o->window()->hide();}
+        xywh {430 360 120 28}
+      }
+      Fl_Box {} {
+        xywh {10 360 418 28} resizable
       }
     }
   }
