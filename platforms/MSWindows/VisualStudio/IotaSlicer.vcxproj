@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -98,6 +98,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib;comctl32.lib;ws2_32.lib;glu32.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <CustomBuildStep>
       <Command>
@@ -156,8 +157,8 @@
     <CustomBuild Include="..\..\..\src\data\binaryData.fl">
       <FileType>Document</FileType>
       <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">setlocal
-cd $(ProjectDir)..\..\..\src\data
-$(ProjectDir)..\bin\fluid.exe -c binaryData.fl
+cd %(RelativeDir)
+$(ProjectDir)..\bin\fluid.exe -c %(Filename)%(Extension)
 if %errorlevel% neq 0 goto :cmEnd
 :cmEnd
 endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
@@ -165,13 +166,15 @@ endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
 exit /b %1
 :cmDone
 if %errorlevel% neq 0 goto :VCEnd</Command>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Generating binaryData.cpp and binaryData.h</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">C:\Users\matt\dev\IotaSlicer\src\data\binaryData.cpp;C:\Users\matt\dev\IotaSlicer\src\data\binaryData.h</Outputs>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">C:\Users\matt\dev\IotaSlicer\src\data\binaryData.fl;%(AdditionalInputs)</AdditionalInputs>
-      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Generating %(filename).cpp and %(filename).h</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(RootDir)%(Directory)%(Filename).cpp;%(RootDir)%(Directory)%(Filename).h</Outputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+      </AdditionalInputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</LinkObjects>
       <TreatOutputAsContent Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</TreatOutputAsContent>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">setlocal
-..\bin\Release\fluid.exe -c C:/Users/matt/dev/fltk-1.4.svn/test/CubeViewUI.fl
+cd %(RelativeDir)
+$(ProjectDir)..\bin\fluid.exe -c %(Filename)%(Extension)
 if %errorlevel% neq 0 goto :cmEnd
 :cmEnd
 endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
@@ -179,9 +182,10 @@ endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
 exit /b %1
 :cmDone
 if %errorlevel% neq 0 goto :VCEnd</Command>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Generating CubeViewUI.cxx, CubeViewUI.h</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">C:\Users\matt\dev\fltk-1.4.svn\build\VisualC\test\CubeViewUI.cxx;C:\Users\matt\dev\fltk-1.4.svn\build\VisualC\test\CubeViewUI.h</Outputs>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">C:/Users/matt/dev/fltk-1.4.svn/test/CubeViewUI.fl;C:\Users\matt\dev\fltk-1.4.svn\test\CubeViewUI.fl;%(AdditionalInputs)</AdditionalInputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Generating %(filename).cpp and %(filename).h</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(RootDir)%(Directory)%(Filename).cpp;%(RootDir)%(Directory)%(Filename).h</Outputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+      </AdditionalInputs>
       <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkObjects>
       <TreatOutputAsContent Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</TreatOutputAsContent>
     </CustomBuild>
@@ -194,20 +198,37 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     <CustomBuild Include="..\..\..\src\userinterface\mainUI.fl">
       <FileType>Document</FileType>
       <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">setlocal
-cd $(ProjectDir)..\..\..\src\userInterface
-$(ProjectDir)..\bin\fluid.exe -c mainUI.fl
-if %errorlevel% neq 0 goto :cmEnd
-:cmEnd
-endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
-:cmErrorLevel
-exit /b %1
-:cmDone
-if %errorlevel% neq 0 goto :VCEnd</Command>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Generating mainUI.cpp and mainUI.h</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">C:\Users\matt\dev\IotaSlicer\src\userInterface\mainUI.cpp;C:\Users\matt\dev\IotaSlicer\src\userInterface\mainUI.h</Outputs>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">C:\Users\matt\dev\IotaSlicer\src\userInterface\mainUI.fl;%(AdditionalInputs)</AdditionalInputs>
+            cd %(RelativeDir)
+            $(ProjectDir)..\bin\fluid.exe -c %(Filename)%(Extension)
+            if %errorlevel% neq 0 goto :cmEnd
+            :cmEnd
+            endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+            :cmErrorLevel
+            exit /b %1
+            :cmDone
+            if %errorlevel% neq 0 goto :VCEnd</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Generating %(filename).cpp and %(filename).h</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(RootDir)%(Directory)%(Filename).cpp;%(RootDir)%(Directory)%(Filename).h</Outputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+      </AdditionalInputs>
       <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</LinkObjects>
       <TreatOutputAsContent Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</TreatOutputAsContent>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">setlocal
+            cd %(RelativeDir)
+            $(ProjectDir)..\bin\fluid.exe -c %(Filename)%(Extension)
+            if %errorlevel% neq 0 goto :cmEnd
+            :cmEnd
+            endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+            :cmErrorLevel
+            exit /b %1
+            :cmDone
+            if %errorlevel% neq 0 goto :VCEnd</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Generating %(filename).cpp and %(filename).h</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(RootDir)%(Directory)%(Filename).cpp;%(RootDir)%(Directory)%(Filename).h</Outputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+      </AdditionalInputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkObjects>
+      <TreatOutputAsContent Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</TreatOutputAsContent>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>

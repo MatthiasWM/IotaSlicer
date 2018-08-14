@@ -115,7 +115,13 @@ glView->redraw();}
 data sHelpAbout {private local filename {../../html/helpAbout.html}
 }
 
+decl {char dummy1[4] = { 0 };} {private local
+}
+
 data sHelpLicenses {private local filename {../../html/helpLicenses.html}
+}
+
+decl {char dummy2[4] = { 0 };} {selected private local
 }
 
 Function {createIotaAboutWindow()} {open
@@ -131,7 +137,7 @@ Function {createIotaAboutWindow()} {open
         xywh {10 10 580 340} resizable
       } {
         Fl_Group {} {
-          label About open selected
+          label About open
           xywh {10 35 580 315} box UP_BOX resizable
         } {
           Fl_Help_View {} {

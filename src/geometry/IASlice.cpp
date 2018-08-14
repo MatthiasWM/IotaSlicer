@@ -87,12 +87,11 @@ void IASlice::clear()
  */
 void IASlice::drawLidEdge()
 {
-    int i, j, n = (int)pLid.size();
     glColor3f(0.8f, 1.0f, 1.0f);
     glBegin(GL_LINES);
     for (auto e: pLid) {
         if (e) {
-            for (j = 0; j < 2; ++j) {
+            for (int j = 0; j < 2; ++j) {
                 IAVertex *v = e->pVertex[j];
                 if (v) {
                     glTexCoord2dv(v->pTex.dataPointer());
