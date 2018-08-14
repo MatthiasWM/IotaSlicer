@@ -7,6 +7,9 @@
 #include "IAFmtObj3ds.h"
 
 #include "lib3ds.h"
+
+#ifdef __APPLE__
+
 #include "main.h"
 #include "../geometry/IAMesh.h"
 
@@ -202,3 +205,8 @@ void load3ds(const char *filename)
     lib3ds_file_free(f);
 }
 
+#else
+
+void load3ds(Lib3dsFile *f, Lib3dsMeshInstanceNode *node) { }
+
+#endif

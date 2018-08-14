@@ -1,3 +1,12 @@
 
-/platforms//MacOS/Iota.xcodeproj/project.xcworkspace/xcuserdata/matt.xcuserdatad
+/platforms/MacOS/Iota.xcodeproj/project.xcworkspace/xcuserdata/matt.xcuserdatad
 .DS_Store
+/platforms/MSWindows/VisualStudio/.vs
+/platforms/MSWindows/VisualStudio/*.user
+/platforms/MSWindows/VisualStudio/.vs
+/platforms/MSWindows/VisualStudio/Debug
+/platforms/MSWindows/VisualStudio/Release
+/src/data/binaryData.cpp
+/src/data/binaryData.h
+/src/userInterface/mainUI.cpp
+/src/userInterface/mainUI.h

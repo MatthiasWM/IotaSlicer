@@ -8,8 +8,8 @@
 #define MAIN_H
 
 #include <stdio.h>
-#include "IAMesh.h"
-#include "IASlice.h"
+#include "geometry/IAMesh.h"
+#include "geometry/IASlice.h"
 #include "printer/IAPrinter.h"
 
 extern class Fl_Window *gMainWindow;
