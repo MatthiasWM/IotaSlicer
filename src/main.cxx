@@ -59,23 +59,8 @@ void menuQuit()
 
 void sliceAll()
 {
-#if 1
-    gMeshSlice.generateFrom(gMeshList, zSlider1->value());
-#else
-    // start a new slice. A slice holds the information from all meshes.
-    gMeshSlice.clear();
-    // get the number of meshes in this model
-    int i, n = (int)gMeshList.size();
-    // loop through all meshes
-    for (i=0; i<n; i++) {
-        IAMesh *IAMesh = gMeshList[i];
-        // add all faces in a mesh that intersect with zMin. They will form the lower lid.
-        gMeshSlice.addZSlice(*IAMesh, zSlider1->value());
-        // use OpenGL to convert the sorted list of edges into a list of simple polygons
-        gMeshSlice.tesselate();
-    }
-    glView->redraw();
-#endif
+//    gMeshSlice.generateLidFrom(gMeshList, zSlider1->value());
+//    defer slicing until we actually need a to recreate the lid
 }
 
 int main (int argc, char **argv)

@@ -23,7 +23,8 @@ public:
     IASlice();
     virtual ~IASlice() override;
     virtual void clear() override;
-    void generateFrom(IAMeshList&, double z);
+    void generateLidFrom(IAMeshList&, double z);
+    void generateOutlineFrom(IAMeshList&, double z);
     void drawLidEdge();
     void tesselate();
     void addZSlice(const IAMesh&, double);
@@ -31,6 +32,7 @@ public:
     void addNextLidVertex(IATrianglePtr &IATriangle, ISVertexPtr &vCutA, int &edgeIndex, double zMin);
 
     IAEdgeList pLid;
+    double pCurrentZ = -1e9;
 };
 
 

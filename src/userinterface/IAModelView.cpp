@@ -130,6 +130,9 @@ void IAModelView::draw(IAMeshList *meshList, IASlice *meshSlice)
  */
 void IAModelView::draw()
 {
+    if (gShowSlice && gMeshSlice.pCurrentZ!=zSlider1->value()) {
+        gMeshSlice.generateLidFrom(gMeshList, zSlider1->value());
+    }
     static Fl_RGB_Image *lTexture = nullptr;
     static bool firstTime = true;
     if (firstTime) {
@@ -190,8 +193,8 @@ void IAModelView::draw()
     if (gShowSlice) {
         double zPlane = zSlider1->value();
         // draw the opaque lower half of the model
-        GLdouble equationLowerHalf[4] = { 0.0, 0.0, -1.0, zPlane };
-        GLdouble equationUpperHalf[4] = { 0.0, 0.0, 1.0, -zPlane };
+        GLdouble equationLowerHalf[4] = { 0.0, 0.0, -1.0, zPlane-0.05 };
+        GLdouble equationUpperHalf[4] = { 0.0, 0.0, 1.0, -zPlane+0.05 };
         glClipPlane(GL_CLIP_PLANE0, equationLowerHalf);
         glEnable(GL_CLIP_PLANE0);
         gMeshList.drawFlat(gShowTexture);
@@ -204,11 +207,11 @@ void IAModelView::draw()
         // FIXME: we do not need to tesselate at all!
         glDisable(GL_LIGHTING);
         glEnable(GL_TEXTURE_2D);
-        glLineWidth(2.0);
-        for (int n = 10; n>0; --n) {
-            gMeshList.shrinkBy(0.2*n);
+        glLineWidth(8.0);
+        for (int n = 20; n>0; --n) {
+            gMeshList.shrinkBy(0.1*n);
             IASlice meshSlice;
-            meshSlice.generateFrom(gMeshList, zSlider1->value());
+            meshSlice.generateOutlineFrom(gMeshList, zSlider1->value());
             draw(&gMeshList, &meshSlice);
         }
         gMeshList.shrinkBy(0.0);

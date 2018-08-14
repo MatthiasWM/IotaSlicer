@@ -36,8 +36,9 @@ IASlice::~IASlice()
 /**
  Create a lid by slicing all meshes at Z.
  */
-void IASlice::generateFrom(IAMeshList &meshList, double z)
+void IASlice::generateLidFrom(IAMeshList &meshList, double z)
 {
+    printf("Generate lid from mesh list at %g\n", z);
     // start a new slice. A slice holds the information from all meshes.
     clear();
     // get the number of meshes in this model
@@ -49,6 +50,21 @@ void IASlice::generateFrom(IAMeshList &meshList, double z)
         addZSlice(*mesh, z);
         // use OpenGL to convert the sorted list of edges into a list of simple polygons
         tesselate();
+    }
+}
+
+
+/**
+ Create a lid by slicing all meshes at Z.
+ */
+void IASlice::generateOutlineFrom(IAMeshList &meshList, double z)
+{
+//    printf("Generate outline from mesh list at %g\n", z);
+    clear();
+    int i, n = (int)meshList.size();
+    for (i=0; i<n; i++) {
+        IAMesh *mesh = meshList[i];
+        addZSlice(*mesh, z);
     }
 }
 
@@ -272,11 +288,11 @@ void IASlice::addFirstLidVertex(IATriangle *tri, double zMin)
             break;
         tri->pUsed = true;
     }
-    printf("%d edges linked\n", cc);
+//    printf("%d edges linked\n", cc);
     if (firstFace==tri) {
-        puts("It's a loop!");
+//        puts("It's a loop!");
     } else {
-        puts("It's NOT a loop!");
+//        puts("It's NOT a loop!");
     }
     pLid.push_back(0L);
 }
