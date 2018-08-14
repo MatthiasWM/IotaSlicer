@@ -31,6 +31,7 @@ extern float min(float a, float b);
 extern float max(float a, float b);
 
 extern void sliceAll();
+extern void menuWriteSlice();
 extern void menuQuit();
 
 const int IA_PROJECTION_FRONT       = 0;

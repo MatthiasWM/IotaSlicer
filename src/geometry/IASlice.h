@@ -31,6 +31,8 @@ public:
     void addFirstLidVertex(IATriangle *IATriangle, double zMin);
     void addNextLidVertex(IATrianglePtr &IATriangle, ISVertexPtr &vCutA, int &edgeIndex, double zMin);
 
+    void save(double z, const char *filename);
+
     IAEdgeList pLid;
     double pCurrentZ = -1e9;
 };

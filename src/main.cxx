@@ -50,6 +50,16 @@ double min(double a, double b) { return a<b?a:b; }
 double max(double a, double b) { return a>b?a:b; }
 
 
+/**
+ Experimental stuff.
+ */
+void menuWriteSlice()
+{
+    char buf[FL_PATH_MAX];
+    sprintf(buf, "%s/slice.jpg", getenv("HOME"));
+    gMeshSlice.save(zSlider1->value(), buf);
+}
+
 void menuQuit()
 {
     gMainWindow->hide();

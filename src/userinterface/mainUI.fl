@@ -22,9 +22,14 @@ Function {createIotaAppWindow()} {open
         xywh {0 0 100 20}
       } {
         MenuItem {} {
+          label {Write current Slice}
+          callback {menuWriteSlice();} selected
+          tooltip {Write to ~/slice.jpg} xywh {0 0 100 20} shortcut 0x400070 divider
+        }
+        MenuItem {} {
           label Quit
           callback {menuQuit();}
-          xywh {0 0 100 20} shortcut 0x400071
+          xywh {12 12 100 20} shortcut 0x400071
         }
       }
       Submenu {} {
@@ -121,7 +126,7 @@ decl {char dummy1[4] = { 0 };} {private local
 data sHelpLicenses {private local filename {../../html/helpLicenses.html}
 }
 
-decl {char dummy2[4] = { 0 };} {selected private local
+decl {char dummy2[4] = { 0 };} {private local
 }
 
 Function {createIotaAboutWindow()} {open
