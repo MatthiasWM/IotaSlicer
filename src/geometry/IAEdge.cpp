@@ -11,10 +11,17 @@
 #include "IATriangle.h"
 
 
+/**
+ Create an edge with no connections.
+ */
 IAEdge::IAEdge()
 {
 }
 
+
+/**
+ Return the vertex, that connects to the given triangle.
+ */
 IAVertex *IAEdge::vertex(int i, IATriangle *f)
 {
     if (pFace[0]==f) {
@@ -27,6 +34,12 @@ IAVertex *IAEdge::vertex(int i, IATriangle *f)
     }
 }
 
+
+/**
+ Find the intersection of this edge with a give Z plane.
+ \return a vector on this edge with interpolated texture coordinates, or null
+         if this edge does not cross the Z plane.
+ */
 IAVertex *IAEdge::findZ(double zMin)
 {
     IAVertex *v0 = pVertex[0], *v1 = pVertex[1];
@@ -50,10 +63,16 @@ IAVertex *IAEdge::findZ(double zMin)
         v2->pTex = vt0;
         return v2;
     } else {
-        return 0L;
+        return nullptr;
     }
 }
 
+
+/**
+ Return the other face of this edge, not the give one.
+ \return null, there is no other face, or if the given face is not part of
+         this edge.
+ */
 IATriangle *IAEdge::otherFace(IATriangle *f)
 {
     if (pFace[0]==f) {
@@ -66,6 +85,11 @@ IATriangle *IAEdge::otherFace(IATriangle *f)
     }
 }
 
+
+/**
+ Return the index of this edge in the edge list of the given face.
+ \return 0, 1, or 2, or -1 if the face is not connected to this edge.
+ */
 int IAEdge::indexIn(IATriangle *f)
 {
     if (f->pEdge[0]==this) return 0;
@@ -75,6 +99,10 @@ int IAEdge::indexIn(IATriangle *f)
     return -1;
 }
 
+
+/**
+ Return the number of faces connected to this edge.
+ */
 int IAEdge::nFaces()
 {
     int n = 0;

@@ -8,6 +8,10 @@
 #ifndef IA_VECTOR3D_H
 #define IA_VECTOR3D_H
 
+
+/**
+ A small class to handle vectors in 3D space.
+ */
 class IAVector3d
 {
 public:
@@ -22,13 +26,13 @@ public:
     IAVector3d& cross(const IAVector3d&);
     double normalize();
     void zero();
-    void write(double*);
+    void write(double*) const;
     void read(float*);
     void read(double*);
-    double length();
-    double x() { return pV[0]; }
-    double y() { return pV[1]; }
-    double z() { return pV[2]; }
+    double length() const;
+    double x() const { return pV[0]; }
+    double y() const { return pV[1]; }
+    double z() const { return pV[2]; }
     void set(double, double, double);
     void xRotate(double);
     void yRotate(double);
@@ -36,5 +40,6 @@ public:
 
     double pV[3] = { 0.0, 0.0, 0.0 };
 };
+
 
 #endif /* IA_VECTOR3D_H */

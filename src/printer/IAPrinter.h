@@ -9,6 +9,10 @@
 
 #include "../geometry/IAVector3d.h"
 
+
+/**
+ Manage different types of 3D printers.
+ */
 class IAPrinter
 {
 public:

@@ -12,6 +12,9 @@
 #include <vector>
 
 
+/**
+ A point in space that can be used by meshes, triangles, and edges.
+ */
 class IAVertex
 {
 public:
@@ -27,7 +30,7 @@ public:
     IAVector3d pInitialPosition;
     IAVector3d pPosition;
     IAVector3d pTex;
-    IAVector3d pNormal;
+    IAVector3d pNormal = { 1.0, 0.0, 0.0 };
     int pNNormal = 0;
 };
 

@@ -13,13 +13,20 @@
 #include <FL/glu.h>
 
 
-// M3D Crane
-//   Build Volume: 214 X 214 X 230 mm
+/**
+ Create a default printer.
 
+ For example, an M3D Crane:
+    Build Volume: 214 X 214 X 230 mm, bottom front left is 0
+ */
 IAPrinter::IAPrinter()
 {
 }
 
+
+/**
+ Draw a minimal shape representing the printer in the scene.
+ */
 void IAPrinter::draw()
 {
     // draw printing volume using OpenGL

@@ -14,12 +14,15 @@
 class IATriangle;
 
 
+/**
+ A mesh that represents a slice through another mesh at a give Z coordinate.
+ */
 class IASlice : public IAMesh
 {
 public:
     IASlice();
-    virtual ~IASlice();
-    virtual void clear();
+    virtual ~IASlice() override;
+    virtual void clear() override;
     void generateFrom(IAMeshList&, double z);
     void drawLidEdge();
     void tesselate();

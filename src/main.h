@@ -12,6 +12,8 @@
 #include "geometry/IASlice.h"
 #include "printer/IAPrinter.h"
 
+// TODO globals that we want to get rid of.
+
 extern class Fl_Window *gMainWindow;
 extern class Fl_Slider *zSlider1, *zSlider2;
 extern class Fl_RGB_Image *texture;

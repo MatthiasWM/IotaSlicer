@@ -13,6 +13,15 @@ class IAVertex;
 class IATriangle;
 class IAFace;
 
+
+/**
+ Represent the boundary where two triangles meet.
+
+ In a perfectly watertight mesh, every triangle has three connected triangles,
+ three edges, and every edge connects to this and one other triangle.
+
+ This class helps walking the mesh. It does not manage any faces or vertices.
+ */
 class IAEdge
 {
 public:

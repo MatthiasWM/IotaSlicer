@@ -12,7 +12,7 @@
 
 
 /**
- Load any image file as a texture.
+ Load a JPEG image from a file as the current texture.
  */
 void loadTexture(const char *filename)
 {
@@ -24,6 +24,10 @@ void loadTexture(const char *filename)
     }
 }
 
+
+/**
+ Load a JPEG image from memory as the current texture.
+ */
 void loadTexture(const char *name, unsigned char *imageDate)
 {
     Fl_JPEG_Image *img = new Fl_JPEG_Image(name, imageDate);

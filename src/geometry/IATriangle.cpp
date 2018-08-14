@@ -10,10 +10,17 @@
 #include "IAVertex.h"
 
 
+/**
+ Create an emoty triangle.
+ */
 IATriangle::IATriangle()
 {
 }
 
+
+/**
+ Change the numbering of vertices and edges in this triangle.
+ */
 void IATriangle::rotateVertices()
 {
     IAVertex *v = pVertex[0];
@@ -26,6 +33,10 @@ void IATriangle::rotateVertices()
     pEdge[2] = e;
 }
 
+
+/**
+ Print basic information about this triangle.
+ */
 void IATriangle::print()
 {
     printf("Face: \n");
@@ -34,6 +45,10 @@ void IATriangle::print()
     pVertex[2]->print();
 }
 
+
+/**
+ Return the number of points in this triangle that lay below a Z threshold.
+ */
 int IATriangle::pointsBelowZ(double zMin)
 {
     double z0 = pVertex[0]->pPosition.z();

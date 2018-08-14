@@ -14,39 +14,51 @@
 #include <FL/glu.h>
 
 
+/**
+ Create an empty mesh.
+ */
 IAMesh::IAMesh()
 {
 }
 
+
+/**
+ Clear all resources used by the mesh.
+ */
 void IAMesh::clear()
 {
-    int i, n = (int)edgeList.size();
-    for (i=0; i<n; i++) {
-        delete edgeList[i];
+    for (auto e: edgeList) {
+        delete e;
     }
     edgeList.clear();
-    n = (int)faceList.size();
-    for (i=0; i<n; i++) {
-        delete faceList[i];
+
+    for (auto f: faceList) {
+        delete f;
     }
     faceList.clear();
-    n = (int)vertexList.size();
-    for (i=0; i<n; i++) {
-        delete vertexList[i];
+
+    for (auto v: vertexList) {
+        delete v;
     }
     vertexList.clear();
 }
 
 
+/**
+ Move all vertices along the negative point normal, effectively shrining the mesh.
+ */
 void IAMesh::shrinkBy(double s)
 {
-    int i, n = (int)vertexList.size();
-    for (i=0; i<n; i++) {
-        vertexList[i]->shrinkBy(s);
+    for (auto v: vertexList) {
+        v->shrinkBy(s);
     }
 }
 
 
+/**
+ Various test that validate a watertight triangle mesh.
+ \todo This was written a long time ago and must be verified.
+ */
 bool IAMesh::validate()
 {
     if (faceList.size()>0 && edgeList.size()==0) {
@@ -114,11 +126,14 @@ bool IAMesh::validate()
     return true;
 }
 
+
 /**
  This function finds edges that have only a single face associated.
  It then adds a face to this edge and the next edge without a second face.
  If three edges are connected and none has a second face, a new triangle
  will fill the hole.
+
+ \todo: verify that this is robust
  */
 void IAMesh::fixHoles()
 {
@@ -131,6 +146,12 @@ void IAMesh::fixHoles()
     }
 }
 
+
+/**
+ Add a triangle in an attempt to fill a hole in the mesh.
+
+ \todo: verify that this is robust
+ */
 void IAMesh::fixHole(IAEdge *e)
 {
     printf("Fixing a hole...\n");
@@ -195,6 +216,13 @@ void IAMesh::fixHole(IAEdge *e)
     }
 }
 
+
+/**
+ Add a given face to the mesh.
+ \todo we should probably check if this triangle already exists
+ \todo make sure we do not create duplicate edges
+ \todo make sure that we also do not add duplicate points
+ */
 void IAMesh::addFace(IATriangle *newFace)
 {
     newFace->pEdge[0] = addEdge(newFace->pVertex[0], newFace->pVertex[1], newFace);
@@ -203,6 +231,11 @@ void IAMesh::addFace(IATriangle *newFace)
     faceList.push_back(newFace);
 }
 
+
+/**
+ Create a new edge and add it to this mesh.
+ \todo check for duplicates
+ */
 IAEdge *IAMesh::addEdge(IAVertex *v0, IAVertex *v1, IATriangle *face)
 {
     IAEdge *e = findEdge(v0, v1);
@@ -218,11 +251,13 @@ IAEdge *IAMesh::addEdge(IAVertex *v0, IAVertex *v1, IATriangle *face)
     return e;
 }
 
+
+/**
+ Find an edge that connects two vertices.
+ */
 IAEdge *IAMesh::findEdge(IAVertex *v0, IAVertex *v1)
 {
-    int i, n = (int)edgeList.size();
-    for (i=0; i<n; i++) {
-        IAEdge *e = edgeList.at(i);
+    for (auto e: edgeList) {
         IAVertex *ev0 = e->pVertex[0];
         IAVertex *ev1 = e->pVertex[1];
         if ((ev0==v0 && ev1==v1)||(ev0==v1 && ev1==v0))
@@ -231,29 +266,35 @@ IAEdge *IAMesh::findEdge(IAVertex *v0, IAVertex *v1)
     return 0;
 }
 
+
+/**
+ Set all face normal counts to 0.
+ */
 void IAMesh::clearFaceNormals()
 {
-    int i, n = (int)faceList.size();
-    for (i=0; i<n; i++) {
-        IATriangle *t = faceList.at(i);
+    for (auto t: faceList) {
         t->pNNormal = 0;
     }
 }
 
+
+/**
+ Set all vertex normals to 0.
+ */
 void IAMesh::clearVertexNormals()
 {
-    int i, n = (int)vertexList.size();
-    for (i=0; i<n; i++) {
-        IAVertex *v = vertexList.at(i);
+    for (auto v: vertexList) {
         v->pNNormal = 0;
     }
 }
 
+
+/**
+ Calculate all face normals using the cross product of the vectors making up the triangle.
+ */
 void IAMesh::calculateFaceNormals()
 {
-    int i, n = (int)faceList.size();
-    for (i=0; i<n; i++) {
-        IATriangle *t = faceList.at(i);
+    for (auto t: faceList) {
         IAVector3d p0(t->pVertex[0]->pPosition);
         IAVector3d p1(t->pVertex[1]->pPosition);
         IAVector3d p2(t->pVertex[2]->pPosition);
@@ -266,30 +307,33 @@ void IAMesh::calculateFaceNormals()
     }
 }
 
+
+/**
+ Calculate all vertex normals by averaging the face normals of all connected triangles.
+ */
 void IAMesh::calculateVertexNormals()
 {
-    int i, n = (int)faceList.size();
-    for (i=0; i<n; i++) {
-        IATriangle *t = faceList.at(i);
+    for (auto t: faceList) {
         IAVector3d n(t->pNormal);
         t->pVertex[0]->addNormal(n);
         t->pVertex[1]->addNormal(n);
         t->pVertex[2]->addNormal(n);
     }
-    n = (int)vertexList.size();
-    for (i=0; i<n; i++) {
-        IAVertex *v = vertexList.at(i);
+    for (auto v: vertexList) {
         v->averageNormal();
     }
 }
 
-void IAMesh::drawGouraud() {
-    int i, j, n = (int)faceList.size();
+
+/**
+ Draw the mesh using the vertex normals to create Gouraud shading.
+ */
+void IAMesh::drawGouraud()
+{
     glColor3f(1.0f, 1.0f, 1.0f);
     glBegin(GL_TRIANGLES);
-    for (i = 0; i < n; i++) {
-        IATriangle *t = faceList[i];
-        for (j = 0; j < 3; ++j) {
+    for (auto t: faceList) {
+        for (int j = 0; j < 3; ++j) {
             IAVertex *v = t->pVertex[j];
             glNormal3dv(v->pNormal.dataPointer());
             glTexCoord2dv(v->pTex.dataPointer());
@@ -299,14 +343,17 @@ void IAMesh::drawGouraud() {
     glEnd();
 }
 
-void IAMesh::drawFlat(float r, float g, float b, float a) {
-    int i, j, n = (int)faceList.size();
+
+/**
+ Draw the mesh using the face normals to create flat shading.
+ */
+void IAMesh::drawFlat(float r, float g, float b, float a)
+{
     glColor4f(r, g, b, a);
     glBegin(GL_TRIANGLES);
-    for (i = 0; i < n; i++) {
-        IATriangle *t = faceList[i];
+    for (auto t: faceList) {
         glNormal3dv(t->pNormal.dataPointer());
-        for (j = 0; j < 3; ++j) {
+        for (int j = 0; j < 3; ++j) {
             IAVertex *v = t->pVertex[j];
             glTexCoord2dv(v->pTex.dataPointer());
             glVertex3dv(v->pPosition.dataPointer());
@@ -315,35 +362,38 @@ void IAMesh::drawFlat(float r, float g, float b, float a) {
     glEnd();
 }
 
-void IAMesh::drawShrunk(unsigned int color, double scale) {
-    int i, j, n = (int)faceList.size();
-    unsigned char r, g, b;
-    Fl::get_color(color, r, g, b);
-    glColor3f(r/266.0, g/266.0, b/266.0);
-    glBegin(GL_TRIANGLES);
-    for (i = 0; i < n; i++) {
-        IATriangle *t = faceList[i];
-        glNormal3dv(t->pNormal.dataPointer());
-        for (j = 0; j < 3; ++j) {
-            IAVertex *v = t->pVertex[j];
-            IAVector3d p = v->pPosition;
-            IAVector3d n = v->pNormal;
-            n *= scale;
-            p -= n;
-            glTexCoord2dv(v->pTex.dataPointer());
-            glVertex3dv(p.dataPointer());
-        }
-    }
-    glEnd();
-}
 
+//void IAMesh::drawShrunk(unsigned int color, double scale) {
+//    int i, j, n = (int)faceList.size();
+//    unsigned char r, g, b;
+//    Fl::get_color(color, r, g, b);
+//    glColor3f(r/266.0, g/266.0, b/266.0);
+//    glBegin(GL_TRIANGLES);
+//    for (i = 0; i < n; i++) {
+//        IATriangle *t = faceList[i];
+//        glNormal3dv(t->pNormal.dataPointer());
+//        for (j = 0; j < 3; ++j) {
+//            IAVertex *v = t->pVertex[j];
+//            IAVector3d p = v->pPosition;
+//            IAVector3d n = v->pNormal;
+//            n *= scale;
+//            p -= n;
+//            glTexCoord2dv(v->pTex.dataPointer());
+//            glVertex3dv(p.dataPointer());
+//        }
+//    }
+//    glEnd();
+//}
+
+
+/**
+ Draw all the edges in the mesh.
+ */
 void IAMesh::drawEdges() {
-    int i, j, n = (int)edgeList.size();
     glColor3f(0.8f, 1.0f, 1.0f);
     glBegin(GL_LINES);
-    for (i = 0; i < n; i++) {
-        IAEdge *e = edgeList[i];
-        for (j = 0; j < 2; ++j) {
+    for (auto e: edgeList) {
+        for (int j = 0; j < 2; ++j) {
             IAVertex *v = e->pVertex[j];
             glTexCoord2dv(v->pTex.dataPointer());
             glVertex3dv(v->pPosition.dataPointer());
@@ -352,6 +402,10 @@ void IAMesh::drawEdges() {
     glEnd();
 }
 
+
+/**
+ Calculate new texture coordinates for all vertices.
+ */
 void IAMesh::projectTexture(double w, double h, int type)
 {
     int i, n = (int)vertexList.size();
@@ -365,15 +419,34 @@ void IAMesh::projectTexture(double w, double h, int type)
 
 // -----------------------------------------------------------------------------
 
+
+/**
+ Delete all meshes in the list.
+ */
+IAMeshList::~IAMeshList()
+{
+    for (auto m: meshList) {
+        delete m;
+    }
+}
+
+
+/**
+ Shrink all meshes along the point normals.
+ */
 void IAMeshList::shrinkBy(double s)
 {
-    int i, n = size();
-    for (i=0; i<n; i++) {
-        IAMesh *m = meshList[i];
+    for (auto m: meshList) {
         m->shrinkBy(s);
     }
 }
 
+
+/**
+ Draw all meshes with a flat shader
+ \param textured if true, activate OpenGL texture rendering
+ \param r, g, b, a the base color of the meshes, or white if the textures are enabled
+ */
 void IAMeshList::drawFlat(bool textured, float r, float g, float b, float a)
 {
     if (textured) {
@@ -382,9 +455,7 @@ void IAMeshList::drawFlat(bool textured, float r, float g, float b, float a)
     } else {
         glDisable(GL_TEXTURE_2D);
     }
-    int i, n = size();
-    for (i=0; i<n; i++) {
-        IAMesh *m = meshList[i];
+    for (auto m: meshList) {
         m->drawFlat(r, g, b, a);
     }
     if (textured) {
@@ -392,22 +463,25 @@ void IAMeshList::drawFlat(bool textured, float r, float g, float b, float a)
     }
 }
 
+
+/**
+ Draw all meshes with a Gouraud shader.
+ */
 void IAMeshList::drawGouraud()
 {
-    int i, n = size();
-    for (i=0; i<n; i++) {
-        IAMesh *m = meshList[i];
-        glDepthRange (0.1, 1.0);
+    for (auto m: meshList) {
+        // glDepthRange (0.1, 1.0);
         m->drawGouraud();
     }
 }
 
 
+/**
+ Calculate new texture coordinates for all meshes.
+ */
 void IAMeshList::projectTexture(double w, double h, int type)
 {
-    int i, n = size();
-    for (i=0; i<n; i++) {
-        IAMesh *m = meshList[i];
+    for (auto m: meshList) {
         m->projectTexture(w, h, type);
     }
 }

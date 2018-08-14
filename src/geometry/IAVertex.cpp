@@ -10,10 +10,17 @@
 #include "main.h"
 
 
+/**
+ Create a vertex at 0, 0, 0.
+ */
 IAVertex::IAVertex()
 {
 }
 
+
+/**
+ Dublicate another vertex.
+ */
 IAVertex::IAVertex(const IAVertex *v)
 {
     pInitialPosition = v->pInitialPosition;
@@ -23,6 +30,13 @@ IAVertex::IAVertex(const IAVertex *v)
     pNNormal = v->pNNormal;
 }
 
+
+/**
+ Add a vector to the current normal and increase the normal count.
+ This method is used to calculate the average of the normals of all
+ connected triangles.
+ \see IAVertex::averageNormal()
+ */
 void IAVertex::addNormal(const IAVector3d &v)
 {
     IAVector3d vn(v);
@@ -31,6 +45,11 @@ void IAVertex::addNormal(const IAVector3d &v)
     pNNormal++;
 }
 
+
+/**
+ Divide the normal vector by the number of normals we accumulated.
+ \see IAVertex::addNormal(const IAVector3d &v)
+ */
 void IAVertex::averageNormal()
 {
     if (pNNormal>0) {
@@ -39,11 +58,22 @@ void IAVertex::averageNormal()
     }
 }
 
+
+/**
+ Print the position of a vertex.
+ */
 void IAVertex::print()
 {
     printf("v=[%g, %g, %g]\n", pPosition.x(), pPosition.y(), pPosition.z());
 }
 
+
+/**
+ Move a vertex from its original position along its inverted normal vector.
+ Called for every vertex in a mesh, this function effectively shrinks the mesh.
+ Make sure that the initial position is correct, and that all normal
+ were calculated.
+ */
 void IAVertex::shrinkBy(double s)
 {
     pPosition.set(
@@ -53,6 +83,10 @@ void IAVertex::shrinkBy(double s)
                   );
 }
 
+
+/**
+ Project a texture onto this vertex in a mesh.
+ */
 void IAVertex::projectTexture(double w, double h, int type)
 {
     switch (type) {

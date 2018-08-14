@@ -16,15 +16,26 @@
 GLUtesselator *gGluTess = nullptr;
 
 
+/**
+ Create an emoty slice.
+ */
 IASlice::IASlice()
 {
 }
 
+
+/**
+ Free all resources.
+ */
 IASlice::~IASlice()
 {
     clear();
 }
 
+
+/**
+ Create a lid by slicing all meshes at Z.
+ */
 void IASlice::generateFrom(IAMeshList &meshList, double z)
 {
     // start a new slice. A slice holds the information from all meshes.
@@ -33,37 +44,43 @@ void IASlice::generateFrom(IAMeshList &meshList, double z)
     int i, n = (int)meshList.size();
     // loop through all meshes
     for (i=0; i<n; i++) {
-        IAMesh *IAMesh = meshList[i];
+        IAMesh *mesh = meshList[i];
         // add all faces in a mesh that intersect with zMin. They will form the lower lid.
-        addZSlice(*IAMesh, z);
+        addZSlice(*mesh, z);
         // use OpenGL to convert the sorted list of edges into a list of simple polygons
         tesselate();
     }
 }
 
+
+/**
+ Free all resources.
+ */
 void IASlice::clear()
 {
-    int i, n = (int)pLid.size();
-    for (i=0; i<n; i++) {
-        delete pLid[i];
+    for (auto e: pLid) {
+        delete e;
     }
     pLid.clear();
     IAMesh::clear();
 }
 
+
+/**
+ Draw the edge where the slice intersects the model.
+ */
 void IASlice::drawLidEdge()
 {
     int i, j, n = (int)pLid.size();
     glColor3f(0.8f, 1.0f, 1.0f);
     glBegin(GL_LINES);
-    for (i = 0; i < n; i++) {
-        IAEdge *IAEdge = pLid[i];
-        if (IAEdge) {
+    for (auto e: pLid) {
+        if (e) {
             for (j = 0; j < 2; ++j) {
-                IAVertex *IAVertex = IAEdge->pVertex[j];
-                if (IAVertex) {
-                    glTexCoord2dv(IAVertex->pTex.dataPointer());
-                    glVertex3dv(IAVertex->pPosition.dataPointer());
+                IAVertex *v = e->pVertex[j];
+                if (v) {
+                    glTexCoord2dv(v->pTex.dataPointer());
+                    glVertex3dv(v->pPosition.dataPointer());
                 }
             }
         }
@@ -72,6 +89,9 @@ void IASlice::drawLidEdge()
 }
 
 
+/*
+ Tesselation magic, better leave untouched.
+ */
 int tessVertexCount = 0;
 IAVertex *tessV0, *tessV1, *tessV2;
 
@@ -129,9 +149,13 @@ void __stdcall tessErrorCallback(GLenum errorCode)
     fprintf (stderr, "Tessellation Error: %s\n", estring);
 }
 
-// http://www.cs.man.ac.uk/~toby/alan/software/
-// http://www.flipcode.com/archives/Efficient_Polygon_Triangulation.shtml
-// https://github.com/greenm01/poly2tri
+
+/**
+ Fill the sliced outline with triangles, considering cocave polygons and holes.
+ \todo http://www.cs.man.ac.uk/~toby/alan/software/
+ \todo http://www.flipcode.com/archives/Efficient_Polygon_Triangulation.shtml
+ \todo https://github.com/greenm01/poly2tri
+ */
 void IASlice::tesselate()
 {
     if (!gGluTess)
@@ -210,6 +234,7 @@ void IASlice::addNextLidVertex(IATrianglePtr &IATriangle, ISVertexPtr &vCutA, in
     edgeIndex = eCutB->indexIn(IATriangle);
 }
 
+
 /*
  Create the edge that cuts this triangle in half.
  
@@ -256,6 +281,12 @@ void IASlice::addFirstLidVertex(IATriangle *tri, double zMin)
     pLid.push_back(0L);
 }
 
+
+/**
+ Create an edge list where the slice intersects with the mesh.
+ The egde list runs clockwise for a connected outline, and counterclockwise for
+ holes. Every outline loop can followed by a null ptr and more outlines.
+ */
 void IASlice::addZSlice(const IAMesh &m, double zMin)
 {
     // Get the number of triangles in this mesh

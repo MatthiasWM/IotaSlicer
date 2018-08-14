@@ -12,6 +12,9 @@
 
 #include <stdio.h>
 
+/**
+ Get a LSB first 16-bit word from a file.
+ */
 int getShort(FILE *f) {
     int ret = 0;
     ret |= fgetc(f);
@@ -19,6 +22,10 @@ int getShort(FILE *f) {
     return ret;
 }
 
+
+/**
+ Get a LSB first 16-bit word from memory.
+ */
 int getShort(const unsigned char *&d) {
     int ret = 0;
     ret |= *d++;
@@ -26,6 +33,10 @@ int getShort(const unsigned char *&d) {
     return ret;
 }
 
+
+/**
+ Get a LSB first 32-bit word from a file.
+ */
 int getInt(FILE *f) {
     int ret = 0;
     ret |= fgetc(f);
@@ -35,6 +46,10 @@ int getInt(FILE *f) {
     return ret;
 }
 
+
+/**
+ Get a LSB first 32-bit word from memory.
+ */
 int getInt(const unsigned char *&d) {
     int ret = 0;
     ret |= *d++;
@@ -44,18 +59,34 @@ int getInt(const unsigned char *&d) {
     return ret;
 }
 
+
+/**
+ Get a 32-bit float from a file.
+ */
 float getFloat(FILE *f) {
     float ret;
     fread(&ret, 4, 1, f);
     return ret;
 }
 
+
+/**
+ Get a 32-bit float from memory.
+ */
 float getFloat(const unsigned char *&d) {
     float ret = *(const float*)d;
     d+=4;
     return ret;
 }
 
+
+/**
+ Add a point to a mesh, avoiding duplicates.
+ \todo: this should be a function of the mesh or its vertex list
+ \todo: this must be accelerated by sorting vertices or better, using a map
+ \todo: there should probably be a minimal tollerance when comparinf doubles!
+ \return the index of the point in the mesh
+ */
 int addPoint(IAMesh *IAMesh, float x, float y, float z)
 {
     int i, n = (int)IAMesh->vertexList.size();
@@ -75,7 +106,11 @@ int addPoint(IAMesh *IAMesh, float x, float y, float z)
 }
 
 
-// STL triangles ar CCW, normals are pointing outward
+/**
+ Load a binary STL file fram a chunk of memory.
+
+ STL triangles ar CCW, normals are pointing outward
+ */
 void loadStl(const unsigned char *d) {
     d+=0x50;
     IAMesh *msh = new IAMesh();
@@ -142,7 +177,7 @@ void loadStl(const unsigned char *d) {
 
 
 /**
- Load a single node from a binary stl file.
+ Load a binary STL file fram a chunk of a file.
  */
 void loadStl(const char *filename) {
     int i;
@@ -193,9 +228,7 @@ void loadStl(const char *filename) {
     // TODO: fix seams
     // TODO: fix zero size holes
     // TODO: fix degenrate triangles
-#ifndef M_XYZ
     msh->fixHoles();
-#endif
     msh->validate();
 
     msh->clearNormals();
