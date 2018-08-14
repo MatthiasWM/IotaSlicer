@@ -332,6 +332,7 @@ void IASlice::addZSlice(const IAMesh &m, double zMin)
 }
 
 
+#if 0
 
 #include <stdio.h>
 //#include "machine.h"
@@ -387,6 +388,7 @@ int writejpeg(char * name, int xres, int yres, unsigned char *imgdata) {
     return 0; /* No fatal errors */
 }
 
+#endif
 
 extern "C" int potrace_main(unsigned char *pixels256x256);
 
@@ -471,7 +473,7 @@ void IASlice::save(double z, const char *filename)
     //pixels 0, 1, 2 should be white
     //pixel 4 should be black
 
-    writejpeg((char*)filename, 256, 256, (unsigned char *)pixels);
+//    writejpeg((char*)filename, 256, 256, (unsigned char *)pixels);
 
     potrace_main((unsigned char *)pixels);
 
