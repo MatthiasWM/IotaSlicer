@@ -73,6 +73,9 @@ void sliceAll()
 //    defer slicing until we actually need a to recreate the lid
 }
 
+
+
+
 int main (int argc, char **argv)
 {
     // TODO: remember the window position and size in the preferences

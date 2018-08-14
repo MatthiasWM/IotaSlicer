@@ -7,7 +7,7 @@
 
 #include "IASlice.h"
 
-#include "main.h"
+#include "../main.h"
 #include "IAMesh.h"
 #include "../userinterface/mainUI.h"
 
@@ -388,6 +388,9 @@ int writejpeg(char * name, int xres, int yres, unsigned char *imgdata) {
 }
 
 
+extern "C" int potrace_main(unsigned char *pixels256x256);
+
+
 void IASlice::save(double z, const char *filename)
 {
     const int w = 800, h = 600;
@@ -450,13 +453,13 @@ void IASlice::save(double z, const char *filename)
     //**************************
     //RenderATriangle, {0.0, 0.0}, {256.0, 0.0}, {256.0, 256.0}
     //Read http://www.opengl.org/wiki/VBO_-_just_examples
-    glColor3f(1.0, 0.5, 0.5);
-    glBegin(GL_POLYGON);
-    glVertex3f(-10.0, -10.0, 0.0);
-    glVertex3f(-10.0,  10.0, 0.0);
-    glVertex3f( 10.0,  10.0, 0.0);
-    glVertex3f( 10.0, -10.0, 0.0);
-    glEnd();
+//    glColor3f(1.0, 0.5, 0.5);
+//    glBegin(GL_POLYGON);
+//    glVertex3f(-10.0, -10.0, 0.0);
+//    glVertex3f(-10.0,  10.0, 0.0);
+//    glVertex3f( 10.0,  10.0, 0.0);
+//    glVertex3f( 10.0, -10.0, 0.0);
+//    glEnd();
     this->drawLidEdge();
     // render...
 
@@ -469,6 +472,10 @@ void IASlice::save(double z, const char *filename)
     //pixel 4 should be black
 
     writejpeg((char*)filename, 256, 256, (unsigned char *)pixels);
+
+    potrace_main((unsigned char *)pixels);
+
+
     //----------------
     //Bind 0, which means render to back buffer
     glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
