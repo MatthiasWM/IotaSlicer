@@ -1,0 +1,158 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="src">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="src\printer">
+      <UniqueIdentifier>{1a2c747e-9a82-41c1-ad25-901075f0a367}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\geometry">
+      <UniqueIdentifier>{c49362c6-655a-4751-b98c-8e221a986b2c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\fileformats">
+      <UniqueIdentifier>{9afd96bc-d90d-44a8-9b96-3f0b53448f9d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\data">
+      <UniqueIdentifier>{9b69a912-73df-403e-832c-c5951991b3d8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\userInterface">
+      <UniqueIdentifier>{5d7f4986-bd29-4117-9b74-1432a7b61d38}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="libs">
+      <UniqueIdentifier>{2f67ad00-e7bd-467f-b0b2-acedc3ff11c0}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\src\main.cxx">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\geometry\IAEdge.cpp">
+      <Filter>src\geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\geometry\IAMesh.cpp">
+      <Filter>src\geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\geometry\IASlice.cpp">
+      <Filter>src\geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\geometry\IATriangle.cpp">
+      <Filter>src\geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\geometry\IAVector3d.cpp">
+      <Filter>src\geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\geometry\IAVertex.cpp">
+      <Filter>src\geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\fileformats\IAFmtObj3ds.cxx">
+      <Filter>src\fileformats</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\fileformats\IAFmtObjStl.cxx">
+      <Filter>src\fileformats</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\fileformats\IAFmtTexJpeg.cxx">
+      <Filter>src\fileformats</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\printer\IAPrinter.cpp">
+      <Filter>src\printer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\userinterface\IACamera.cpp">
+      <Filter>src\userInterface</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\userinterface\IAModelView.cpp">
+      <Filter>src\userInterface</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\src\main.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\geometry\IAEdge.h">
+      <Filter>src\geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\geometry\IAMesh.h">
+      <Filter>src\geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\geometry\IASlice.h">
+      <Filter>src\geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\geometry\IATriangle.h">
+      <Filter>src\geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\geometry\IAVector3d.h">
+      <Filter>src\geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\geometry\IAVertex.h">
+      <Filter>src\geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\fileformats\IAFmtObj3ds.h">
+      <Filter>src\fileformats</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\fileformats\IAFmtObjStl.h">
+      <Filter>src\fileformats</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\fileformats\IAFmtTexJpeg.h">
+      <Filter>src\fileformats</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\fileformats\lib3ds.h">
+      <Filter>src\fileformats</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\printer\IAPrinter.h">
+      <Filter>src\printer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\userinterface\IACamera.h">
+      <Filter>src\userInterface</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\userinterface\IAModelView.h">
+      <Filter>src\userInterface</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\..\src\UserInterface.fl">
+      <Filter>src</Filter>
+    </None>
+    <None Include="..\..\..\src\data\binaryData.fl">
+      <Filter>src\data</Filter>
+    </None>
+    <None Include="..\..\..\src\data\suzanne.stl">
+      <Filter>src\data</Filter>
+    </None>
+    <None Include="..\..\..\src\data\xyz.stl">
+      <Filter>src\data</Filter>
+    </None>
+    <None Include="..\..\..\src\userinterface\mainUI.fl">
+      <Filter>src\userInterface</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\..\..\src\data\testcard1024.jpg">
+      <Filter>src\data</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="..\lib\fltk.lib">
+      <Filter>libs</Filter>
+    </Library>
+    <Library Include="..\lib\fltk_gl.lib">
+      <Filter>libs</Filter>
+    </Library>
+    <Library Include="..\lib\fltk_images.lib">
+      <Filter>libs</Filter>
+    </Library>
+    <Library Include="..\lib\fltk_jpeg.lib">
+      <Filter>libs</Filter>
+    </Library>
+    <Library Include="..\lib\fltk_png.lib">
+      <Filter>libs</Filter>
+    </Library>
+    <Library Include="..\lib\fltk_z.lib">
+      <Filter>libs</Filter>
+    </Library>
+  </ItemGroup>
+</Project>
