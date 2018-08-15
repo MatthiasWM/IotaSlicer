@@ -67,21 +67,22 @@ aboutWindow->show();}
         }
       }
     }
-    Fl_Group {} {open selected
+    Fl_Group {} {open
       xywh {0 28 800 572} resizable
     } {
       Fl_Group glView {open
-        xywh {0 28 604 572} resizable
+        xywh {0 28 600 572} resizable
         class IAModelView
       } {
         Fl_Box {} {
+          comment {Placeholder to sneakily call begin()}
           xywh {24 52 28 28} hide
           code3 {glView->begin();}
         }
-        Fl_Group {} {open
-          xywh {0 28 604 572}
-          code0 {// o->parent()->remove(o); glView->add(o); glView->resizable(o);}
-          code1 {o->resize(0, 0, glView->w(), glView->h());}
+        Fl_Group {} {open selected
+          xywh {0 28 600 572}
+          code0 {// o->parent()->remove(o); glView->add(o);}
+          code1 {o->resize(0, 0, glView->w(), glView->h());  glView->resizable(o);}
         } {
           Fl_Group {} {open
             xywh {10 38 35 552}
@@ -102,6 +103,30 @@ glView->redraw();}
             }
             Fl_Box {} {
               xywh {10 104 35 452} resizable
+            }
+          }
+          Fl_Group {} {open
+            xywh {48 38 504 552} resizable
+          } {}
+          Fl_Group {} {open
+            xywh {555 38 35 552}
+          } {
+            Fl_Button {} {
+              label prsp
+              callback {glView->setPerspectiveView();
+glView->redraw();}
+              xywh {555 38 35 25} selection_color 236
+              class IAGLButton
+            }
+            Fl_Button {} {
+              label top
+              callback {glView->setTopView();
+glView->redraw();}
+              xywh {555 73 35 25} selection_color 236
+              class IAGLButton
+            }
+            Fl_Box {} {
+              xywh {555 104 35 452} resizable
             }
           }
         }

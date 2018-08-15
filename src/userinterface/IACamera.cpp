@@ -21,13 +21,28 @@
 #endif
 
 
+/**
+ * Create a camera superclass.
+ */
 IACamera::IACamera(IAModelView *view)
 :   pView( view )
 {
 }
 
 
-void IACamera::rotate(double dx, double dy)
+/**
+ * Create a simple perspective camera.
+ */
+IAPerspectiveCamera::IAPerspectiveCamera(IAModelView *view)
+:   super( view )
+{
+}
+
+
+/**
+ * User wants to rotate the camera.
+ */
+void IAPerspectiveCamera::rotate(double dx, double dy)
 {
     pZRotation += dx/100.0;
     pXRotation += dy/100.0;
@@ -40,7 +55,10 @@ void IACamera::rotate(double dx, double dy)
 }
 
 
-void IACamera::drag(double dx, double dy)
+/**
+ * User wants to drag the camera around.
+ */
+void IAPerspectiveCamera::drag(double dx, double dy)
 {
     IAVector3d offset(0.5*dx, -0.5*dy, 0);
     offset.xRotate(pXRotation);
@@ -49,14 +67,20 @@ void IACamera::drag(double dx, double dy)
 }
 
 
-void IACamera::dolly(double dx, double dy)
+/**
+ * User wants to get closer to the point of interest.
+ */
+void IAPerspectiveCamera::dolly(double dx, double dy)
 {
     pDistance = pDistance * (1.0+0.01*dy);
     if (pDistance<5.0) pDistance = 5.0;
 }
 
 
-void IACamera::draw()
+/**
+ * Emit OpenGL commands to load the viewing and model matrices.
+ */
+void IAPerspectiveCamera::draw()
 {
     glMatrixMode (GL_PROJECTION);
     glLoadIdentity();
@@ -78,5 +102,61 @@ void IACamera::draw()
               0.0, 1.0, 0.0);
 
     glRotated(-90, 1.0, 0.0, 0.0);
+}
+
+
+
+/**
+ * Create a simple perspective camera.
+ */
+IAOrthoCamera::IAOrthoCamera(IAModelView *view, int direction)
+:   super( view )
+{
+}
+
+
+/**
+ * User wants to rotate the camera.
+ */
+void IAOrthoCamera::rotate(double dx, double dy)
+{
+    // Do we want to allow rotation?
+}
+
+
+/**
+ * User wants to drag the camera around.
+ */
+void IAOrthoCamera::drag(double dx, double dy)
+{
+    IAVector3d offset(-dx, dy, 0);
+    offset *= 2.0*pZoom/pView->w();
+    pInterest += offset;
+}
+
+
+/**
+ * User wants to get closer to the point of interest.
+ */
+void IAOrthoCamera::dolly(double dx, double dy)
+{
+    pZoom = pZoom * (1.0+0.01*dy);
+    if (pZoom<1.0) pZoom = 1.0;
+    if (pZoom>2.0*gPrinter.pBuildVolumeRadius) pZoom = 2.0*gPrinter.pBuildVolumeRadius;
+}
+
+
+/**
+ * Emit OpenGL commands to load the viewing and model matrices.
+ */
+void IAOrthoCamera::draw()
+{
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    double aspect = (double(pView->pixel_w()))/(double(pView->pixel_h()));
+    glOrtho(-pZoom*aspect, pZoom*aspect, -pZoom, pZoom, -gPrinter.pBuildVolumeRadius, gPrinter.pBuildVolumeRadius);
+    glMatrixMode (GL_MODELVIEW);
+    glLoadIdentity();
+    glTranslated(pInterest.x(), pInterest.y(), pInterest.z());
 }
 

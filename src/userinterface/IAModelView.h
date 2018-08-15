@@ -26,6 +26,9 @@ public:
     IAModelView(int x, int y, int w, int h, const char *l=0);
     ~IAModelView() override;
 
+    void setTopView();
+    void setPerspectiveView();
+
 protected:
     int handle(int event) override;
     void draw() override;
@@ -35,7 +38,9 @@ protected:
     void draw_children();
 
 private:
-    IACamera *pCamera = nullptr;
+    IACamera *pPerspectiveCamera = nullptr;
+    IACamera *pTopCamera = nullptr;
+    IACamera *pCurrentCamera = nullptr;
 };
 
 

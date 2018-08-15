@@ -28,7 +28,9 @@
  */
 IAModelView::IAModelView(int x, int y, int w, int h, const char *l)
 :   Fl_Gl_Window(x, y, w, h, l),
-    pCamera( new IACamera(this) )
+    pPerspectiveCamera( new IAPerspectiveCamera(this) ),
+    pTopCamera( new IAOrthoCamera(this, 0) ),
+    pCurrentCamera( pPerspectiveCamera )
 {
 }
 
@@ -38,7 +40,7 @@ IAModelView::IAModelView(int x, int y, int w, int h, const char *l)
  */
 IAModelView::~IAModelView()
 {
-    delete pCamera;
+    delete pCurrentCamera;
 }
 
 
@@ -63,7 +65,7 @@ int IAModelView::handle(int event)
     double dx, dy;
     switch (event) {
         case FL_MOUSEWHEEL:
-            pCamera->dolly(Fl::event_dx()*1.5, Fl::event_dy()*1.5);
+            pCurrentCamera->dolly(Fl::event_dx()*1.5, Fl::event_dy()*1.5);
             redraw();
             return 1;
         case FL_PUSH:
@@ -77,11 +79,11 @@ int IAModelView::handle(int event)
             px = Fl::event_x();
             py = Fl::event_y();
             if ( (Fl::event_state()&(FL_SHIFT|FL_CTRL|FL_ALT|FL_META)) == FL_SHIFT) {
-                pCamera->rotate(dx, dy);
+                pCurrentCamera->rotate(dx, dy);
             } else if ( (Fl::event_state()&(FL_SHIFT|FL_CTRL|FL_ALT|FL_META)) == FL_CTRL) {
-                pCamera->drag(dx, dy);
+                pCurrentCamera->drag(dx, dy);
             } else if ( (Fl::event_state()&(FL_SHIFT|FL_CTRL|FL_ALT|FL_META)) == (FL_CTRL|FL_SHIFT)) {
-                pCamera->dolly(dx, dy);
+                pCurrentCamera->dolly(dx, dy);
             }
             redraw();
             return 1;
@@ -192,7 +194,7 @@ void IAModelView::draw()
     double z2 = zSlider2->value();
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    pCamera->draw();
+    pCurrentCamera->draw();
     glPushMatrix();
 
 
@@ -332,4 +334,19 @@ void IAModelView::dontClipToSlice()
     glOrtho(-66.1,66.1,-66.1,66.1,-66.1,66.1); // mm
     glMatrixMode(GL_MODELVIEW);
 }
+
+
+void IAModelView::setTopView()
+{
+    pCurrentCamera = pTopCamera;
+    redraw();
+}
+
+
+void IAModelView::setPerspectiveView()
+{
+    pCurrentCamera = pPerspectiveCamera;
+    redraw();
+}
+
 
