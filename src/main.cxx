@@ -9,15 +9,15 @@
 // TODO: create a model class that contains meshes
 // TODO: position new models in the center and drop them on the build plane
 // TODO: render textures as slices in IAModelView
-// TODO: generate slices as OpenGL Textures
-// TODO: write slices to disk as images
-// TODO: create vector outline from slices
+// TODO: prototyped - generate slices as OpenGL Textures
+// TODO: prototyped - write slices to disk as images
+// TODO: prototyped - create vector outline from slices
 // TODO: shrink slices
 // TODO: create vector infills from slices
-// TODO: create GCode from vectors
+// TODO: prototyped - create GCode from vectors
 // Done (LOL)
 
-// TODO: port to Linux and MSWindows
+// TODO: port to Linux
 
 #include "main.h"
 
