@@ -50,7 +50,11 @@ IAModelView::~IAModelView()
  * \todo Handle copy and paste events.
  * \todo Handle context menus.
  */
-int IAModelView::handle(int event) {
+int IAModelView::handle(int event)
+{
+    if (Fl_Window::handle(event))
+        return 1;
+
     // click to select
     // shift to drag
     // ctrl to rotate
@@ -166,8 +170,9 @@ void IAModelView::draw()
 
         valid(1);
     }
+    
+    static GLuint tex = 0;
     if (lTexture != texture) {
-        static GLuint tex = 0;
         glGenTextures(1, &tex);
         glBindTexture(GL_TEXTURE_2D, tex);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
@@ -176,6 +181,11 @@ void IAModelView::draw()
                      0, GL_RGB, GL_UNSIGNED_BYTE, *texture->data());
         glEnable(GL_TEXTURE_2D);
         lTexture = texture;
+    }
+    if (texture) {
+        glBindTexture(GL_TEXTURE_2D, tex);
+    } else {
+        glBindTexture(GL_TEXTURE_2D, 0);
     }
 
     double z1 = zSlider1->value();
@@ -273,8 +283,32 @@ void IAModelView::draw()
     char buf[1024];
     sprintf(buf, "Slice at %.4gmm", z1); gl_draw(buf, 10, 50);
     sprintf(buf, "%.4gmm thick", z2); gl_draw(buf, 10, 20);
+
+    draw_children();
 }
 
+/**
+ * Draw FLTK child widgets
+ */
+void IAModelView::draw_children()
+{
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    glOrtho(-0.5, w()-0.5, h()-0.5, -0.5, 1.0, -1.0);
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+
+    glDisable(GL_LIGHTING);
+    glDisable(GL_TEXTURE_2D);
+    glDisable(GL_DEPTH_TEST);
+
+    Fl_Widget*const* a = array();
+    for (int i=children(); i--;) {
+        Fl_Widget& o = **a++;
+        draw_child(o);
+        draw_outside_label(o);
+    }
+}
 
 /**
  * Enable clipping for the current slice (deprecated)

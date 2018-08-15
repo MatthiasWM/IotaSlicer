@@ -32,6 +32,7 @@ protected:
     void draw(IAMeshList *meshList, IASlice *meshSlice);
     void clipToSlice(double z1, double z2);
     void dontClipToSlice();
+    void draw_children();
 
 private:
     IACamera *pCamera = nullptr;

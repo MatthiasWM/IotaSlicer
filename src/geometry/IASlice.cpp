@@ -482,9 +482,6 @@ void IASlice::save(double z, const char *filename)
     //Bind 0, which means render to back buffer
     glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
 
-
-
-
     //Delete resources
     glDeleteTextures(1, &color_tex);
     glDeleteRenderbuffersEXT(1, &depth_rb);

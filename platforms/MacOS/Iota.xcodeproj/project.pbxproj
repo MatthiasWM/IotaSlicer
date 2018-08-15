@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		C938CC152124D51200BAC374 /* IAGLButton.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C938CC142124D51200BAC374 /* IAGLButton.cpp */; };
 		C96B1434211A3E9F00978AC7 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C96B1433211A3E9F00978AC7 /* Assets.xcassets */; };
 		C97632CA211E2DD000D9D4B5 /* main.cxx in Sources */ = {isa = PBXBuildFile; fileRef = C97632C5211E2DD000D9D4B5 /* main.cxx */; };
 		C97632CB211E2DD000D9D4B5 /* mainUI.fl in Sources */ = {isa = PBXBuildFile; fileRef = C97632C6211E2DD000D9D4B5 /* mainUI.fl */; };
@@ -62,6 +63,8 @@
 /* End PBXBuildRule section */
 
 /* Begin PBXFileReference section */
+		C938CC132124D51200BAC374 /* IAGLButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IAGLButton.h; sourceTree = "<group>"; };
+		C938CC142124D51200BAC374 /* IAGLButton.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = IAGLButton.cpp; sourceTree = "<group>"; };
 		C96B142D211A3E9E00978AC7 /* Iota.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Iota.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C96B1433211A3E9F00978AC7 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		C96B1438211A3E9F00978AC7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -382,6 +385,8 @@
 				C9CD015821204C2600713CAF /* IAModelView.h */,
 				C98C66C121208C6300BD3ACE /* IACamera.cpp */,
 				C98C66C221208C6300BD3ACE /* IACamera.h */,
+				C938CC142124D51200BAC374 /* IAGLButton.cpp */,
+				C938CC132124D51200BAC374 /* IAGLButton.h */,
 			);
 			path = userinterface;
 			sourceTree = "<group>";
@@ -499,6 +504,7 @@
 				C97632CA211E2DD000D9D4B5 /* main.cxx in Sources */,
 				C98C66C321208C6400BD3ACE /* IACamera.cpp in Sources */,
 				C97632EF211FA7CC00D9D4B5 /* IAPrinter.cpp in Sources */,
+				C938CC152124D51200BAC374 /* IAGLButton.cpp in Sources */,
 				C97632DD211E357500D9D4B5 /* IASlice.cpp in Sources */,
 				C97632D7211E33B000D9D4B5 /* IAMesh.cpp in Sources */,
 				C993323921238A4900629BE1 /* curve.c in Sources */,
