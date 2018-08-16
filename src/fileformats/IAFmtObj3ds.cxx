@@ -10,7 +10,7 @@
 
 #ifdef __APPLE__
 
-#include "main.h"
+#include "Iota.h"
 #include "../geometry/IAMesh.h"
 
 #include <stdio.h>
@@ -32,7 +32,7 @@ void load3ds(Lib3dsFile *f, Lib3dsMeshInstanceNode *node) {
     Lib3dsMesh *mesh;
 
     IAMesh *msh = new IAMesh();
-    gMeshList.push_back(msh);
+    Iota.gMeshList.push_back(msh);
 
     mesh = lib3ds_file_mesh_for_node(f, (Lib3dsNode*)node);
     if (!mesh || !mesh->vertices) return;
@@ -62,12 +62,12 @@ void load3ds(Lib3dsFile *f, Lib3dsMeshInstanceNode *node) {
         for (i = 0; i < mesh->nvertices; ++i) {
             IAVertex *isPoint = new IAVertex();
             isPoint->pPosition.read(mesh->vertices[i]);
-            minX = min(minX, isPoint->pPosition.x());
-            maxX = max(maxX, isPoint->pPosition.x());
-            minY = min(minY, isPoint->pPosition.y());
-            maxY = max(maxY, isPoint->pPosition.y());
-            minZ = min(minZ, isPoint->pPosition.z());
-            maxZ = max(maxZ, isPoint->pPosition.z());
+            Iota.minX = min(Iota.minX, isPoint->pPosition.x());
+            Iota.maxX = max(Iota.maxX, isPoint->pPosition.x());
+            Iota.minY = min(Iota.minY, isPoint->pPosition.y());
+            Iota.maxY = max(Iota.maxY, isPoint->pPosition.y());
+            Iota.minZ = min(Iota.minZ, isPoint->pPosition.z());
+            Iota.maxZ = max(Iota.maxZ, isPoint->pPosition.z());
             //isPoint->pPosition *= 10;
             //isPoint->pPosition *= 40; // mokey full size
             //isPoint->pPosition *= 5; // mokey tiny (z=-5...+5)
@@ -86,7 +86,7 @@ void load3ds(Lib3dsFile *f, Lib3dsMeshInstanceNode *node) {
     }
 
     printf("Model bounding box is:\n  x: %g, %g\n  y: %g, %g\n  z: %g, %g\n",
-           minX, maxX, minY, maxY, minZ, maxZ);
+           Iota.minX, Iota.maxX, Iota.minY, Iota.maxY, Iota.minZ, Iota.maxZ);
     /*
      Monkey Model bounding box is:
      x: -1.36719, 1.36719

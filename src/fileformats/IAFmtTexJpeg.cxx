@@ -6,7 +6,7 @@
 
 #include "IAFmtTexJpeg.h"
 
-#include "main.h"
+#include "Iota.h"
 
 #include <FL/Fl_JPEG_Image.H>
 
@@ -18,7 +18,7 @@ void loadTexture(const char *filename)
 {
     Fl_JPEG_Image *img = new Fl_JPEG_Image(filename);
     if (img->d()) {
-        texture = img;
+        Iota.texture = img;
     } else {
         delete img;
     }
@@ -32,7 +32,7 @@ void loadTexture(const char *name, unsigned char *imageDate)
 {
     Fl_JPEG_Image *img = new Fl_JPEG_Image(name, imageDate);
     if (img->d()) {
-        texture = img;
+        Iota.texture = img;
     } else {
         delete img;
     }

@@ -7,7 +7,7 @@
 
 #include "IACamera.h"
 
-#include "main.h"
+#include "Iota.h"
 #include "IAModelView.h"
 
 #include <FL/gl.h>
@@ -91,8 +91,8 @@ void IAPerspectiveCamera::draw()
 
     double dist = position.length();
     double aspect = (double(pView->pixel_w()))/(double(pView->pixel_h()));
-    double nearPlane = max(dist-gPrinter.pBuildVolumeRadius, 5.0);
-    double farPlane = dist+gPrinter.pBuildVolumeRadius;
+    double nearPlane = max(dist-Iota.gPrinter.pBuildVolumeRadius, 5.0);
+    double farPlane = dist+Iota.gPrinter.pBuildVolumeRadius;
     gluPerspective(50.0, aspect, nearPlane, farPlane);
 
     glMatrixMode (GL_MODELVIEW);
@@ -142,7 +142,7 @@ void IAOrthoCamera::dolly(double dx, double dy)
 {
     pZoom = pZoom * (1.0+0.01*dy);
     if (pZoom<1.0) pZoom = 1.0;
-    if (pZoom>2.0*gPrinter.pBuildVolumeRadius) pZoom = 2.0*gPrinter.pBuildVolumeRadius;
+    if (pZoom>2.0*Iota.gPrinter.pBuildVolumeRadius) pZoom = 2.0*Iota.gPrinter.pBuildVolumeRadius;
 }
 
 
@@ -154,7 +154,7 @@ void IAOrthoCamera::draw()
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     double aspect = (double(pView->pixel_w()))/(double(pView->pixel_h()));
-    glOrtho(-pZoom*aspect, pZoom*aspect, -pZoom, pZoom, -gPrinter.pBuildVolumeRadius, gPrinter.pBuildVolumeRadius);
+    glOrtho(-pZoom*aspect, pZoom*aspect, -pZoom, pZoom, -Iota.gPrinter.pBuildVolumeRadius, Iota.gPrinter.pBuildVolumeRadius);
     glMatrixMode (GL_MODELVIEW);
     glLoadIdentity();
     glTranslated(pInterest.x(), pInterest.y(), pInterest.z());

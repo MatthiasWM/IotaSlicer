@@ -7,11 +7,12 @@
 
 #include "IAModelView.h"
 
-#include "../main.h"
+#include "../Iota.h"
 #include "IACamera.h"
 #include "../geometry/IAMesh.h"
 #include "../geometry/IASlice.h"
 #include "../printer/IAPrinter.h"
+#include "../userinterface/IAGUIMain.h"
 
 #include <math.h>
 
@@ -99,8 +100,8 @@ int IAModelView::handle(int event)
  */
 void IAModelView::draw(IAMeshList *meshList, IASlice *meshSlice)
 {
-    double z1 = zSlider1->value();
-    double z2 = zSlider2->value();
+//    double z1 = zSlider1->value();
+//    double z2 = zSlider2->value();
     //---- draw the model using the near and far plane for clipping
     if (meshList) {
 //        clipToSlice(z1, z2);
@@ -136,8 +137,8 @@ void IAModelView::draw(IAMeshList *meshList, IASlice *meshSlice)
  */
 void IAModelView::draw()
 {
-    if (gShowSlice && gMeshSlice.pCurrentZ!=zSlider1->value()) {
-        gMeshSlice.generateLidFrom(gMeshList, zSlider1->value());
+    if (Iota.gShowSlice && Iota.gMeshSlice.pCurrentZ!=zSlider1->value()) {
+        Iota.gMeshSlice.generateLidFrom(Iota.gMeshList, zSlider1->value());
     }
     static Fl_RGB_Image *lTexture = nullptr;
     static bool firstTime = true;
@@ -174,17 +175,17 @@ void IAModelView::draw()
     }
     
     static GLuint tex = 0;
-    if (lTexture != texture) {
+    if (lTexture != Iota.texture) {
         glGenTextures(1, &tex);
         glBindTexture(GL_TEXTURE_2D, tex);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB8, texture->w(), texture->h(),
-                     0, GL_RGB, GL_UNSIGNED_BYTE, *texture->data());
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB8, Iota.texture->w(), Iota.texture->h(),
+                     0, GL_RGB, GL_UNSIGNED_BYTE, *Iota.texture->data());
         glEnable(GL_TEXTURE_2D);
-        lTexture = texture;
+        lTexture = Iota.texture;
     }
-    if (texture) {
+    if (Iota.texture) {
         glBindTexture(GL_TEXTURE_2D, tex);
     } else {
         glBindTexture(GL_TEXTURE_2D, 0);
@@ -198,18 +199,18 @@ void IAModelView::draw()
     glPushMatrix();
 
 
-    gPrinter.draw();
+    Iota.gPrinter.draw();
     glEnable(GL_LIGHTING);
     glEnable(GL_COLOR_MATERIAL);
     glEnable(GL_DEPTH_TEST);
-    if (gShowSlice) {
+    if (Iota.gShowSlice) {
         double zPlane = zSlider1->value();
         // draw the opaque lower half of the model
         GLdouble equationLowerHalf[4] = { 0.0, 0.0, -1.0, zPlane-0.05 };
         GLdouble equationUpperHalf[4] = { 0.0, 0.0, 1.0, -zPlane+0.05 };
         glClipPlane(GL_CLIP_PLANE0, equationLowerHalf);
         glEnable(GL_CLIP_PLANE0);
-        gMeshList.drawFlat(gShowTexture);
+        Iota.gMeshList.drawFlat(Iota.gShowTexture);
 //        glEnable(GL_TEXTURE_2D);
 //        gMeshList[0]->drawShrunk(FL_WHITE, -2.0);
 
@@ -221,12 +222,12 @@ void IAModelView::draw()
         glEnable(GL_TEXTURE_2D);
         glLineWidth(8.0);
         for (int n = 20; n>0; --n) {
-            gMeshList.shrinkBy(0.1*n);
+            Iota.gMeshList.shrinkBy(0.1*n);
             IASlice meshSlice;
-            meshSlice.generateOutlineFrom(gMeshList, zSlider1->value());
-            draw(&gMeshList, &meshSlice);
+            meshSlice.generateOutlineFrom(Iota.gMeshList, zSlider1->value());
+            draw(&Iota.gMeshList, &meshSlice);
         }
-        gMeshList.shrinkBy(0.0);
+        Iota.gMeshList.shrinkBy(0.0);
         glLineWidth(1.0);
         glDisable(GL_TEXTURE_2D);
         glEnable(GL_LIGHTING);
@@ -267,12 +268,12 @@ void IAModelView::draw()
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         glEnable(GL_CULL_FACE);
-        gMeshList.drawFlat(false, 0.6, 0.6, 0.6, 0.1);
+        Iota.gMeshList.drawFlat(false, 0.6, 0.6, 0.6, 0.1);
 
         glDisable(GL_CULL_FACE);
         glDisable(GL_CLIP_PLANE0);
     } else {
-        gMeshList.drawFlat(gShowTexture);
+        Iota.gMeshList.drawFlat(Iota.gShowTexture);
     }
     glPopMatrix();
 

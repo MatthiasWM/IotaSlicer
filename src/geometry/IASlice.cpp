@@ -7,9 +7,9 @@
 
 #include "IASlice.h"
 
-#include "../main.h"
+#include "../Iota.h"
 #include "IAMesh.h"
-#include "../userinterface/mainUI.h"
+#include "../userinterface/IAGUIMain.h"
 
 #include <FL/gl.h>
 #include <FL/glu.h>
@@ -139,7 +139,7 @@ void __stdcall tessVertexCallback(GLvoid *vertex)
         f->pVertex[0] = tessV0;
         f->pVertex[1] = tessV1;
         f->pVertex[2] = tessV2;
-        gMeshSlice.addFace(f);
+        Iota.gMeshSlice.addFace(f);
         tessVertexCount = 0;
     }
 }
@@ -150,7 +150,7 @@ void __stdcall tessCombineCallback(GLdouble coords[3],
 {
     IAVertex *v = new IAVertex();
     v->pPosition.read(coords);
-    gMeshSlice.vertexList.push_back(v);
+    Iota.gMeshSlice.vertexList.push_back(v);
     *dataOut = v;
 }
 
@@ -395,7 +395,7 @@ extern "C" int potrace_main(unsigned char *pixels256x256);
 
 void IASlice::save(double z, const char *filename)
 {
-    const int w = 800, h = 600;
+//    const int w = 800, h = 600;
 
     // https://www.khronos.org/opengl/wiki/Framebuffer_Object_Extension_Examples#Quick_example.2C_render_to_texture_.282D.29
 

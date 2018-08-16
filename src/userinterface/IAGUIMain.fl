@@ -2,7 +2,7 @@
 version 1.0304
 header_name {.h}
 code_name {.cpp}
-decl {\#include "../main.h"} {public global
+decl {\#include "../Iota.h"} {public global
 }
 
 decl {\#include "IAModelView.h"} {public global
@@ -26,12 +26,12 @@ Function {createIotaAppWindow()} {open
       } {
         MenuItem {} {
           label {Write current Slice}
-          callback {menuWriteSlice();}
+          callback {Iota.menuWriteSlice();}
           tooltip {Write to ~/slice.jpg} xywh {0 0 100 20} shortcut 0x400070 divider
         }
         MenuItem {} {
           label Quit
-          callback {menuQuit();}
+          callback {Iota.menuQuit();}
           xywh {12 12 100 20} shortcut 0x400071
         }
       }
@@ -89,15 +89,15 @@ aboutWindow->show();}
           } {
             Fl_Button {} {
               label txt
-              callback {gShowTexture = !gShowTexture;
+              callback {Iota.gShowTexture = !Iota.gShowTexture;
 glView->redraw();}
               xywh {10 38 35 25} selection_color 236
               class IAGLButton
             }
             Fl_Button {} {
               label slc
-              callback {gShowSlice = !gShowSlice;
-    glView->redraw();}
+              callback {Iota.gShowSlice = !Iota.gShowSlice;
+glView->redraw();}
               xywh {10 73 35 25} selection_color 236
               class IAGLButton
             }
@@ -144,26 +144,26 @@ glView->redraw();}
               xywh {605 33 40 502} resizable
             } {
               Fl_Slider zSlider1 {
-                callback {sliceAll();
-    gShowSlice = true;
+                callback {Iota.sliceAll();
+    Iota.gShowSlice = true;
     glView->redraw();}
                 tooltip {Slice layer at Z mm} xywh {605 33 20 502} minimum 110 maximum -110 step 1
               }
               Fl_Slider zSlider2 {
-                callback {gShowSlice = true;
+                callback {Iota.gShowSlice = true;
     glView->redraw();}
                 tooltip {Thickness of slice in mm} xywh {625 33 20 502} minimum 10 maximum -10 step 1 deactivate
               }
             }
             Fl_Button {} {
               label TXT
-              callback {gShowTexture = !gShowTexture;
+              callback {Iota.gShowTexture = !Iota.gShowTexture;
 glView->redraw();}
               tooltip {Toggle Rendering Texture} xywh {605 535 40 30} type Toggle hide
             }
             Fl_Button {} {
               label SLC
-              callback {gShowSlice = !gShowSlice;
+              callback {Iota.gShowSlice = !Iota.gShowSlice;
     glView->redraw();}
               tooltip {Stop slicing the model} xywh {605 565 40 30} hide
             }

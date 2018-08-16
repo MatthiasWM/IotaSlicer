@@ -1,5 +1,5 @@
 //
-//  IAMesh.cpp
+//  Iota.cpp
 //
 //  Copyright (c) 2013-2018 Matthias Melcher. All rights reserved.
 //
@@ -19,15 +19,18 @@
 
 // TODO: port to Linux
 
-#include "main.h"
+#include "Iota.h"
 
 #include "data/binaryData.h"
-#include "userinterface/mainUI.h"
+#include "userinterface/IAGUIMain.h"
 #include "fileformats/IAFmtTexJpeg.h"
 #include "fileformats/IAFmtObj3ds.h"
 #include "fileformats/IAFmtObjStl.h"
 
-Fl_Window *gMainWindow = nullptr;
+
+IAIota Iota;
+
+
 Fl_RGB_Image *texture = 0L;
 
 IAMeshList gMeshList;
@@ -53,27 +56,35 @@ double max(double a, double b) { return a>b?a:b; }
 /**
  Experimental stuff.
  */
-void menuWriteSlice()
+void IAIota::menuWriteSlice()
 {
     char buf[FL_PATH_MAX];
     sprintf(buf, "%s/slice.jpg", getenv("HOME"));
     gMeshSlice.save(zSlider1->value(), buf);
 }
 
-void menuQuit()
+void IAIota::menuQuit()
 {
-    gMainWindow->hide();
+    Iota.gMainWindow->hide();
     Fl::flush();
     exit(0);
 }
 
-void sliceAll()
+void IAIota::sliceAll()
 {
 //    gMeshSlice.generateLidFrom(gMeshList, zSlider1->value());
 //    defer slicing until we actually need a to recreate the lid
 }
 
 
+IAIota::IAIota()
+{
+}
+
+
+IAIota::~IAIota()
+{
+}
 
 
 int main (int argc, char **argv)
@@ -82,14 +93,15 @@ int main (int argc, char **argv)
 
     Fl::use_high_res_GL(1);
 
-    gMainWindow = createIotaAppWindow();
-    gMainWindow->show(argc, argv);
+    Iota.gMainWindow = createIotaAppWindow();
+    Iota.gMainWindow->show(argc, argv);
     Fl::flush();
 
     loadTexture("testcard1024.jpg", defaultTexture);
 //    loadStl("/Users/matt/dev/IotaSlicer/data/xyz.stl");
 //    loadStl("/Users/matt/dev/IotaSlicer/src/data/suzanne.stl");
     loadStl(defaultModel);
+    //loadStl("/Users/matt/Desktop/Machine Shop/Data 3D/CalWithNumbers.stl");
     gMeshList.projectTexture(100.0, 100.0, IA_PROJECTION_FRONT);
 
     glView->redraw();

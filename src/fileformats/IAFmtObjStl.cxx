@@ -7,7 +7,7 @@
 
 #include "IAFmtObjStl.h"
 
-#include "main.h"
+#include "Iota.h"
 #include "../geometry/IAMesh.h"
 
 #include <stdio.h>
@@ -114,7 +114,7 @@ int addPoint(IAMesh *IAMesh, float x, float y, float z)
 void loadStl(const unsigned char *d) {
     d+=0x50;
     IAMesh *msh = new IAMesh();
-    gMeshList.push_back(msh);
+    Iota.gMeshList.push_back(msh);
 
     int nFaces = getInt(d);
     for (int i=0; i<nFaces; i++) {
@@ -154,12 +154,12 @@ void loadStl(const unsigned char *d) {
         msh->vertexList[p2]->pInitialPosition = msh->vertexList[p2]->pPosition;
         msh->vertexList[p3]->pInitialPosition = msh->vertexList[p3]->pPosition;
 
-        minX = min(minX, msh->vertexList[p1]->pPosition.x());
-        maxX = max(maxX, msh->vertexList[p1]->pPosition.x());
-        minY = min(minY, msh->vertexList[p1]->pPosition.y());
-        maxY = max(maxY, msh->vertexList[p1]->pPosition.y());
-        minZ = min(minZ, msh->vertexList[p1]->pPosition.z());
-        maxZ = max(maxZ, msh->vertexList[p1]->pPosition.z());
+        Iota.minX = min(Iota.minX, msh->vertexList[p1]->pPosition.x());
+        Iota.maxX = max(Iota.maxX, msh->vertexList[p1]->pPosition.x());
+        Iota.minY = min(Iota.minY, msh->vertexList[p1]->pPosition.y());
+        Iota.maxY = max(Iota.maxY, msh->vertexList[p1]->pPosition.y());
+        Iota.minZ = min(Iota.minZ, msh->vertexList[p1]->pPosition.z());
+        Iota.maxZ = max(Iota.maxZ, msh->vertexList[p1]->pPosition.z());
 
         getShort(d);
     }
@@ -189,7 +189,7 @@ void loadStl(const char *filename) {
     }
     fseek(f, 0x50, SEEK_SET);
     IAMesh *msh = new IAMesh();
-    gMeshList.push_back(msh);
+    Iota.gMeshList.push_back(msh);
 
     int nFaces = getInt(f);
     for (i=0; i<nFaces; i++) {

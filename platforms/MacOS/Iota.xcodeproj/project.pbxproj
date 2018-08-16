@@ -8,9 +8,10 @@
 
 /* Begin PBXBuildFile section */
 		C938CC152124D51200BAC374 /* IAGLButton.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C938CC142124D51200BAC374 /* IAGLButton.cpp */; };
+		C938CC182125CFB100BAC374 /* IAGeometryReader.cxx in Sources */ = {isa = PBXBuildFile; fileRef = C938CC162125CFB100BAC374 /* IAGeometryReader.cxx */; };
 		C96B1434211A3E9F00978AC7 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C96B1433211A3E9F00978AC7 /* Assets.xcassets */; };
-		C97632CA211E2DD000D9D4B5 /* main.cxx in Sources */ = {isa = PBXBuildFile; fileRef = C97632C5211E2DD000D9D4B5 /* main.cxx */; };
-		C97632CB211E2DD000D9D4B5 /* mainUI.fl in Sources */ = {isa = PBXBuildFile; fileRef = C97632C6211E2DD000D9D4B5 /* mainUI.fl */; };
+		C97632CA211E2DD000D9D4B5 /* Iota.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C97632C5211E2DD000D9D4B5 /* Iota.cpp */; };
+		C97632CB211E2DD000D9D4B5 /* IAGUIMain.fl in Sources */ = {isa = PBXBuildFile; fileRef = C97632C6211E2DD000D9D4B5 /* IAGUIMain.fl */; };
 		C97632CD211E2DD000D9D4B5 /* IAVector3d.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C97632C9211E2DD000D9D4B5 /* IAVector3d.cpp */; };
 		C97632D1211E317F00D9D4B5 /* IAVertex.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C97632D0211E317F00D9D4B5 /* IAVertex.cpp */; };
 		C97632D4211E325C00D9D4B5 /* IAEdge.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C97632D3211E325C00D9D4B5 /* IAEdge.cpp */; };
@@ -65,12 +66,18 @@
 /* Begin PBXFileReference section */
 		C938CC132124D51200BAC374 /* IAGLButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IAGLButton.h; sourceTree = "<group>"; };
 		C938CC142124D51200BAC374 /* IAGLButton.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = IAGLButton.cpp; sourceTree = "<group>"; };
+		C938CC162125CFB100BAC374 /* IAGeometryReader.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = IAGeometryReader.cxx; sourceTree = "<group>"; };
+		C938CC172125CFB100BAC374 /* IAGeometryReader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IAGeometryReader.h; sourceTree = "<group>"; };
+		C938CC192125EF7000BAC374 /* auxiliary.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = auxiliary.h; sourceTree = "<group>"; };
+		C938CC1B2125F00700BAC374 /* bitmap.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = bitmap.h; sourceTree = "<group>"; };
+		C938CC1C2125F05500BAC374 /* lists.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = lists.h; sourceTree = "<group>"; };
+		C938CC1D2125F08B00BAC374 /* progress.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = progress.h; sourceTree = "<group>"; };
 		C96B142D211A3E9E00978AC7 /* Iota.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Iota.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C96B1433211A3E9F00978AC7 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		C96B1438211A3E9F00978AC7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C97632C4211E2DD000D9D4B5 /* IAVector3d.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IAVector3d.h; sourceTree = "<group>"; };
-		C97632C5211E2DD000D9D4B5 /* main.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = main.cxx; sourceTree = "<group>"; };
-		C97632C6211E2DD000D9D4B5 /* mainUI.fl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.fluid; path = mainUI.fl; sourceTree = "<group>"; };
+		C97632C5211E2DD000D9D4B5 /* Iota.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Iota.cpp; sourceTree = "<group>"; };
+		C97632C6211E2DD000D9D4B5 /* IAGUIMain.fl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.fluid; path = IAGUIMain.fl; sourceTree = "<group>"; };
 		C97632C9211E2DD000D9D4B5 /* IAVector3d.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = IAVector3d.cpp; sourceTree = "<group>"; };
 		C97632CF211E317F00D9D4B5 /* IAVertex.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IAVertex.h; sourceTree = "<group>"; };
 		C97632D0211E317F00D9D4B5 /* IAVertex.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = IAVertex.cpp; sourceTree = "<group>"; };
@@ -102,60 +109,20 @@
 		C98C66C221208C6300BD3ACE /* IACamera.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IACamera.h; sourceTree = "<group>"; };
 		C99331E52123068E00629BE1 /* helpAbout.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = helpAbout.html; sourceTree = "<group>"; };
 		C99331E721230BDB00629BE1 /* helpLicenses.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = helpLicenses.html; sourceTree = "<group>"; };
-		C99331EB2123881800629BE1 /* main.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = main.h; sourceTree = "<group>"; };
-		C99331EC2123881800629BE1 /* bbox.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = bbox.h; sourceTree = "<group>"; };
-		C99331ED2123881800629BE1 /* progress.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = progress.h; sourceTree = "<group>"; };
-		C99331EE2123881800629BE1 /* getopt1.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = getopt1.c; sourceTree = "<group>"; };
 		C99331EF2123881800629BE1 /* decompose.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = decompose.h; sourceTree = "<group>"; };
-		C99331F02123881800629BE1 /* backend_pgm.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = backend_pgm.c; sourceTree = "<group>"; };
 		C99331F12123881800629BE1 /* trace.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = trace.c; sourceTree = "<group>"; };
-		C99331F22123881800629BE1 /* progress_bar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = progress_bar.h; sourceTree = "<group>"; };
-		C99331F32123881800629BE1 /* trans.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = trans.h; sourceTree = "<group>"; };
 		C99331F42123881800629BE1 /* curve.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = curve.c; sourceTree = "<group>"; };
-		C99331F52123881800629BE1 /* lzw.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = lzw.c; sourceTree = "<group>"; };
-		C99331F62123881800629BE1 /* mkbitmap.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = mkbitmap.c; sourceTree = "<group>"; };
-		C99331F72123881800629BE1 /* flate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = flate.h; sourceTree = "<group>"; };
-		C99331F82123881800629BE1 /* bitops.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = bitops.h; sourceTree = "<group>"; };
-		C99331F92123881800629BE1 /* greymap.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = greymap.h; sourceTree = "<group>"; };
-		C99331FA2123881800629BE1 /* backend_dxf.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = backend_dxf.c; sourceTree = "<group>"; };
-		C99331FB2123881800629BE1 /* backend_pdf.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = backend_pdf.c; sourceTree = "<group>"; };
-		C99331FC2123881800629BE1 /* backend_svg.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = backend_svg.h; sourceTree = "<group>"; };
 		C99331FD2123881800629BE1 /* config.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = config.h; sourceTree = "<group>"; };
-		C99331FE2123881800629BE1 /* backend_xfig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = backend_xfig.h; sourceTree = "<group>"; };
-		C99331FF2123881800629BE1 /* bitmap_io.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = bitmap_io.h; sourceTree = "<group>"; };
-		C99332002123881800629BE1 /* backend_geojson.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = backend_geojson.c; sourceTree = "<group>"; };
-		C99332012123881800629BE1 /* backend_eps.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = backend_eps.h; sourceTree = "<group>"; };
-		C99332022123881800629BE1 /* auxiliary.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = auxiliary.h; sourceTree = "<group>"; };
-		C99332032123881800629BE1 /* lists.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lists.h; sourceTree = "<group>"; };
-		C99332042123881800629BE1 /* render.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = render.c; sourceTree = "<group>"; };
 		C99332052123881800629BE1 /* potracelib_demo.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = potracelib_demo.c; sourceTree = "<group>"; };
 		C99332062123881800629BE1 /* potracelib.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = potracelib.h; sourceTree = "<group>"; };
-		C99332072123881800629BE1 /* lzw.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lzw.h; sourceTree = "<group>"; };
 		C99332082123881800629BE1 /* curve.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = curve.h; sourceTree = "<group>"; };
-		C99332092123881800629BE1 /* flate.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = flate.c; sourceTree = "<group>"; };
-		C993320A2123881800629BE1 /* progress_bar.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = progress_bar.c; sourceTree = "<group>"; };
-		C993320B2123881800629BE1 /* trans.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = trans.c; sourceTree = "<group>"; };
-		C993320C2123881800629BE1 /* backend_pgm.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = backend_pgm.h; sourceTree = "<group>"; };
 		C993320D2123881800629BE1 /* decompose.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = decompose.c; sourceTree = "<group>"; };
 		C993320E2123881800629BE1 /* trace.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = trace.h; sourceTree = "<group>"; };
-		C993320F2123881800629BE1 /* main.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = main.c; sourceTree = "<group>"; };
-		C99332102123881800629BE1 /* bbox.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = bbox.c; sourceTree = "<group>"; };
-		C99332112123881800629BE1 /* backend_pdf.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = backend_pdf.h; sourceTree = "<group>"; };
-		C99332122123881800629BE1 /* backend_svg.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = backend_svg.c; sourceTree = "<group>"; };
-		C99332132123881800629BE1 /* greymap.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = greymap.c; sourceTree = "<group>"; };
-		C99332142123881800629BE1 /* backend_dxf.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = backend_dxf.h; sourceTree = "<group>"; };
-		C99332152123881800629BE1 /* backend_eps.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = backend_eps.c; sourceTree = "<group>"; };
-		C99332162123881800629BE1 /* backend_geojson.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = backend_geojson.h; sourceTree = "<group>"; };
-		C99332172123881800629BE1 /* bitmap_io.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = bitmap_io.c; sourceTree = "<group>"; };
-		C99332182123881800629BE1 /* backend_xfig.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = backend_xfig.c; sourceTree = "<group>"; };
-		C99332192123881800629BE1 /* bitmap.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = bitmap.h; sourceTree = "<group>"; };
 		C993321A2123881800629BE1 /* potracelib.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = potracelib.c; sourceTree = "<group>"; };
-		C993321B2123881800629BE1 /* getopt.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = getopt.c; sourceTree = "<group>"; };
 		C993321C2123881800629BE1 /* platform.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = platform.h; sourceTree = "<group>"; };
-		C993321D2123881800629BE1 /* render.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = render.h; sourceTree = "<group>"; };
 		C9CD015821204C2600713CAF /* IAModelView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IAModelView.h; sourceTree = "<group>"; };
 		C9CD015921204C2600713CAF /* IAModelView.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = IAModelView.cpp; sourceTree = "<group>"; };
-		C9CD015B21204D0700713CAF /* main.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = main.h; sourceTree = "<group>"; };
+		C9CD015B21204D0700713CAF /* Iota.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Iota.h; sourceTree = "<group>"; };
 		C9D38718211A425E009F7580 /* libfltk_images.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libfltk_images.a; path = lib/libfltk_images.a; sourceTree = "<group>"; };
 		C9D38719211A425E009F7580 /* libfltk_png.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libfltk_png.a; path = lib/libfltk_png.a; sourceTree = "<group>"; };
 		C9D3871A211A425E009F7580 /* libfltk.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libfltk.a; path = lib/libfltk.a; sourceTree = "<group>"; };
@@ -199,7 +166,6 @@
 			children = (
 				C9D38736211A4B75009F7580 /* README.md */,
 				C96B1444211A402900978AC7 /* src */,
-				C99331EA2123881800629BE1 /* potrace */,
 				C9DC51B7211A7CDF00AE069F /* html */,
 				C98C66BE212060EE00BD3ACE /* Notes */,
 				C96B1447211A422D00978AC7 /* libs */,
@@ -229,12 +195,13 @@
 		C96B1444211A402900978AC7 /* src */ = {
 			isa = PBXGroup;
 			children = (
-				C97632C5211E2DD000D9D4B5 /* main.cxx */,
-				C9CD015B21204D0700713CAF /* main.h */,
+				C97632C5211E2DD000D9D4B5 /* Iota.cpp */,
+				C9CD015B21204D0700713CAF /* Iota.h */,
 				C9CD015721204C2600713CAF /* userinterface */,
 				C97632EC211FA7CC00D9D4B5 /* printer */,
 				C97632CE211E2FFA00D9D4B5 /* geometry */,
 				C98C66B421205D1D00BD3ACE /* fileformats */,
+				C99331EA2123881800629BE1 /* potrace */,
 				C97632E4211E41F700D9D4B5 /* data */,
 			);
 			name = src;
@@ -297,13 +264,15 @@
 		C98C66B421205D1D00BD3ACE /* fileformats */ = {
 			isa = PBXGroup;
 			children = (
-				C97632DE211E394000D9D4B5 /* lib3ds.h */,
+				C938CC162125CFB100BAC374 /* IAGeometryReader.cxx */,
+				C938CC172125CFB100BAC374 /* IAGeometryReader.h */,
 				C98C66BA21205D3C00BD3ACE /* IAFmtObj3ds.cxx */,
 				C98C66BB21205D3C00BD3ACE /* IAFmtObj3ds.h */,
 				C98C66B921205D3C00BD3ACE /* IAFmtObjStl.cxx */,
 				C98C66B821205D3C00BD3ACE /* IAFmtObjStl.h */,
 				C98C66B621205D1D00BD3ACE /* IAFmtTexJpeg.cxx */,
 				C98C66B521205D1D00BD3ACE /* IAFmtTexJpeg.h */,
+				C97632DE211E394000D9D4B5 /* lib3ds.h */,
 			);
 			path = fileformats;
 			sourceTree = "<group>";
@@ -321,66 +290,29 @@
 		C99331EA2123881800629BE1 /* potrace */ = {
 			isa = PBXGroup;
 			children = (
-				C99331FA2123881800629BE1 /* backend_dxf.c */,
-				C99332152123881800629BE1 /* backend_eps.c */,
-				C99332002123881800629BE1 /* backend_geojson.c */,
-				C99331FB2123881800629BE1 /* backend_pdf.c */,
-				C99331F02123881800629BE1 /* backend_pgm.c */,
-				C99332122123881800629BE1 /* backend_svg.c */,
-				C99332182123881800629BE1 /* backend_xfig.c */,
-				C99332102123881800629BE1 /* bbox.c */,
-				C99332172123881800629BE1 /* bitmap_io.c */,
 				C99331F42123881800629BE1 /* curve.c */,
 				C993320D2123881800629BE1 /* decompose.c */,
-				C99332092123881800629BE1 /* flate.c */,
-				C993321B2123881800629BE1 /* getopt.c */,
-				C99331EE2123881800629BE1 /* getopt1.c */,
-				C99332132123881800629BE1 /* greymap.c */,
-				C99331F52123881800629BE1 /* lzw.c */,
-				C993320F2123881800629BE1 /* main.c */,
-				C99331F62123881800629BE1 /* mkbitmap.c */,
 				C99332052123881800629BE1 /* potracelib_demo.c */,
 				C993321A2123881800629BE1 /* potracelib.c */,
-				C993320A2123881800629BE1 /* progress_bar.c */,
-				C99332042123881800629BE1 /* render.c */,
 				C99331F12123881800629BE1 /* trace.c */,
-				C993320B2123881800629BE1 /* trans.c */,
-				C99332022123881800629BE1 /* auxiliary.h */,
-				C99332142123881800629BE1 /* backend_dxf.h */,
-				C99332012123881800629BE1 /* backend_eps.h */,
-				C99332162123881800629BE1 /* backend_geojson.h */,
-				C99332112123881800629BE1 /* backend_pdf.h */,
-				C993320C2123881800629BE1 /* backend_pgm.h */,
-				C99331FC2123881800629BE1 /* backend_svg.h */,
-				C99331FE2123881800629BE1 /* backend_xfig.h */,
-				C99331EC2123881800629BE1 /* bbox.h */,
-				C99331FF2123881800629BE1 /* bitmap_io.h */,
-				C99332192123881800629BE1 /* bitmap.h */,
-				C99331F82123881800629BE1 /* bitops.h */,
+				C938CC192125EF7000BAC374 /* auxiliary.h */,
+				C938CC1B2125F00700BAC374 /* bitmap.h */,
 				C99331FD2123881800629BE1 /* config.h */,
 				C99332082123881800629BE1 /* curve.h */,
 				C99331EF2123881800629BE1 /* decompose.h */,
-				C99331F72123881800629BE1 /* flate.h */,
-				C99331F92123881800629BE1 /* greymap.h */,
-				C99332032123881800629BE1 /* lists.h */,
-				C99332072123881800629BE1 /* lzw.h */,
-				C99331EB2123881800629BE1 /* main.h */,
+				C938CC1C2125F05500BAC374 /* lists.h */,
 				C993321C2123881800629BE1 /* platform.h */,
 				C99332062123881800629BE1 /* potracelib.h */,
-				C99331F22123881800629BE1 /* progress_bar.h */,
-				C99331ED2123881800629BE1 /* progress.h */,
-				C993321D2123881800629BE1 /* render.h */,
+				C938CC1D2125F08B00BAC374 /* progress.h */,
 				C993320E2123881800629BE1 /* trace.h */,
-				C99331F32123881800629BE1 /* trans.h */,
 			);
-			name = potrace;
-			path = ../../potrace;
+			path = potrace;
 			sourceTree = "<group>";
 		};
 		C9CD015721204C2600713CAF /* userinterface */ = {
 			isa = PBXGroup;
 			children = (
-				C97632C6211E2DD000D9D4B5 /* mainUI.fl */,
+				C97632C6211E2DD000D9D4B5 /* IAGUIMain.fl */,
 				C9CD015921204C2600713CAF /* IAModelView.cpp */,
 				C9CD015821204C2600713CAF /* IAModelView.h */,
 				C98C66C121208C6300BD3ACE /* IACamera.cpp */,
@@ -494,17 +426,18 @@
 			files = (
 				C993323C21238A7200629BE1 /* potracelib.c in Sources */,
 				C97632D1211E317F00D9D4B5 /* IAVertex.cpp in Sources */,
-				C97632CB211E2DD000D9D4B5 /* mainUI.fl in Sources */,
+				C97632CB211E2DD000D9D4B5 /* IAGUIMain.fl in Sources */,
 				C98C66BD21205D3C00BD3ACE /* IAFmtObj3ds.cxx in Sources */,
 				C98C66B721205D1D00BD3ACE /* IAFmtTexJpeg.cxx in Sources */,
 				C97632EB211F685100D9D4B5 /* binaryData.fl in Sources */,
 				C97632D4211E325C00D9D4B5 /* IAEdge.cpp in Sources */,
 				C9CD015A21204C2700713CAF /* IAModelView.cpp in Sources */,
 				C98C66BC21205D3C00BD3ACE /* IAFmtObjStl.cxx in Sources */,
-				C97632CA211E2DD000D9D4B5 /* main.cxx in Sources */,
+				C97632CA211E2DD000D9D4B5 /* Iota.cpp in Sources */,
 				C98C66C321208C6400BD3ACE /* IACamera.cpp in Sources */,
 				C97632EF211FA7CC00D9D4B5 /* IAPrinter.cpp in Sources */,
 				C938CC152124D51200BAC374 /* IAGLButton.cpp in Sources */,
+				C938CC182125CFB100BAC374 /* IAGeometryReader.cxx in Sources */,
 				C97632DD211E357500D9D4B5 /* IASlice.cpp in Sources */,
 				C97632D7211E33B000D9D4B5 /* IAMesh.cpp in Sources */,
 				C993323921238A4900629BE1 /* curve.c in Sources */,
