@@ -53,9 +53,6 @@
     <ClCompile Include="..\..\..\src\fileformats\IAFmtObj3ds.cxx">
       <Filter>src\fileformats</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\fileformats\IAFmtObjStl.cxx">
-      <Filter>src\fileformats</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\src\fileformats\IAFmtTexJpeg.cxx">
       <Filter>src\fileformats</Filter>
     </ClCompile>
@@ -80,6 +77,15 @@
     <ClCompile Include="..\..\..\src\userinterface\IAGLButton.cpp">
       <Filter>src\userInterface</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\src\fileformats\IAGeometryReader.cxx">
+      <Filter>src\fileformats</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\fileformats\IAGeometryReaderBinaryStl.cxx">
+      <Filter>src\fileformats</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\fileformats\IAGeometryReaderTextStl.cxx">
+      <Filter>src\fileformats</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\src\geometry\IAEdge.h">
@@ -101,9 +107,6 @@
       <Filter>src\geometry</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\fileformats\IAFmtObj3ds.h">
-      <Filter>src\fileformats</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\fileformats\IAFmtObjStl.h">
       <Filter>src\fileformats</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\fileformats\IAFmtTexJpeg.h">
@@ -132,6 +135,15 @@
     </ClInclude>
     <ClInclude Include="..\..\..\src\userinterface\IAGLButton.h">
       <Filter>src\userInterface</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\fileformats\IAGeometryReader.h">
+      <Filter>src\fileformats</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\fileformats\IAGeometryReaderBinaryStl.h">
+      <Filter>src\fileformats</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\fileformats\IAGeometryReaderTextStl.h">
+      <Filter>src\fileformats</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
