@@ -121,8 +121,10 @@
   <ItemGroup>
     <ClCompile Include="..\..\..\src\data\binaryData.cpp" />
     <ClCompile Include="..\..\..\src\fileformats\IAFmtObj3ds.cxx" />
-    <ClCompile Include="..\..\..\src\fileformats\IAFmtObjStl.cxx" />
     <ClCompile Include="..\..\..\src\fileformats\IAFmtTexJpeg.cxx" />
+    <ClCompile Include="..\..\..\src\fileformats\IAGeometryReader.cxx" />
+    <ClCompile Include="..\..\..\src\fileformats\IAGeometryReaderBinaryStl.cxx" />
+    <ClCompile Include="..\..\..\src\fileformats\IAGeometryReaderTextStl.cxx" />
     <ClCompile Include="..\..\..\src\geometry\IAEdge.cpp" />
     <ClCompile Include="..\..\..\src\geometry\IAMesh.cpp" />
     <ClCompile Include="..\..\..\src\geometry\IASlice.cpp" />
@@ -139,8 +141,10 @@
   <ItemGroup>
     <ClInclude Include="..\..\..\src\data\binaryData.h" />
     <ClInclude Include="..\..\..\src\fileformats\IAFmtObj3ds.h" />
-    <ClInclude Include="..\..\..\src\fileformats\IAFmtObjStl.h" />
     <ClInclude Include="..\..\..\src\fileformats\IAFmtTexJpeg.h" />
+    <ClInclude Include="..\..\..\src\fileformats\IAGeometryReader.h" />
+    <ClInclude Include="..\..\..\src\fileformats\IAGeometryReaderBinaryStl.h" />
+    <ClInclude Include="..\..\..\src\fileformats\IAGeometryReaderTextStl.h" />
     <ClInclude Include="..\..\..\src\fileformats\lib3ds.h" />
     <ClInclude Include="..\..\..\src\geometry\IAEdge.h" />
     <ClInclude Include="..\..\..\src\geometry\IAMesh.h" />
