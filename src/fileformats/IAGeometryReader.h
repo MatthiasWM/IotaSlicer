@@ -9,6 +9,7 @@
 
 
 #include <stdio.h>
+#include <memory>
 
 
 /**
@@ -17,8 +18,12 @@
 class IAGeometryReader
 {
 public:
-    static IAGeometryReader *findReader(const char *filename);
-    static IAGeometryReader *findReader(const char *name, unsigned char *data, size_t size);
+    static std::shared_ptr<IAGeometryReader> findReaderFor(const char *filename);
+    static std::shared_ptr<IAGeometryReader> findReaderFor(const char *name, unsigned char *data, size_t size);
+
+public:
+    IAGeometryReader() = default;
+    virtual ~IAGeometryReader() = default;
 };
 
 

@@ -14,7 +14,7 @@
  * Create a file reader for the indicated file.
  * \return 0 if the format is not supported
  */
-IAGeometryReader *IAGeometryReader::findReader(const char *filename)
+std::shared_ptr<IAGeometryReader> IAGeometryReader::findReaderFor(const char *filename)
 {
     return nullptr;
 }
@@ -24,7 +24,7 @@ IAGeometryReader *IAGeometryReader::findReader(const char *filename)
  * Create a reader for the indicated memory block.
  * \return 0 if the format is not supported
  */
-IAGeometryReader *IAGeometryReader::findReader(const char *name, unsigned char *data, size_t size)
+std::shared_ptr<IAGeometryReader> IAGeometryReader::findReaderFor(const char *name, unsigned char *data, size_t size)
 {
     return nullptr;
 }
