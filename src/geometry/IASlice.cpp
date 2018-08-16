@@ -395,6 +395,7 @@ extern "C" int potrace_main(unsigned char *pixels256x256);
 
 void IASlice::save(double z, const char *filename)
 {
+#ifdef __APPLE__ // VisualStudio 2017 misses a lot of the OpenGL names that I used here. Must investigate.
 //    const int w = 800, h = 600;
 
     // https://www.khronos.org/opengl/wiki/Framebuffer_Object_Extension_Examples#Quick_example.2C_render_to_texture_.282D.29
@@ -494,6 +495,7 @@ void IASlice::save(double z, const char *filename)
 
 //    FILE *f = fopen(filename, "wb");
 //    fclose(f);
+#endif
 }
 
 

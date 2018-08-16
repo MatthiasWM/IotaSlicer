@@ -129,11 +129,12 @@
     <ClCompile Include="..\..\..\src\geometry\IATriangle.cpp" />
     <ClCompile Include="..\..\..\src\geometry\IAVector3d.cpp" />
     <ClCompile Include="..\..\..\src\geometry\IAVertex.cpp" />
-    <ClCompile Include="..\..\..\src\main.cxx" />
+    <ClCompile Include="..\..\..\src\Iota.cpp" />
     <ClCompile Include="..\..\..\src\printer\IAPrinter.cpp" />
     <ClCompile Include="..\..\..\src\userinterface\IACamera.cpp" />
+    <ClCompile Include="..\..\..\src\userinterface\IAGLButton.cpp" />
     <ClCompile Include="..\..\..\src\userinterface\IAModelView.cpp" />
-    <ClCompile Include="..\..\..\src\userinterface\mainUI.cpp" />
+    <ClCompile Include="..\..\..\src\userinterface\IAGUIMain.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\src\data\binaryData.h" />
@@ -147,11 +148,12 @@
     <ClInclude Include="..\..\..\src\geometry\IATriangle.h" />
     <ClInclude Include="..\..\..\src\geometry\IAVector3d.h" />
     <ClInclude Include="..\..\..\src\geometry\IAVertex.h" />
-    <ClInclude Include="..\..\..\src\main.h" />
+    <ClInclude Include="..\..\..\src\Iota.h" />
     <ClInclude Include="..\..\..\src\printer\IAPrinter.h" />
     <ClInclude Include="..\..\..\src\userinterface\IACamera.h" />
+    <ClInclude Include="..\..\..\src\userinterface\IAGLButton.h" />
     <ClInclude Include="..\..\..\src\userinterface\IAModelView.h" />
-    <ClInclude Include="..\..\..\src\userinterface\mainUI.h" />
+    <ClInclude Include="..\..\..\src\userinterface\IAGUIMain.h" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="..\..\..\src\data\binaryData.fl">
@@ -195,7 +197,7 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     <None Include="..\..\..\src\data\suzanne.stl" />
     <None Include="..\..\..\src\data\xyz.stl" />
     <None Include="..\..\..\src\UserInterface.fl" />
-    <CustomBuild Include="..\..\..\src\userinterface\mainUI.fl">
+    <CustomBuild Include="..\..\..\src\userinterface\IAGUIMain.fl">
       <FileType>Document</FileType>
       <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">setlocal
             cd %(RelativeDir)
