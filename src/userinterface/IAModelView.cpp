@@ -138,7 +138,7 @@ void IAModelView::draw(IAMeshList *meshList, IASlice *meshSlice)
 void IAModelView::draw()
 {
     if (Iota.gShowSlice && Iota.gMeshSlice.pCurrentZ!=zSlider1->value()) {
-        Iota.gMeshSlice.generateLidFrom(Iota.gMeshList, zSlider1->value());
+        Iota.gMeshSlice.generateLidFrom(*Iota.gMeshList, zSlider1->value());
     }
     static Fl_RGB_Image *lTexture = nullptr;
     static bool firstTime = true;
@@ -210,7 +210,7 @@ void IAModelView::draw()
         GLdouble equationUpperHalf[4] = { 0.0, 0.0, 1.0, -zPlane+0.05 };
         glClipPlane(GL_CLIP_PLANE0, equationLowerHalf);
         glEnable(GL_CLIP_PLANE0);
-        Iota.gMeshList.drawFlat(Iota.gShowTexture);
+        Iota.gMeshList->drawFlat(Iota.gShowTexture);
 //        glEnable(GL_TEXTURE_2D);
 //        gMeshList[0]->drawShrunk(FL_WHITE, -2.0);
 
@@ -222,12 +222,12 @@ void IAModelView::draw()
         glEnable(GL_TEXTURE_2D);
         glLineWidth(8.0);
         for (int n = 20; n>0; --n) {
-            Iota.gMeshList.shrinkBy(0.1*n);
+            Iota.gMeshList->shrinkBy(0.1*n);
             IASlice meshSlice;
-            meshSlice.generateOutlineFrom(Iota.gMeshList, zSlider1->value());
-            draw(&Iota.gMeshList, &meshSlice);
+            meshSlice.generateOutlineFrom(*Iota.gMeshList, zSlider1->value());
+            draw(Iota.gMeshList, &meshSlice);
         }
-        Iota.gMeshList.shrinkBy(0.0);
+        Iota.gMeshList->shrinkBy(0.0);
         glLineWidth(1.0);
         glDisable(GL_TEXTURE_2D);
         glEnable(GL_LIGHTING);
@@ -268,12 +268,12 @@ void IAModelView::draw()
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         glEnable(GL_CULL_FACE);
-        Iota.gMeshList.drawFlat(false, 0.6, 0.6, 0.6, 0.1);
+        Iota.gMeshList->drawFlat(false, 0.6, 0.6, 0.6, 0.1);
 
         glDisable(GL_CULL_FACE);
         glDisable(GL_CLIP_PLANE0);
     } else {
-        Iota.gMeshList.drawFlat(Iota.gShowTexture);
+        Iota.gMeshList->drawFlat(Iota.gShowTexture);
     }
     glPopMatrix();
 

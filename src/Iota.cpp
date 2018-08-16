@@ -25,23 +25,24 @@
 #include "userinterface/IAGUIMain.h"
 #include "fileformats/IAFmtTexJpeg.h"
 #include "fileformats/IAFmtObj3ds.h"
-#include "fileformats/IAFmtObjStl.h"
+#include "fileformats/IAGeometryReader.h"
+#include "fileformats/IAGeometryReaderBinaryStl.h"
 
 
 IAIota Iota;
 
 
-Fl_RGB_Image *texture = 0L;
-
-IAMeshList gMeshList;
-IASlice gMeshSlice;
-IAPrinter gPrinter; // Allocate default printer
-
-bool gShowSlice = false;
-bool gShowTexture = false;
-FILE *gOutFile;
-
-double minX = 0.0, maxX = 0.0, minY = 0.0, maxY = 0.0, minZ = 0.0, maxZ = 0.0;
+//Fl_RGB_Image *texture = 0L;
+//
+//IAMeshList gMeshList;
+//IASlice gMeshSlice;
+//IAPrinter gPrinter; // Allocate default printer
+//
+//bool gShowSlice = false;
+//bool gShowTexture = false;
+//FILE *gOutFile;
+//
+//double minX = 0.0, maxX = 0.0, minY = 0.0, maxY = 0.0, minZ = 0.0, maxZ = 0.0;
 
 
 float min(float a, float b) { return (a<b)?a:b; }
@@ -84,7 +85,33 @@ IAIota::IAIota()
 
 IAIota::~IAIota()
 {
+    delete gMeshList;
 }
+
+
+/**
+ * Read a geometry from memory.
+ */
+bool IAIota::addGeomtery(const char *name, uint8_t *data, size_t size)
+{
+    bool ret = false;
+
+    auto reader = IAGeometryReader::findReaderFor(name, data, size);
+//    if (reader) {
+//        auto geometry reader.createGeometry();
+//    }
+    return ret;
+}
+
+
+/**
+ * Read a geometry from an external file.
+ */
+bool IAIota::addGeomtery(const char *filename)
+{
+    return true;
+}
+
 
 
 int main (int argc, char **argv)
@@ -101,8 +128,11 @@ int main (int argc, char **argv)
 //    loadStl("/Users/matt/dev/IotaSlicer/data/xyz.stl");
 //    loadStl("/Users/matt/dev/IotaSlicer/src/data/suzanne.stl");
     loadStl(defaultModel);
+
+//    addGeometry("default.stl", defaultModel);
+
     //loadStl("/Users/matt/Desktop/Machine Shop/Data 3D/CalWithNumbers.stl");
-    gMeshList.projectTexture(100.0, 100.0, IA_PROJECTION_FRONT);
+    Iota.gMeshList->projectTexture(100.0, 100.0, IA_PROJECTION_FRONT);
 
     glView->redraw();
 

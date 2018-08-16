@@ -5,7 +5,7 @@
 //
 
 
-#include "IAFmtObjStl.h"
+#include "IAGeometryReaderBinaryStl.h"
 
 #include "Iota.h"
 #include "../geometry/IAMesh.h"
@@ -112,9 +112,13 @@ int addPoint(IAMesh *IAMesh, float x, float y, float z)
  STL triangles ar CCW, normals are pointing outward
  */
 void loadStl(const unsigned char *d) {
+
+    delete Iota.gMeshList;
+    Iota.gMeshList = new IAMeshList;
+
     d+=0x50;
     IAMesh *msh = new IAMesh();
-    Iota.gMeshList.push_back(msh);
+    Iota.gMeshList->push_back(msh);
 
     int nFaces = getInt(d);
     for (int i=0; i<nFaces; i++) {
@@ -182,6 +186,9 @@ void loadStl(const unsigned char *d) {
 void loadStl(const char *filename) {
     int i;
 
+    delete Iota.gMeshList;
+    Iota.gMeshList = new IAMeshList;
+
     FILE *f = fopen(filename, "rb");
     if (!f) {
         fprintf(stderr, "ERROR openening file!\n");
@@ -189,7 +196,7 @@ void loadStl(const char *filename) {
     }
     fseek(f, 0x50, SEEK_SET);
     IAMesh *msh = new IAMesh();
-    Iota.gMeshList.push_back(msh);
+    Iota.gMeshList->push_back(msh);
 
     int nFaces = getInt(f);
     for (i=0; i<nFaces; i++) {

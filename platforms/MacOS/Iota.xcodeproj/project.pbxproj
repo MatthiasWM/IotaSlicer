@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		C938CC152124D51200BAC374 /* IAGLButton.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C938CC142124D51200BAC374 /* IAGLButton.cpp */; };
 		C938CC182125CFB100BAC374 /* IAGeometryReader.cxx in Sources */ = {isa = PBXBuildFile; fileRef = C938CC162125CFB100BAC374 /* IAGeometryReader.cxx */; };
+		C938CC20212602F600BAC374 /* IAGeometryReaderBinaryStl.cxx in Sources */ = {isa = PBXBuildFile; fileRef = C938CC1F212602F600BAC374 /* IAGeometryReaderBinaryStl.cxx */; };
 		C96B1434211A3E9F00978AC7 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C96B1433211A3E9F00978AC7 /* Assets.xcassets */; };
 		C97632CA211E2DD000D9D4B5 /* Iota.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C97632C5211E2DD000D9D4B5 /* Iota.cpp */; };
 		C97632CB211E2DD000D9D4B5 /* IAGUIMain.fl in Sources */ = {isa = PBXBuildFile; fileRef = C97632C6211E2DD000D9D4B5 /* IAGUIMain.fl */; };
@@ -22,7 +23,7 @@
 		C97632EB211F685100D9D4B5 /* binaryData.fl in Sources */ = {isa = PBXBuildFile; fileRef = C97632EA211F685100D9D4B5 /* binaryData.fl */; };
 		C97632EF211FA7CC00D9D4B5 /* IAPrinter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C97632ED211FA7CC00D9D4B5 /* IAPrinter.cpp */; };
 		C98C66B721205D1D00BD3ACE /* IAFmtTexJpeg.cxx in Sources */ = {isa = PBXBuildFile; fileRef = C98C66B621205D1D00BD3ACE /* IAFmtTexJpeg.cxx */; };
-		C98C66BC21205D3C00BD3ACE /* IAFmtObjStl.cxx in Sources */ = {isa = PBXBuildFile; fileRef = C98C66B921205D3C00BD3ACE /* IAFmtObjStl.cxx */; };
+		C98C66BC21205D3C00BD3ACE /* IAGeometryReaderTextStl.cxx in Sources */ = {isa = PBXBuildFile; fileRef = C98C66B921205D3C00BD3ACE /* IAGeometryReaderTextStl.cxx */; };
 		C98C66BD21205D3C00BD3ACE /* IAFmtObj3ds.cxx in Sources */ = {isa = PBXBuildFile; fileRef = C98C66BA21205D3C00BD3ACE /* IAFmtObj3ds.cxx */; };
 		C98C66C321208C6400BD3ACE /* IACamera.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C98C66C121208C6300BD3ACE /* IACamera.cpp */; };
 		C99331E62123068F00629BE1 /* helpAbout.html in Resources */ = {isa = PBXBuildFile; fileRef = C99331E52123068E00629BE1 /* helpAbout.html */; };
@@ -72,6 +73,8 @@
 		C938CC1B2125F00700BAC374 /* bitmap.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = bitmap.h; sourceTree = "<group>"; };
 		C938CC1C2125F05500BAC374 /* lists.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = lists.h; sourceTree = "<group>"; };
 		C938CC1D2125F08B00BAC374 /* progress.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = progress.h; sourceTree = "<group>"; };
+		C938CC1E212602F600BAC374 /* IAGeometryReaderBinaryStl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IAGeometryReaderBinaryStl.h; sourceTree = "<group>"; };
+		C938CC1F212602F600BAC374 /* IAGeometryReaderBinaryStl.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = IAGeometryReaderBinaryStl.cxx; sourceTree = "<group>"; };
 		C96B142D211A3E9E00978AC7 /* Iota.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Iota.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C96B1433211A3E9F00978AC7 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		C96B1438211A3E9F00978AC7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -99,8 +102,8 @@
 		C98C66B32120550C00BD3ACE /* xyz.stl */ = {isa = PBXFileReference; lastKnownFileType = file; path = xyz.stl; sourceTree = "<group>"; };
 		C98C66B521205D1D00BD3ACE /* IAFmtTexJpeg.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IAFmtTexJpeg.h; sourceTree = "<group>"; };
 		C98C66B621205D1D00BD3ACE /* IAFmtTexJpeg.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = IAFmtTexJpeg.cxx; sourceTree = "<group>"; };
-		C98C66B821205D3C00BD3ACE /* IAFmtObjStl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IAFmtObjStl.h; sourceTree = "<group>"; };
-		C98C66B921205D3C00BD3ACE /* IAFmtObjStl.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = IAFmtObjStl.cxx; sourceTree = "<group>"; };
+		C98C66B821205D3C00BD3ACE /* IAGeometryReaderTextStl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IAGeometryReaderTextStl.h; sourceTree = "<group>"; };
+		C98C66B921205D3C00BD3ACE /* IAGeometryReaderTextStl.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = IAGeometryReaderTextStl.cxx; sourceTree = "<group>"; };
 		C98C66BA21205D3C00BD3ACE /* IAFmtObj3ds.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = IAFmtObj3ds.cxx; sourceTree = "<group>"; };
 		C98C66BB21205D3C00BD3ACE /* IAFmtObj3ds.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IAFmtObj3ds.h; sourceTree = "<group>"; };
 		C98C66BF212060EE00BD3ACE /* updateFLTK.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = updateFLTK.txt; sourceTree = "<group>"; };
@@ -268,8 +271,10 @@
 				C938CC172125CFB100BAC374 /* IAGeometryReader.h */,
 				C98C66BA21205D3C00BD3ACE /* IAFmtObj3ds.cxx */,
 				C98C66BB21205D3C00BD3ACE /* IAFmtObj3ds.h */,
-				C98C66B921205D3C00BD3ACE /* IAFmtObjStl.cxx */,
-				C98C66B821205D3C00BD3ACE /* IAFmtObjStl.h */,
+				C98C66B921205D3C00BD3ACE /* IAGeometryReaderTextStl.cxx */,
+				C98C66B821205D3C00BD3ACE /* IAGeometryReaderTextStl.h */,
+				C938CC1F212602F600BAC374 /* IAGeometryReaderBinaryStl.cxx */,
+				C938CC1E212602F600BAC374 /* IAGeometryReaderBinaryStl.h */,
 				C98C66B621205D1D00BD3ACE /* IAFmtTexJpeg.cxx */,
 				C98C66B521205D1D00BD3ACE /* IAFmtTexJpeg.h */,
 				C97632DE211E394000D9D4B5 /* lib3ds.h */,
@@ -427,12 +432,13 @@
 				C993323C21238A7200629BE1 /* potracelib.c in Sources */,
 				C97632D1211E317F00D9D4B5 /* IAVertex.cpp in Sources */,
 				C97632CB211E2DD000D9D4B5 /* IAGUIMain.fl in Sources */,
+				C938CC20212602F600BAC374 /* IAGeometryReaderBinaryStl.cxx in Sources */,
 				C98C66BD21205D3C00BD3ACE /* IAFmtObj3ds.cxx in Sources */,
 				C98C66B721205D1D00BD3ACE /* IAFmtTexJpeg.cxx in Sources */,
 				C97632EB211F685100D9D4B5 /* binaryData.fl in Sources */,
 				C97632D4211E325C00D9D4B5 /* IAEdge.cpp in Sources */,
 				C9CD015A21204C2700713CAF /* IAModelView.cpp in Sources */,
-				C98C66BC21205D3C00BD3ACE /* IAFmtObjStl.cxx in Sources */,
+				C98C66BC21205D3C00BD3ACE /* IAGeometryReaderTextStl.cxx in Sources */,
 				C97632CA211E2DD000D9D4B5 /* Iota.cpp in Sources */,
 				C98C66C321208C6400BD3ACE /* IACamera.cpp in Sources */,
 				C97632EF211FA7CC00D9D4B5 /* IAPrinter.cpp in Sources */,

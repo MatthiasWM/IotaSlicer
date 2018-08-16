@@ -32,7 +32,7 @@ void load3ds(Lib3dsFile *f, Lib3dsMeshInstanceNode *node) {
     Lib3dsMesh *mesh;
 
     IAMesh *msh = new IAMesh();
-    Iota.gMeshList.push_back(msh);
+    Iota.gMeshList->push_back(msh);
 
     mesh = lib3ds_file_mesh_for_node(f, (Lib3dsNode*)node);
     if (!mesh || !mesh->vertices) return;

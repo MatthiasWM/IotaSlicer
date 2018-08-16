@@ -32,10 +32,18 @@ public:
     IAIota();
     ~IAIota();
 
+    bool addGeomtery(const char *name, uint8_t *data, size_t size);
+    bool addGeomtery(const char *filename);
+    void addGeometry(IAMeshList *model);
+
+private:
+    bool addGeomtery(class IAGeometryReader *reader);
+
+
 public: // TODO: deprecated globals are now members, but must be removed
     class Fl_Window *gMainWindow = nullptr;
     class Fl_RGB_Image *texture = nullptr;
-    IAMeshList gMeshList;
+    IAMeshList *gMeshList = nullptr;
     IASlice gMeshSlice;
     IAPrinter gPrinter;
     bool gShowSlice;
