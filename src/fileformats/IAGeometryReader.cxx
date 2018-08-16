@@ -51,6 +51,9 @@ std::shared_ptr<IAGeometryReader> IAGeometryReader::findReaderFor(const char *na
 }
 
 
+/**
+ * CReate a universal reader by mapping the file to memory.
+ */
 IAGeometryReader::IAGeometryReader(const char *filename)
 {
     int fd = ::open(filename, O_RDONLY, 0);
@@ -76,6 +79,9 @@ IAGeometryReader::IAGeometryReader(const char *filename)
 }
 
 
+/**
+ * Create a reader.
+ */
 IAGeometryReader::IAGeometryReader(uint8_t *data, size_t size)
 :   pData( data ),
     pCurrData( data ),
@@ -85,6 +91,9 @@ IAGeometryReader::IAGeometryReader(uint8_t *data, size_t size)
 }
 
 
+/**
+ * Release any allocated resources.
+ */
 IAGeometryReader::~IAGeometryReader()
 {
     if (pMustUnmapOnDelete) {
@@ -117,11 +126,128 @@ uint16_t IAGeometryReader::getUInt16LSB() {
 }
 
 
+/**
+ * Get a 32bit float from memory
+ */
 float IAGeometryReader::getFloatLSB()
 {
     float ret = *(const float*)pCurrData;
     pCurrData += 4;
     return ret;
+}
+
+
+/**
+ * Skip the next n bytes when reading.
+ */
+void IAGeometryReader::skip(size_t n)
+{
+    pCurrData += n;
+}
+
+
+/**
+ * Find the next keyword in a text file.
+ */
+bool IAGeometryReader::getWord()
+{
+    // skip whitespace
+    // FIXME: test for end of buffer!
+    for (;;) {
+        uint8_t c = *pCurrData;
+        if (c!=' ' && c!='\t' && c!='\r' && c!='\n')
+            break;
+        pCurrData++;
+        if (pCurrData-pData > pSize)
+            return false;
+    }
+    pCurrWord = pCurrData;
+    char c = (char)*pCurrData;
+    if (isalpha(c) || c=='_') {
+        // find the end of a standard 'C' style keyword
+        pCurrData++;
+        for (;;) {
+            char c = (char)*pCurrData;
+            if (!isalnum(c) && c!='_')
+                break;
+            pCurrData++;
+        }
+        return true;
+    }
+    if (c=='"') {
+        // find the end of a quoted string
+        pCurrData++;
+        for (;;) {
+            char c = (char)*pCurrData;
+            if (c=='\\')
+                pCurrData++;
+            else if (c=='"')
+                break;
+            pCurrData++;
+        }
+        return true;
+    }
+    if (c=='+' || c=='-' || c=='.' || isdigit(c)) {
+        // find the end of a number
+        pCurrData++;
+        for (;;) {
+            char c = (char)*pCurrData;
+            if (!(isdigit(c) || c=='-' || c=='+' || c=='E' || c=='e' || c=='.'))
+                break;
+            pCurrData++;
+        }
+        return true;
+    }
+    pCurrData++;
+    return true;
+}
+
+
+/**
+ * Find the next keyword in a text file.
+ */
+double IAGeometryReader::getDouble()
+{
+    getWord();
+    double ret = atof((char *)pCurrWord);
+    return ret;
+}
+
+
+/**
+ * Get the rest of this line
+ */
+bool IAGeometryReader::getLine()
+{
+    pCurrWord = pCurrData;
+    for (;;) {
+        uint8_t c = *pCurrData;
+        if (c=='\r' || c=='\n')
+            break;
+        pCurrData++;
+        if (pCurrData-pData > pSize)
+            return false;
+    }
+    if ( (pCurrData-pData<=pSize) && pCurrData[0]=='\r' && pCurrData[1]=='\n')
+        pCurrData++;
+    pCurrData++;
+    return true;
+}
+
+
+bool IAGeometryReader::wordIs(const char *key)
+{
+    size_t len = strlen(key);
+    if (pCurrData-pCurrWord != len)
+        return false;
+    return (strncmp((char*)pCurrWord, key, len)==0);
+}
+
+
+void IAGeometryReader::printWord()
+{
+    size_t len = pCurrData-pCurrWord;
+    printf("%.*s\n", (int)len, (char*)pCurrWord);
 }
 
 

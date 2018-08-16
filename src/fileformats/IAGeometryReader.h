@@ -30,16 +30,23 @@ public:
     virtual IAMeshList *load() = 0;
 
 protected:
-    void skip(size_t n) { pCurrData += n; }
+    void skip(size_t n);
     uint32_t getUInt32LSB();
     uint16_t getUInt16LSB();
     float getFloatLSB();
+    bool getWord();
+    double getDouble();
+    bool getLine();
+    bool wordIs(const char *);
+    void printWord();
 
 private:
     bool pMustUnmapOnDelete = false;
     uint8_t *pData = nullptr;
     uint8_t *pCurrData = nullptr;
+    uint8_t *pCurrWord = nullptr;
     size_t pSize = 0;
+
 };
 
 

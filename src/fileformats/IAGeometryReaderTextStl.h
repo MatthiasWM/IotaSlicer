@@ -22,8 +22,10 @@ public:
     static std::shared_ptr<IAGeometryReader> findReaderFor(const char *filename);
     static std::shared_ptr<IAGeometryReader> findReaderFor(const char *name, uint8_t *data, size_t size);
 
-    IAGeometryReaderTextStl() = default;
-    ~IAGeometryReaderTextStl() = default;
+    IAGeometryReaderTextStl(uint8_t *data, size_t size);
+    IAGeometryReaderTextStl(const char *filename);
+    virtual ~IAGeometryReaderTextStl() override;
+    virtual IAMeshList *load() override;
 };
 
 
