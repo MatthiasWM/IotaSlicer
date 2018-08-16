@@ -50,6 +50,7 @@ public:
     void projectTexture(double w, double h, int type);
     IAEdge *findEdge(IAVertex*, IAVertex*);
     IAEdge *addEdge(IAVertex*, IAVertex*, IATriangle*);
+    size_t addPoint(float x, float y, float z);
 
     IAVertexList vertexList;
     IAEdgeList edgeList;
@@ -76,6 +77,7 @@ public:
     void drawGouraud();
     void shrinkBy(double s);
     void projectTexture(double w, double h, int type);
+
 private:
     IAMeshVector meshList;
 };

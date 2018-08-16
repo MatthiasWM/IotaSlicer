@@ -8,6 +8,8 @@
 #define IA_GEOMETRY_READER_H
 
 
+#include "../geometry/IAMesh.h"
+
 #include <stdio.h>
 #include <memory>
 
@@ -22,8 +24,22 @@ public:
     static std::shared_ptr<IAGeometryReader> findReaderFor(const char *name, unsigned char *data, size_t size);
 
 public:
-    IAGeometryReader() = default;
-    virtual ~IAGeometryReader() = default;
+    IAGeometryReader(const char *filename);
+    IAGeometryReader(uint8_t *data, size_t size);
+    virtual ~IAGeometryReader();
+    virtual IAMeshList *load() = 0;
+
+protected:
+    void skip(size_t n) { pCurrData += n; }
+    uint32_t getUInt32LSB();
+    uint16_t getUInt16LSB();
+    float getFloatLSB();
+
+private:
+    bool pMustUnmapOnDelete = false;
+    uint8_t *pData = nullptr;
+    uint8_t *pCurrData = nullptr;
+    size_t pSize = 0;
 };
 
 

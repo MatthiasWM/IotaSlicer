@@ -32,8 +32,8 @@ public:
     IAIota();
     ~IAIota();
 
-    bool addGeomtery(const char *name, uint8_t *data, size_t size);
-    bool addGeomtery(const char *filename);
+    bool addGeometry(const char *name, uint8_t *data, size_t size);
+    bool addGeometry(const char *filename);
     void addGeometry(IAMeshList *model);
 
 private:

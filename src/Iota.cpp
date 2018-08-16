@@ -92,14 +92,17 @@ IAIota::~IAIota()
 /**
  * Read a geometry from memory.
  */
-bool IAIota::addGeomtery(const char *name, uint8_t *data, size_t size)
+bool IAIota::addGeometry(const char *name, uint8_t *data, size_t size)
 {
     bool ret = false;
 
     auto reader = IAGeometryReader::findReaderFor(name, data, size);
-//    if (reader) {
-//        auto geometry reader.createGeometry();
-//    }
+    if (reader) {
+        delete Iota.gMeshList;
+        Iota.gMeshList = nullptr;
+        auto geometry = reader->load();
+        Iota.gMeshList = geometry;
+    }
     return ret;
 }
 
@@ -107,9 +110,18 @@ bool IAIota::addGeomtery(const char *name, uint8_t *data, size_t size)
 /**
  * Read a geometry from an external file.
  */
-bool IAIota::addGeomtery(const char *filename)
+bool IAIota::addGeometry(const char *filename)
 {
-    return true;
+    bool ret = false;
+
+    auto reader = IAGeometryReader::findReaderFor(filename);
+    if (reader) {
+        delete Iota.gMeshList;
+        Iota.gMeshList = nullptr;
+        auto geometry = reader->load();
+        Iota.gMeshList = geometry;
+    }
+    return ret;
 }
 
 
@@ -127,9 +139,9 @@ int main (int argc, char **argv)
     loadTexture("testcard1024.jpg", defaultTexture);
 //    loadStl("/Users/matt/dev/IotaSlicer/data/xyz.stl");
 //    loadStl("/Users/matt/dev/IotaSlicer/src/data/suzanne.stl");
-    loadStl(defaultModel);
+//    loadStl(defaultModel);
 
-//    addGeometry("default.stl", defaultModel);
+    Iota.addGeometry("default.stl", defaultModel, sizeof(defaultModel));
 
     //loadStl("/Users/matt/Desktop/Machine Shop/Data 3D/CalWithNumbers.stl");
     Iota.gMeshList->projectTexture(100.0, 100.0, IA_PROJECTION_FRONT);

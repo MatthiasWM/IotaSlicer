@@ -17,16 +17,16 @@
 class IAGeometryReaderBinaryStl : public IAGeometryReader
 {
     typedef IAGeometryReader super;
+    
 public:
-    IAGeometryReaderBinaryStl() = default;
-    ~IAGeometryReaderBinaryStl() = default;
+    static std::shared_ptr<IAGeometryReader> findReaderFor(const char *filename);
+    static std::shared_ptr<IAGeometryReader> findReaderFor(const char *name, uint8_t *data, size_t size);
+
+    IAGeometryReaderBinaryStl(uint8_t *data, size_t size);
+    IAGeometryReaderBinaryStl(const char *filename);
+    virtual ~IAGeometryReaderBinaryStl() override;
+    virtual IAMeshList *load() override;
 };
-
-
-
-extern void loadStl(const unsigned char *d);
-extern void loadStl(const char *filename);
-
 
 
 #endif /* IA_GEOMETRY_READER_BINARY_STL_H */

@@ -416,6 +416,33 @@ void IAMesh::projectTexture(double w, double h, int type)
 }
 
 
+/**
+ Add a point to a mesh, avoiding duplicates.
+ \todo: this should be a function of the mesh or its vertex list
+ \todo: this must be accelerated by sorting vertices or better, using a map
+ \todo: there should probably be a minimal tollerance when comparinf doubles!
+ \return the index of the point in the mesh
+ */
+size_t IAMesh::addPoint(float x, float y, float z)
+{
+    size_t i, n = vertexList.size();
+    for (i = 0; i < n; ++i) {
+        IAVertex *v = vertexList[i];
+        if (   v->pPosition.x()==x
+            && v->pPosition.y()==y
+            && v->pPosition.z()==z)
+        {
+            return i;
+        }
+    }
+    IAVertex *v = new IAVertex();
+    v->pPosition.set(x, y, z);
+    vertexList.push_back(v);
+    return n;
+}
+
+
+
 
 // -----------------------------------------------------------------------------
 
@@ -485,4 +512,9 @@ void IAMeshList::projectTexture(double w, double h, int type)
         m->projectTexture(w, h, type);
     }
 }
+
+
+
+
+
 
