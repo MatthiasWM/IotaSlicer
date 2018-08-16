@@ -32,9 +32,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\src\main.cxx">
-      <Filter>src</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\src\geometry\IAEdge.cpp">
       <Filter>src\geometry</Filter>
     </ClCompile>
@@ -74,14 +71,17 @@
     <ClCompile Include="..\..\..\src\data\binaryData.cpp">
       <Filter>src\data</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\userinterface\mainUI.cpp">
+    <ClCompile Include="..\..\..\src\userinterface\IAGUIMain.cpp">
+      <Filter>src\userInterface</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\Iota.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\userinterface\IAGLButton.cpp">
       <Filter>src\userInterface</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\src\main.h">
-      <Filter>src</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\src\geometry\IAEdge.h">
       <Filter>src\geometry</Filter>
     </ClInclude>
@@ -124,7 +124,13 @@
     <ClInclude Include="..\..\..\src\data\binaryData.h">
       <Filter>src\data</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\src\userinterface\mainUI.h">
+    <ClInclude Include="..\..\..\src\userinterface\IAGUIMain.h">
+      <Filter>src\userInterface</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\Iota.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\userinterface\IAGLButton.h">
       <Filter>src\userInterface</Filter>
     </ClInclude>
   </ItemGroup>
@@ -177,7 +183,7 @@
     <CustomBuild Include="..\..\..\src\data\binaryData.fl">
       <Filter>src\data</Filter>
     </CustomBuild>
-    <CustomBuild Include="..\..\..\src\userinterface\mainUI.fl">
+    <CustomBuild Include="..\..\..\src\userinterface\IAGUIMain.fl">
       <Filter>src\userInterface</Filter>
     </CustomBuild>
   </ItemGroup>
