@@ -6,6 +6,7 @@
 
 #include "IAVector3d.h"
 
+#include "IAMath.h"
 #include <math.h>
 
 
@@ -51,6 +52,20 @@ IAVector3d::IAVector3d(double x, double y, double z)
 
 
 /**
+ * Assignment operator.
+ */
+IAVector3d &IAVector3d::operator=(const IAVector3d &rhs)
+{
+    if(this == &rhs)
+        return *this;
+    pV[0] = rhs.pV[0];
+    pV[1] = rhs.pV[1];
+    pV[2] = rhs.pV[2];
+    return *this;
+}
+
+
+/**
  Set a vector form tree coordinates.
  */
 void IAVector3d::set(double x, double y, double z)
@@ -59,6 +74,24 @@ void IAVector3d::set(double x, double y, double z)
     pV[1] = y;
     pV[2] = z;
 }
+
+
+
+void IAVector3d::setMin(const IAVector3d &v)
+{
+    pV[0] = min(pV[0], v.pV[0]);
+    pV[1] = min(pV[1], v.pV[1]);
+    pV[2] = min(pV[2], v.pV[2]);
+}
+
+
+void IAVector3d::setMax(const IAVector3d &v)
+{
+    pV[0] = max(pV[0], v.pV[0]);
+    pV[1] = max(pV[1], v.pV[1]);
+    pV[2] = max(pV[2], v.pV[2]);
+}
+
 
 
 /**

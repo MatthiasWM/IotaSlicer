@@ -150,14 +150,6 @@ IAMeshList *IAGeometryReaderBinaryStl::load()
         msh->addFace(t);
         // color
         getUInt16LSB(); // color information, if there was a standard
-
-        // FIXME: this must be part of the mesh class
-        Iota.minX = min(Iota.minX, msh->vertexList[p1]->pPosition.x());
-        Iota.maxX = max(Iota.maxX, msh->vertexList[p1]->pPosition.x());
-        Iota.minY = min(Iota.minY, msh->vertexList[p1]->pPosition.y());
-        Iota.maxY = max(Iota.maxY, msh->vertexList[p1]->pPosition.y());
-        Iota.minZ = min(Iota.minZ, msh->vertexList[p1]->pPosition.z());
-        Iota.maxZ = max(Iota.maxZ, msh->vertexList[p1]->pPosition.z());
     }
 
     // FIXME: fixing the mesh should be done after loading *any* mesh, not just this one
@@ -170,6 +162,8 @@ IAMeshList *IAGeometryReaderBinaryStl::load()
 
     msh->clearNormals();
     msh->calculateNormals();
+
+    meshList->updateBoundingBox();
 
     return meshList;
 }

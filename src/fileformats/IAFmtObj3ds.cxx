@@ -12,6 +12,7 @@
 
 #include "Iota.h"
 #include "../geometry/IAMesh.h"
+#include "../geometry/IAMath.h"
 
 #include <stdio.h>
 
@@ -62,12 +63,6 @@ void load3ds(Lib3dsFile *f, Lib3dsMeshInstanceNode *node) {
         for (i = 0; i < mesh->nvertices; ++i) {
             IAVertex *isPoint = new IAVertex();
             isPoint->pPosition.read(mesh->vertices[i]);
-            Iota.minX = min(Iota.minX, isPoint->pPosition.x());
-            Iota.maxX = max(Iota.maxX, isPoint->pPosition.x());
-            Iota.minY = min(Iota.minY, isPoint->pPosition.y());
-            Iota.maxY = max(Iota.maxY, isPoint->pPosition.y());
-            Iota.minZ = min(Iota.minZ, isPoint->pPosition.z());
-            Iota.maxZ = max(Iota.maxZ, isPoint->pPosition.z());
             //isPoint->pPosition *= 10;
             //isPoint->pPosition *= 40; // mokey full size
             //isPoint->pPosition *= 5; // mokey tiny (z=-5...+5)
@@ -79,14 +74,13 @@ void load3ds(Lib3dsFile *f, Lib3dsMeshInstanceNode *node) {
                               );
             //isPoint->pPosition *= 10; // mokey tiny (z=-5...+5)
             isPoint->pPosition *= 30; // mokey tiny (z=-5...+5)
-            isPoint->pInitialPosition = isPoint->pPosition;
 #endif
+            isPoint->pInitialPosition = isPoint->pPosition;
             msh->vertexList.push_back(isPoint);
+            msh->updateBoundingBox(isPoint->pPosition);
         }
     }
 
-    printf("Model bounding box is:\n  x: %g, %g\n  y: %g, %g\n  z: %g, %g\n",
-           Iota.minX, Iota.maxX, Iota.minY, Iota.maxY, Iota.minZ, Iota.maxZ);
     /*
      Monkey Model bounding box is:
      x: -1.36719, 1.36719

@@ -64,14 +64,6 @@ const char *IAIota::kErrorMessage[] =
 //double minX = 0.0, maxX = 0.0, minY = 0.0, maxY = 0.0, minZ = 0.0, maxZ = 0.0;
 
 
-float min(float a, float b) { return (a<b)?a:b; }
-
-float max(float a, float b) { return (a>b)?a:b; }
-
-double min(double a, double b) { return a<b?a:b; }
-
-double max(double a, double b) { return a>b?a:b; }
-
 
 IAIota::IAIota()
 {

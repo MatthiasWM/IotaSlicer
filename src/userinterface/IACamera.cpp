@@ -9,6 +9,7 @@
 
 #include "Iota.h"
 #include "IAModelView.h"
+#include "../geometry/IAMath.h"
 
 #include <FL/gl.h>
 #include <FL/glu.h>

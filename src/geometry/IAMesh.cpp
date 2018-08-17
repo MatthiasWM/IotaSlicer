@@ -436,12 +436,20 @@ size_t IAMesh::addPoint(double x, double y, double z)
         }
     }
     IAVertex *v = new IAVertex();
-    v->pPosition.set(x, y, z);
-    v->pInitialPosition.set(x, y, z);
+    IAVector3d p(x, y, z);
+    v->pPosition = p;
+    v->pInitialPosition = p;
+    updateBoundingBox(p);
     vertexList.push_back(v);
     return n;
 }
 
+
+void IAMesh::updateBoundingBox(IAVector3d &v)
+{
+    pMin.setMin(v);
+    pMax.setMax(v);
+}
 
 
 
@@ -511,6 +519,15 @@ void IAMeshList::projectTexture(double w, double h, int type)
 {
     for (auto m: meshList) {
         m->projectTexture(w, h, type);
+    }
+}
+
+
+void IAMeshList::updateBoundingBox()
+{
+    for (auto m: meshList) {
+        pMin.setMin(m->pMin);
+        pMax.setMax(m->pMax);
     }
 }
 

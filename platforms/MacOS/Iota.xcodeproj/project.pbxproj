@@ -10,6 +10,7 @@
 		C938CC152124D51200BAC374 /* IAGLButton.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C938CC142124D51200BAC374 /* IAGLButton.cpp */; };
 		C938CC182125CFB100BAC374 /* IAGeometryReader.cxx in Sources */ = {isa = PBXBuildFile; fileRef = C938CC162125CFB100BAC374 /* IAGeometryReader.cxx */; };
 		C938CC20212602F600BAC374 /* IAGeometryReaderBinaryStl.cxx in Sources */ = {isa = PBXBuildFile; fileRef = C938CC1F212602F600BAC374 /* IAGeometryReaderBinaryStl.cxx */; };
+		C938CC232126E67700BAC374 /* IAMath.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C938CC212126E67600BAC374 /* IAMath.cpp */; };
 		C96B1434211A3E9F00978AC7 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C96B1433211A3E9F00978AC7 /* Assets.xcassets */; };
 		C97632CA211E2DD000D9D4B5 /* Iota.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C97632C5211E2DD000D9D4B5 /* Iota.cpp */; };
 		C97632CB211E2DD000D9D4B5 /* IAGUIMain.fl in Sources */ = {isa = PBXBuildFile; fileRef = C97632C6211E2DD000D9D4B5 /* IAGUIMain.fl */; };
@@ -75,6 +76,8 @@
 		C938CC1D2125F08B00BAC374 /* progress.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = progress.h; sourceTree = "<group>"; };
 		C938CC1E212602F600BAC374 /* IAGeometryReaderBinaryStl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IAGeometryReaderBinaryStl.h; sourceTree = "<group>"; };
 		C938CC1F212602F600BAC374 /* IAGeometryReaderBinaryStl.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = IAGeometryReaderBinaryStl.cxx; sourceTree = "<group>"; };
+		C938CC212126E67600BAC374 /* IAMath.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = IAMath.cpp; sourceTree = "<group>"; };
+		C938CC222126E67700BAC374 /* IAMath.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IAMath.h; sourceTree = "<group>"; };
 		C96B142D211A3E9E00978AC7 /* Iota.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Iota.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C96B1433211A3E9F00978AC7 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		C96B1438211A3E9F00978AC7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -240,6 +243,8 @@
 				C97632CF211E317F00D9D4B5 /* IAVertex.h */,
 				C97632C9211E2DD000D9D4B5 /* IAVector3d.cpp */,
 				C97632C4211E2DD000D9D4B5 /* IAVector3d.h */,
+				C938CC212126E67600BAC374 /* IAMath.cpp */,
+				C938CC222126E67700BAC374 /* IAMath.h */,
 			);
 			path = geometry;
 			sourceTree = "<group>";
@@ -436,6 +441,7 @@
 				C98C66BD21205D3C00BD3ACE /* IAFmtObj3ds.cxx in Sources */,
 				C98C66B721205D1D00BD3ACE /* IAFmtTexJpeg.cxx in Sources */,
 				C97632EB211F685100D9D4B5 /* binaryData.fl in Sources */,
+				C938CC232126E67700BAC374 /* IAMath.cpp in Sources */,
 				C97632D4211E325C00D9D4B5 /* IAEdge.cpp in Sources */,
 				C9CD015A21204C2700713CAF /* IAModelView.cpp in Sources */,
 				C98C66BC21205D3C00BD3ACE /* IAGeometryReaderTextStl.cxx in Sources */,

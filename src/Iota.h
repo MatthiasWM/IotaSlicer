@@ -18,12 +18,6 @@ const int IA_PROJECTION_FRONT       = 0;
 const int IA_PROJECTION_CYLINDER    = 1;
 const int IA_PROJECTION_SPHERE      = 2;
 
-extern double min(double a, double b);
-extern double max(double a, double b);
-extern float min(float a, float b);
-extern float max(float a, float b);
-
-
 /**
  * List of errors that the user may encounter.
  */
@@ -61,7 +55,6 @@ public: // TODO: deprecated globals are now members, but must be removed
     bool gShowSlice;
     bool gShowTexture;
     FILE *gOutFile = nullptr;
-    double minX, maxX, minY, maxY, minZ, maxZ;
 
     void loadAnyFileList(const char *list);
     void sliceAll();

@@ -13,6 +13,7 @@
 #include "IAEdge.h"
 
 #include <vector>
+#include <float.h>
 
 
 /**
@@ -52,9 +53,13 @@ public:
     IAEdge *addEdge(IAVertex*, IAVertex*, IATriangle*);
     size_t addPoint(double x, double y, double z);
 
+    void updateBoundingBox(IAVector3d&);
+
     IAVertexList vertexList;
     IAEdgeList edgeList;
     IATriangleList faceList;
+    IAVector3d pMin = { FLT_MAX, FLT_MAX, FLT_MAX};
+    IAVector3d pMax = { FLT_MIN, FLT_MIN, FLT_MIN };
 };
 
 
@@ -77,6 +82,10 @@ public:
     void drawGouraud();
     void shrinkBy(double s);
     void projectTexture(double w, double h, int type);
+    void updateBoundingBox();
+
+    IAVector3d pMin = { FLT_MAX, FLT_MAX, FLT_MAX};
+    IAVector3d pMax = { FLT_MIN, FLT_MIN, FLT_MIN };
 
 private:
     IAMeshVector meshList;
