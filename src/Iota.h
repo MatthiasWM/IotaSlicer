@@ -23,6 +23,16 @@ extern double max(double a, double b);
 extern float min(float a, float b);
 extern float max(float a, float b);
 
+
+/**
+ * List of errors that the user may encounter.
+ */
+enum class Error {
+    noError = 0,
+    CantOpenFile_STR_BSD
+};
+
+
 /**
  * The main class that manages this app.
  */
@@ -54,6 +64,19 @@ public: // TODO: deprecated globals are now members, but must be removed
     void sliceAll();
     void menuWriteSlice();
     void menuQuit();
+
+    void clearError();
+    void setError(const char *loc, Error err, const char *str=nullptr);
+    bool hadError();
+    Error lastError() { return pError; }
+    void showLastError();
+
+private:
+    const char *pErrorString = nullptr;
+    const char *pErrorLocation = nullptr;
+    Error pError = Error::noError;
+    int pErrorBSD = 0;
+    static const char *kErrorMessage[];
 };
 
 

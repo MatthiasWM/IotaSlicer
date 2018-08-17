@@ -27,8 +27,10 @@
 std::shared_ptr<IAGeometryReader> IAGeometryReaderTextStl::findReaderFor(const char *filename)
 {
     int f = ::open(filename, O_RDONLY);
-    if (f==-1)  // TODO: set error
+    if (f==-1) {
+        Iota.setError("STL Geometry reader", Error::CantOpenFile_STR_BSD, filename);
         return nullptr;
+    }
 
     uint8_t data[5];
     size_t n = ::read(f, data, 5);
@@ -60,23 +62,35 @@ std::shared_ptr<IAGeometryReader> IAGeometryReaderTextStl::findReaderFor(const c
 }
 
 
+/**
+ * Create a file reader for reading from memory.
+ */
 IAGeometryReaderTextStl::IAGeometryReaderTextStl(uint8_t *data, size_t size)
 :   IAGeometryReader(data, size)
 {
 }
 
 
+/**
+ * Create a file reader for reading from a file.
+ */
 IAGeometryReaderTextStl::IAGeometryReaderTextStl(const char *filename)
 :   IAGeometryReader(filename)
 {
 }
 
 
+/**
+ * Release resources.
+ */
 IAGeometryReaderTextStl::~IAGeometryReaderTextStl()
 {
 }
 
 
+/**
+ * Interprete the geometry data and create a mesh list.
+ */
 IAMeshList *IAGeometryReaderTextStl::load()
 {
     IAMeshList *meshList = new IAMeshList;
@@ -180,7 +194,4 @@ IAMeshList *IAGeometryReaderTextStl::load()
     return meshList;
 }
 
-
-/**
- */
 

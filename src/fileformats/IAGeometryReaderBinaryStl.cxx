@@ -24,11 +24,14 @@
  * Create a file reader for the indicated file.
  * \return 0 if the format is not STL
  */
+#include <errno.h>
 std::shared_ptr<IAGeometryReader> IAGeometryReaderBinaryStl::findReaderFor(const char *filename)
 {
     int f = ::open(filename, O_RDONLY);
-    if (f==-1)  // TODO: set error
+    if (f==-1) {
+        Iota.setError("STL Geometry reader", Error::CantOpenFile_STR_BSD, filename);
         return nullptr;
+    }
 
     // STL binary headers are not defined, except that they have an 80 character
     // ASCII header that must not start with "solid".
@@ -77,23 +80,35 @@ std::shared_ptr<IAGeometryReader> IAGeometryReaderBinaryStl::findReaderFor(const
 
 
 
+/**
+ * Create a file reader for reading from memory.
+ */
 IAGeometryReaderBinaryStl::IAGeometryReaderBinaryStl(uint8_t *data, size_t size)
 :   IAGeometryReader(data, size)
 {
 }
 
 
+/**
+ * Create a file reader for reading from a file.
+ */
 IAGeometryReaderBinaryStl::IAGeometryReaderBinaryStl(const char *filename)
 :   IAGeometryReader(filename)
 {
 }
 
 
+/**
+ * Release resources.
+ */
 IAGeometryReaderBinaryStl::~IAGeometryReaderBinaryStl()
 {
 }
 
 
+/**
+ * Interprete the geometry data and create a mesh list.
+ */
 IAMeshList *IAGeometryReaderBinaryStl::load()
 {
     IAMeshList *meshList = new IAMeshList;

@@ -4,8 +4,8 @@
 //  Copyright (c) 2013-2018 Matthias Melcher. All rights reserved.
 //
 
-// TODO: add drag'n'drop of STL files to IAModelView
-// TODO: fix STL importer to generate only watertight models
+// TODO: fix 3d view drag'n'drop to interprete filename extensions
+// TODO: fix STL importer to generate only watertight models and generate error message
 // TODO: create a model class that contains meshes
 // TODO: position new models in the center and drop them on the build plane
 // TODO: render textures as slices in IAModelView
@@ -28,8 +28,21 @@
 #include "fileformats/IAGeometryReader.h"
 #include "fileformats/IAGeometryReaderBinaryStl.h"
 
+#include <FL/fl_ask.H>
+
+#include <errno.h>
+
 
 IAIota Iota;
+
+
+#define HDR "%1$s:\n"
+
+const char *IAIota::kErrorMessage[] =
+{
+    HDR"No error.",
+    HDR"Can't open file \"%2$s\":\n%3$s"
+};
 
 
 //Fl_RGB_Image *texture = 0L;
@@ -124,6 +137,36 @@ bool IAIota::addGeometry(const char *filename)
     return ret;
 }
 
+
+void IAIota::clearError()
+{
+    pError = Error::noError;
+    pErrorBSD = 0;
+    pErrorString = nullptr;
+}
+
+
+void IAIota::setError(const char *loc, Error err, const char *str)
+{
+    pErrorLocation = loc;
+    pError = err;
+    pErrorBSD = errno;
+    pErrorString = str;
+}
+
+
+bool IAIota::hadError()
+{
+    return (pError!=Error::noError);
+}
+
+
+void IAIota::showLastError()
+{
+    if (hadError()) {
+        fl_alert(kErrorMessage[(size_t)pError], pErrorLocation, pErrorString, strerror(pErrorBSD));
+    }
+}
 
 
 int main (int argc, char **argv)

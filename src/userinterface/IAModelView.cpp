@@ -94,7 +94,9 @@ int IAModelView::handle(int event)
         case FL_PASTE:
             // FIXME: check if the file ending is .stl (etc.)
             // FIXME: check for multiple file drop
+            Iota.clearError();
             Iota.addGeometry(Fl::event_text());
+            Iota.showLastError();
             break;
     }
     return Fl_Gl_Window::handle(event);
