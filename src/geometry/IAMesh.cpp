@@ -32,6 +32,7 @@ void IAMesh::clear()
         delete e;
     }
     edgeList.clear();
+    edgeMap.clear();
 
     for (auto f: faceList) {
         delete f;
@@ -42,6 +43,7 @@ void IAMesh::clear()
         delete v;
     }
     vertexList.clear();
+    vertexMap.clear();
 }
 
 
@@ -248,6 +250,7 @@ IAEdge *IAMesh::addEdge(IAVertex *v0, IAVertex *v1, IATriangle *face)
         e->pVertex[1] = v1;
         e->pFace[0] = face;
         edgeList.push_back(e);
+        edgeMap.insert(std::make_pair(v0->pPosition.length()+v1->pPosition.length(), e));
     }
     return e;
 }
@@ -258,12 +261,25 @@ IAEdge *IAMesh::addEdge(IAVertex *v0, IAVertex *v1, IATriangle *face)
  */
 IAEdge *IAMesh::findEdge(IAVertex *v0, IAVertex *v1)
 {
+#if 0
     for (auto e: edgeList) {
         IAVertex *ev0 = e->pVertex[0];
         IAVertex *ev1 = e->pVertex[1];
         if ((ev0==v0 && ev1==v1)||(ev0==v1 && ev1==v0))
             return e;
     }
+#else
+    double key = v0->pPosition.length()+v1->pPosition.length();
+    auto itlow = edgeMap.lower_bound(key-0.0001);
+    auto itup = edgeMap.upper_bound(key+0.0001);
+    for (auto it=itlow; it!=itup; ++it) {
+        IAEdge *e = (*it).second;
+        IAVertex *ev0 = e->pVertex[0];
+        IAVertex *ev1 = e->pVertex[1];
+        if ((ev0==v0 && ev1==v1)||(ev0==v1 && ev1==v0))
+            return e;
+    }
+#endif
     return 0;
 }
 
@@ -439,7 +455,9 @@ void IAMesh::projectTexture(double w, double h, int type)
  */
 size_t IAMesh::addPoint(double x, double y, double z)
 {
+    IAVector3d pos(x, y, z);
     size_t i, n = vertexList.size();
+#if 0
     for (i = 0; i < n; ++i) {
         IAVertex *v = vertexList[i];
         if (   v->pPosition.x()==x
@@ -449,12 +467,24 @@ size_t IAMesh::addPoint(double x, double y, double z)
             return i;
         }
     }
+#else
+    double length = pos.length();
+    auto itlow = vertexMap.lower_bound(length-0.0001);
+    auto itup = vertexMap.upper_bound(length+0.0001);
+
+    for (auto it=itlow; it!=itup; ++it) {
+        int ix = (*it).second;
+        if (vertexList[ix]->pPosition==pos) {
+            return ix;
+        }
+    }
+#endif
     IAVertex *v = new IAVertex();
-    IAVector3d p(x, y, z);
-    v->pPosition = p;
-    v->pInitialPosition = p;
-    updateBoundingBox(p);
+    v->pPosition = pos;
+    v->pInitialPosition = pos;
+    updateBoundingBox(pos);
     vertexList.push_back(v);
+    vertexMap.insert(std::make_pair(v->pPosition.length(), n));
     return n;
 }
 

@@ -19,6 +19,7 @@ public:
     IAVector3d(const IAVector3d&);
     IAVector3d(double*);
     IAVector3d(double, double, double);
+    bool operator==(const IAVector3d &rhs) const;
     IAVector3d &operator=(const IAVector3d &rhs);
     IAVector3d& operator-=(const IAVector3d&);
     IAVector3d& operator+=(const IAVector3d&);

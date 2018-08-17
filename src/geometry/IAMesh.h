@@ -13,10 +13,14 @@
 #include "IAEdge.h"
 
 #include <vector>
+#include <map>
 #include <float.h>
 
 
 class IAPrinter;
+
+typedef std::multimap<double, int> IAVertexMap;
+typedef std::multimap<double, IAEdge*> IAEdgeMap;
 
 
 /**
@@ -61,7 +65,9 @@ public:
     void centerOnPrintbed(IAPrinter *printer);
 
     IAVertexList vertexList;
+    IAVertexMap vertexMap;
     IAEdgeList edgeList;
+    IAEdgeMap edgeMap;
     IATriangleList faceList;
     IAVector3d pMin = { FLT_MAX, FLT_MAX, FLT_MAX};
     IAVector3d pMax = { FLT_MIN, FLT_MIN, FLT_MIN };

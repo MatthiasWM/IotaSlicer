@@ -262,3 +262,13 @@ void IAVector3d::zRotate(double a)
 }
 
 
+bool IAVector3d::operator==(const IAVector3d &rhs) const
+{
+    if (abs(pV[0]-rhs.pV[0])>1e-7) return false;
+    if (abs(pV[1]-rhs.pV[1])>1e-7) return false;
+    if (abs(pV[2]-rhs.pV[2])>1e-7) return false;
+    return true;
+}
+
+
+
