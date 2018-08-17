@@ -12,6 +12,8 @@
 #include "geometry/IASlice.h"
 #include "printer/IAPrinter.h"
 
+class IAGeometryReader;
+
 // TODO globals that we want to get rid of.
 
 const int IA_PROJECTION_FRONT       = 0;
@@ -40,6 +42,7 @@ public:
 
     bool addGeometry(const char *name, uint8_t *data, size_t size);
     bool addGeometry(const char *filename);
+    bool addGeometry(std::shared_ptr<IAGeometryReader> reader);
 
 private:
     bool addGeomtery(class IAGeometryReader *reader);

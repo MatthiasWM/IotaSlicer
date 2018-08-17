@@ -549,6 +549,7 @@ void IAMesh::centerOnPrintbed(IAPrinter *printer)
 {
     pOffset = printer->pBuildVolume;
     pOffset *= 0.5;
+    pOffset.z( -pMin.z() );
 }
 
 

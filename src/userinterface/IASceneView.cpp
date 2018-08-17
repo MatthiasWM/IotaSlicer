@@ -278,6 +278,8 @@ void IASceneView::draw_children()
     glDisable(GL_TEXTURE_2D);
     glDisable(GL_DEPTH_TEST);
 
+    // FIXME: buttons disappear when we start to slice until we resize the window
+    // so, generating a slice or loading the texture for the first time seems to cause this!
     Fl_Widget*const* a = array();
     for (int i=children(); i--;) {
         Fl_Widget& o = **a++;

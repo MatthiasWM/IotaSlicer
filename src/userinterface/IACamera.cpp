@@ -161,7 +161,7 @@ void IAOrthoCamera::dolly(double dx, double dy)
 {
     pZoom = pZoom * (1.0+0.01*dy);
     if (pZoom<1.0) pZoom = 1.0;
-    if (pZoom>2.0*Iota.gPrinter.pBuildVolumeRadius) pZoom = 2.0*Iota.gPrinter.pBuildVolumeRadius;
+    if (pZoom>4.0*Iota.gPrinter.pBuildVolumeRadius) pZoom = 4.0*Iota.gPrinter.pBuildVolumeRadius;
 }
 
 

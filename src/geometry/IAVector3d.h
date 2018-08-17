@@ -36,6 +36,9 @@ public:
     double x() const { return pV[0]; }
     double y() const { return pV[1]; }
     double z() const { return pV[2]; }
+    void x(double v) { pV[0] = v; }
+    void y(double v) { pV[1] = v; }
+    void z(double v) { pV[2] = v; }
     void set(double, double, double);
     void xRotate(double);
     void yRotate(double);

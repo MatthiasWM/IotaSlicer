@@ -7,14 +7,10 @@
 // TODO: fix STL importer to generate only watertight models
 // TODO: make STL importer bullet proof (no reads beyond end of line)
 // TODO: create a model class that contains meshes
-// TODO: position new models in the center and drop them on the build plane
-//   TODO: make the bottom front left the origin of OpenGL context
-//   TODO: look at the bottom front of the printer
-//   TODO: autoposition new meshes
-//   TODO: add a positionl vertex and a normal for slicing in the printer coordinate system
+//   TODO: add a positional vertex and a normal for slicing in the printer coordinate system
 //   TODO: update slice class to generate textures and vectors in printer coordinate system
 //   TODO: draw slice in 3d view
-//   TODO: generate slices and vecotrs for every layer in the model
+//   TODO: generate slices and vectors for every layer in the model
 //   TODO: write vectors as GCode
 // TODO: render textures as slices in IASceneView
 // TODO: prototyped - generate slices as OpenGL Textures
@@ -159,17 +155,9 @@ void IAIota::sliceAll()
 bool IAIota::addGeometry(const char *name, uint8_t *data, size_t size)
 {
     bool ret = false;
-
     auto reader = IAGeometryReader::findReaderFor(name, data, size);
-    if (reader) {
-        delete pMesh; pMesh = nullptr;
-        auto mesh = reader->load();
-        pMesh = mesh;
-        if (pMesh) {
-            pMesh->projectTexture(pMesh->pMax.x()*2, pMesh->pMax.y()*2, IA_PROJECTION_FRONT);
-            pMesh->centerOnPrintbed(&gPrinter);
-        }
-    }
+    if (reader)
+        ret = addGeometry(reader);
     return ret;
 }
 
@@ -180,16 +168,25 @@ bool IAIota::addGeometry(const char *name, uint8_t *data, size_t size)
 bool IAIota::addGeometry(const char *filename)
 {
     bool ret = false;
-
     auto reader = IAGeometryReader::findReaderFor(filename);
-    if (reader) {
-        delete Iota.pMesh; Iota.pMesh = nullptr;
-        auto geometry = reader->load();
-        Iota.pMesh = geometry;
-        if (pMesh) {
-            pMesh->projectTexture(pMesh->pMax.x()*2, pMesh->pMax.y()*2, IA_PROJECTION_FRONT);
-            pMesh->centerOnPrintbed(&gPrinter);
-        }
+    if (reader)
+        ret = addGeometry(reader);
+    return ret;
+}
+
+
+/**
+ * Read a geometry from a Reader.
+ */
+bool IAIota::addGeometry(std::shared_ptr<IAGeometryReader> reader)
+{
+    bool ret = false;
+    delete Iota.pMesh; Iota.pMesh = nullptr;
+    auto geometry = reader->load();
+    Iota.pMesh = geometry;
+    if (pMesh) {
+        pMesh->projectTexture(pMesh->pMax.x()*2, pMesh->pMax.y()*2, IA_PROJECTION_FRONT);
+        pMesh->centerOnPrintbed(&gPrinter);
     }
     return ret;
 }
