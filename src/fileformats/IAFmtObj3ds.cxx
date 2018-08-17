@@ -8,7 +8,7 @@
 
 #include "lib3ds.h"
 
-#ifdef __APPLE__
+#if 0
 
 #include "Iota.h"
 #include "../geometry/IAMesh.h"

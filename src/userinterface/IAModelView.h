@@ -32,8 +32,6 @@ public:
 protected:
     int handle(int event) override;
     void draw() override;
-    void clipToSlice(double z1, double z2);
-    void dontClipToSlice();
     void draw_children();
     void updateSlice();
     void initializeView();

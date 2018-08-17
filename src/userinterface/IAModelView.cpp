@@ -264,30 +264,6 @@ void IAModelView::draw_children()
 }
 
 
-/**
- * Enable clipping for the current slice (deprecated)
- */
-void IAModelView::clipToSlice(double z1, double z2)
-{
-    glMatrixMode (GL_PROJECTION);
-    glLoadIdentity();
-    glOrtho(-66.1,66.1,-66.1,66.1, -z1, -z1-z2); // mm
-    glMatrixMode(GL_MODELVIEW);
-}
-
-
-/**
- * Disable clipping for the current slice (deprecated)
- */
-void IAModelView::dontClipToSlice()
-{
-    glMatrixMode (GL_PROJECTION);
-    glLoadIdentity();
-    glOrtho(-66.1,66.1,-66.1,66.1,-66.1,66.1); // mm
-    glMatrixMode(GL_MODELVIEW);
-}
-
-
 void IAModelView::setTopView()
 {
     pCurrentCamera = pTopCamera;
