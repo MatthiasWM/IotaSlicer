@@ -7,6 +7,7 @@
 
 #include "IAMesh.h"
 
+#include "../Iota.h"
 #include "IAEdge.h"
 
 #include <FL/fl_draw.H>
@@ -529,6 +530,85 @@ void IAMeshList::updateBoundingBox()
         pMin.setMin(m->pMin);
         pMax.setMax(m->pMax);
     }
+}
+
+
+/**
+ * Draw a sliced version of this mesh.
+ */
+void IAMeshList::drawSliced(double zPlane)
+{
+    // draw the opaque lower half of the model
+    GLdouble equationLowerHalf[4] = { 0.0, 0.0, -1.0, zPlane-0.05 };
+    GLdouble equationUpperHalf[4] = { 0.0, 0.0, 1.0, -zPlane+0.05 };
+    glClipPlane(GL_CLIP_PLANE0, equationLowerHalf);
+    glEnable(GL_CLIP_PLANE0);
+    drawFlat(Iota.gShowTexture);
+    //        glEnable(GL_TEXTURE_2D);
+    //        gMeshList[0]->drawShrunk(FL_WHITE, -2.0);
+
+
+#if 1   // draw the shell
+    // FIXME: this messes up tesselation for the lid!
+    // FIXME: we do not need to tesselate at all!
+    glDisable(GL_LIGHTING);
+    glEnable(GL_TEXTURE_2D);
+    glLineWidth(8.0);
+    for (int n = 20; n>0; --n) {
+        shrinkBy(0.1*n);
+        IASlice meshSlice;
+        meshSlice.generateOutlineFrom(*this, zPlane);
+        drawFlat(true);
+        glEnable(GL_TEXTURE_2D);
+        glColor3ub(128, 128, 128);
+        meshSlice.drawLidEdge();
+        glDisable(GL_TEXTURE_2D);
+    }
+    shrinkBy(0.0);
+    glLineWidth(1.0);
+    glDisable(GL_TEXTURE_2D);
+    glEnable(GL_LIGHTING);
+    glEnable(GL_DEPTH_TEST);
+#endif
+
+#if 0   // draw the lid
+    glDisable(GL_CLIP_PLANE0);
+    gMeshSlice.drawFlat(1.0, 0.9, 0.9);
+#endif
+
+#if 0
+    // draw a texture map on the lid
+    glDisable(GL_TEXTURE_2D);
+    glColor4f(0.0, 1.0, 0.0, 0.1);
+    glPushMatrix();
+    glTranslated(gPrinter.pBuildVolumeOffset.x(), gPrinter.pBuildVolumeOffset.x(), 0.01);
+    glBegin(GL_POLYGON);
+    glVertex3d(gPrinter.pBuildVolumeMin.x(),
+               gPrinter.pBuildVolumeMin.y(),
+               zPlane);
+    glVertex3d(gPrinter.pBuildVolumeMax.x(),
+               gPrinter.pBuildVolumeMin.y(),
+               zPlane);
+    glVertex3d(gPrinter.pBuildVolumeMax.x(),
+               gPrinter.pBuildVolumeMax.y(),
+               zPlane);
+    glVertex3d(gPrinter.pBuildVolumeMin.x(),
+               gPrinter.pBuildVolumeMax.y(),
+               zPlane);
+    glEnd();
+    glPopMatrix();
+#endif
+
+    // draw a ghoste upper half of the mode
+    glClipPlane(GL_CLIP_PLANE0, equationUpperHalf);
+    glEnable(GL_CLIP_PLANE0);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glEnable(GL_CULL_FACE);
+    Iota.gMeshList->drawFlat(false, 0.6, 0.6, 0.6, 0.1);
+
+    glDisable(GL_CULL_FACE);
+    glDisable(GL_CLIP_PLANE0);
 }
 
 

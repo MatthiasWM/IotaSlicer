@@ -100,66 +100,36 @@ int IAModelView::handle(int event)
 
 
 /**
- * Draw the current mesh list and the current slice.
- *
- * \todo This function needs work.
+ * Update the preview slice if the Z slice leve changed and it needs to be rendered.
+ * \todo This should be a function of IASlice.
  */
-void IAModelView::draw(IAMeshList *meshList, IASlice *meshSlice)
-{
-//    double z1 = zSlider1->value();
-//    double z2 = zSlider2->value();
-    //---- draw the model using the near and far plane for clipping
-    if (meshList) {
-//        clipToSlice(z1, z2);
-#if 0
-        meshList->drawFlat(false);
-#else
-        meshList->drawFlat(true);
-#endif
-    }
-
-    //---- draw the lid outline
-    if (meshSlice) {
-//        dontClipToSlice();
-#if 0
-        glDisable(GL_TEXTURE_2D);
-        glColor3ub(128, 255, 255);
-        meshSlice->drawLidEdge();
-        glDisable(GL_TEXTURE_2D);
-#else
-        glEnable(GL_TEXTURE_2D);
-        glColor3ub(128, 128, 128);
-        meshSlice->drawLidEdge();
-        glDisable(GL_TEXTURE_2D);
-#endif
-    }
-
-//    dontClipToSlice();
-}
-
-
-/**
- * Draw the entire scene.
- */
-void IAModelView::draw()
+void IAModelView::updateSlice()
 {
     // genrate a lid if we need one
     // TODO: refactor into slice class
     if (Iota.gShowSlice && Iota.gMeshSlice.pCurrentZ!=zSlider1->value()) {
         Iota.gMeshSlice.generateLidFrom(*Iota.gMeshList, zSlider1->value());
     }
+}
 
-    static Fl_RGB_Image *lTexture = nullptr;
 
-    // shader stuff, nothing here yet
-    static bool firstTime = true;
-    if (firstTime) {
-        firstTime = false;
-        //      setShaders();
+/**
+ * Initialize all shaders that we might want to use.
+ */
+void IAModelView::initializeShaders()
+{
+    if (!pShadersValid) {
+//      setShaders();
+        pShadersValid = true;
     }
+}
 
-    // initialize the OpenGL context
-    // TODO: refactor in its own function
+
+/**
+ * Initialize all standard OpenGL settings of the current view.
+ */
+void IAModelView::initializeView()
+{
     if (!valid()) {
         gl_font(FL_HELVETICA, 16 );
         static GLfloat mat_specular[] = { 1.0, 1.0, 1.0, 1.0 };
@@ -184,14 +154,20 @@ void IAModelView::draw()
 
         glViewport(0,0,pixel_w(),pixel_h());
 
+        if (!pShadersValid) initializeShaders();
+
         valid(1);
     }
+}
 
-    // initialize the fram buffer
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    // bind current texture
-    // TODO: refactor as method in a new texture class
+/**
+ * Initialize and activate textures for rendering.
+ * \todo must move into a texture class
+ */
+void IAModelView::beginTextures()
+{
+    static Fl_RGB_Image *lTexture = nullptr;
     static GLuint tex = 0;
     if (lTexture != Iota.texture) {
         glGenTextures(1, &tex);
@@ -208,113 +184,59 @@ void IAModelView::draw()
     } else {
         glBindTexture(GL_TEXTURE_2D, 0);
     }
+}
 
-    // TODO: create a cureent slice level variable
-    double z1 = zSlider1->value();
-    double z2 = zSlider2->value();
 
-    // draw the camera
-    pCurrentCamera->draw();
-
-    // draw the printer
-    Iota.gPrinter.draw();
-
+/**
+ * Start drawing models.
+ */
+void IAModelView::beginModels()
+{
     // initialize model drawing
     glPushMatrix();
     glEnable(GL_LIGHTING);
     glEnable(GL_COLOR_MATERIAL);
     glEnable(GL_DEPTH_TEST);
+}
 
-    // draw the model
+
+/**
+ * End drawing models.
+ */
+void IAModelView::endModels()
+{
+    glPopMatrix();
+}
+
+
+
+
+/**
+ * Draw the entire scene.
+ */
+void IAModelView::draw()
+{
+    if (!valid()) initializeView();
+
+    // initialize the frame buffer
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    updateSlice();
+    beginTextures();
+
+    pCurrentCamera->draw();
+    Iota.gPrinter.draw();
+
+    beginModels();
     if (Iota.gMeshList) {
         if (Iota.gShowSlice) {
-            double zPlane = zSlider1->value();
-            // draw the opaque lower half of the model
-            GLdouble equationLowerHalf[4] = { 0.0, 0.0, -1.0, zPlane-0.05 };
-            GLdouble equationUpperHalf[4] = { 0.0, 0.0, 1.0, -zPlane+0.05 };
-            glClipPlane(GL_CLIP_PLANE0, equationLowerHalf);
-            glEnable(GL_CLIP_PLANE0);
-            Iota.gMeshList->drawFlat(Iota.gShowTexture);
-            //        glEnable(GL_TEXTURE_2D);
-            //        gMeshList[0]->drawShrunk(FL_WHITE, -2.0);
-            
-            
-#if 1   // draw the shell
-            // FIXME: this messes up tesselation for the lid!
-            // FIXME: we do not need to tesselate at all!
-            glDisable(GL_LIGHTING);
-            glEnable(GL_TEXTURE_2D);
-            glLineWidth(8.0);
-            for (int n = 20; n>0; --n) {
-                Iota.gMeshList->shrinkBy(0.1*n);
-                IASlice meshSlice;
-                meshSlice.generateOutlineFrom(*Iota.gMeshList, zSlider1->value());
-                draw(Iota.gMeshList, &meshSlice);
-            }
-            Iota.gMeshList->shrinkBy(0.0);
-            glLineWidth(1.0);
-            glDisable(GL_TEXTURE_2D);
-            glEnable(GL_LIGHTING);
-            glEnable(GL_DEPTH_TEST);
-#endif
-            
-#if 0   // draw the lid
-            glDisable(GL_CLIP_PLANE0);
-            gMeshSlice.drawFlat(1.0, 0.9, 0.9);
-#endif
-            
-#if 0
-            // draw a texture map on the lid
-            glDisable(GL_TEXTURE_2D);
-            glColor4f(0.0, 1.0, 0.0, 0.1);
-            glPushMatrix();
-            glTranslated(gPrinter.pBuildVolumeOffset.x(), gPrinter.pBuildVolumeOffset.x(), 0.01);
-            glBegin(GL_POLYGON);
-            glVertex3d(gPrinter.pBuildVolumeMin.x(),
-                       gPrinter.pBuildVolumeMin.y(),
-                       zPlane);
-            glVertex3d(gPrinter.pBuildVolumeMax.x(),
-                       gPrinter.pBuildVolumeMin.y(),
-                       zPlane);
-            glVertex3d(gPrinter.pBuildVolumeMax.x(),
-                       gPrinter.pBuildVolumeMax.y(),
-                       zPlane);
-            glVertex3d(gPrinter.pBuildVolumeMin.x(),
-                       gPrinter.pBuildVolumeMax.y(),
-                       zPlane);
-            glEnd();
-            glPopMatrix();
-#endif
-            
-            // draw a ghoste upper half of the mode
-            glClipPlane(GL_CLIP_PLANE0, equationUpperHalf);
-            glEnable(GL_CLIP_PLANE0);
-            glEnable(GL_BLEND);
-            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-            glEnable(GL_CULL_FACE);
-            Iota.gMeshList->drawFlat(false, 0.6, 0.6, 0.6, 0.1);
-            
-            glDisable(GL_CULL_FACE);
-            glDisable(GL_CLIP_PLANE0);
+            Iota.gMeshList->drawSliced(zSlider1->value());
         } else {
             Iota.gMeshList->drawFlat(Iota.gShowTexture);
         }
     }
-    glPopMatrix();
-
-    // draw some text on screen
-    glMatrixMode (GL_PROJECTION);
-    glLoadIdentity();
-    glOrtho(0, pixel_w(), 0, pixel_h(), -10, 10); // mm
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-    gl_color(FL_WHITE);
-    char buf[1024];
-    sprintf(buf, "Slice at %.4gmm", z1); gl_draw(buf, 10, 50);
-    sprintf(buf, "%.4gmm thick", z2); gl_draw(buf, 10, 20);
-
-    // draw remaining user interface elements
-    draw_children();
+    endModels();
+    
+    draw_children(); // draw FLTK user interface
 }
 
 

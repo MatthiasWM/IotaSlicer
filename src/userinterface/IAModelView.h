@@ -32,15 +32,22 @@ public:
 protected:
     int handle(int event) override;
     void draw() override;
-    void draw(IAMeshList *meshList, IASlice *meshSlice);
     void clipToSlice(double z1, double z2);
     void dontClipToSlice();
     void draw_children();
+    void updateSlice();
+    void initializeView();
+    void initializeShaders();
+    void beginTextures();
+    void beginModels();
+    void endModels();
 
 private:
     IACamera *pPerspectiveCamera = nullptr;
     IACamera *pTopCamera = nullptr;
     IACamera *pCurrentCamera = nullptr;
+
+    bool pShadersValid = false;
 };
 
 

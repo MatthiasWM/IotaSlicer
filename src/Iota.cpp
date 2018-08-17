@@ -5,9 +5,17 @@
 //
 
 // TODO: fix STL importer to generate only watertight models
-// TODO: make STL importer bullet prrof (no reads beyond end of line)
+// TODO: make STL importer bullet proof (no reads beyond end of line)
 // TODO: create a model class that contains meshes
 // TODO: position new models in the center and drop them on the build plane
+//   TODO: make the bottom front left the origin of OpenGL context
+//   TODO: look at the bottom front of the printer
+//   TODO: autoposition new meshes
+//   TODO: add a positionl vertex and a normal for slicing in the printer coordinate system
+//   TODO: update slice class to generate textures and vectors in printer coordinate system
+//   TODO: draw slice in 3d view
+//   TODO: generate slices and vecotrs for every layer in the model
+//   TODO: write vectors as GCode
 // TODO: render textures as slices in IAModelView
 // TODO: prototyped - generate slices as OpenGL Textures
 // TODO: prototyped - write slices to disk as images
