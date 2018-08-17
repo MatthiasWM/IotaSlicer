@@ -23,11 +23,11 @@ public:
     IASlice();
     virtual ~IASlice() override;
     virtual void clear() override;
-    void generateLidFrom(IAMeshList&, double z);
-    void generateOutlineFrom(IAMeshList&, double z);
+    void generateLidFrom(IAMesh*, double z);
+    void generateOutlineFrom(IAMesh*, double z);
     void drawLidEdge();
     void tesselate();
-    void addZSlice(const IAMesh&, double);
+    void addZSlice(IAMesh*, double);
     void addFirstLidVertex(IATriangle *IATriangle, double zMin);
     void addNextLidVertex(IATrianglePtr &IATriangle, ISVertexPtr &vCutA, int &edgeIndex, double zMin);
 

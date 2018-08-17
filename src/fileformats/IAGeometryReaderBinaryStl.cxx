@@ -108,12 +108,9 @@ IAGeometryReaderBinaryStl::~IAGeometryReaderBinaryStl()
 /**
  * Interprete the geometry data and create a mesh list.
  */
-IAMeshList *IAGeometryReaderBinaryStl::load()
+IAMesh *IAGeometryReaderBinaryStl::load()
 {
-    IAMeshList *meshList = new IAMeshList;
-
     IAMesh *msh = new IAMesh();
-    meshList->push_back(msh);
 
     skip(80);
     uint32_t nFaces = getUInt32LSB();
@@ -163,9 +160,7 @@ IAMeshList *IAGeometryReaderBinaryStl::load()
     msh->clearNormals();
     msh->calculateNormals();
 
-    meshList->updateBoundingBox();
-
-    return meshList;
+    return msh;
 }
 
 

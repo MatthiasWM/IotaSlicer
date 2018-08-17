@@ -25,7 +25,7 @@ public:
     IAGeometryReaderTextStl(const char *name, uint8_t *data, size_t size);
     IAGeometryReaderTextStl(const char *filename);
     virtual ~IAGeometryReaderTextStl() override;
-    virtual IAMeshList *load() override;
+    virtual IAMesh *load() override;
 };
 
 

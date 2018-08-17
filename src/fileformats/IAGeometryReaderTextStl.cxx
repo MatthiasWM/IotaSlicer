@@ -90,13 +90,8 @@ IAGeometryReaderTextStl::~IAGeometryReaderTextStl()
 /**
  * Interprete the geometry data and create a mesh list.
  */
-IAMeshList *IAGeometryReaderTextStl::load()
+IAMesh *IAGeometryReaderTextStl::load()
 {
-    IAMeshList *meshList = new IAMeshList;
-
-    IAMesh *msh = new IAMesh();
-    meshList->push_back(msh);
-
     /*
         solid name
         facet normal ni nj nk
@@ -107,6 +102,8 @@ IAMeshList *IAGeometryReaderTextStl::load()
             endloop
         endfacet
      */
+
+    IAMesh *msh = new IAMesh();
 
     // the first word must be "solid"
     getWord();
@@ -198,13 +195,11 @@ IAMeshList *IAGeometryReaderTextStl::load()
     msh->clearNormals();
     msh->calculateNormals();
 
-    meshList->updateBoundingBox();
-
-    return meshList;
+    return msh;
 
 fileFormatErr:
     Iota.setError("Read Text based STL File", Error::FileContentCorrupt_STR, getName());
-    delete meshList;
+    delete msh;
     return nullptr;
 }
 

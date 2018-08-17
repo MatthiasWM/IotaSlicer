@@ -25,7 +25,7 @@ public:
     IAGeometryReaderBinaryStl(const char *name, uint8_t *data, size_t size);
     IAGeometryReaderBinaryStl(const char *filename);
     virtual ~IAGeometryReaderBinaryStl() override;
-    virtual IAMeshList *load() override;
+    virtual IAMesh *load() override;
 };
 
 

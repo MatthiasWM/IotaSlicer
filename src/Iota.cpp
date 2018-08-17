@@ -80,7 +80,7 @@ IAIota::IAIota()
 
 IAIota::~IAIota()
 {
-    delete gMeshList;
+    delete pMesh;
     if (pErrorString)
         ::free((void*)pErrorString);
 }
@@ -162,11 +162,11 @@ bool IAIota::addGeometry(const char *name, uint8_t *data, size_t size)
 
     auto reader = IAGeometryReader::findReaderFor(name, data, size);
     if (reader) {
-        delete Iota.gMeshList;
-        Iota.gMeshList = nullptr;
-        auto geometry = reader->load();
-        Iota.gMeshList = geometry;
-        if (gMeshList) gMeshList->projectTexture(gMeshList->pMax.x()*2, gMeshList->pMax.y()*2, IA_PROJECTION_FRONT);
+        delete pMesh; pMesh = nullptr;
+        auto mesh = reader->load();
+        pMesh = mesh;
+        if (pMesh)
+            pMesh->projectTexture(pMesh->pMax.x()*2, pMesh->pMax.y()*2, IA_PROJECTION_FRONT);
     }
     return ret;
 }
@@ -181,11 +181,10 @@ bool IAIota::addGeometry(const char *filename)
 
     auto reader = IAGeometryReader::findReaderFor(filename);
     if (reader) {
-        delete Iota.gMeshList;
-        Iota.gMeshList = nullptr;
+        delete Iota.pMesh; Iota.pMesh = nullptr;
         auto geometry = reader->load();
-        Iota.gMeshList = geometry;
-        if (gMeshList) gMeshList->projectTexture(gMeshList->pMax.x()*2, gMeshList->pMax.y()*2, IA_PROJECTION_FRONT);
+        Iota.pMesh = geometry;
+        if (pMesh) pMesh->projectTexture(pMesh->pMax.x()*2, pMesh->pMax.y()*2, IA_PROJECTION_FRONT);
     }
     return ret;
 }
@@ -267,9 +266,7 @@ int main (int argc, char **argv)
 
     loadTexture("testcard1024.jpg", defaultTexture);
     Iota.addGeometry("default.stl", defaultModel, sizeof(defaultModel));
-
-    //loadStl("/Users/matt/Desktop/Machine Shop/Data 3D/CalWithNumbers.stl");
-    Iota.gMeshList->projectTexture(100.0, 100.0, IA_PROJECTION_FRONT);
+    Iota.pMesh->projectTexture(100.0, 100.0, IA_PROJECTION_FRONT);
 
     glView->redraw();
 

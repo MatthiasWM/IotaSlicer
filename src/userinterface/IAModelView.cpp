@@ -108,7 +108,7 @@ void IAModelView::updateSlice()
     // genrate a lid if we need one
     // TODO: refactor into slice class
     if (Iota.gShowSlice && Iota.gMeshSlice.pCurrentZ!=zSlider1->value()) {
-        Iota.gMeshSlice.generateLidFrom(*Iota.gMeshList, zSlider1->value());
+        Iota.gMeshSlice.generateLidFrom(Iota.pMesh, zSlider1->value());
     }
 }
 
@@ -227,11 +227,11 @@ void IAModelView::draw()
     Iota.gPrinter.draw();
 
     beginModels();
-    if (Iota.gMeshList) {
+    if (Iota.pMesh) {
         if (Iota.gShowSlice) {
-            Iota.gMeshList->drawSliced(zSlider1->value());
+            Iota.pMesh->drawSliced(zSlider1->value());
         } else {
-            Iota.gMeshList->drawFlat(Iota.gShowTexture);
+            Iota.pMesh->drawFlat(Iota.gShowTexture);
         }
     }
     endModels();

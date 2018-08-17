@@ -27,7 +27,7 @@ public:
     IAGeometryReader(const char *filename);
     IAGeometryReader(const char *name, uint8_t *data, size_t size);
     virtual ~IAGeometryReader();
-    virtual IAMeshList *load() = 0;
+    virtual IAMesh *load() = 0;
 
 protected:
     void skip(size_t n);

@@ -40,7 +40,6 @@ public:
 
     bool addGeometry(const char *name, uint8_t *data, size_t size);
     bool addGeometry(const char *filename);
-    void addGeometry(IAMeshList *model);
 
 private:
     bool addGeomtery(class IAGeometryReader *reader);
@@ -49,7 +48,7 @@ private:
 public: // TODO: deprecated globals are now members, but must be removed
     class Fl_Window *gMainWindow = nullptr;
     class Fl_RGB_Image *texture = nullptr;
-    IAMeshList *gMeshList = nullptr;
+    IAMesh *pMesh = nullptr;
     IASlice gMeshSlice;
     IAPrinter gPrinter;
     bool gShowSlice;

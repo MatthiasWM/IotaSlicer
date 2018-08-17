@@ -347,9 +347,18 @@ void IAMesh::drawGouraud()
 
 /**
  Draw the mesh using the face normals to create flat shading.
+ \param textured if true, activate OpenGL texture rendering
+ \param r, g, b, a the base color of the meshes, or white if the textures are enabled
  */
-void IAMesh::drawFlat(float r, float g, float b, float a)
+void IAMesh::drawFlat(bool textured, float r, float g, float b, float a)
 {
+    if (textured) {
+        glEnable(GL_TEXTURE_2D);
+        r = g = b = 1.0;
+    } else {
+        glDisable(GL_TEXTURE_2D);
+    }
+
     glColor4f(r, g, b, a);
     glBegin(GL_TRIANGLES);
     for (auto t: faceList) {
@@ -361,6 +370,10 @@ void IAMesh::drawFlat(float r, float g, float b, float a)
         }
     }
     glEnd();
+
+    if (textured) {
+        glDisable(GL_TEXTURE_2D);
+    }
 }
 
 
@@ -453,90 +466,10 @@ void IAMesh::updateBoundingBox(IAVector3d &v)
 }
 
 
-
-// -----------------------------------------------------------------------------
-
-
-/**
- Delete all meshes in the list.
- */
-IAMeshList::~IAMeshList()
-{
-    for (auto m: meshList) {
-        delete m;
-    }
-}
-
-
-/**
- Shrink all meshes along the point normals.
- */
-void IAMeshList::shrinkBy(double s)
-{
-    for (auto m: meshList) {
-        m->shrinkBy(s);
-    }
-}
-
-
-/**
- Draw all meshes with a flat shader
- \param textured if true, activate OpenGL texture rendering
- \param r, g, b, a the base color of the meshes, or white if the textures are enabled
- */
-void IAMeshList::drawFlat(bool textured, float r, float g, float b, float a)
-{
-    if (textured) {
-        glEnable(GL_TEXTURE_2D);
-        r = g = b = 1.0;
-    } else {
-        glDisable(GL_TEXTURE_2D);
-    }
-    for (auto m: meshList) {
-        m->drawFlat(r, g, b, a);
-    }
-    if (textured) {
-        glDisable(GL_TEXTURE_2D);
-    }
-}
-
-
-/**
- Draw all meshes with a Gouraud shader.
- */
-void IAMeshList::drawGouraud()
-{
-    for (auto m: meshList) {
-        // glDepthRange (0.1, 1.0);
-        m->drawGouraud();
-    }
-}
-
-
-/**
- Calculate new texture coordinates for all meshes.
- */
-void IAMeshList::projectTexture(double w, double h, int type)
-{
-    for (auto m: meshList) {
-        m->projectTexture(w, h, type);
-    }
-}
-
-
-void IAMeshList::updateBoundingBox()
-{
-    for (auto m: meshList) {
-        pMin.setMin(m->pMin);
-        pMax.setMax(m->pMax);
-    }
-}
-
-
 /**
  * Draw a sliced version of this mesh.
  */
-void IAMeshList::drawSliced(double zPlane)
+void IAMesh::drawSliced(double zPlane)
 {
     // draw the opaque lower half of the model
     GLdouble equationLowerHalf[4] = { 0.0, 0.0, -1.0, zPlane-0.05 };
@@ -557,7 +490,7 @@ void IAMeshList::drawSliced(double zPlane)
     for (int n = 20; n>0; --n) {
         shrinkBy(0.1*n);
         IASlice meshSlice;
-        meshSlice.generateOutlineFrom(*this, zPlane);
+        meshSlice.generateOutlineFrom(this, zPlane);
         drawFlat(true);
         glEnable(GL_TEXTURE_2D);
         glColor3ub(128, 128, 128);
@@ -605,7 +538,7 @@ void IAMeshList::drawSliced(double zPlane)
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glEnable(GL_CULL_FACE);
-    Iota.gMeshList->drawFlat(false, 0.6, 0.6, 0.6, 0.1);
+    Iota.pMesh->drawFlat(false, 0.6, 0.6, 0.6, 0.1);
 
     glDisable(GL_CULL_FACE);
     glDisable(GL_CLIP_PLANE0);

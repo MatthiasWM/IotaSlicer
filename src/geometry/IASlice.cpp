@@ -37,36 +37,25 @@ IASlice::~IASlice()
 /**
  Create a lid by slicing all meshes at Z.
  */
-void IASlice::generateLidFrom(IAMeshList &meshList, double z)
+void IASlice::generateLidFrom(IAMesh *mesh, double z)
 {
     printf("Generate lid from mesh list at %g\n", z);
     // start a new slice. A slice holds the information from all meshes.
     clear();
-    // get the number of meshes in this model
-    int i, n = (int)meshList.size();
-    // loop through all meshes
-    for (i=0; i<n; i++) {
-        IAMesh *mesh = meshList[i];
-        // add all faces in a mesh that intersect with zMin. They will form the lower lid.
-        addZSlice(*mesh, z);
-        // use OpenGL to convert the sorted list of edges into a list of simple polygons
-        tesselate();
-    }
+    // add all faces in a mesh that intersect with zMin. They will form the lower lid.
+    addZSlice(mesh, z);
+    // use OpenGL to convert the sorted list of edges into a list of simple polygons
+    tesselate();
 }
 
 
 /**
  Create a lid by slicing all meshes at Z.
  */
-void IASlice::generateOutlineFrom(IAMeshList &meshList, double z)
+void IASlice::generateOutlineFrom(IAMesh *mesh, double z)
 {
-//    printf("Generate outline from mesh list at %g\n", z);
     clear();
-    int i, n = (int)meshList.size();
-    for (i=0; i<n; i++) {
-        IAMesh *mesh = meshList[i];
-        addZSlice(*mesh, z);
-    }
+    addZSlice(mesh, z);
 }
 
 
@@ -303,17 +292,17 @@ void IASlice::addFirstLidVertex(IATriangle *tri, double zMin)
  The egde list runs clockwise for a connected outline, and counterclockwise for
  holes. Every outline loop can followed by a null ptr and more outlines.
  */
-void IASlice::addZSlice(const IAMesh &m, double zMin)
+void IASlice::addZSlice(IAMesh *m, double zMin)
 {
     // Get the number of triangles in this mesh
-    int i, n = (int)m.faceList.size();
+    int i, n = (int)m->faceList.size();
     // run through all faces and mark them as unused
     for (i = 0; i < n; i++) {
-        m.faceList[i]->pUsed = false;
+        m->faceList[i]->pUsed = false;
     }
     // run through all faces again and add all faces to the first lid that intersect with zMin
     for (i = 0; i < n; i++) {
-        IATriangle *IATriangle = m.faceList[i];
+        IATriangle *IATriangle = m->faceList[i];
         if (IATriangle->pUsed) continue;
         IATriangle->pUsed = true;
         int nBelow = IATriangle->pointsBelowZ(zMin);
