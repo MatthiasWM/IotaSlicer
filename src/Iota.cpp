@@ -16,7 +16,7 @@
 //   TODO: draw slice in 3d view
 //   TODO: generate slices and vecotrs for every layer in the model
 //   TODO: write vectors as GCode
-// TODO: render textures as slices in IAModelView
+// TODO: render textures as slices in IASceneView
 // TODO: prototyped - generate slices as OpenGL Textures
 // TODO: prototyped - write slices to disk as images
 // TODO: prototyped - create vector outline from slices
@@ -125,7 +125,7 @@ void IAIota::loadAnyFileList(const char *list)
         if (*fnEnd==0) break;
         fnStart = fnEnd+1;
     }
-    glView->redraw();
+    gSceneView->redraw();
 }
 
 
@@ -254,9 +254,12 @@ void IAIota::showError()
 }
 
 
+/**
+ * Lunch our app.
+ * \todo remember the window position and size in the preferences
+ */
 int main (int argc, char **argv)
 {
-    // TODO: remember the window position and size in the preferences
 
     Fl::use_high_res_GL(1);
 
@@ -268,7 +271,7 @@ int main (int argc, char **argv)
     Iota.addGeometry("default.stl", defaultModel, sizeof(defaultModel));
     Iota.pMesh->projectTexture(100.0, 100.0, IA_PROJECTION_FRONT);
 
-    glView->redraw();
+    gSceneView->redraw();
 
     return Fl::run();
 }

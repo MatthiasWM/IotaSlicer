@@ -8,7 +8,7 @@
 #include "IACamera.h"
 
 #include "Iota.h"
-#include "IAModelView.h"
+#include "IASceneView.h"
 #include "../geometry/IAMath.h"
 
 #include <FL/gl.h>
@@ -25,7 +25,7 @@
 /**
  * Create a camera superclass.
  */
-IACamera::IACamera(IAModelView *view)
+IACamera::IACamera(IASceneView *view)
 :   pView( view )
 {
 }
@@ -34,7 +34,7 @@ IACamera::IACamera(IAModelView *view)
 /**
  * Create a simple perspective camera.
  */
-IAPerspectiveCamera::IAPerspectiveCamera(IAModelView *view)
+IAPerspectiveCamera::IAPerspectiveCamera(IASceneView *view)
 :   super( view )
 {
 }
@@ -110,7 +110,7 @@ void IAPerspectiveCamera::draw()
 /**
  * Create a simple perspective camera.
  */
-IAOrthoCamera::IAOrthoCamera(IAModelView *view, int direction)
+IAOrthoCamera::IAOrthoCamera(IASceneView *view, int direction)
 :   super( view )
 {
 }

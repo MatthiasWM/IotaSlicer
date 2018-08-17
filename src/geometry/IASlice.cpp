@@ -479,7 +479,7 @@ void IASlice::save(double z, const char *filename)
     glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
     glDeleteFramebuffersEXT(1, &fb);
 
-    glView->valid(0);
+    gSceneView->valid(0);
 
 
 //    FILE *f = fopen(filename, "wb");

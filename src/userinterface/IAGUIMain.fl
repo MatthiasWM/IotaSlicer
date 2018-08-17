@@ -5,7 +5,7 @@ code_name {.cpp}
 decl {\#include "../Iota.h"} {public global
 }
 
-decl {\#include "IAModelView.h"} {public global
+decl {\#include "IASceneView.h"} {public global
 }
 
 decl {\#include "IAGLButton.h"} {public global
@@ -70,19 +70,19 @@ aboutWindow->show();}
     Fl_Group {} {open
       xywh {0 28 800 572} resizable
     } {
-      Fl_Group glView {open
+      Fl_Group gSceneView {open
         xywh {0 28 600 572} resizable
-        class IAModelView
+        class IASceneView
       } {
         Fl_Box {} {
           comment {Placeholder to sneakily call begin()}
           xywh {24 52 28 28} hide
-          code3 {glView->begin();}
+          code3 {gSceneView->begin();}
         }
         Fl_Group {} {open selected
           xywh {0 28 600 572}
-          code0 {// o->parent()->remove(o); glView->add(o);}
-          code1 {o->resize(0, 0, glView->w(), glView->h());  glView->resizable(o);}
+          code0 {// o->parent()->remove(o); gSceneView->add(o);}
+          code1 {o->resize(0, 0, gSceneView->w(), gSceneView->h());  gSceneView->resizable(o);}
         } {
           Fl_Group {} {open
             xywh {10 38 35 552}
@@ -90,14 +90,14 @@ aboutWindow->show();}
             Fl_Button {} {
               label txt
               callback {Iota.gShowTexture = !Iota.gShowTexture;
-glView->redraw();}
+gSceneView->redraw();}
               xywh {10 38 35 25} selection_color 236
               class IAGLButton
             }
             Fl_Button {} {
               label slc
               callback {Iota.gShowSlice = !Iota.gShowSlice;
-glView->redraw();}
+gSceneView->redraw();}
               xywh {10 73 35 25} selection_color 236
               class IAGLButton
             }
@@ -113,15 +113,15 @@ glView->redraw();}
           } {
             Fl_Button {} {
               label prsp
-              callback {glView->setPerspectiveView();
-glView->redraw();}
+              callback {gSceneView->setPerspectiveView();
+gSceneView->redraw();}
               xywh {555 38 35 25} selection_color 236
               class IAGLButton
             }
             Fl_Button {} {
               label top
-              callback {glView->setTopView();
-glView->redraw();}
+              callback {gSceneView->setTopView();
+gSceneView->redraw();}
               xywh {555 73 35 25} selection_color 236
               class IAGLButton
             }
@@ -146,25 +146,25 @@ glView->redraw();}
               Fl_Slider zSlider1 {
                 callback {Iota.sliceAll();
     Iota.gShowSlice = true;
-    glView->redraw();}
+    gSceneView->redraw();}
                 tooltip {Slice layer at Z mm} xywh {605 33 20 502} minimum 110 maximum -110 step 1
               }
               Fl_Slider zSlider2 {
                 callback {Iota.gShowSlice = true;
-    glView->redraw();}
+    gSceneView->redraw();}
                 tooltip {Thickness of slice in mm} xywh {625 33 20 502} minimum 10 maximum -10 step 1 deactivate
               }
             }
             Fl_Button {} {
               label TXT
               callback {Iota.gShowTexture = !Iota.gShowTexture;
-glView->redraw();}
+gSceneView->redraw();}
               tooltip {Toggle Rendering Texture} xywh {605 535 40 30} type Toggle hide
             }
             Fl_Button {} {
               label SLC
               callback {Iota.gShowSlice = !Iota.gShowSlice;
-    glView->redraw();}
+    gSceneView->redraw();}
               tooltip {Stop slicing the model} xywh {605 565 40 30} hide
             }
           }

@@ -1,5 +1,5 @@
 //
-//  IAModelView.h
+//  IASceneView.h
 //
 //  Copyright (c) 2013-2018 Matthias Melcher. All rights reserved.
 //
@@ -20,11 +20,11 @@ class IACamera;
 /**
  * Class derived form FLTK to draw on screen via OpenGL.
  */
-class IAModelView : public Fl_Gl_Window
+class IASceneView : public Fl_Gl_Window
 {
 public:
-    IAModelView(int x, int y, int w, int h, const char *l=0);
-    ~IAModelView() override;
+    IASceneView(int x, int y, int w, int h, const char *l=0);
+    ~IASceneView() override;
 
     void setTopView();
     void setPerspectiveView();

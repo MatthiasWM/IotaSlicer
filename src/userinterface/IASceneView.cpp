@@ -1,11 +1,11 @@
 //
-//  IAModelView.cpp
+//  IASceneView.cpp
 //
 //  Copyright (c) 2013-2018 Matthias Melcher. All rights reserved.
 //
 
 
-#include "IAModelView.h"
+#include "IASceneView.h"
 
 #include "../Iota.h"
 #include "IACamera.h"
@@ -27,7 +27,7 @@
  * When constructed, the widget will connect itself with the current Fl_Group
  * in FLTK.
  */
-IAModelView::IAModelView(int x, int y, int w, int h, const char *l)
+IASceneView::IASceneView(int x, int y, int w, int h, const char *l)
 :   Fl_Gl_Window(x, y, w, h, l),
     pPerspectiveCamera( new IAPerspectiveCamera(this) ),
     pTopCamera( new IAOrthoCamera(this, 0) ),
@@ -39,7 +39,7 @@ IAModelView::IAModelView(int x, int y, int w, int h, const char *l)
 /**
  * Release all allocated resources.
  */
-IAModelView::~IAModelView()
+IASceneView::~IASceneView()
 {
     delete pCurrentCamera;
 }
@@ -53,7 +53,7 @@ IAModelView::~IAModelView()
  * \todo Handle copy and paste events.
  * \todo Handle context menus.
  */
-int IAModelView::handle(int event)
+int IASceneView::handle(int event)
 {
     if (Fl_Window::handle(event))
         return 1;
@@ -103,7 +103,7 @@ int IAModelView::handle(int event)
  * Update the preview slice if the Z slice leve changed and it needs to be rendered.
  * \todo This should be a function of IASlice.
  */
-void IAModelView::updateSlice()
+void IASceneView::updateSlice()
 {
     // genrate a lid if we need one
     // TODO: refactor into slice class
@@ -116,7 +116,7 @@ void IAModelView::updateSlice()
 /**
  * Initialize all shaders that we might want to use.
  */
-void IAModelView::initializeShaders()
+void IASceneView::initializeShaders()
 {
     if (!pShadersValid) {
 //      setShaders();
@@ -128,7 +128,7 @@ void IAModelView::initializeShaders()
 /**
  * Initialize all standard OpenGL settings of the current view.
  */
-void IAModelView::initializeView()
+void IASceneView::initializeView()
 {
     if (!valid()) {
         gl_font(FL_HELVETICA, 16 );
@@ -165,7 +165,7 @@ void IAModelView::initializeView()
  * Initialize and activate textures for rendering.
  * \todo must move into a texture class
  */
-void IAModelView::beginTextures()
+void IASceneView::beginTextures()
 {
     static Fl_RGB_Image *lTexture = nullptr;
     static GLuint tex = 0;
@@ -190,7 +190,7 @@ void IAModelView::beginTextures()
 /**
  * Start drawing models.
  */
-void IAModelView::beginModels()
+void IASceneView::beginModels()
 {
     // initialize model drawing
     glPushMatrix();
@@ -203,7 +203,7 @@ void IAModelView::beginModels()
 /**
  * End drawing models.
  */
-void IAModelView::endModels()
+void IASceneView::endModels()
 {
     glPopMatrix();
 }
@@ -214,7 +214,7 @@ void IAModelView::endModels()
 /**
  * Draw the entire scene.
  */
-void IAModelView::draw()
+void IASceneView::draw()
 {
     if (!valid()) initializeView();
 
@@ -243,7 +243,7 @@ void IAModelView::draw()
 /**
  * Draw FLTK child widgets
  */
-void IAModelView::draw_children()
+void IASceneView::draw_children()
 {
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
@@ -264,14 +264,14 @@ void IAModelView::draw_children()
 }
 
 
-void IAModelView::setTopView()
+void IASceneView::setTopView()
 {
     pCurrentCamera = pTopCamera;
     redraw();
 }
 
 
-void IAModelView::setPerspectiveView()
+void IASceneView::setPerspectiveView()
 {
     pCurrentCamera = pPerspectiveCamera;
     redraw();

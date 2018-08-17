@@ -10,7 +10,7 @@
 #include "../geometry/IAVector3d.h"
 
 
-class IAModelView;
+class IASceneView;
 
 
 /**
@@ -19,7 +19,7 @@ class IAModelView;
 class IACamera
 {
 public:
-    IACamera(IAModelView *view);
+    IACamera(IASceneView *view);
     virtual ~IACamera() { }
     virtual void draw() = 0;
     virtual void rotate(double dx, double dy) { }
@@ -27,18 +27,18 @@ public:
     virtual void dolly(double dx, double dy) { }
 
 protected:
-    IAModelView *pView = nullptr;
+    IASceneView *pView = nullptr;
 };
 
 
 /**
- * A perspective camera for IAModelView.
+ * A perspective camera for IASceneView.
  */
 class IAPerspectiveCamera : public IACamera
 {
     typedef IACamera super;
 public:
-    IAPerspectiveCamera(IAModelView *view);
+    IAPerspectiveCamera(IASceneView *view);
     void draw() override;
     void rotate(double dx, double dy) override;
     void drag(double dx, double dy) override;
@@ -59,13 +59,13 @@ private:
 
 
 /**
- * An orthogonal camera for IAModelView.
+ * An orthogonal camera for IASceneView.
  */
 class IAOrthoCamera : public IACamera
 {
     typedef IACamera super;
 public:
-    IAOrthoCamera(IAModelView *view, int direction);
+    IAOrthoCamera(IASceneView *view, int direction);
     void draw() override;
     void rotate(double dx, double dy) override;
     void drag(double dx, double dy) override;
