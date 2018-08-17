@@ -61,8 +61,18 @@ void IAPerspectiveCamera::rotate(double dx, double dy)
  */
 void IAPerspectiveCamera::drag(double dx, double dy)
 {
-    IAVector3d offset(0.5*dx, 0, -0.5*dy);
-    offset *= pDistance/400.0;
+    IAVector3d position = IAVector3d(0.0, -pDistance, 0.0);
+    position.xRotate(pXRotation);
+    position.zRotate(pZRotation);
+    position += pInterest;
+
+    IAVector3d printer = Iota.gPrinter.pBuildVolume *= 0.5;
+    printer -= position;
+    double dist = printer.length();
+
+    IAVector3d offset(dx, 0, -dy);
+    // using pDistance works as well, but is not as nice
+    offset *= 1.8*dist/(pView->w()+pView->h());
     offset.xRotate(pXRotation);
     offset.zRotate(pZRotation);
     pInterest += offset;
@@ -91,10 +101,12 @@ void IAPerspectiveCamera::draw()
     position.zRotate(pZRotation);
     position += pInterest;
 
-    double dist = pDistance; // FIXME: position.length();
+    IAVector3d printer = Iota.gPrinter.pBuildVolume *= 0.5;
+    printer -= position;
+    double dist = printer.length();
     double aspect = (double(pView->pixel_w()))/(double(pView->pixel_h()));
-    double nearPlane = max(dist-Iota.gPrinter.pBuildVolumeRadius, 5.0);
-    double farPlane = dist+Iota.gPrinter.pBuildVolumeRadius;
+    double nearPlane = max(dist-2.0*Iota.gPrinter.pBuildVolumeRadius, 1.0);
+    double farPlane = dist+2.0*Iota.gPrinter.pBuildVolumeRadius;
     gluPerspective(50.0, aspect, nearPlane, farPlane);
 
     glMatrixMode (GL_MODELVIEW);
@@ -136,8 +148,8 @@ void IAOrthoCamera::rotate(double dx, double dy)
  */
 void IAOrthoCamera::drag(double dx, double dy)
 {
-    IAVector3d offset(-dx, dy, 0);
-    offset *= 2.0*pZoom/pView->w();
+    IAVector3d offset(dx, -dy, 0);
+    offset *= 4.0*pZoom/(pView->w()+pView->h());
     pInterest += offset;
 }
 
@@ -164,7 +176,7 @@ void IAOrthoCamera::draw()
     glOrtho(-pZoom*aspect, pZoom*aspect, -pZoom, pZoom, -Iota.gPrinter.pBuildVolumeRadius, Iota.gPrinter.pBuildVolumeRadius);
     glMatrixMode (GL_MODELVIEW);
     glLoadIdentity();
-    glTranslated(pInterest.x(), pInterest.y(), pInterest.z());
+    glTranslated(-pInterest.x(), -pInterest.y(), -pInterest.z());
 }
 
 
