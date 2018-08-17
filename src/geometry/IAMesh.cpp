@@ -423,7 +423,7 @@ void IAMesh::projectTexture(double w, double h, int type)
  \todo: there should probably be a minimal tollerance when comparinf doubles!
  \return the index of the point in the mesh
  */
-size_t IAMesh::addPoint(float x, float y, float z)
+size_t IAMesh::addPoint(double x, double y, double z)
 {
     size_t i, n = vertexList.size();
     for (i = 0; i < n; ++i) {

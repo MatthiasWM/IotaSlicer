@@ -50,7 +50,7 @@ public:
     void projectTexture(double w, double h, int type);
     IAEdge *findEdge(IAVertex*, IAVertex*);
     IAEdge *addEdge(IAVertex*, IAVertex*, IATriangle*);
-    size_t addPoint(float x, float y, float z);
+    size_t addPoint(double x, double y, double z);
 
     IAVertexList vertexList;
     IAEdgeList edgeList;

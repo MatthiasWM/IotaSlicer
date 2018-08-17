@@ -11,10 +11,17 @@
 
 #include <stdio.h>
 #include <fcntl.h>
-#include <unistd.h>
 #include <string.h>
-#include <sys/mman.h>
+#include <ctype.h>
 #include <sys/stat.h>
+#ifdef _WIN32
+# include <io.h>
+  static int open(const char *n, int f, int m) { return _open(n, f, m); }
+  static void assert(bool v) { if (v==false) __debugbreak(); }
+#else
+# include <unistd.h>
+# include <sys/mman.h>
+#endif
 
 
 /**
@@ -65,12 +72,19 @@ IAGeometryReader::IAGeometryReader(const char *filename)
     size_t len = st.st_size;
     ::lseek(fd, 0, SEEK_SET);
 
+#ifdef _WIN32
+	// TODO: use file mapping!
+	pData = (uint8_t*)malloc(len);
+	read(fd, pData, len);
+#else
     pData = (uint8_t*)mmap(nullptr, len, PROT_READ,MAP_PRIVATE|MAP_FILE, fd, 0);
 //    pData = (uint8_t*)mmap(nullptr, 0, PROT_READ, MAP_FILE, fd, 0);
     if (pData==MAP_FAILED) {
         perror("mmap");
         // panic
     }
+#endif
+
     pCurrData = pData;
     pSize = len;
     pMustUnmapOnDelete = true;
@@ -97,7 +111,12 @@ IAGeometryReader::IAGeometryReader(uint8_t *data, size_t size)
 IAGeometryReader::~IAGeometryReader()
 {
     if (pMustUnmapOnDelete) {
+#ifdef _WIN32
+		// FIXME: we should use file mapping instead
+		free(pData);
+#else
         ::munmap((void*)pData, pSize);
+#endif
     }
 }
 

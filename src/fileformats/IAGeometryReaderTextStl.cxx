@@ -11,7 +11,13 @@
 #include "../geometry/IAMesh.h"
 
 #include <fcntl.h>
-#include <unistd.h>
+#ifdef _WIN32
+# include <io.h>
+  static int open(const char *n, int f, int m) { return _open(n, f, m); }
+  static void assert(bool v) { if (v==false) __debugbreak(); }
+#else
+# include <unistd.h>
+#endif
 
 
 /**
@@ -95,7 +101,7 @@ IAMeshList *IAGeometryReaderTextStl::load()
     getLine();
 
     for (;;) {
-        float x, y, z;
+        double x, y, z;
         size_t p1, p2, p3;
         
         getWord();
