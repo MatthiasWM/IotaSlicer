@@ -143,16 +143,23 @@ void IAModelView::draw(IAMeshList *meshList, IASlice *meshSlice)
  */
 void IAModelView::draw()
 {
+    // genrate a lid if we need one
+    // TODO: refactor into slice class
     if (Iota.gShowSlice && Iota.gMeshSlice.pCurrentZ!=zSlider1->value()) {
         Iota.gMeshSlice.generateLidFrom(*Iota.gMeshList, zSlider1->value());
     }
+
     static Fl_RGB_Image *lTexture = nullptr;
+
+    // shader stuff, nothing here yet
     static bool firstTime = true;
     if (firstTime) {
         firstTime = false;
         //      setShaders();
     }
 
+    // initialize the OpenGL context
+    // TODO: refactor in its own function
     if (!valid()) {
         gl_font(FL_HELVETICA, 16 );
         static GLfloat mat_specular[] = { 1.0, 1.0, 1.0, 1.0 };
@@ -179,7 +186,12 @@ void IAModelView::draw()
 
         valid(1);
     }
-    
+
+    // initialize the fram buffer
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    // bind current texture
+    // TODO: refactor as method in a new texture class
     static GLuint tex = 0;
     if (lTexture != Iota.texture) {
         glGenTextures(1, &tex);
@@ -197,19 +209,23 @@ void IAModelView::draw()
         glBindTexture(GL_TEXTURE_2D, 0);
     }
 
+    // TODO: create a cureent slice level variable
     double z1 = zSlider1->value();
     double z2 = zSlider2->value();
 
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    // draw the camera
     pCurrentCamera->draw();
-    glPushMatrix();
 
-
+    // draw the printer
     Iota.gPrinter.draw();
+
+    // initialize model drawing
+    glPushMatrix();
     glEnable(GL_LIGHTING);
     glEnable(GL_COLOR_MATERIAL);
     glEnable(GL_DEPTH_TEST);
 
+    // draw the model
     if (Iota.gMeshList) {
         if (Iota.gShowSlice) {
             double zPlane = zSlider1->value();
@@ -285,7 +301,8 @@ void IAModelView::draw()
         }
     }
     glPopMatrix();
-    
+
+    // draw some text on screen
     glMatrixMode (GL_PROJECTION);
     glLoadIdentity();
     glOrtho(0, pixel_w(), 0, pixel_h(), -10, 10); // mm
@@ -296,8 +313,10 @@ void IAModelView::draw()
     sprintf(buf, "Slice at %.4gmm", z1); gl_draw(buf, 10, 50);
     sprintf(buf, "%.4gmm thick", z2); gl_draw(buf, 10, 20);
 
+    // draw remaining user interface elements
     draw_children();
 }
+
 
 /**
  * Draw FLTK child widgets
@@ -321,6 +340,7 @@ void IAModelView::draw_children()
         draw_outside_label(o);
     }
 }
+
 
 /**
  * Enable clipping for the current slice (deprecated)
