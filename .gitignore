@@ -8,5 +8,6 @@
 /platforms/MSWindows/VisualStudio/Release
 /src/data/binaryData.cpp
 /src/data/binaryData.h
-/src/userInterface/mainUI.cpp
-/src/userInterface/mainUI.h
+/src/userInterface/IAGUIMain.cpp
+/src/userInterface/IAGUIMain.h
+
