@@ -14,7 +14,6 @@
 #ifdef _WIN32
 # include <io.h>
   static int open(const char *n, int f, int m) { return _open(n, f, m); }
-  static void assert(bool v) { if (v==false) __debugbreak(); }
 #else
 # include <unistd.h>
 #endif
@@ -75,7 +74,7 @@ std::shared_ptr<IAGeometryReader> IAGeometryReaderBinaryStl::findReaderFor(const
     if (strncmp((char*)data, "solid", 5)==0)   // TODO: set error
         return nullptr;
     
-    return std::make_shared<IAGeometryReaderBinaryStl>(data, size);
+    return std::make_shared<IAGeometryReaderBinaryStl>(name, data, size);
 }
 
 
@@ -83,8 +82,8 @@ std::shared_ptr<IAGeometryReader> IAGeometryReaderBinaryStl::findReaderFor(const
 /**
  * Create a file reader for reading from memory.
  */
-IAGeometryReaderBinaryStl::IAGeometryReaderBinaryStl(uint8_t *data, size_t size)
-:   IAGeometryReader(data, size)
+IAGeometryReaderBinaryStl::IAGeometryReaderBinaryStl(const char *name, uint8_t *data, size_t size)
+:   IAGeometryReader(name, data, size)
 {
 }
 
@@ -150,21 +149,18 @@ IAMeshList *IAGeometryReaderBinaryStl::load()
         t->pVertex[2] = msh->vertexList[p3];
         msh->addFace(t);
         // color
+        getUInt16LSB(); // color information, if there was a standard
 
-        msh->vertexList[p1]->pInitialPosition = msh->vertexList[p1]->pPosition;
-        msh->vertexList[p2]->pInitialPosition = msh->vertexList[p2]->pPosition;
-        msh->vertexList[p3]->pInitialPosition = msh->vertexList[p3]->pPosition;
-
+        // FIXME: this must be part of the mesh class
         Iota.minX = min(Iota.minX, msh->vertexList[p1]->pPosition.x());
         Iota.maxX = max(Iota.maxX, msh->vertexList[p1]->pPosition.x());
         Iota.minY = min(Iota.minY, msh->vertexList[p1]->pPosition.y());
         Iota.maxY = max(Iota.maxY, msh->vertexList[p1]->pPosition.y());
         Iota.minZ = min(Iota.minZ, msh->vertexList[p1]->pPosition.z());
         Iota.maxZ = max(Iota.maxZ, msh->vertexList[p1]->pPosition.z());
-
-        getUInt16LSB(); // color information, if there was a standard
     }
 
+    // FIXME: fixing the mesh should be done after loading *any* mesh, not just this one
     msh->validate();
     // TODO: fix seams
     // TODO: fix zero size holes

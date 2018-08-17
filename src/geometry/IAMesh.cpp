@@ -437,6 +437,7 @@ size_t IAMesh::addPoint(double x, double y, double z)
     }
     IAVertex *v = new IAVertex();
     v->pPosition.set(x, y, z);
+    v->pInitialPosition.set(x, y, z);
     vertexList.push_back(v);
     return n;
 }

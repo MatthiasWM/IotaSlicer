@@ -59,9 +59,10 @@ std::shared_ptr<IAGeometryReader> IAGeometryReader::findReaderFor(const char *na
 
 
 /**
- * CReate a universal reader by mapping the file to memory.
+ * Create a universal reader by mapping the file to memory.
  */
 IAGeometryReader::IAGeometryReader(const char *filename)
+:   pName(strdup(filename))
 {
     int fd = ::open(filename, O_RDONLY, 0);
     assert(fd != -1);
@@ -96,11 +97,12 @@ IAGeometryReader::IAGeometryReader(const char *filename)
 /**
  * Create a reader.
  */
-IAGeometryReader::IAGeometryReader(uint8_t *data, size_t size)
+IAGeometryReader::IAGeometryReader(const char *name, uint8_t *data, size_t size)
 :   pData( data ),
     pCurrData( data ),
     pSize( size ),
-    pMustUnmapOnDelete( false )
+    pMustUnmapOnDelete( false ),
+    pName(strdup(name))
 {
 }
 
@@ -118,6 +120,8 @@ IAGeometryReader::~IAGeometryReader()
         ::munmap((void*)pData, pSize);
 #endif
     }
+    if (pName)
+        free(pName);
 }
 
 

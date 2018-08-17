@@ -22,7 +22,7 @@ public:
     static std::shared_ptr<IAGeometryReader> findReaderFor(const char *filename);
     static std::shared_ptr<IAGeometryReader> findReaderFor(const char *name, uint8_t *data, size_t size);
 
-    IAGeometryReaderBinaryStl(uint8_t *data, size_t size);
+    IAGeometryReaderBinaryStl(const char *name, uint8_t *data, size_t size);
     IAGeometryReaderBinaryStl(const char *filename);
     virtual ~IAGeometryReaderBinaryStl() override;
     virtual IAMeshList *load() override;

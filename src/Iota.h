@@ -29,7 +29,9 @@ extern float max(float a, float b);
  */
 enum class Error {
     NoError = 0,
-    CantOpenFile_STR_BSD
+    CantOpenFile_STR_BSD,
+    UnknownFileType_STR,
+    FileContentCorrupt_STR,
 };
 
 

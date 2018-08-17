@@ -36,14 +36,18 @@
 IAIota Iota;
 
 
-#define HDR "%1$s:\n"
+#define HDR "Error: \"%1$s\"\n\n"
 
 const char *IAIota::kErrorMessage[] =
 {
     // NoError
         HDR"No error.",
     // CantOpenFile_STR_BSD
-        HDR"Can't open file \"%2$s\":\n%3$s"
+        HDR"Can't open file \"%2$s\":\n%3$s",
+    // UnknownFileType_STR
+        HDR"Unknown and unsupported file type:\n\"%2$s\"",
+    // FileContentCorrupt_STR
+        HDR"There seems to be an error inside this file:\n\"%2$s\"",
 };
 
 
@@ -77,6 +81,8 @@ IAIota::IAIota()
 IAIota::~IAIota()
 {
     delete gMeshList;
+    if (pErrorString)
+        ::free((void*)pErrorString);
 }
 
 
@@ -87,16 +93,39 @@ IAIota::~IAIota()
  * Files are read in the order in which they appear in the list, and reading
  * stops as soon as one file reader creates an error.
  *
+ * This does not delete any previously loaded data.
+ *
  * \param list one or more filenames, separated by \n
  * \return nothing, but may sho an error dialog to the user
  */
 void IAIota::loadAnyFileList(const char *list)
 {
-    // FIXME: check if the file ending is .stl (etc.)
-    // FIXME: check for multiple file drop
-    Iota.clearError();
-    Iota.addGeometry(Fl::event_text());
-    Iota.showError();
+    // FIXME: make sure that old models are not delted
+
+    // loop through all entries in the list
+    const char *fnStart = list, *fnEnd = list;
+    for (;;) {
+        fnEnd = strchr(fnStart, '\n');
+        if (!fnEnd) fnEnd = fnStart+strlen(fnStart);
+        if (fnEnd!=fnStart) {
+            clearError();
+            char *filename = (char*)calloc(1, fnEnd-fnStart+1);
+            memmove(filename, fnStart, fnEnd-fnStart);
+            const char *ext = fl_filename_ext(filename);
+            if (strcasecmp(ext, ".stl")==0) {
+                Iota.addGeometry(filename);
+            } else {
+                setError("Load Any File", Error::UnknownFileType_STR, filename);
+            }
+            if (hadError()) {
+                showError();
+                break;
+            }
+        }
+        if (*fnEnd==0) break;
+        fnStart = fnEnd+1;
+    }
+    glView->redraw();
 }
 
 
@@ -198,7 +227,9 @@ void IAIota::setError(const char *loc, Error err, const char *str)
     pErrorLocation = loc;
     pError = err;
     pErrorBSD = errno;
-    pErrorString = str;
+    if (pErrorString)
+        ::free((void*)pErrorString);
+    pErrorString = str ? strdup(str) : nullptr;
 }
 
 
@@ -233,10 +264,6 @@ int main (int argc, char **argv)
     Fl::flush();
 
     loadTexture("testcard1024.jpg", defaultTexture);
-//    loadStl("/Users/matt/dev/IotaSlicer/data/xyz.stl");
-//    loadStl("/Users/matt/dev/IotaSlicer/src/data/suzanne.stl");
-//    loadStl(defaultModel);
-
     Iota.addGeometry("default.stl", defaultModel, sizeof(defaultModel));
 
     //loadStl("/Users/matt/Desktop/Machine Shop/Data 3D/CalWithNumbers.stl");

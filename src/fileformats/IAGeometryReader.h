@@ -25,7 +25,7 @@ public:
 
 public:
     IAGeometryReader(const char *filename);
-    IAGeometryReader(uint8_t *data, size_t size);
+    IAGeometryReader(const char *name, uint8_t *data, size_t size);
     virtual ~IAGeometryReader();
     virtual IAMeshList *load() = 0;
 
@@ -39,6 +39,7 @@ protected:
     bool getLine();
     bool wordIs(const char *);
     void printWord();
+    const char *getName() const { return pName; }
 
 private:
     bool pMustUnmapOnDelete = false;
@@ -46,6 +47,7 @@ private:
     uint8_t *pCurrData = nullptr;
     uint8_t *pCurrWord = nullptr;
     size_t pSize = 0;
+    char *pName = nullptr;
 
 };
 
