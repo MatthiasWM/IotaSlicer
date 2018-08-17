@@ -4,8 +4,8 @@
 //  Copyright (c) 2013-2018 Matthias Melcher. All rights reserved.
 //
 
-// TODO: fix 3d view drag'n'drop to interprete filename extensions
-// TODO: fix STL importer to generate only watertight models and generate error message
+// TODO: fix STL importer to generate only watertight models
+// TODO: make STL importer bullet prrof (no reads beyond end of line)
 // TODO: create a model class that contains meshes
 // TODO: position new models in the center and drop them on the build plane
 // TODO: render textures as slices in IAModelView
@@ -158,6 +158,7 @@ bool IAIota::addGeometry(const char *name, uint8_t *data, size_t size)
         Iota.gMeshList = nullptr;
         auto geometry = reader->load();
         Iota.gMeshList = geometry;
+        if (gMeshList) gMeshList->projectTexture(gMeshList->pMax.x()*2, gMeshList->pMax.y()*2, IA_PROJECTION_FRONT);
     }
     return ret;
 }
@@ -176,6 +177,7 @@ bool IAIota::addGeometry(const char *filename)
         Iota.gMeshList = nullptr;
         auto geometry = reader->load();
         Iota.gMeshList = geometry;
+        if (gMeshList) gMeshList->projectTexture(gMeshList->pMax.x()*2, gMeshList->pMax.y()*2, IA_PROJECTION_FRONT);
     }
     return ret;
 }
