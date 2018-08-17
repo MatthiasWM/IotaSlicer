@@ -545,6 +545,13 @@ void IAMesh::drawSliced(double zPlane)
 }
 
 
+void IAMesh::centerOnPrintbed(IAPrinter *printer)
+{
+    pOffset = printer->pBuildVolume;
+    pOffset *= 0.5;
+}
+
+
 
 
 

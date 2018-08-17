@@ -61,9 +61,10 @@ void IAPerspectiveCamera::rotate(double dx, double dy)
  */
 void IAPerspectiveCamera::drag(double dx, double dy)
 {
-    IAVector3d offset(0.5*dx, -0.5*dy, 0);
+    IAVector3d offset(0.5*dx, 0, -0.5*dy);
+    offset *= pDistance/400.0;
     offset.xRotate(pXRotation);
-    offset.yRotate(pZRotation);
+    offset.zRotate(pZRotation);
     pInterest += offset;
 }
 
@@ -85,12 +86,12 @@ void IAPerspectiveCamera::draw()
 {
     glMatrixMode (GL_PROJECTION);
     glLoadIdentity();
-    IAVector3d position = IAVector3d(0.0, 0.0, pDistance);
+    IAVector3d position = IAVector3d(0.0, -pDistance, 0.0);
     position.xRotate(pXRotation);
-    position.yRotate(pZRotation);
+    position.zRotate(pZRotation);
     position += pInterest;
 
-    double dist = position.length();
+    double dist = pDistance; // FIXME: position.length();
     double aspect = (double(pView->pixel_w()))/(double(pView->pixel_h()));
     double nearPlane = max(dist-Iota.gPrinter.pBuildVolumeRadius, 5.0);
     double farPlane = dist+Iota.gPrinter.pBuildVolumeRadius;
@@ -98,11 +99,16 @@ void IAPerspectiveCamera::draw()
 
     glMatrixMode (GL_MODELVIEW);
     glLoadIdentity();
-    gluLookAt(position.x(), position.y(), position.z(),
-              pInterest.x(), pInterest.y(), pInterest.z(),
+    gluLookAt(position.x(), position.z(), -position.y(),
+              pInterest.x(), pInterest.z(), -pInterest.y(),
               0.0, 1.0, 0.0);
-
     glRotated(-90, 1.0, 0.0, 0.0);
+}
+
+
+void IAPerspectiveCamera::setInterest(IAVector3d &v)
+{
+    pInterest = v;
 }
 
 
@@ -160,4 +166,12 @@ void IAOrthoCamera::draw()
     glLoadIdentity();
     glTranslated(pInterest.x(), pInterest.y(), pInterest.z());
 }
+
+
+void IAOrthoCamera::setInterest(IAVector3d &v)
+{
+    pInterest = v;
+}
+
+
 

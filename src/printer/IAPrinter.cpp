@@ -34,8 +34,10 @@ void IAPrinter::draw()
     glDisable(GL_LIGHTING);
     glDisable(GL_DEPTH_TEST);
 
+    // draw the printer so that the bottom left front corner of the build
+    // platform is in the OpenGL origin
     glPushMatrix();
-    glTranslated(pBuildVolumeOffset.x(), pBuildVolumeOffset.y(), pBuildVolumeOffset.z());
+    glTranslated(-pBuildVolumeMin.x(), -pBuildVolumeMin.y(), -pBuildVolumeMin.z());
 
     // bottom plate
     glColor3ub(200, 200, 200);

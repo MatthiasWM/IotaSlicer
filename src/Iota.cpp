@@ -165,8 +165,10 @@ bool IAIota::addGeometry(const char *name, uint8_t *data, size_t size)
         delete pMesh; pMesh = nullptr;
         auto mesh = reader->load();
         pMesh = mesh;
-        if (pMesh)
+        if (pMesh) {
             pMesh->projectTexture(pMesh->pMax.x()*2, pMesh->pMax.y()*2, IA_PROJECTION_FRONT);
+            pMesh->centerOnPrintbed(&gPrinter);
+        }
     }
     return ret;
 }
@@ -184,7 +186,10 @@ bool IAIota::addGeometry(const char *filename)
         delete Iota.pMesh; Iota.pMesh = nullptr;
         auto geometry = reader->load();
         Iota.pMesh = geometry;
-        if (pMesh) pMesh->projectTexture(pMesh->pMax.x()*2, pMesh->pMax.y()*2, IA_PROJECTION_FRONT);
+        if (pMesh) {
+            pMesh->projectTexture(pMesh->pMax.x()*2, pMesh->pMax.y()*2, IA_PROJECTION_FRONT);
+            pMesh->centerOnPrintbed(&gPrinter);
+        }
     }
     return ret;
 }

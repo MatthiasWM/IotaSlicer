@@ -33,6 +33,13 @@ IASceneView::IASceneView(int x, int y, int w, int h, const char *l)
     pTopCamera( new IAOrthoCamera(this, 0) ),
     pCurrentCamera( pPerspectiveCamera )
 {
+    IAVector3d interest = {
+        Iota.gPrinter.pBuildVolume.x() * 0.5,
+        Iota.gPrinter.pBuildVolume.y() * 0.5,
+        Iota.gPrinter.pBuildVolume.z() * 0.333
+    };
+    pPerspectiveCamera->setInterest(interest);
+    pTopCamera->setInterest(interest);
 }
 
 
@@ -146,6 +153,7 @@ void IASceneView::initializeView()
         glLightfv(GL_LIGHT0, GL_AMBIENT, light_ambient);
 
         glEnable(GL_LIGHT0);
+        glEnable(GL_COLOR_MATERIAL);
         glEnable(GL_NORMALIZE);
 
         glEnable(GL_BLEND);
@@ -195,7 +203,6 @@ void IASceneView::beginModels()
     // initialize model drawing
     glPushMatrix();
     glEnable(GL_LIGHTING);
-    glEnable(GL_COLOR_MATERIAL);
     glEnable(GL_DEPTH_TEST);
 }
 
@@ -207,8 +214,6 @@ void IASceneView::endModels()
 {
     glPopMatrix();
 }
-
-
 
 
 /**
@@ -224,15 +229,33 @@ void IASceneView::draw()
     beginTextures();
 
     pCurrentCamera->draw();
+
+    // Draw the OpenGL origin.
+    glDisable(GL_LIGHTING);
+    const float sze = 5.0f;
+    glColor3f(0.0, 0.0, 0.0);
+    glLineWidth(3.0);
+    glBegin(GL_LINE_LOOP);
+    glVertex3f( sze,  0.0, 0.0);
+    glVertex3f( 0.0,  sze, 0.0);
+    glVertex3f(-sze,  0.0, 0.0);
+    glVertex3f( 0.0, -sze, 0.0);
+    glLineWidth(1.0);
+    glEnd();
+    glEnable(GL_LIGHTING);
+
     Iota.gPrinter.draw();
 
     beginModels();
     if (Iota.pMesh) {
+        glPushMatrix();
+        glTranslated(Iota.pMesh->pOffset.x(), Iota.pMesh->pOffset.y(), Iota.pMesh->pOffset.z());
         if (Iota.gShowSlice) {
             Iota.pMesh->drawSliced(zSlider1->value());
         } else {
             Iota.pMesh->drawFlat(Iota.gShowTexture);
         }
+        glPopMatrix();
     }
     endModels();
     

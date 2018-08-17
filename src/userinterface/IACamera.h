@@ -25,6 +25,7 @@ public:
     virtual void rotate(double dx, double dy) { }
     virtual void drag(double dx, double dy) { }
     virtual void dolly(double dx, double dy) { }
+    virtual void setInterest(IAVector3d &v) { }
 
 protected:
     IASceneView *pView = nullptr;
@@ -43,9 +44,10 @@ public:
     void rotate(double dx, double dy) override;
     void drag(double dx, double dy) override;
     void dolly(double dx, double dy) override;
+    virtual void setInterest(IAVector3d &v) override;
 
 private:
-#if 1
+#if 0
     double pXRotation = -0.55;
     double pZRotation = 5.81;
     double pDistance = 216;
@@ -70,6 +72,7 @@ public:
     void rotate(double dx, double dy) override;
     void drag(double dx, double dy) override;
     void dolly(double dx, double dy) override;
+    virtual void setInterest(IAVector3d &v) override;
 
 private:
     double pZoom = 200;

@@ -16,6 +16,9 @@
 #include <float.h>
 
 
+class IAPrinter;
+
+
 /**
  A mesh represents a single geometric object, made out of vertices and triangles.
 
@@ -55,41 +58,15 @@ public:
     size_t addPoint(double x, double y, double z);
 
     void updateBoundingBox(IAVector3d&);
+    void centerOnPrintbed(IAPrinter *printer);
 
     IAVertexList vertexList;
     IAEdgeList edgeList;
     IATriangleList faceList;
     IAVector3d pMin = { FLT_MAX, FLT_MAX, FLT_MAX};
     IAVector3d pMax = { FLT_MIN, FLT_MIN, FLT_MIN };
+    IAVector3d pOffset;
 };
-
-
-typedef std::vector<IAMesh*> IAMeshVector;
-typedef IAMeshVector::iterator IAMeshVectorIt;
-
-
-///**
-// Manage a list of meshes.
-// */
-//class IAMeshList
-//{
-//public:
-//    IAMeshList() { }
-//    ~IAMeshList();
-//    int size() { return (int)meshList.size(); }
-//    IAMesh *operator[](int ix) { return meshList[ix]; }
-//    void push_back(IAMesh *mesh) { meshList.push_back(mesh); }
-//    void drawGouraud();
-//    void shrinkBy(double s);
-//    void projectTexture(double w, double h, int type);
-//    void updateBoundingBox();
-//
-//    IAVector3d pMin = { FLT_MAX, FLT_MAX, FLT_MAX};
-//    IAVector3d pMax = { FLT_MIN, FLT_MIN, FLT_MIN };
-//
-//private:
-//    IAMeshVector meshList;
-//};
 
 
 #endif /* IA_MESH_H */
