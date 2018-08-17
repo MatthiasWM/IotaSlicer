@@ -28,7 +28,7 @@ extern float max(float a, float b);
  * List of errors that the user may encounter.
  */
 enum class Error {
-    noError = 0,
+    NoError = 0,
     CantOpenFile_STR_BSD
 };
 
@@ -61,6 +61,7 @@ public: // TODO: deprecated globals are now members, but must be removed
     FILE *gOutFile = nullptr;
     double minX, maxX, minY, maxY, minZ, maxZ;
 
+    void loadAnyFileList(const char *list);
     void sliceAll();
     void menuWriteSlice();
     void menuQuit();
@@ -69,12 +70,12 @@ public: // TODO: deprecated globals are now members, but must be removed
     void setError(const char *loc, Error err, const char *str=nullptr);
     bool hadError();
     Error lastError() { return pError; }
-    void showLastError();
+    void showError();
 
 private:
     const char *pErrorString = nullptr;
     const char *pErrorLocation = nullptr;
-    Error pError = Error::noError;
+    Error pError = Error::NoError;
     int pErrorBSD = 0;
     static const char *kErrorMessage[];
 };

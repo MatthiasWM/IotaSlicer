@@ -40,8 +40,10 @@ IAIota Iota;
 
 const char *IAIota::kErrorMessage[] =
 {
-    HDR"No error.",
-    HDR"Can't open file \"%2$s\":\n%3$s"
+    // NoError
+        HDR"No error.",
+    // CantOpenFile_STR_BSD
+        HDR"Can't open file \"%2$s\":\n%3$s"
 };
 
 
@@ -67,6 +69,37 @@ double min(double a, double b) { return a<b?a:b; }
 double max(double a, double b) { return a>b?a:b; }
 
 
+IAIota::IAIota()
+{
+}
+
+
+IAIota::~IAIota()
+{
+    delete gMeshList;
+}
+
+
+/**
+ * Load a list of files from mass storage.
+ *
+ * Read geometries, textures, GCode files, or whatever the user throws at us.
+ * Files are read in the order in which they appear in the list, and reading
+ * stops as soon as one file reader creates an error.
+ *
+ * \param list one or more filenames, separated by \n
+ * \return nothing, but may sho an error dialog to the user
+ */
+void IAIota::loadAnyFileList(const char *list)
+{
+    // FIXME: check if the file ending is .stl (etc.)
+    // FIXME: check for multiple file drop
+    Iota.clearError();
+    Iota.addGeometry(Fl::event_text());
+    Iota.showError();
+}
+
+
 /**
  Experimental stuff.
  */
@@ -88,17 +121,6 @@ void IAIota::sliceAll()
 {
 //    gMeshSlice.generateLidFrom(gMeshList, zSlider1->value());
 //    defer slicing until we actually need a to recreate the lid
-}
-
-
-IAIota::IAIota()
-{
-}
-
-
-IAIota::~IAIota()
-{
-    delete gMeshList;
 }
 
 
@@ -138,14 +160,39 @@ bool IAIota::addGeometry(const char *filename)
 }
 
 
+/**
+ * Clear all information about previous errors.
+ *
+ * clearError() and showError() are used like brackets in a high level
+ * call from the user interface.
+ *
+ * A typical user interaction starts with clearError(),
+ * followed by a function that may create an error,
+ * and finalized by showLastError(), which will present the error to the user,
+ * only if one occured.
+ *
+ * \see IAIota::showLastError(), IAIota::hadError()
+ */
 void IAIota::clearError()
 {
-    pError = Error::noError;
+    pError = Error::NoError;
     pErrorBSD = 0;
     pErrorString = nullptr;
 }
 
 
+/**
+ * Set an error code that may or may not be shown to the user later.
+ *
+ * Errors most be meaningful to the user first and foremost!
+ *
+ * \param loc the error location. This description should be useful to the user,
+ *        not the programmer
+ * \param err the actual error message. Error messages ending in _BSD will store
+ *        the 'errno' at the time of this call.
+ * \param str error messages ending in _STR require additonal text to print the
+ *        error message, usually a file name
+ */
 void IAIota::setError(const char *loc, Error err, const char *str)
 {
     pErrorLocation = loc;
@@ -155,13 +202,19 @@ void IAIota::setError(const char *loc, Error err, const char *str)
 }
 
 
+/**
+ * Return true, if setError() was called since the last call to clearError().
+ */
 bool IAIota::hadError()
 {
-    return (pError!=Error::noError);
+    return (pError!=Error::NoError);
 }
 
 
-void IAIota::showLastError()
+/**
+ * Show an alert box with the text of the last error, registered by setError().
+ */
+void IAIota::showError()
 {
     if (hadError()) {
         fl_alert(kErrorMessage[(size_t)pError], pErrorLocation, pErrorString, strerror(pErrorBSD));
