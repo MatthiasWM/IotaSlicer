@@ -40,26 +40,11 @@ public:
     IAIota();
     ~IAIota();
 
+    void loadAnyFileList(const char *list);
     bool addGeometry(const char *name, uint8_t *data, size_t size);
     bool addGeometry(const char *filename);
     bool addGeometry(std::shared_ptr<IAGeometryReader> reader);
 
-private:
-    bool addGeomtery(class IAGeometryReader *reader);
-
-
-public: // TODO: deprecated globals are now members, but must be removed
-    class Fl_Window *gMainWindow = nullptr;
-    class Fl_RGB_Image *texture = nullptr;
-    IAMesh *pMesh = nullptr;
-    IASlice gMeshSlice;
-    IAPrinter gPrinter;
-    bool gShowSlice;
-    bool gShowTexture;
-    FILE *gOutFile = nullptr;
-
-    void loadAnyFileList(const char *list);
-    void sliceAll();
     void menuWriteSlice();
     void menuQuit();
 
@@ -69,11 +54,38 @@ public: // TODO: deprecated globals are now members, but must be removed
     Error lastError() { return pError; }
     void showError();
 
+public:
+    /// the main UI window
+    /// \todo the UI must be managed in a UI class (Fluid can do that!)
+    class Fl_Window *gMainWindow = nullptr;
+    /// the one and only texture we currently support
+    /// \todo move this into a class and attach it to models
+    class Fl_RGB_Image *texture = nullptr;
+    /// the one and only mesh we currently support
+    /// \todo move meshes into a model class, and models into a modelList
+    IAMesh *pMesh = nullptr;
+    /// the one slice that we generate
+    /// \todo create a current slice and hashed slices for other z-layers
+    IASlice gMeshSlice;
+    /// the current 3d printwer
+    IAPrinter gPrinter;
+    /// show the slice in the 3d view
+    /// \todo move to UI class
+    bool gShowSlice;
+    /// show the texture in the 3d view
+    /// \todo move to UI class
+    bool gShowTexture;
+
 private:
+    /// user definable string explaining the details of an error
     const char *pErrorString = nullptr;
+    /// user definable string explaining the function that caused an error
     const char *pErrorLocation = nullptr;
+    /// current error condition
     Error pError = Error::NoError;
+    /// system specific error number of the call that was markes by an error
     int pErrorBSD = 0;
+    /// list of error messages
     static const char *kErrorMessage[];
 };
 

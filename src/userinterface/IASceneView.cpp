@@ -141,18 +141,21 @@ void IASceneView::initializeView()
         gl_font(FL_HELVETICA, 16 );
         static GLfloat mat_specular[] = { 1.0, 1.0, 1.0, 1.0 };
         static GLfloat mat_shininess[] = { 50.0 };
-        static GLfloat light_position[] = { 1.0, -1.0, 1.0, 0.0 };
-        static GLfloat light_ambient[] = { 0.3, 0.3, 0.3, 1.0};
+        static GLfloat light_ambient[] = { 0.1, 0.1, 0.1, 1.0};
+        static GLfloat light_diffuse[] = { 1.0, 1.0, 1.0, 1.0};
 
         glClearColor (0.9, 0.9, 0.9, 0.0);
         glShadeModel (GL_SMOOTH);
 
         glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
         glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
-        glLightfv(GL_LIGHT0, GL_POSITION, light_position);
         glLightfv(GL_LIGHT0, GL_AMBIENT, light_ambient);
+//        glLightfv(GL_LIGHT1, GL_AMBIENT, light_ambient);
+        glLightfv(GL_LIGHT0, GL_DIFFUSE, light_diffuse);
+        glLightfv(GL_LIGHT1, GL_DIFFUSE, light_diffuse);
 
         glEnable(GL_LIGHT0);
+        glEnable(GL_LIGHT1);
         glEnable(GL_COLOR_MATERIAL);
         glEnable(GL_NORMALIZE);
 
@@ -229,6 +232,11 @@ void IASceneView::draw()
     beginTextures();
 
     pCurrentCamera->draw();
+
+    static GLfloat light_position0[] = { 4.0, -1.0, 2.0, 0.0 };
+    glLightfv(GL_LIGHT0, GL_POSITION, light_position0);
+    static GLfloat light_position1[] = { -3.0, -1.0, -2.0, 0.0 };
+    glLightfv(GL_LIGHT1, GL_POSITION, light_position1);
 
     // Draw the OpenGL origin.
     glDisable(GL_LIGHTING);

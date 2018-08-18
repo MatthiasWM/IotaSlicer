@@ -4,11 +4,11 @@
 //  Copyright (c) 2013-2018 Matthias Melcher. All rights reserved.
 //
 
-// TODO: fix STL importer to generate only watertight models
-// TODO: make STL importer bullet proof (no reads beyond end of line)
+// TODO: fix STL importer to generate only watertight models (crashes when fixing holes!)
+// TODO: make STL importer bullet proof (no reads beyond end of line, for example)
 // TODO: create a model class that contains meshes
 //   TODO: add a positional vertex and a normal for slicing in the printer coordinate system
-//   TODO: update slice class to generate textures and vectors in printer coordinate system
+//   TODO: new global slice class to generate textures and vectors in printer coordinate system
 //   TODO: draw slice in 3d view
 //   TODO: generate slices and vectors for every layer in the model
 //   TODO: write vectors as GCode
@@ -42,6 +42,15 @@ IAIota Iota;
 
 #define HDR "Error: \"%1$s\"\n\n"
 
+
+/**
+ * Error messages for error code from the Error enum class.
+ *
+ * These strings are called with the varargs
+ *  1) function: a human readable location where this error occured.
+ *  2) a caller provided string, often a file name
+ *  3) the cause of an error as a text returned by the operating system
+ */
 const char *IAIota::kErrorMessage[] =
 {
     // NoError
@@ -55,25 +64,22 @@ const char *IAIota::kErrorMessage[] =
 };
 
 
-//Fl_RGB_Image *texture = 0L;
-//
-//IAMeshList gMeshList;
-//IASlice gMeshSlice;
-//IAPrinter gPrinter; // Allocate default printer
-//
-//bool gShowSlice = false;
-//bool gShowTexture = false;
-//FILE *gOutFile;
-//
-//double minX = 0.0, maxX = 0.0, minY = 0.0, maxY = 0.0, minZ = 0.0, maxZ = 0.0;
-
-
-
+/**
+ * Creat the Iota Slicer application.
+ *
+ * All data should be either forwarded through function arguments, or, if there
+ * is no alternative, be rooted in this class. There should be no global
+ * variables. Also, many structures may be required multiple times (printers,
+ * views), so they can have global data.
+ */
 IAIota::IAIota()
 {
 }
 
 
+/**
+ * Release all resources.
+ */
 IAIota::~IAIota()
 {
     delete pMesh;
@@ -135,17 +141,16 @@ void IAIota::menuWriteSlice()
     gMeshSlice.save(zSlider1->value(), buf);
 }
 
+
+/**
+ * Just quit the app.
+ * \todo At some point, we should probably ask if the user has unsaved changes.
+ */
 void IAIota::menuQuit()
 {
     Iota.gMainWindow->hide();
     Fl::flush();
     exit(0);
-}
-
-void IAIota::sliceAll()
-{
-//    gMeshSlice.generateLidFrom(gMeshList, zSlider1->value());
-//    defer slicing until we actually need a to recreate the lid
 }
 
 
@@ -176,7 +181,7 @@ bool IAIota::addGeometry(const char *filename)
 
 
 /**
- * Read a geometry from a Reader.
+ * Read a geometry from any Reader.
  */
 bool IAIota::addGeometry(std::shared_ptr<IAGeometryReader> reader)
 {
