@@ -52,8 +52,8 @@ private:
     double pZRotation = 5.81;
     double pDistance = 216;
 #else
-    double pXRotation = 0.0;
-    double pZRotation = 0.0;
+    double pXRotation = -0.3;
+    double pZRotation = 0.3;
     double pDistance = 400;
 #endif
     IAVector3d pInterest = { 0.0, 0.0, 0.0 };

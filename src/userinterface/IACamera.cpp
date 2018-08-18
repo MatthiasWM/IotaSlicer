@@ -66,7 +66,8 @@ void IAPerspectiveCamera::drag(double dx, double dy)
     position.zRotate(pZRotation);
     position += pInterest;
 
-    IAVector3d printer = Iota.gPrinter.pBuildVolume *= 0.5;
+    IAVector3d printer = Iota.gPrinter.pBuildVolume;
+    printer *= 0.5;
     printer -= position;
     double dist = printer.length();
 
@@ -101,7 +102,8 @@ void IAPerspectiveCamera::draw()
     position.zRotate(pZRotation);
     position += pInterest;
 
-    IAVector3d printer = Iota.gPrinter.pBuildVolume *= 0.5;
+    IAVector3d printer = Iota.gPrinter.pBuildVolume;
+    printer *= 0.5;
     printer -= position;
     double dist = printer.length();
     double aspect = (double(pView->pixel_w()))/(double(pView->pixel_h()));

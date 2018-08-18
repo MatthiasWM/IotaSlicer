@@ -577,8 +577,16 @@ void IAMesh::drawSliced(double zPlane)
 
 void IAMesh::centerOnPrintbed(IAPrinter *printer)
 {
-    pOffset = printer->pBuildVolume;
-    pOffset *= 0.5;
+    pOffset.set(0, 0, 0);
+    pOffset += pMax;
+    pOffset -= pMin;
+    pOffset *= -0.5;
+    pOffset -= pMin;
+
+    IAVector3d p = printer->pBuildVolume;
+    p *= 0.5;
+    pOffset += p;
+    
     pOffset.z( -pMin.z() );
 }
 

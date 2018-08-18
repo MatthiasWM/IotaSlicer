@@ -244,7 +244,9 @@ void IASceneView::draw()
     glEnd();
     glEnable(GL_LIGHTING);
 
+    glPushMatrix();
     Iota.gPrinter.draw();
+    glPopMatrix();
 
     beginModels();
     if (Iota.pMesh) {

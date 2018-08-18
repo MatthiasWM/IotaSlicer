@@ -41,6 +41,9 @@ std::shared_ptr<IAGeometryReader> IAGeometryReaderBinaryStl::findReaderFor(const
     if (n<80)  // TODO: set error
         return nullptr;
 
+    if (strncmp((char*)data, "COLOR=", 6)==0) // there is some program that outputs this for binary SLT. Sigh!
+        return std::make_shared<IAGeometryReaderBinaryStl>(filename);
+
     int i;
     for (i=0; i<80; i++) {
         if (data[i]>126) break;
