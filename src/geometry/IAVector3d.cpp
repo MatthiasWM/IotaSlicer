@@ -167,6 +167,42 @@ IAVector3d& IAVector3d::operator-=(const IAVector3d &v)
 
 
 /**
+ * Add two vectors.
+ */
+IAVector3d IAVector3d::operator+(const IAVector3d &rhs) const
+{
+    IAVector3d sum(this->pV[0] + rhs.pV[0],
+                   this->pV[1] + rhs.pV[1],
+                   this->pV[2] + rhs.pV[2]);
+    return sum;
+}
+
+
+/**
+ * Subtract two vectors.
+ */
+IAVector3d IAVector3d::operator-(const IAVector3d &rhs) const
+{
+    IAVector3d diff(this->pV[0] - rhs.pV[0],
+                    this->pV[1] - rhs.pV[1],
+                    this->pV[2] - rhs.pV[2]);
+    return diff;
+}
+
+
+/**
+ * Multiply vector with scalar
+ */
+IAVector3d IAVector3d::operator*(double scl) const
+{
+    IAVector3d ret(this->pV[0] * scl,
+                   this->pV[1] * scl,
+                   this->pV[2] * scl);
+    return ret;
+}
+
+
+/**
  Add another vector to this vector.
  */
 IAVector3d& IAVector3d::operator+=(const IAVector3d &v)

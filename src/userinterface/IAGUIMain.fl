@@ -146,7 +146,7 @@ gSceneView->redraw();}
               Fl_Slider zSlider1 {
                 callback {Iota.gShowSlice = true;
     gSceneView->redraw();}
-                tooltip {Slice layer at Z mm} xywh {605 33 20 502} minimum 110 maximum -110 step 1
+                tooltip {Slice layer at Z mm} xywh {605 33 20 502} minimum 200 maximum 0 step 1
               }
               Fl_Slider zSlider2 {
                 callback {Iota.gShowSlice = true;

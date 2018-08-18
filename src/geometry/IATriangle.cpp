@@ -49,11 +49,11 @@ void IATriangle::print()
 /**
  Return the number of points in this triangle that lay below a Z threshold.
  */
-int IATriangle::pointsBelowZ(double zMin)
+int IATriangle::pointsBelowZGlobal(double zMin)
 {
-    double z0 = pVertex[0]->pLocalPosition.z();
-    double z1 = pVertex[1]->pLocalPosition.z();
-    double z2 = pVertex[2]->pLocalPosition.z();
+    double z0 = pVertex[0]->pGlobalPosition.z();
+    double z1 = pVertex[1]->pGlobalPosition.z();
+    double z2 = pVertex[2]->pGlobalPosition.z();
     int n = (z0<zMin) + (z1<zMin) + (z2<zMin);
     return n;
 }

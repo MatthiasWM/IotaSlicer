@@ -107,15 +107,19 @@ int IASceneView::handle(int event)
 
 
 /**
- * Update the preview slice if the Z slice leve changed and it needs to be rendered.
+ * Update the preview slice if the Z slice level changed and it needs to be rendered.
  * \todo This should be a function of IASlice.
  */
 void IASceneView::updateSlice()
 {
-    // genrate a lid if we need one
     // TODO: refactor into slice class
-    if (Iota.gShowSlice && Iota.gMeshSlice.pCurrentZ!=zSlider1->value()) {
-        Iota.gMeshSlice.generateLidFrom(Iota.pMesh, zSlider1->value());
+    if ( Iota.gShowSlice && Iota.gMeshSlice.pCurrentZ != zSlider1->value() ) {
+        Iota.gMeshSlice.pCurrentZ = zSlider1->value();
+        Iota.gMeshSlice.clear();
+        if (Iota.pMesh) {
+            Iota.gMeshSlice.generateFlange( Iota.pMesh );
+//          Iota.gMeshSlice.generateLid(Iota.pMesh, zSlider1->value());
+        }
     }
 }
 
@@ -268,6 +272,8 @@ void IASceneView::draw()
         glPopMatrix();
     }
     endModels();
+
+    Iota.gMeshSlice.drawFlange();
     
     draw_children(); // draw FLTK user interface
 }

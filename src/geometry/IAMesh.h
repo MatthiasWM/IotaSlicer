@@ -67,6 +67,7 @@ public:
     IAVector3d position() const;
     void position(const IAVector3d &p);
 
+    void updateGlobalSpace();
 
     IAVertexList vertexList;
     IAVertexMap vertexMap;

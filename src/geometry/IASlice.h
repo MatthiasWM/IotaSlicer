@@ -23,17 +23,23 @@ public:
     IASlice();
     virtual ~IASlice() override;
     virtual void clear() override;
-    void generateLidFrom(IAMesh*, double z);
-    void generateOutlineFrom(IAMesh*, double z);
-    void drawLidEdge();
+
+    void generateFlange(IAMesh*);
+    void addFlange(IAMesh*);
+    void addFirstLidVertex(IATriangle *IATriangle);
+    void addNextLidVertex(IATrianglePtr &IATriangle, ISVertexPtr &vCutA, int &edgeIndex);
+
+    // FIXME: in the process of fixing
+    void drawFlange();
+
+    // TODO: fix all functions below to use global space!
+    void generateLid(IAMesh*, double z);
     void tesselate();
-    void addZSlice(IAMesh*, double);
-    void addFirstLidVertex(IATriangle *IATriangle, double zMin);
-    void addNextLidVertex(IATrianglePtr &IATriangle, ISVertexPtr &vCutA, int &edgeIndex, double zMin);
 
     void save(double z, const char *filename);
 
-    IAEdgeList pLid;
+    /// edge list describin the outlines of a slice
+    IAEdgeList pFlange;
     double pCurrentZ = -1e9;
 };
 

@@ -40,25 +40,26 @@ IAVertex *IAEdge::vertex(int i, IATriangle *f)
  \return a vector on this edge with interpolated texture coordinates, or null
          if this edge does not cross the Z plane.
  */
-IAVertex *IAEdge::findZ(double zMin)
+IAVertex *IAEdge::findZGlobal(double zMin)
 {
     IAVertex *v0 = pVertex[0], *v1 = pVertex[1];
-    IAVector3d vd0(v0->pLocalPosition);
+    IAVector3d vd0(v0->pGlobalPosition);
     bool retVec = false;
-    vd0 -= v1->pLocalPosition;
-    double dzo = vd0.z(), dzn = zMin-v1->pLocalPosition.z();
-    double m = dzn/dzo;  // TODO: division by zero should not be possible...
+    vd0 -= v1->pGlobalPosition;
+    double dzo = vd0.z(), dzn = zMin-v1->pGlobalPosition.z();
+    double m = dzn/dzo;  // FIXME: division by zero should not be possible...
     if (m>=0.0 && m<=1) retVec = true;
     if (retVec) {
         // calculate the coordinate at zMin
         vd0 *= m;
-        vd0 += v1->pLocalPosition;
+        vd0 += v1->pGlobalPosition;
         // calculate the texture coordinate at zMin
         IAVector3d vt0(v0->pTex);
         vt0 -= v1->pTex;
         vt0 *= m;
         vt0 += v1->pTex;
         IAVertex *v2 = new IAVertex();
+        v2->pGlobalPosition = vd0;
         v2->pLocalPosition = vd0;
         v2->pTex = vt0;
         return v2;

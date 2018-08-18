@@ -26,7 +26,7 @@ class IAEdge
 {
 public:
     IAEdge();
-    IAVertex *findZ(double);
+    IAVertex *findZGlobal(double);
     IAVertex *vertex(int i, IATriangle *f);
     IATriangle *otherFace(IATriangle *);
     IAVertex *otherVertex(IAVertex*);

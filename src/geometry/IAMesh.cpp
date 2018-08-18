@@ -501,12 +501,17 @@ void IAMesh::updateBoundingBox(IAVector3d &v)
  */
 void IAMesh::drawSliced(double zPlane)
 {
-    // draw the opaque lower half of the model
     GLdouble equationLowerHalf[4] = { 0.0, 0.0, -1.0, zPlane-0.05 };
     GLdouble equationUpperHalf[4] = { 0.0, 0.0, 1.0, -zPlane+0.05 };
+
+    // draw the opaque lower half of the model
+    glPushMatrix();
+    glTranslated(-Iota.pMesh->position().x(), -Iota.pMesh->position().y(), -Iota.pMesh->position().z());
     glClipPlane(GL_CLIP_PLANE0, equationLowerHalf);
     glEnable(GL_CLIP_PLANE0);
+    glPopMatrix();
     drawFlat(Iota.gShowTexture);
+
     //        glEnable(GL_TEXTURE_2D);
     //        gMeshList[0]->drawShrunk(FL_WHITE, -2.0);
 
@@ -562,6 +567,7 @@ void IAMesh::drawSliced(double zPlane)
     glPopMatrix();
 #endif
 
+#if 0
     // draw a ghoste upper half of the mode
     glClipPlane(GL_CLIP_PLANE0, equationUpperHalf);
     glEnable(GL_CLIP_PLANE0);
@@ -569,6 +575,7 @@ void IAMesh::drawSliced(double zPlane)
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glEnable(GL_CULL_FACE);
     Iota.pMesh->drawFlat(false, 0.6, 0.6, 0.6, 0.1);
+#endif
 
     glDisable(GL_CULL_FACE);
     glDisable(GL_CLIP_PLANE0);
@@ -584,16 +591,9 @@ void IAMesh::drawSliced(double zPlane)
  */
 void IAMesh::centerOnPrintbed(IAPrinter *printer)
 {
-    IAVector3d p;
-    p += pMax;
-    p -= pMin;
-    p *= -0.5;
-    p -= pMin;
-
-    IAVector3d v = printer->pBuildVolume;
-    v *= 0.5;
+    IAVector3d p = ( (pMax - pMin) * -0.5 ) - pMin;
+    IAVector3d v = printer->pBuildVolume * 0.5;
     p += v;
-    
     p.z( -pMin.z() );
     position(p);
 }
@@ -620,6 +620,22 @@ void IAMesh::position(const IAVector3d &p)
 {
     pMeshPosition = p;
     pGlobalPositionNeedsUpdate = true;
+}
+
+
+/**
+ * Update all variables concerning global spacem needed for slicing.
+ */
+void IAMesh::updateGlobalSpace()
+{
+    if (pGlobalPositionNeedsUpdate) {
+        IAVector3d dp = position();
+        for (auto v: vertexList) {
+            v->pGlobalPosition = v->pLocalPosition + dp;
+            // \todo apply full mesh transformation
+        }
+        pGlobalPositionNeedsUpdate = false;
+    }
 }
 
 

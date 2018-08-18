@@ -35,51 +35,177 @@ IASlice::~IASlice()
 
 
 /**
- Create a lid by slicing all meshes at Z.
- */
-void IASlice::generateLidFrom(IAMesh *mesh, double z)
-{
-    printf("Generate lid from mesh list at %g\n", z);
-    // start a new slice. A slice holds the information from all meshes.
-    clear();
-    // add all faces in a mesh that intersect with zMin. They will form the lower lid.
-    addZSlice(mesh, z);
-    // use OpenGL to convert the sorted list of edges into a list of simple polygons
-    tesselate();
-}
-
-
-/**
- Create a lid by slicing all meshes at Z.
- */
-void IASlice::generateOutlineFrom(IAMesh *mesh, double z)
-{
-    clear();
-    addZSlice(mesh, z);
-}
-
-
-/**
  Free all resources.
  */
 void IASlice::clear()
 {
-    for (auto e: pLid) {
+    for (auto e: pFlange) { // pLid is an edge list
         delete e;
     }
-    pLid.clear();
+    pFlange.clear();
     IAMesh::clear();
+}
+
+
+/**
+ Create the outline of a lid by slicing all meshes at Z.
+ */
+void IASlice::generateFlange(IAMesh *mesh)
+{
+    clear();
+    addFlange(mesh);
+}
+
+
+/**
+ Create an edge list where the slice intersects with the mesh.
+ The egde list runs clockwise for a connected outline, and counterclockwise for
+ holes. Every outline loop can followed by a null ptr and more outlines.
+ */
+void IASlice::addFlange(IAMesh *m)
+{
+    // setup
+    m->updateGlobalSpace();
+    double zMin = pCurrentZ;
+
+    // run through all faces and mark them as unused
+    for (auto t: m->faceList) {
+        t->pUsed = false;
+    }
+
+    // run through all faces again and add all faces to the first lid that intersect with zMin
+    for (auto t: m->faceList) {
+        if (t->pUsed) continue;
+        t->pUsed = true;
+        int nBelow = t->pointsBelowZGlobal(zMin);
+        if (nBelow==0) {
+            // do nothing, all vertices are above zMin
+        } else if (nBelow==1) {
+            // starting from here, find all faces that intersect zMin and generate an outline for this slice
+            addFirstLidVertex(t);
+        } else if (nBelow==2) {
+            // starting from here, find all faces that intersect zMin and generate an outline for this slice
+            addFirstLidVertex(t);
+        } else if (nBelow==3) {
+            // do nothing, all vertices are below zMin
+        }
+    }
+}
+
+
+/*
+ Create the edge that cuts this triangle in half.
+
+ The first point is know to be on the z slice. The second edge that crosses
+ z is found and the point of intersection is calculated. Then an edge is
+ created that splits the face on the z plane.
+
+ \param IATriangle the face that is split in two; the face must cross zMin
+ \param vCutA the first point on zMin along the first edge
+ \param edgeIndex the index of the first edge that crosses zMin
+ \param zMin slice on this z plane
+ */
+void IASlice::addFirstLidVertex(IATriangle *tri)
+{
+    // setup
+    double zMin = pCurrentZ;
+    IATriangle *firstFace = tri;
+
+    // find first edge that crosses Z
+    int edgeIndex = -1;
+    if (tri->pVertex[0]->pGlobalPosition.z()<zMin && tri->pVertex[1]->pGlobalPosition.z()>=zMin) edgeIndex = 0;
+    if (tri->pVertex[1]->pGlobalPosition.z()<zMin && tri->pVertex[2]->pGlobalPosition.z()>=zMin) edgeIndex = 1;
+    if (tri->pVertex[2]->pGlobalPosition.z()<zMin && tri->pVertex[0]->pGlobalPosition.z()>=zMin) edgeIndex = 2;
+    if (edgeIndex==-1) {
+        puts("ERROR: addFirstLidVertex failed, not crossing zMin!");
+    }
+
+    // create a vertex where the edge crosses Z.
+    IAVertex *vCutA = tri->pEdge[edgeIndex]->findZGlobal(zMin);
+    if (!vCutA) {
+        puts("ERROR: addFirstLidVertex failed, no Z point found!");
+    }
+
+    // add this edge to list
+    vertexList.push_back(vCutA);
+
+    // find more connected edges
+    int cc = 0;
+    for (;;) {
+        addNextLidVertex(tri, vCutA, edgeIndex);
+        cc++;
+        if (tri->pUsed)
+            break;
+        tri->pUsed = true;
+    }
+
+    // some statistics (should always be a loop if the model is watertight
+    //    printf("%d edges linked\n", cc);
+    if (firstFace==tri) {
+        //        puts("It's a loop!");
+    } else {
+        //        puts("It's NOT a loop!");
+    }
+
+    // mark the end of an edge list, start with a hole or separate mesh
+    pFlange.push_back(0L);
+}
+
+
+/*
+ Create the edge that cuts this triangle in half.
+
+ The first point is know to be on the z slice. The second edge that crosses
+ z is found and the point of intersection is calculated. Then an edge is
+ created that splits the face on the z plane.
+
+ \param IATriangle the face that is split in two; the face must cross zMin
+ \param vCutA the first point on zMin along the first edge
+ \param edgeIndex the index of the first edge that crosses zMin
+ \param zMin slice on this z plane
+ */
+void IASlice::addNextLidVertex(IATrianglePtr &IATriangle, ISVertexPtr &vCutA, int &edgeIndex)
+{
+    // setup
+    double zMin = pCurrentZ;
+
+    // find the other edge in the triangle that crosses Z. Faces are always clockwise
+    // what happens if the triangle has one point exactly on Z?
+    IAVertex *vOpp = IATriangle->pVertex[(edgeIndex+2)%3];
+    int newIndex;
+    if (vOpp->pGlobalPosition.z()<zMin) {
+        newIndex = (edgeIndex+1)%3;
+    } else {
+        newIndex = (edgeIndex+2)%3;
+    }
+
+    // Cut the new edge at Z
+    IAEdge *eCutB = IATriangle->pEdge[newIndex];
+    IAVertex *vCutB = eCutB->findZGlobal(zMin);
+    if (!vCutB) {
+        puts("ERROR: addNextLidVertex failed, no Z point found!");
+    }
+    vertexList.push_back(vCutB);
+    IAEdge *lidEdge = new IAEdge();
+    lidEdge->pVertex[0] = vCutA;
+    lidEdge->pVertex[1] = vCutB;
+    pFlange.push_back(lidEdge);
+
+    vCutA = vCutB;
+    IATriangle = eCutB->otherFace(IATriangle);
+    edgeIndex = eCutB->indexIn(IATriangle);
 }
 
 
 /**
  Draw the edge where the slice intersects the model.
  */
-void IASlice::drawLidEdge()
+void IASlice::drawFlange()
 {
     glColor3f(0.8f, 1.0f, 1.0f);
+    glLineWidth(12.0);
     glBegin(GL_LINES);
-    for (auto e: pLid) {
+    for (auto e: pFlange) {
         if (e) {
             for (int j = 0; j < 2; ++j) {
                 IAVertex *v = e->pVertex[j];
@@ -91,6 +217,22 @@ void IASlice::drawLidEdge()
         }
     }
     glEnd();
+    glLineWidth(1.0);
+}
+
+
+/**
+ Create a lid by slicing all meshes at Z.
+ */
+void IASlice::generateLid(IAMesh *mesh, double z)
+{
+    printf("Generate lid from mesh list at %g\n", z);
+    // start a new slice. A slice holds the information from all meshes.
+    clear();
+    // add all faces in a mesh that intersect with zMin. They will form the lower lid.
+    addFlange(mesh);
+    // use OpenGL to convert the sorted list of edges into a list of simple polygons
+    tesselate();
 }
 
 
@@ -183,12 +325,12 @@ void IASlice::tesselate()
 #endif
     gluTessProperty(gGluTess, GLU_TESS_WINDING_RULE, GLU_TESS_WINDING_POSITIVE);
     
-    int i, n = (int)pLid.size();
+    int i, n = (int)pFlange.size();
     tessVertexCount = 0;
     gluTessBeginPolygon(gGluTess, this);
     gluTessBeginContour(gGluTess);
     for (i=0; i<n; i++) {
-        IAEdge *e = pLid[i];
+        IAEdge *e = pFlange[i];
         if (e==NULL) {
             gluTessEndContour(gGluTess);
             gluTessBeginContour(gGluTess);
@@ -198,126 +340,6 @@ void IASlice::tesselate()
     }
     gluTessEndContour(gGluTess);
     gluTessEndPolygon(gGluTess);
-}
-
-
-/*
- Create the edge that cuts this triangle in half.
- 
- The first point is know to be on the z slice. The second edge that crosses
- z is found and the point of intersection is calculated. Then an edge is
- created that splits the face on the z plane.
- 
- \param IATriangle the face that is split in two; the face must cross zMin
- \param vCutA the first point on zMin along the first edge
- \param edgeIndex the index of the first edge that crosses zMin
- \param zMin slice on this z plane
- */
-void IASlice::addNextLidVertex(IATrianglePtr &IATriangle, ISVertexPtr &vCutA, int &edgeIndex, double zMin)
-{
-    // faces are always clockwise
-    IAVertex *vOpp = IATriangle->pVertex[(edgeIndex+2)%3];
-    int newIndex;
-    if (vOpp->pLocalPosition.z()<zMin) {
-        newIndex = (edgeIndex+1)%3;
-    } else {
-        newIndex = (edgeIndex+2)%3;
-    }
-    IAEdge *eCutB = IATriangle->pEdge[newIndex];
-    IAVertex *vCutB = eCutB->findZ(zMin);
-    if (!vCutB) {
-        puts("ERROR: addNextLidVertex failed, no Z point found!");
-    }
-    vertexList.push_back(vCutB);
-    IAEdge *lidEdge = new IAEdge();
-    lidEdge->pVertex[0] = vCutA;
-    lidEdge->pVertex[1] = vCutB;
-    pLid.push_back(lidEdge);
-    
-    vCutA = vCutB;
-    IATriangle = eCutB->otherFace(IATriangle);
-    edgeIndex = eCutB->indexIn(IATriangle);
-}
-
-
-/*
- Create the edge that cuts this triangle in half.
- 
- The first point is know to be on the z slice. The second edge that crosses
- z is found and the point of intersection is calculated. Then an edge is
- created that splits the face on the z plane.
- 
- \param IATriangle the face that is split in two; the face must cross zMin
- \param vCutA the first point on zMin along the first edge
- \param edgeIndex the index of the first edge that crosses zMin
- \param zMin slice on this z plane
- */
-void IASlice::addFirstLidVertex(IATriangle *tri, double zMin)
-{
-    IATriangle *firstFace = tri;
-    // find first edge that crosses zMin
-    int edgeIndex = -1;
-    if (tri->pVertex[0]->pLocalPosition.z()<zMin && tri->pVertex[1]->pLocalPosition.z()>=zMin) edgeIndex = 0;
-    if (tri->pVertex[1]->pLocalPosition.z()<zMin && tri->pVertex[2]->pLocalPosition.z()>=zMin) edgeIndex = 1;
-    if (tri->pVertex[2]->pLocalPosition.z()<zMin && tri->pVertex[0]->pLocalPosition.z()>=zMin) edgeIndex = 2;
-    if (edgeIndex==-1) {
-        puts("ERROR: addFirstLidVertex failed, not crossing zMin!");
-    }
-    IAVertex *vCutA = tri->pEdge[edgeIndex]->findZ(zMin);
-    if (!vCutA) {
-        puts("ERROR: addFirstLidVertex failed, no Z point found!");
-    }
-    vertexList.push_back(vCutA);
-    //  addNextLidVertex(IATriangle, vCutA, edgeIndex, zMin);
-    int cc = 0;
-    for (;;) {
-        addNextLidVertex(tri, vCutA, edgeIndex, zMin);
-        cc++;
-        if (tri->pUsed)
-            break;
-        tri->pUsed = true;
-    }
-//    printf("%d edges linked\n", cc);
-    if (firstFace==tri) {
-//        puts("It's a loop!");
-    } else {
-//        puts("It's NOT a loop!");
-    }
-    pLid.push_back(0L);
-}
-
-
-/**
- Create an edge list where the slice intersects with the mesh.
- The egde list runs clockwise for a connected outline, and counterclockwise for
- holes. Every outline loop can followed by a null ptr and more outlines.
- */
-void IASlice::addZSlice(IAMesh *m, double zMin)
-{
-    // Get the number of triangles in this mesh
-    int i, n = (int)m->faceList.size();
-    // run through all faces and mark them as unused
-    for (i = 0; i < n; i++) {
-        m->faceList[i]->pUsed = false;
-    }
-    // run through all faces again and add all faces to the first lid that intersect with zMin
-    for (i = 0; i < n; i++) {
-        IATriangle *IATriangle = m->faceList[i];
-        if (IATriangle->pUsed) continue;
-        IATriangle->pUsed = true;
-        int nBelow = IATriangle->pointsBelowZ(zMin);
-        if (nBelow==0) {
-            // do nothing, all vertices are above zMin
-        } else if (nBelow==1) {
-            // starting from here, find all faces that intersect zMin and generate an outline for this slice
-            addFirstLidVertex(IATriangle, zMin);
-        } else if (nBelow==2) {
-            // starting from here, find all faces that intersect zMin and generate an outline for this slice
-            addFirstLidVertex(IATriangle, zMin);
-        } else if (nBelow==3) {
-            // do nothing, all vertices are below zMin
-        }
-    }
 }
 
 
@@ -452,7 +474,7 @@ void IASlice::save(double z, const char *filename)
 //    glVertex3f( 10.0,  10.0, 0.0);
 //    glVertex3f( 10.0, -10.0, 0.0);
 //    glEnd();
-    this->drawLidEdge();
+    this->drawFlange();
     // render...
 
     //    glGetTexImage(<#GLenum target#>, <#GLint level#>, <#GLenum format#>, <#GLenum type#>, <#GLvoid *pixels#>);

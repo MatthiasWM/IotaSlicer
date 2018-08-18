@@ -33,7 +33,7 @@ public:
     bool validNormal() { return pNNormal==1; }
     void rotateVertices();
     void print();
-    int pointsBelowZ(double z);
+    int pointsBelowZGlobal(double z);
 
     IAVertex *pVertex[3] = { nullptr, nullptr, nullptr };
     IAEdge *pEdge[3] = { nullptr, nullptr, nullptr };
