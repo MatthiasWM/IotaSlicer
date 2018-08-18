@@ -12,6 +12,7 @@
 
 
 class IATriangle;
+class IAFramebuffer;
 
 
 /**
@@ -34,6 +35,7 @@ public:
     void addFirstFlangeVertex(IATriangle *IATriangle);
     void addNextFlangeVertex(IATrianglePtr &IATriangle, ISVertexPtr &vCutA, int &edgeIndex);
     void drawFlange();
+    void drawFramebuffer();
 
     // FIXME: in the process of fixing
     void tesselateLidFromFlange();
@@ -52,6 +54,7 @@ public:
 private:
     /// edge list describing the outlines of a slice
     IAEdgeList pFlange;
+    IAFramebuffer *pFramebuffer = nullptr;
 };
 
 

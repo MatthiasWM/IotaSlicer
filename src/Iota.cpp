@@ -31,6 +31,7 @@
 #include "fileformats/IAFmtObj3ds.h"
 #include "fileformats/IAGeometryReader.h"
 #include "fileformats/IAGeometryReaderBinaryStl.h"
+#include "opengl/IAFramebuffer.h"
 
 #include <FL/fl_ask.H>
 
@@ -138,7 +139,11 @@ void IAIota::menuWriteSlice()
 {
     char buf[FL_PATH_MAX];
     sprintf(buf, "%s/slice.jpg", getenv("HOME"));
-    gMeshSlice.save(zSlider1->value(), buf);
+//    gMeshSlice.save(zSlider1->value(), buf);
+    IAFramebuffer fb;
+    fb.drawBegin();
+    fb.drawEnd();
+    fb.saveAsJpeg(buf);
 }
 
 

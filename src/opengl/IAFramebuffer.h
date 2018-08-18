@@ -8,6 +8,10 @@
 #define IA_FRAMEBUFFER_H
 
 
+#include <FL/gl.h>
+#include <FL/glu.h>
+
+
 /**
  * Manage an OpenGL framebuffer object as a texture.
  *
@@ -42,6 +46,8 @@ public:
     void drawEnd();
 
     unsigned char *makeIntoBitmap();
+    void draw();
+    int saveAsJpeg(const char *filename);
 
     int pWidth = 256, pHeight = 256;  // TODO: for now, this is fixed
 
@@ -50,6 +56,12 @@ protected:
     void activateFBO();
     void createFBO();
     void deleteFBO();
+
+    bool pFramebufferCreated = false;
+    GLuint color_tex;
+    GLuint fb;
+    GLuint depth_rb;
+
 };
 
 

@@ -363,8 +363,8 @@
 		C9E4C30E21285AFB004ED18C /* opengl */ = {
 			isa = PBXGroup;
 			children = (
-				C9E4C30F21285AFB004ED18C /* IAFramebuffer.h */,
 				C9E4C31021285AFB004ED18C /* IAFramebuffer.cpp */,
+				C9E4C30F21285AFB004ED18C /* IAFramebuffer.h */,
 			);
 			path = opengl;
 			sourceTree = "<group>";
