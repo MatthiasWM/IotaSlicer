@@ -229,11 +229,13 @@ void IASceneView::endModels()
  */
 void IASceneView::draw()
 {
+    // Do this as the very first action, as it may mess with the OpenGL context.
+    updateSlice();
+    
     if (!valid()) initializeView();
 
     // initialize the frame buffer
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    updateSlice();
     beginTextures();
 
     pCurrentCamera->draw();
@@ -276,6 +278,7 @@ void IASceneView::draw()
 
     Iota.gMeshSlice.drawFlat(false, 1.0, 0.0, 0.0);
     Iota.gMeshSlice.drawFlange();
+    Iota.gMeshSlice.drawFramebuffer();
 
     draw_children(); // draw FLTK user interface
 }

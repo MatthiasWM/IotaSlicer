@@ -139,7 +139,6 @@ void IAIota::menuWriteSlice()
 {
     char buf[FL_PATH_MAX];
     sprintf(buf, "%s/slice.jpg", getenv("HOME"));
-//    gMeshSlice.save(zSlider1->value(), buf);
     IAFramebuffer fb;
     fb.drawBegin();
     fb.drawEnd();

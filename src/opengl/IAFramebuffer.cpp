@@ -7,18 +7,32 @@
 
 #include "IAFramebuffer.h"
 
+#include "../userinterface/IAGUIMain.h"
+
 #include <stdio.h>
 #include <libjpeg/jpeglib.h>
+
 
 extern "C" int potrace_main(unsigned char *pixels256x256);
 
 
+/**
+ * Create a framebuffer object.
+ *
+ * For now, we do not allow any parameters. We create a 256x256 big buffer
+ * with a color buffer with RGBA8 and a depth buffer of 24 bits.
+ *
+ * Creating the buffers is deferred until they are actually needed.
+ */
 IAFramebuffer::IAFramebuffer()
 {
     // variables are initialized inline
 }
 
 
+/**
+ * Delete the framebuffer, if we ever create one.
+ */
 IAFramebuffer::~IAFramebuffer()
 {
     if (hasFBO()) {
@@ -27,11 +41,13 @@ IAFramebuffer::~IAFramebuffer()
 }
 
 
+/**
+ * Activate this buffer for drawing into it at global coordinates.
+ */
 void IAFramebuffer::drawBegin()
 {
     activateFBO();
     // TODO: set matrices, lighting, etc. for this FBO
-    glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, fb);
     glClearColor(0.0, 0.0, 0.0, 0.0);
     glClearDepth(1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -61,12 +77,22 @@ void IAFramebuffer::drawBegin()
 }
 
 
+/**
+ * Reactivate the regular framebuffer and signal the scene viewer to rectreate
+ * all settings.
+ */
 void IAFramebuffer::drawEnd()
 {
-    // TODO: deactivate thie FBO and set render target to FL_BACKBUFFER
+    // deactivate the FBO and set render target to FL_BACKBUFFER
+    glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
+    // make sure that our scene viewer completely reinitializes
+    gSceneView->valid(0);
 }
 
 
+/**
+ * Convert the color buffer into a bitmap that potrace will understand.
+ */
 unsigned char *IAFramebuffer::makeIntoBitmap()
 {
     // read the FBO content into RAM and make a bitmap for potrace
@@ -78,6 +104,9 @@ unsigned char *IAFramebuffer::makeIntoBitmap()
 }
 
 
+/**
+ * Write the RGB components of the image buffer into a jpeg file.
+ */
 int IAFramebuffer::saveAsJpeg(const char *filename)
 {
     GLubyte imgdata[pWidth*pHeight*3];
@@ -125,34 +154,76 @@ int IAFramebuffer::saveAsJpeg(const char *filename)
 }
 
 
+/**
+ * Draw the RGBA buffer into the scene viewer.
+ */
 void IAFramebuffer::draw()
 {
     // TODO: set as texture and render out
+    if (!hasFBO()) return;
+
+/* Something like that:
+    glGenTextures(1, &pColorbuffer);
+    glBindTexture(GL_TEXTURE_2D, tex);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB8, Iota.texture->w(), Iota.texture->h(),
+                 0, GL_RGB, GL_UNSIGNED_BYTE, *Iota.texture->data());
+    glEnable(GL_TEXTURE_2D);
+    lTexture = Iota.texture;
+
+    glBindTexture(GL_TEXTURE_2D, tex);
+    glEnable(GL_TEXTURE_2D);
+*/
+    double z = zSlider1->value();
+    glBindTexture(GL_TEXTURE_2D, pColorbuffer);
+    glEnable(GL_TEXTURE_2D);
+    glColor3f(1.0, 1.0, 1.0);
+    glBegin(GL_POLYGON);
+    glTexCoord2f(0.0, 0.0);
+    glVertex3f(0.0, 0.0, z);
+    glTexCoord2f(0.0, 1.0);
+    glVertex3f(0.0, 214.0, z);
+    glTexCoord2f(1.0, 1.0);
+    glVertex3f(214.0, 214.0, z);
+    glTexCoord2f(1.0, 0.0);
+    glVertex3f(214.0, 0.0, z);
+    glEnd();
 }
 
+
+/**
+ * Return true if we have previously allocated the FBO.
+ */
 bool IAFramebuffer::hasFBO()
 {
     return pFramebufferCreated;
 }
 
 
+/**
+ * Activate the FBO for drawing; build an FBO if we didn't yet.
+ */
 void IAFramebuffer::activateFBO()
 {
     if (!pFramebufferCreated) {
         createFBO();
     }
     // FIXME: what if there was an error and FBO is still not created
-    // TODO: activate
+    glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, pFramebuffer);
 }
 
 
+/**
+ * Create a framebuffer object.
+ */
 void IAFramebuffer::createFBO()
 {
     // Create this thing
 
     //RGBA8 2D texture, 24 bit depth texture
-    glGenTextures(1, &color_tex);
-    glBindTexture(GL_TEXTURE_2D, color_tex);
+    glGenTextures(1, &pColorbuffer);
+    glBindTexture(GL_TEXTURE_2D, pColorbuffer);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
@@ -160,17 +231,17 @@ void IAFramebuffer::createFBO()
     //NULL means reserve texture memory, but texels are undefined
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, pWidth, pHeight, 0, GL_BGRA, GL_UNSIGNED_BYTE, nullptr);
     //-------------------------
-    glGenFramebuffersEXT(1, &fb);
-    glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, fb);
+    glGenFramebuffersEXT(1, &pFramebuffer);
+    glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, pFramebuffer);
     //Attach 2D texture to this FBO
-    glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT, GL_TEXTURE_2D, color_tex, 0);
+    glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT, GL_TEXTURE_2D, pColorbuffer, 0);
     //-------------------------
-    glGenRenderbuffersEXT(1, &depth_rb);
-    glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, depth_rb);
+    glGenRenderbuffersEXT(1, &pDepthbuffer);
+    glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, pDepthbuffer);
     glRenderbufferStorageEXT(GL_RENDERBUFFER_EXT, GL_DEPTH_COMPONENT24, pWidth, pHeight);
     //-------------------------
     //Attach depth buffer to FBO
-    glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT, GL_DEPTH_ATTACHMENT_EXT, GL_RENDERBUFFER_EXT, depth_rb);
+    glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT, GL_DEPTH_ATTACHMENT_EXT, GL_RENDERBUFFER_EXT, pDepthbuffer);
     //-------------------------
     //Does the GPU support current FBO configuration?
     GLenum status;
@@ -178,7 +249,7 @@ void IAFramebuffer::createFBO()
     switch(status)
     {
         case GL_FRAMEBUFFER_COMPLETE_EXT:
-            printf("good\n");
+//            printf("good\n");
             break;
         default:
             printf("not so good\n");
@@ -188,20 +259,19 @@ void IAFramebuffer::createFBO()
 }
 
 
+/**
+ * Delete the framebuffer object.
+ */
 void IAFramebuffer::deleteFBO()
 {
-    //----------------
-    //Bind 0, which means render to back buffer
-    glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
-
     //Delete resources
-    glDeleteTextures(1, &color_tex);
-    glDeleteRenderbuffersEXT(1, &depth_rb);
+    glDeleteTextures(1, &pColorbuffer);
+    glDeleteRenderbuffersEXT(1, &pDepthbuffer);
     //Bind 0, which means render to back buffer, as a result, fb is unbound
     glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
-    glDeleteFramebuffersEXT(1, &fb);
+    glDeleteFramebuffersEXT(1, &pFramebuffer);
     // TODO: get rid of this thing
-    pFramebufferCreated = true;
+    pFramebufferCreated = false;
 }
 
 

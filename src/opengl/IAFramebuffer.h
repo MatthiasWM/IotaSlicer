@@ -58,9 +58,9 @@ protected:
     void deleteFBO();
 
     bool pFramebufferCreated = false;
-    GLuint color_tex;
-    GLuint fb;
-    GLuint depth_rb;
+    GLuint pColorbuffer = 0;
+    GLuint pFramebuffer = 0;
+    GLuint pDepthbuffer = 0;
 
 };
 

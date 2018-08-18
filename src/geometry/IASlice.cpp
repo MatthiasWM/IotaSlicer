@@ -310,6 +310,11 @@ void __stdcall tessErrorCallback(GLenum errorCode)
  */
 void IASlice::tesselateLidFromFlange()
 {
+    // FIXME: this does not belong here!
+    pFramebuffer->drawBegin(); // make sure we have a square in the buffer
+    pFramebuffer->drawEnd();
+
+
     if (!gGluTess)
         gGluTess = gluNewTess();
     
