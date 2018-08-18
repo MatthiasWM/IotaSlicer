@@ -118,6 +118,7 @@ void IASceneView::updateSlice()
         Iota.gMeshSlice.clear();
         if (Iota.pMesh) {
             Iota.gMeshSlice.generateFlange( Iota.pMesh );
+            Iota.gMeshSlice.tesselateLidFromFlange();
 //          Iota.gMeshSlice.generateLid(Iota.pMesh, zSlider1->value());
         }
     }
@@ -273,8 +274,9 @@ void IASceneView::draw()
     }
     endModels();
 
+    Iota.gMeshSlice.drawFlat(false, 1.0, 0.0, 0.0);
     Iota.gMeshSlice.drawFlange();
-    
+
     draw_children(); // draw FLTK user interface
 }
 

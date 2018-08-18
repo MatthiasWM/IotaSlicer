@@ -15,7 +15,12 @@ class IATriangle;
 
 
 /**
- A mesh that represents a slice through another mesh at a give Z coordinate.
+ * A mesh that represents a slice through another mesh at a give Z coordinate.
+ *
+ * \todo The pFlange edge list and the mesh are sharing the same vertexList in
+ * IAMesh. This is not a big deal, but not very clean either.
+ *
+ * IAMesh has its own edge list that does not interfere with pFlange.
  */
 class IASlice : public IAMesh
 {
@@ -26,21 +31,27 @@ public:
 
     void generateFlange(IAMesh*);
     void addFlange(IAMesh*);
-    void addFirstLidVertex(IATriangle *IATriangle);
-    void addNextLidVertex(IATrianglePtr &IATriangle, ISVertexPtr &vCutA, int &edgeIndex);
-
-    // FIXME: in the process of fixing
+    void addFirstFlangeVertex(IATriangle *IATriangle);
+    void addNextFlangeVertex(IATrianglePtr &IATriangle, ISVertexPtr &vCutA, int &edgeIndex);
     void drawFlange();
 
+    // FIXME: in the process of fixing
+    void tesselateLidFromFlange();
+
     // TODO: fix all functions below to use global space!
-    void generateLid(IAMesh*, double z);
-    void tesselate();
 
     void save(double z, const char *filename);
 
-    /// edge list describin the outlines of a slice
-    IAEdgeList pFlange;
+public:
+    /// current Z layer of the entire slice
+    /// \todo don't let external sources update this. The slice needs to know
+    ///       itself when and how to update. Also, mark the slice invalid if
+    ///       any of the global geometries of colors change.
     double pCurrentZ = -1e9;
+
+private:
+    /// edge list describing the outlines of a slice
+    IAEdgeList pFlange;
 };
 
 

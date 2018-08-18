@@ -82,10 +82,10 @@ void IASlice::addFlange(IAMesh *m)
             // do nothing, all vertices are above zMin
         } else if (nBelow==1) {
             // starting from here, find all faces that intersect zMin and generate an outline for this slice
-            addFirstLidVertex(t);
+            addFirstFlangeVertex(t);
         } else if (nBelow==2) {
             // starting from here, find all faces that intersect zMin and generate an outline for this slice
-            addFirstLidVertex(t);
+            addFirstFlangeVertex(t);
         } else if (nBelow==3) {
             // do nothing, all vertices are below zMin
         }
@@ -105,7 +105,7 @@ void IASlice::addFlange(IAMesh *m)
  \param edgeIndex the index of the first edge that crosses zMin
  \param zMin slice on this z plane
  */
-void IASlice::addFirstLidVertex(IATriangle *tri)
+void IASlice::addFirstFlangeVertex(IATriangle *tri)
 {
     // setup
     double zMin = pCurrentZ;
@@ -132,7 +132,7 @@ void IASlice::addFirstLidVertex(IATriangle *tri)
     // find more connected edges
     int cc = 0;
     for (;;) {
-        addNextLidVertex(tri, vCutA, edgeIndex);
+        addNextFlangeVertex(tri, vCutA, edgeIndex);
         cc++;
         if (tri->pUsed)
             break;
@@ -164,7 +164,7 @@ void IASlice::addFirstLidVertex(IATriangle *tri)
  \param edgeIndex the index of the first edge that crosses zMin
  \param zMin slice on this z plane
  */
-void IASlice::addNextLidVertex(IATrianglePtr &IATriangle, ISVertexPtr &vCutA, int &edgeIndex)
+void IASlice::addNextFlangeVertex(IATrianglePtr &IATriangle, ISVertexPtr &vCutA, int &edgeIndex)
 {
     // setup
     double zMin = pCurrentZ;
@@ -221,21 +221,6 @@ void IASlice::drawFlange()
 }
 
 
-/**
- Create a lid by slicing all meshes at Z.
- */
-void IASlice::generateLid(IAMesh *mesh, double z)
-{
-    printf("Generate lid from mesh list at %g\n", z);
-    // start a new slice. A slice holds the information from all meshes.
-    clear();
-    // add all faces in a mesh that intersect with zMin. They will form the lower lid.
-    addFlange(mesh);
-    // use OpenGL to convert the sorted list of edges into a list of simple polygons
-    tesselate();
-}
-
-
 /*
  Tesselation magic, better leave untouched.
  */
@@ -281,6 +266,7 @@ void __stdcall tessCombineCallback(GLdouble coords[3],
 {
     IAVertex *v = new IAVertex();
     v->pLocalPosition.read(coords);
+    // TODO: or used mesh.addVertex()? It would save space, but be a bit slower.
     Iota.gMeshSlice.vertexList.push_back(v);
     *dataOut = v;
 }
@@ -298,12 +284,16 @@ void __stdcall tessErrorCallback(GLenum errorCode)
 
 
 /**
- Fill the sliced outline with triangles, considering cocave polygons and holes.
+ Fill the sliced outline with triangles, considering complex polygons and holes.
+
+ This call requires a flange, so you must call generateFlange() first.
+
+ \todo Glu's tesselation calls are deprecated. Please find a library:
  \todo http://www.cs.man.ac.uk/~toby/alan/software/
  \todo http://www.flipcode.com/archives/Efficient_Polygon_Triangulation.shtml
  \todo https://github.com/greenm01/poly2tri
  */
-void IASlice::tesselate()
+void IASlice::tesselateLidFromFlange()
 {
     if (!gGluTess)
         gGluTess = gluNewTess();
