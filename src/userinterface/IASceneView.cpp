@@ -259,7 +259,7 @@ void IASceneView::draw()
     beginModels();
     if (Iota.pMesh) {
         glPushMatrix();
-        glTranslated(Iota.pMesh->pOffset.x(), Iota.pMesh->pOffset.y(), Iota.pMesh->pOffset.z());
+        glTranslated(Iota.pMesh->position().x(), Iota.pMesh->position().y(), Iota.pMesh->position().z());
         if (Iota.gShowSlice) {
             Iota.pMesh->drawSliced(zSlider1->value());
         } else {

@@ -23,8 +23,7 @@ IAVertex::IAVertex()
  */
 IAVertex::IAVertex(const IAVertex *v)
 {
-    pInitialPosition = v->pInitialPosition;
-    pPosition = v->pPosition;
+    pLocalPosition = v->pLocalPosition;
     pNormal = v->pNormal;
     pTex = v->pTex;
     pNNormal = v->pNNormal;
@@ -64,7 +63,7 @@ void IAVertex::averageNormal()
  */
 void IAVertex::print()
 {
-    printf("v=[%g, %g, %g]\n", pPosition.x(), pPosition.y(), pPosition.z());
+    printf("v=[%g, %g, %g]\n", pLocalPosition.x(), pLocalPosition.y(), pLocalPosition.z());
 }
 
 
@@ -74,14 +73,14 @@ void IAVertex::print()
  Make sure that the initial position is correct, and that all normal
  were calculated.
  */
-void IAVertex::shrinkBy(double s)
-{
-    pPosition.set(
-                  pInitialPosition.x() - pNormal.x() * s,
-                  pInitialPosition.y() - pNormal.y() * s,
-                  pInitialPosition.z() - pNormal.z() * s
-                  );
-}
+//void IAVertex::shrinkBy(double s)
+//{
+//    pShrunkPosition.set(
+//                  pGlobalPosition.x() - pGlobalNormal.x() * s,
+//                  pGlobalPosition.y() - pGlobalNormal.y() * s,
+//                  pGlobalPosition.z() - pGlobalNormal.z() * s
+//                  );
+//}
 
 
 /**
@@ -91,7 +90,7 @@ void IAVertex::projectTexture(double w, double h, int type)
 {
     switch (type) {
         case IA_PROJECTION_FRONT:
-            pTex.set(pPosition.x()/w+0.5, -pPosition.z()/h+0.5, 0.0);
+            pTex.set(pLocalPosition.x()/w+0.5, -pLocalPosition.z()/h+0.5, 0.0);
             break;
         case IA_PROJECTION_CYLINDER:
             break;

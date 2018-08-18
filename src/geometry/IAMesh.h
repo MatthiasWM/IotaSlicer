@@ -55,7 +55,7 @@ public:
     void calculateNormals() { calculateFaceNormals(); calculateVertexNormals(); }
     void fixHoles();
     void fixHole(IAEdge*);
-    void shrinkBy(double s);
+//    void shrinkBy(double s);
     void projectTexture(double w, double h, int type);
     IAEdge *findEdge(IAVertex*, IAVertex*);
     IAEdge *addEdge(IAVertex*, IAVertex*, IATriangle*);
@@ -64,6 +64,10 @@ public:
     void updateBoundingBox(IAVector3d&);
     void centerOnPrintbed(IAPrinter *printer);
 
+    IAVector3d position() const;
+    void position(const IAVector3d &p);
+
+
     IAVertexList vertexList;
     IAVertexMap vertexMap;
     IAEdgeList edgeList;
@@ -71,7 +75,15 @@ public:
     IATriangleList faceList;
     IAVector3d pMin = { FLT_MAX, FLT_MAX, FLT_MAX};
     IAVector3d pMax = { FLT_MIN, FLT_MIN, FLT_MIN };
-    IAVector3d pOffset;
+
+private:
+    /// This is true whenever pGlobalPosition and pGlobalNormal need to be recalculated
+    bool pGlobalPositionNeedsUpdate = true;
+
+    /// Position of this object in scene space
+    /// \todo we also need rotation and scale
+    IAVector3d pMeshPosition;
+
 };
 
 

@@ -24,13 +24,21 @@ public:
     void addNormal(const IAVector3d&);
     void averageNormal();
     void print();
-    void shrinkBy(double s);
+//    void shrinkBy(double s);
     void projectTexture(double w, double h, int type);
 
-    IAVector3d pInitialPosition;
-    IAVector3d pPosition;
+    /// Point position in object space, as it comes from the 3d object file
+    IAVector3d pLocalPosition;
+    /// Point position in scene space, used by IASlice
+    IAVector3d pGlobalPosition;
+    /// Inner shell point position in scene space
+    // IAVector3d pShrunkPosition;
     IAVector3d pTex;
     IAVector3d pNormal = { 1.0, 0.0, 0.0 };
+    /// Point normal in object space
+    // IAVector3d pLocalNormal;
+    /// Point normal in scene space
+    // IAVector3d pGlobalNormal;
     int pNNormal = 0;
 };
 

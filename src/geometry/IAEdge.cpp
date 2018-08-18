@@ -43,23 +43,23 @@ IAVertex *IAEdge::vertex(int i, IATriangle *f)
 IAVertex *IAEdge::findZ(double zMin)
 {
     IAVertex *v0 = pVertex[0], *v1 = pVertex[1];
-    IAVector3d vd0(v0->pPosition);
+    IAVector3d vd0(v0->pLocalPosition);
     bool retVec = false;
-    vd0 -= v1->pPosition;
-    double dzo = vd0.z(), dzn = zMin-v1->pPosition.z();
+    vd0 -= v1->pLocalPosition;
+    double dzo = vd0.z(), dzn = zMin-v1->pLocalPosition.z();
     double m = dzn/dzo;  // TODO: division by zero should not be possible...
     if (m>=0.0 && m<=1) retVec = true;
     if (retVec) {
         // calculate the coordinate at zMin
         vd0 *= m;
-        vd0 += v1->pPosition;
+        vd0 += v1->pLocalPosition;
         // calculate the texture coordinate at zMin
         IAVector3d vt0(v0->pTex);
         vt0 -= v1->pTex;
         vt0 *= m;
         vt0 += v1->pTex;
         IAVertex *v2 = new IAVertex();
-        v2->pPosition = vd0;
+        v2->pLocalPosition = vd0;
         v2->pTex = vt0;
         return v2;
     } else {

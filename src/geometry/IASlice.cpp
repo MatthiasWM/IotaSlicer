@@ -85,7 +85,7 @@ void IASlice::drawLidEdge()
                 IAVertex *v = e->pVertex[j];
                 if (v) {
                     glTexCoord2dv(v->pTex.dataPointer());
-                    glVertex3dv(v->pPosition.dataPointer());
+                    glVertex3dv(v->pLocalPosition.dataPointer());
                 }
             }
         }
@@ -138,7 +138,7 @@ void __stdcall tessCombineCallback(GLdouble coords[3],
                          GLfloat weight[4], IAVertex **dataOut )
 {
     IAVertex *v = new IAVertex();
-    v->pPosition.read(coords);
+    v->pLocalPosition.read(coords);
     Iota.gMeshSlice.vertexList.push_back(v);
     *dataOut = v;
 }
@@ -193,7 +193,7 @@ void IASlice::tesselate()
             gluTessEndContour(gGluTess);
             gluTessBeginContour(gGluTess);
         } else {
-            gluTessVertex(gGluTess, e->pVertex[0]->pPosition.dataPointer(), e->pVertex[0]);
+            gluTessVertex(gGluTess, e->pVertex[0]->pLocalPosition.dataPointer(), e->pVertex[0]);
         }
     }
     gluTessEndContour(gGluTess);
@@ -218,7 +218,7 @@ void IASlice::addNextLidVertex(IATrianglePtr &IATriangle, ISVertexPtr &vCutA, in
     // faces are always clockwise
     IAVertex *vOpp = IATriangle->pVertex[(edgeIndex+2)%3];
     int newIndex;
-    if (vOpp->pPosition.z()<zMin) {
+    if (vOpp->pLocalPosition.z()<zMin) {
         newIndex = (edgeIndex+1)%3;
     } else {
         newIndex = (edgeIndex+2)%3;
@@ -257,9 +257,9 @@ void IASlice::addFirstLidVertex(IATriangle *tri, double zMin)
     IATriangle *firstFace = tri;
     // find first edge that crosses zMin
     int edgeIndex = -1;
-    if (tri->pVertex[0]->pPosition.z()<zMin && tri->pVertex[1]->pPosition.z()>=zMin) edgeIndex = 0;
-    if (tri->pVertex[1]->pPosition.z()<zMin && tri->pVertex[2]->pPosition.z()>=zMin) edgeIndex = 1;
-    if (tri->pVertex[2]->pPosition.z()<zMin && tri->pVertex[0]->pPosition.z()>=zMin) edgeIndex = 2;
+    if (tri->pVertex[0]->pLocalPosition.z()<zMin && tri->pVertex[1]->pLocalPosition.z()>=zMin) edgeIndex = 0;
+    if (tri->pVertex[1]->pLocalPosition.z()<zMin && tri->pVertex[2]->pLocalPosition.z()>=zMin) edgeIndex = 1;
+    if (tri->pVertex[2]->pLocalPosition.z()<zMin && tri->pVertex[0]->pLocalPosition.z()>=zMin) edgeIndex = 2;
     if (edgeIndex==-1) {
         puts("ERROR: addFirstLidVertex failed, not crossing zMin!");
     }

@@ -75,7 +75,6 @@ void load3ds(Lib3dsFile *f, Lib3dsMeshInstanceNode *node) {
             //isPoint->pPosition *= 10; // mokey tiny (z=-5...+5)
             isPoint->pPosition *= 30; // mokey tiny (z=-5...+5)
 #endif
-            isPoint->pInitialPosition = isPoint->pPosition;
             msh->vertexList.push_back(isPoint);
             msh->updateBoundingBox(isPoint->pPosition);
         }

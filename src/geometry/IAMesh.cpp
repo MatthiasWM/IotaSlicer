@@ -50,12 +50,12 @@ void IAMesh::clear()
 /**
  Move all vertices along the negative point normal, effectively shrining the mesh.
  */
-void IAMesh::shrinkBy(double s)
-{
-    for (auto v: vertexList) {
-        v->shrinkBy(s);
-    }
-}
+//void IAMesh::shrinkBy(double s)
+//{
+//    for (auto v: vertexList) {
+//        v->shrinkBy(s);
+//    }
+//}
 
 
 /**
@@ -250,7 +250,7 @@ IAEdge *IAMesh::addEdge(IAVertex *v0, IAVertex *v1, IATriangle *face)
         e->pVertex[1] = v1;
         e->pFace[0] = face;
         edgeList.push_back(e);
-        edgeMap.insert(std::make_pair(v0->pPosition.length()+v1->pPosition.length(), e));
+        edgeMap.insert(std::make_pair(v0->pLocalPosition.length()+v1->pLocalPosition.length(), e));
     }
     return e;
 }
@@ -269,7 +269,7 @@ IAEdge *IAMesh::findEdge(IAVertex *v0, IAVertex *v1)
             return e;
     }
 #else
-    double key = v0->pPosition.length()+v1->pPosition.length();
+    double key = v0->pLocalPosition.length()+v1->pLocalPosition.length();
     auto itlow = edgeMap.lower_bound(key-0.0001);
     auto itup = edgeMap.upper_bound(key+0.0001);
     for (auto it=itlow; it!=itup; ++it) {
@@ -312,9 +312,9 @@ void IAMesh::clearVertexNormals()
 void IAMesh::calculateFaceNormals()
 {
     for (auto t: faceList) {
-        IAVector3d p0(t->pVertex[0]->pPosition);
-        IAVector3d p1(t->pVertex[1]->pPosition);
-        IAVector3d p2(t->pVertex[2]->pPosition);
+        IAVector3d p0(t->pVertex[0]->pLocalPosition);
+        IAVector3d p1(t->pVertex[1]->pLocalPosition);
+        IAVector3d p2(t->pVertex[2]->pLocalPosition);
         p1 -= p0;
         p2 -= p0;
         IAVector3d n = p1.cross(p2);
@@ -354,7 +354,7 @@ void IAMesh::drawGouraud()
             IAVertex *v = t->pVertex[j];
             glNormal3dv(v->pNormal.dataPointer());
             glTexCoord2dv(v->pTex.dataPointer());
-            glVertex3dv(v->pPosition.dataPointer());
+            glVertex3dv(v->pLocalPosition.dataPointer());
         }
     }
     glEnd();
@@ -382,7 +382,7 @@ void IAMesh::drawFlat(bool textured, float r, float g, float b, float a)
         for (int j = 0; j < 3; ++j) {
             IAVertex *v = t->pVertex[j];
             glTexCoord2dv(v->pTex.dataPointer());
-            glVertex3dv(v->pPosition.dataPointer());
+            glVertex3dv(v->pLocalPosition.dataPointer());
         }
     }
     glEnd();
@@ -426,7 +426,7 @@ void IAMesh::drawEdges() {
         for (int j = 0; j < 2; ++j) {
             IAVertex *v = e->pVertex[j];
             glTexCoord2dv(v->pTex.dataPointer());
-            glVertex3dv(v->pPosition.dataPointer());
+            glVertex3dv(v->pLocalPosition.dataPointer());
         }
     }
     glEnd();
@@ -456,8 +456,9 @@ void IAMesh::projectTexture(double w, double h, int type)
 size_t IAMesh::addPoint(double x, double y, double z)
 {
     IAVector3d pos(x, y, z);
-    size_t i, n = vertexList.size();
+    size_t n = vertexList.size();
 #if 0
+    size_t i;
     for (i = 0; i < n; ++i) {
         IAVertex *v = vertexList[i];
         if (   v->pPosition.x()==x
@@ -474,17 +475,16 @@ size_t IAMesh::addPoint(double x, double y, double z)
 
     for (auto it=itlow; it!=itup; ++it) {
         int ix = (*it).second;
-        if (vertexList[ix]->pPosition==pos) {
+        if (vertexList[ix]->pLocalPosition==pos) {
             return ix;
         }
     }
 #endif
     IAVertex *v = new IAVertex();
-    v->pPosition = pos;
-    v->pInitialPosition = pos;
+    v->pLocalPosition = pos;
     updateBoundingBox(pos);
     vertexList.push_back(v);
-    vertexMap.insert(std::make_pair(v->pPosition.length(), n));
+    vertexMap.insert(std::make_pair(v->pLocalPosition.length(), n));
     return n;
 }
 
@@ -514,24 +514,24 @@ void IAMesh::drawSliced(double zPlane)
 #if 1   // draw the shell
     // FIXME: this messes up tesselation for the lid!
     // FIXME: we do not need to tesselate at all!
-    glDisable(GL_LIGHTING);
-    glEnable(GL_TEXTURE_2D);
-    glLineWidth(8.0);
-    for (int n = 20; n>0; --n) {
-        shrinkBy(0.1*n);
-        IASlice meshSlice;
-        meshSlice.generateOutlineFrom(this, zPlane);
-        drawFlat(true);
-        glEnable(GL_TEXTURE_2D);
-        glColor3ub(128, 128, 128);
-        meshSlice.drawLidEdge();
-        glDisable(GL_TEXTURE_2D);
-    }
-    shrinkBy(0.0);
-    glLineWidth(1.0);
-    glDisable(GL_TEXTURE_2D);
-    glEnable(GL_LIGHTING);
-    glEnable(GL_DEPTH_TEST);
+//    glDisable(GL_LIGHTING);
+//    glEnable(GL_TEXTURE_2D);
+//    glLineWidth(8.0);
+//    for (int n = 20; n>0; --n) {
+//        shrinkBy(0.1*n);
+//        IASlice meshSlice;
+//        meshSlice.generateOutlineFrom(this, zPlane);
+//        drawFlat(true);
+//        glEnable(GL_TEXTURE_2D);
+//        glColor3ub(128, 128, 128);
+//        meshSlice.drawLidEdge();
+//        glDisable(GL_TEXTURE_2D);
+//    }
+//    shrinkBy(0.0);
+//    glLineWidth(1.0);
+//    glDisable(GL_TEXTURE_2D);
+//    glEnable(GL_LIGHTING);
+//    glEnable(GL_DEPTH_TEST);
 #endif
 
 #if 0   // draw the lid
@@ -575,22 +575,52 @@ void IAMesh::drawSliced(double zPlane)
 }
 
 
+/**
+ * Position the mesh on the center point of the printer bed.
+ *
+ * This method uses the size of the mesh to determine the center on the printbed
+ * in X and Y. Z position is set, so that no point of the mesh is below the
+ * printbed.
+ */
 void IAMesh::centerOnPrintbed(IAPrinter *printer)
 {
-    pOffset.set(0, 0, 0);
-    pOffset += pMax;
-    pOffset -= pMin;
-    pOffset *= -0.5;
-    pOffset -= pMin;
+    IAVector3d p;
+    p += pMax;
+    p -= pMin;
+    p *= -0.5;
+    p -= pMin;
 
-    IAVector3d p = printer->pBuildVolume;
-    p *= 0.5;
-    pOffset += p;
+    IAVector3d v = printer->pBuildVolume;
+    v *= 0.5;
+    p += v;
     
-    pOffset.z( -pMin.z() );
+    p.z( -pMin.z() );
+    position(p);
 }
 
 
+/**
+ * Return a copy of the position of the mesh.
+ *
+ * Changing position directly would invalidate buffered coordinates.
+ * The position must only be changed by calling IAMesh::position(v).
+ */
+IAVector3d IAMesh::position() const
+{
+    return pMeshPosition;
+}
+
+
+/**
+ * Set a new object position.
+ *
+ * Never set the pMeshPosition member directly!
+ */
+void IAMesh::position(const IAVector3d &p)
+{
+    pMeshPosition = p;
+    pGlobalPositionNeedsUpdate = true;
+}
 
 
 

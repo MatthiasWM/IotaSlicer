@@ -51,9 +51,9 @@ void IATriangle::print()
  */
 int IATriangle::pointsBelowZ(double zMin)
 {
-    double z0 = pVertex[0]->pPosition.z();
-    double z1 = pVertex[1]->pPosition.z();
-    double z2 = pVertex[2]->pPosition.z();
+    double z0 = pVertex[0]->pLocalPosition.z();
+    double z1 = pVertex[1]->pLocalPosition.z();
+    double z2 = pVertex[2]->pLocalPosition.z();
     int n = (z0<zMin) + (z1<zMin) + (z2<zMin);
     return n;
 }
