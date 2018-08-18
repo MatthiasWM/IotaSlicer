@@ -48,6 +48,7 @@
 		C9D3872E211A43F2009F7580 /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C9D3872D211A43F2009F7580 /* AppKit.framework */; };
 		C9D38737211A4B75009F7580 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = C9D38736211A4B75009F7580 /* README.md */; };
 		C9DC51B9211A7CE000AE069F /* index.html in Resources */ = {isa = PBXBuildFile; fileRef = C9DC51B8211A7CDF00AE069F /* index.html */; };
+		C9E4C31121285AFB004ED18C /* IAFramebuffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C9E4C31021285AFB004ED18C /* IAFramebuffer.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXBuildRule section */
@@ -142,6 +143,8 @@
 		C9D3872D211A43F2009F7580 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
 		C9D38736211A4B75009F7580 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../../README.md; sourceTree = "<group>"; };
 		C9DC51B8211A7CDF00AE069F /* index.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = index.html; sourceTree = "<group>"; };
+		C9E4C30F21285AFB004ED18C /* IAFramebuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IAFramebuffer.h; sourceTree = "<group>"; };
+		C9E4C31021285AFB004ED18C /* IAFramebuffer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = IAFramebuffer.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -203,6 +206,7 @@
 			children = (
 				C97632C5211E2DD000D9D4B5 /* Iota.cpp */,
 				C9CD015B21204D0700713CAF /* Iota.h */,
+				C9E4C30E21285AFB004ED18C /* opengl */,
 				C9CD015721204C2600713CAF /* userinterface */,
 				C97632EC211FA7CC00D9D4B5 /* printer */,
 				C97632CE211E2FFA00D9D4B5 /* geometry */,
@@ -356,6 +360,15 @@
 			path = ../../html;
 			sourceTree = "<group>";
 		};
+		C9E4C30E21285AFB004ED18C /* opengl */ = {
+			isa = PBXGroup;
+			children = (
+				C9E4C30F21285AFB004ED18C /* IAFramebuffer.h */,
+				C9E4C31021285AFB004ED18C /* IAFramebuffer.cpp */,
+			);
+			path = opengl;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -439,6 +452,7 @@
 				C97632CB211E2DD000D9D4B5 /* IAGUIMain.fl in Sources */,
 				C938CC20212602F600BAC374 /* IAGeometryReaderBinaryStl.cxx in Sources */,
 				C98C66BD21205D3C00BD3ACE /* IAFmtObj3ds.cxx in Sources */,
+				C9E4C31121285AFB004ED18C /* IAFramebuffer.cpp in Sources */,
 				C98C66B721205D1D00BD3ACE /* IAFmtTexJpeg.cxx in Sources */,
 				C97632EB211F685100D9D4B5 /* binaryData.fl in Sources */,
 				C938CC232126E67700BAC374 /* IAMath.cpp in Sources */,
