@@ -16,6 +16,8 @@
 
 class IAGeometryReader;
 class IAMachineToolpath;
+class IAToolpath;
+
 
 // TODO globals that we want to get rid of.
 
@@ -75,7 +77,8 @@ public:
     /// the current 3d printwer
     IAPrinter gPrinter;
     /// the current toolpath
-    IAMachineToolpath *pMachineToolpath = nullptr;
+    //IAMachineToolpath *pMachineToolpath = nullptr;
+    IAToolpath *pToolpath = nullptr;
     /// show the slice in the 3d view
     /// \todo move to UI class
     bool gShowSlice;

@@ -13,6 +13,7 @@
 #include "../geometry/IASlice.h"
 #include "../printer/IAPrinter.h"
 #include "../userinterface/IAGUIMain.h"
+#include "../toolpath/IAToolpath.h"
 
 #include <math.h>
 
@@ -288,6 +289,7 @@ void IASceneView::draw()
 //    Iota.gMeshSlice.drawFlat(false, 1.0, 0.0, 0.0);
 //    Iota.gMeshSlice.drawFlange();
     Iota.gMeshSlice.drawFramebuffer();
+    if (Iota.pToolpath) Iota.pToolpath->draw();
 
     draw_children(); // draw FLTK user interface
 }

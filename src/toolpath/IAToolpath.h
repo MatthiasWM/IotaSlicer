@@ -8,6 +8,17 @@
 #define IA_TOOLPATH_H
 
 
+#include "../geometry/IAVector3d.h"
+
+#include <vector>
+#include <map>
+
+
+class IAToolpath;
+class IAToolpathElement;
+
+typedef std::vector<IAToolpathElement*> IAToolpathElementList;
+
 
 class IAMachineToolpath
 {
@@ -32,6 +43,10 @@ class IAToolpath
 {
 public:
     IAToolpath();
+    ~IAToolpath();
+    void clear();
+    void draw();
+    IAToolpathElementList pList;
     // list of elements
 };
 
@@ -43,6 +58,8 @@ class IAToolpathElement
 {
 public:
     IAToolpathElement();
+    virtual ~IAToolpathElement();
+    virtual void draw();
 };
 
 
@@ -52,9 +69,12 @@ public:
 class IAToolpathMotion : public IAToolpathElement
 {
 public:
-    IAToolpathMotion();
-    bool pIsRapid;
+    IAToolpathMotion(IAVector3d &a, IAVector3d &b);
+    virtual void draw();
+    IAVector3d pStart, pEnd;
+    bool pIsRapid = false;
 };
+
 
 /*
  further elements could be

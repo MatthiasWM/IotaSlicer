@@ -85,6 +85,7 @@ const char *IAIota::kErrorMessage[] =
  * views), so they can have global data.
  */
 IAIota::IAIota()
+:   pToolpath( new IAToolpath() )
 {
 }
 
@@ -94,7 +95,8 @@ IAIota::IAIota()
  */
 IAIota::~IAIota()
 {
-    delete pMachineToolpath;
+//    delete pMachineToolpath;
+    delete pToolpath;
     delete pMesh;
     if (pErrorString)
         ::free((void*)pErrorString);

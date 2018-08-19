@@ -15,6 +15,11 @@
 
 #include "potracelib.h"
 
+void startPath(double x, double y);
+void continuePath(double x, double y);
+void closePath(void);
+
+
 #define WIDTH 256
 #define HEIGHT 256
 
@@ -146,6 +151,45 @@ int potrace_main(const char *filename, unsigned char *px) {
   fprintf(f, "%%EOF\n");
 
     fclose(f);
+#elif 1
+    char start = 1;
+    /* draw each curve */
+    p = st->plist;
+    while (p != NULL) {
+        n = p->curve.n;
+        tag = p->curve.tag;
+        c = p->curve.c;
+        if (start) {
+            startPath(c[n-1][2].x/2, c[n-1][2].y/2);
+            start = 0;
+        } else {
+            continuePath(c[n-1][2].x/2, c[n-1][2].y/2);
+        }
+        for (i=0; i<n; i++) {
+            switch (tag[i]) {
+                case POTRACE_CORNER:
+                    continuePath(c[i][1].x/2, c[i][1].y/2);
+                    continuePath(c[i][2].x/2, c[i][2].y/2);
+                    break;
+                case POTRACE_CURVETO:
+                    //                    fprintf(f, "%f %f %f %f %f %f curveto\n",
+                    //                            c[i][0].x, c[i][0].y,
+                    //                            c[i][1].x, c[i][1].y,
+                    //                            c[i][2].x, c[i][2].y);
+                    continuePath(c[i][0].x/2, c[i][0].y/2);
+                    continuePath(c[i][1].x/2, c[i][1].y/2);
+                    continuePath(c[i][2].x/2, c[i][2].y/2);
+                    break;
+            }
+        }
+        /* at the end of a group of a positive path and its negative
+         children, fill. */
+        if (p->next == NULL || p->next->sign == '+') {
+            closePath();
+            start = 1;
+        }
+        p = p->next;
+    }
 #else
     FILE *f = fopen(filename, "wb");
 

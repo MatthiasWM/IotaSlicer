@@ -8,6 +8,7 @@
 #include "IAFramebuffer.h"
 
 #include "../userinterface/IAGUIMain.h"
+#include "../toolpath/IAToolpath.h"
 
 #include <stdio.h>
 #include <libjpeg/jpeglib.h>
@@ -167,6 +168,7 @@ std::shared_ptr<unsigned char> IAFramebuffer::makeIntoBitmap()
 int IAFramebuffer::saveAsOutline(const char *filename)
 {
     auto pixels = makeIntoBitmap();
+    Iota.pToolpath->clear();
     potrace_main(filename, pixels.get());
     return 0;
 }
@@ -245,6 +247,7 @@ void IAFramebuffer::draw()
     glTexCoord2f(1.0, 0.0);
     glVertex3f(214.0, 0.0, z);
     glEnd();
+    glDisable(GL_TEXTURE_2D);
 }
 
 
