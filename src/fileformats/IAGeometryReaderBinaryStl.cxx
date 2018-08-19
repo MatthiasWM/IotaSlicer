@@ -10,10 +10,10 @@
 #include "Iota.h"
 #include "../geometry/IAMesh.h"
 
+#include <FL/fl_utf8.h>
 #include <fcntl.h>
 #ifdef _WIN32
 # include <io.h>
-  static int open(const char *n, int f, int m) { return _open(n, f, m); }
 #else
 # include <unistd.h>
 #endif
@@ -26,7 +26,7 @@
 #include <errno.h>
 std::shared_ptr<IAGeometryReader> IAGeometryReaderBinaryStl::findReaderFor(const char *filename)
 {
-    int f = ::open(filename, O_RDONLY);
+    int f = fl_open(filename, O_RDONLY);
     if (f==-1) {
         Iota.setError("STL Geometry reader", Error::CantOpenFile_STR_BSD, filename);
         return nullptr;

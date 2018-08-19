@@ -30,6 +30,12 @@
     <Filter Include="html">
       <UniqueIdentifier>{0ad20a25-205e-4f09-a4dd-e1908078299d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\opengl">
+      <UniqueIdentifier>{98b1f1d3-4fd1-4c8c-a8a2-1e3225454d4a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\potrace">
+      <UniqueIdentifier>{f0cfdbd4-2007-4a7b-9ef0-733446d9259b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\src\geometry\IAEdge.cpp">
@@ -62,9 +68,6 @@
     <ClCompile Include="..\..\..\src\userinterface\IACamera.cpp">
       <Filter>src\userInterface</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\userinterface\IAModelView.cpp">
-      <Filter>src\userInterface</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\src\data\binaryData.cpp">
       <Filter>src\data</Filter>
     </ClCompile>
@@ -85,6 +88,30 @@
     </ClCompile>
     <ClCompile Include="..\..\..\src\fileformats\IAGeometryReaderTextStl.cxx">
       <Filter>src\fileformats</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\userinterface\IASceneView.cpp">
+      <Filter>src\userInterface</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\opengl\IAFramebuffer.cpp">
+      <Filter>src\opengl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\geometry\IAMath.cpp">
+      <Filter>src\geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\potrace\curve.c">
+      <Filter>src\potrace</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\potrace\decompose.c">
+      <Filter>src\potrace</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\potrace\potracelib.c">
+      <Filter>src\potrace</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\potrace\potracelib_demo.c">
+      <Filter>src\potrace</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\potrace\trace.c">
+      <Filter>src\potrace</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -121,9 +148,6 @@
     <ClInclude Include="..\..\..\src\userinterface\IACamera.h">
       <Filter>src\userInterface</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\src\userinterface\IAModelView.h">
-      <Filter>src\userInterface</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\src\data\binaryData.h">
       <Filter>src\data</Filter>
     </ClInclude>
@@ -144,6 +168,45 @@
     </ClInclude>
     <ClInclude Include="..\..\..\src\fileformats\IAGeometryReaderTextStl.h">
       <Filter>src\fileformats</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\userinterface\IASceneView.h">
+      <Filter>src\userInterface</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\opengl\IAFramebuffer.h">
+      <Filter>src\opengl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\geometry\IAMath.h">
+      <Filter>src\geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\potrace\auxiliary.h">
+      <Filter>src\potrace</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\potrace\bitmap.h">
+      <Filter>src\potrace</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\potrace\config.h">
+      <Filter>src\potrace</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\potrace\curve.h">
+      <Filter>src\potrace</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\potrace\decompose.h">
+      <Filter>src\potrace</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\potrace\lists.h">
+      <Filter>src\potrace</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\potrace\platform.h">
+      <Filter>src\potrace</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\potrace\potracelib.h">
+      <Filter>src\potrace</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\potrace\progress.h">
+      <Filter>src\potrace</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\potrace\trace.h">
+      <Filter>src\potrace</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

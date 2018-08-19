@@ -126,16 +126,23 @@
     <ClCompile Include="..\..\..\src\fileformats\IAGeometryReaderBinaryStl.cxx" />
     <ClCompile Include="..\..\..\src\fileformats\IAGeometryReaderTextStl.cxx" />
     <ClCompile Include="..\..\..\src\geometry\IAEdge.cpp" />
+    <ClCompile Include="..\..\..\src\geometry\IAMath.cpp" />
     <ClCompile Include="..\..\..\src\geometry\IAMesh.cpp" />
     <ClCompile Include="..\..\..\src\geometry\IASlice.cpp" />
     <ClCompile Include="..\..\..\src\geometry\IATriangle.cpp" />
     <ClCompile Include="..\..\..\src\geometry\IAVector3d.cpp" />
     <ClCompile Include="..\..\..\src\geometry\IAVertex.cpp" />
     <ClCompile Include="..\..\..\src\Iota.cpp" />
+    <ClCompile Include="..\..\..\src\opengl\IAFramebuffer.cpp" />
+    <ClCompile Include="..\..\..\src\potrace\curve.c" />
+    <ClCompile Include="..\..\..\src\potrace\decompose.c" />
+    <ClCompile Include="..\..\..\src\potrace\potracelib.c" />
+    <ClCompile Include="..\..\..\src\potrace\potracelib_demo.c" />
+    <ClCompile Include="..\..\..\src\potrace\trace.c" />
     <ClCompile Include="..\..\..\src\printer\IAPrinter.cpp" />
     <ClCompile Include="..\..\..\src\userinterface\IACamera.cpp" />
     <ClCompile Include="..\..\..\src\userinterface\IAGLButton.cpp" />
-    <ClCompile Include="..\..\..\src\userinterface\IAModelView.cpp" />
+    <ClCompile Include="..\..\..\src\userinterface\IASceneView.cpp" />
     <ClCompile Include="..\..\..\src\userinterface\IAGUIMain.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -147,16 +154,28 @@
     <ClInclude Include="..\..\..\src\fileformats\IAGeometryReaderTextStl.h" />
     <ClInclude Include="..\..\..\src\fileformats\lib3ds.h" />
     <ClInclude Include="..\..\..\src\geometry\IAEdge.h" />
+    <ClInclude Include="..\..\..\src\geometry\IAMath.h" />
     <ClInclude Include="..\..\..\src\geometry\IAMesh.h" />
     <ClInclude Include="..\..\..\src\geometry\IASlice.h" />
     <ClInclude Include="..\..\..\src\geometry\IATriangle.h" />
     <ClInclude Include="..\..\..\src\geometry\IAVector3d.h" />
     <ClInclude Include="..\..\..\src\geometry\IAVertex.h" />
     <ClInclude Include="..\..\..\src\Iota.h" />
+    <ClInclude Include="..\..\..\src\opengl\IAFramebuffer.h" />
+    <ClInclude Include="..\..\..\src\potrace\auxiliary.h" />
+    <ClInclude Include="..\..\..\src\potrace\bitmap.h" />
+    <ClInclude Include="..\..\..\src\potrace\config.h" />
+    <ClInclude Include="..\..\..\src\potrace\curve.h" />
+    <ClInclude Include="..\..\..\src\potrace\decompose.h" />
+    <ClInclude Include="..\..\..\src\potrace\lists.h" />
+    <ClInclude Include="..\..\..\src\potrace\platform.h" />
+    <ClInclude Include="..\..\..\src\potrace\potracelib.h" />
+    <ClInclude Include="..\..\..\src\potrace\progress.h" />
+    <ClInclude Include="..\..\..\src\potrace\trace.h" />
     <ClInclude Include="..\..\..\src\printer\IAPrinter.h" />
     <ClInclude Include="..\..\..\src\userinterface\IACamera.h" />
     <ClInclude Include="..\..\..\src\userinterface\IAGLButton.h" />
-    <ClInclude Include="..\..\..\src\userinterface\IAModelView.h" />
+    <ClInclude Include="..\..\..\src\userinterface\IASceneView.h" />
     <ClInclude Include="..\..\..\src\userinterface\IAGUIMain.h" />
   </ItemGroup>
   <ItemGroup>

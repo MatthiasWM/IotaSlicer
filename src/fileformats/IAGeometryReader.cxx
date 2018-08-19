@@ -6,18 +6,20 @@
 
 
 #include "IAGeometryReader.h"
+#include "../Iota.h"
 #include "IAGeometryReaderBinaryStl.h"
 #include "IAGeometryReaderTextStl.h"
+
+#include <FL/fl_utf8.h>
 
 #include <stdio.h>
 #include <fcntl.h>
 #include <string.h>
 #include <ctype.h>
 #include <sys/stat.h>
+
 #ifdef _WIN32
 # include <io.h>
-  static int open(const char *n, int f, int m) { return _open(n, f, m); }
-  static void assert(bool v) { if (v==false) __debugbreak(); }
 #else
 # include <unistd.h>
 # include <sys/mman.h>
@@ -64,10 +66,12 @@ std::shared_ptr<IAGeometryReader> IAGeometryReader::findReaderFor(const char *na
 IAGeometryReader::IAGeometryReader(const char *filename)
 :   pName(strdup(filename))
 {
-    int fd = ::open(filename, O_RDONLY, 0);
-    assert(fd != -1);
+    int fd = fl_open(filename, O_RDONLY, 0);
     if (fd==-1) {
-        // panic
+		Iota.setError("Geometry reader", Error::CantOpenFile_STR_BSD, filename);
+		pData = nullptr;
+		pSize = 0;
+		return;
     }
     struct stat st; fstat(fd, &st);
     size_t len = st.st_size;

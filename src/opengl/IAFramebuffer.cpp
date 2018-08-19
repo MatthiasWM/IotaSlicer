@@ -13,7 +13,53 @@
 #include <libjpeg/jpeglib.h>
 
 
-extern "C" int potrace_main(unsigned char *pixels256x256);
+extern "C" int potrace_main(const char *filename, unsigned char *pixels256x256);
+
+
+#ifdef _WIN32
+#include <GL/glext.h>
+PFNGLGENFRAMEBUFFERSEXTPROC glGenFramebuffersEXT;
+PFNGLDELETEFRAMEBUFFERSEXTPROC glDeleteFramebuffersEXT;
+PFNGLBINDFRAMEBUFFEREXTPROC glBindFramebufferEXT;
+PFNGLFRAMEBUFFERTEXTURE2DEXTPROC glFramebufferTexture2DEXT;
+PFNGLGENRENDERBUFFERSEXTPROC glGenRenderbuffersEXT;
+PFNGLBINDRENDERBUFFEREXTPROC glBindRenderbufferEXT;
+PFNGLRENDERBUFFERSTORAGEEXTPROC glRenderbufferStorageEXT;
+PFNGLFRAMEBUFFERRENDERBUFFEREXTPROC glFramebufferRenderbufferEXT;
+PFNGLCHECKFRAMEBUFFERSTATUSEXTPROC glCheckFramebufferStatusEXT;
+PFNGLDELETERENDERBUFFERSEXTPROC glDeleteRenderbuffersEXT;
+#endif
+
+
+bool initializeOpenGL()
+{
+	static bool beenHere = false;
+	if (beenHere) return true;
+	beenHere = true;
+#ifdef _WIN32
+	//char *gl_version = (char*)glGetString(GL_VERSION);
+	//if (gl_version) printf("OpenGL Version: \"%s\"\n", gl_version);
+	//char *gl_extensions = (char*)glGetString(GL_EXTENSIONS);
+	//if (gl_extensions) printf("OpenGL Extensions: \"%s\"\n", gl_extensions);
+#define FINDGL(a, b) \
+	a##EXT=(b)wglGetProcAddress(#a); \
+	if (!a##EXT) a##EXT=(b)wglGetProcAddress(#a"EXT"); \
+	if (!a##EXT) a##EXT=(b)wglGetProcAddress(#a"ARB"); \
+	if (!a##EXT) { Iota.setError("Initializing OpenGL", Error::OpenGLFeatureNotSupported_STR, #a); return false; }
+
+	FINDGL(glGenFramebuffers, PFNGLGENFRAMEBUFFERSEXTPROC);
+	FINDGL(glDeleteFramebuffers, PFNGLDELETEFRAMEBUFFERSEXTPROC);
+	FINDGL(glBindFramebuffer, PFNGLBINDFRAMEBUFFEREXTPROC);
+	FINDGL(glFramebufferTexture2D, PFNGLFRAMEBUFFERTEXTURE2DEXTPROC);
+	FINDGL(glGenRenderbuffers, PFNGLGENRENDERBUFFERSEXTPROC);
+	FINDGL(glBindRenderbuffer, PFNGLBINDRENDERBUFFEREXTPROC);
+	FINDGL(glRenderbufferStorage, PFNGLRENDERBUFFERSTORAGEEXTPROC);
+	FINDGL(glFramebufferRenderbuffer, PFNGLFRAMEBUFFERRENDERBUFFEREXTPROC);
+	FINDGL(glCheckFramebufferStatus, PFNGLCHECKFRAMEBUFFERSTATUSEXTPROC);
+	FINDGL(glDeleteRenderbuffers, PFNGLDELETERENDERBUFFERSEXTPROC);
+#endif
+	return true;
+}
 
 
 /**
@@ -121,7 +167,7 @@ std::shared_ptr<unsigned char> IAFramebuffer::makeIntoBitmap()
 int IAFramebuffer::saveAsOutline(const char *filename)
 {
     auto pixels = makeIntoBitmap();
-    potrace_main(pixels.get());
+    potrace_main(filename, pixels.get());
     return 0;
 }
 
@@ -131,7 +177,7 @@ int IAFramebuffer::saveAsOutline(const char *filename)
  */
 int IAFramebuffer::saveAsJpeg(const char *filename)
 {
-    GLubyte imgdata[pWidth*pHeight*3];
+    GLubyte *imgdata = (GLubyte*)malloc(pWidth*pHeight*3);
     glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, pFramebuffer);
     glReadPixels(0, 0, pWidth, pHeight, GL_RGB, GL_UNSIGNED_BYTE, imgdata);
     glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
@@ -142,37 +188,36 @@ int IAFramebuffer::saveAsJpeg(const char *filename)
     JSAMPROW row_pointer[1];             /* output row buffer */
     int row_stride;                      /* physical row width in output buf */
 
-    if ((ofp = fopen(filename, "wb")) == NULL) {
-        return -1;
-    }
+	if ((ofp = fl_fopen(filename, "wb"))) {
+		cinfo.err = jpeg_std_error(&jerr);
+		jpeg_create_compress(&cinfo);
+		jpeg_stdio_dest(&cinfo, ofp);
 
-    cinfo.err = jpeg_std_error(&jerr);
-    jpeg_create_compress(&cinfo);
-    jpeg_stdio_dest(&cinfo, ofp);
+		cinfo.image_width = pWidth;
+		cinfo.image_height = pHeight;
+		cinfo.input_components = 3;
+		cinfo.in_color_space = JCS_RGB;
 
-    cinfo.image_width = pWidth;
-    cinfo.image_height = pHeight;
-    cinfo.input_components = 3;
-    cinfo.in_color_space = JCS_RGB;
+		jpeg_set_defaults(&cinfo);
+		jpeg_set_quality(&cinfo, 95, FALSE);
 
-    jpeg_set_defaults(&cinfo);
-    jpeg_set_quality(&cinfo, 95, FALSE);
+		jpeg_start_compress(&cinfo, TRUE);
 
-    jpeg_start_compress(&cinfo, TRUE);
+		/* Calculate the size of a row in the image */
+		row_stride = cinfo.image_width * cinfo.input_components;
 
-    /* Calculate the size of a row in the image */
-    row_stride = cinfo.image_width * cinfo.input_components;
+		/* compress the JPEG, one scanline at a time into the buffer */
+		while (cinfo.next_scanline < cinfo.image_height) {
+			row_pointer[0] = &(imgdata[(pHeight - cinfo.next_scanline - 1)*row_stride]);
+			jpeg_write_scanlines(&cinfo, row_pointer, 1);
+		}
 
-    /* compress the JPEG, one scanline at a time into the buffer */
-    while (cinfo.next_scanline < cinfo.image_height) {
-        row_pointer[0] = &(imgdata[(pHeight - cinfo.next_scanline - 1)*row_stride]);
-        jpeg_write_scanlines(&cinfo, row_pointer, 1);
-    }
+		jpeg_finish_compress(&cinfo);
+		jpeg_destroy_compress(&cinfo);
 
-    jpeg_finish_compress(&cinfo);
-    jpeg_destroy_compress(&cinfo);
-
-    fclose(ofp);
+		fclose(ofp);
+	}
+	free(imgdata);
 
     return 0; /* No fatal errors */
 }

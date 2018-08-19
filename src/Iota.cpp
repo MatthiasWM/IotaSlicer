@@ -34,14 +34,22 @@
 #include "opengl/IAFramebuffer.h"
 
 #include <FL/fl_ask.H>
+#include <FL/fl_utf8.h>
 
 #include <errno.h>
+
+#ifdef _WIN32
+#include <ShlObj.h>
+#endif
 
 
 IAIota Iota;
 
 
-#define HDR "Error: \"%1$s\"\n\n"
+extern bool initializeOpenGL();
+
+
+#define HDR "Error in Iota Slicer, %s\n\n"
 
 
 /**
@@ -57,11 +65,13 @@ const char *IAIota::kErrorMessage[] =
     // NoError
         HDR"No error.",
     // CantOpenFile_STR_BSD
-        HDR"Can't open file \"%2$s\":\n%3$s",
+        HDR"Can't open file \"%s\":\n%s",
     // UnknownFileType_STR
-        HDR"Unknown and unsupported file type:\n\"%2$s\"",
+        HDR"Unknown and unsupported file type:\n\"%s\"",
     // FileContentCorrupt_STR
-        HDR"There seems to be an error inside this file:\n\"%2$s\"",
+        HDR"There seems to be an error inside this file:\n\"%s\"",
+	// OpenGLFeatureNotSupported_STR
+		HDR"Required OpenGL graphics feature not suported:\n\"%s\"",
 };
 
 
@@ -115,7 +125,7 @@ void IAIota::loadAnyFileList(const char *list)
             char *filename = (char*)calloc(1, fnEnd-fnStart+1);
             memmove(filename, fnStart, fnEnd-fnStart);
             const char *ext = fl_filename_ext(filename);
-            if (strcasecmp(ext, ".stl")==0) {
+            if (fl_utf_strcasecmp(ext, ".stl")==0) {
                 Iota.addGeometry(filename);
             } else {
                 setError("Load Any File", Error::UnknownFileType_STR, filename);
@@ -137,11 +147,20 @@ void IAIota::loadAnyFileList(const char *list)
  */
 void IAIota::menuWriteSlice()
 {
-    char buf[FL_PATH_MAX];
-    sprintf(buf, "%s/slice.jpg", getenv("HOME"));
+	char buf[FL_PATH_MAX];
+
+#ifdef _WIN32
+	char base[FL_PATH_MAX];
+	SHGetSpecialFolderPathA(HWND_DESKTOP, base, CSIDL_DESKTOPDIRECTORY, FALSE);
+#else
+	const char *base;
+	fl_getenv("HOME")
+#endif
+
+	snprintf(buf, FL_PATH_MAX, "%s/slice.jpg", base);
     Iota.gMeshSlice.pFramebuffer->saveAsJpeg(buf);
 
-    sprintf(buf, "%s/slice.gcode", getenv("HOME"));
+    snprintf(buf, FL_PATH_MAX, "%s/slice.gcode", base);
     Iota.gMeshSlice.pFramebuffer->saveAsOutline(buf);
 }
 
@@ -266,16 +285,17 @@ void IAIota::showError()
 
 
 /**
- * Lunch our app.
+ * Launch our app.
  * \todo remember the window position and size in the preferences
  */
 int main (int argc, char **argv)
 {
+	Fl::args(argc, argv);
 
     Fl::use_high_res_GL(1);
 
     Iota.gMainWindow = createIotaAppWindow();
-    Iota.gMainWindow->show(argc, argv);
+    Iota.gMainWindow->show();
     Fl::flush();
 
     loadTexture("testcard1024.jpg", defaultTexture);

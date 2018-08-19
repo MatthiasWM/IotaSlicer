@@ -10,9 +10,9 @@
 #include <stdlib.h>
 #include <string.h>
 #include <limits.h>
-#ifdef HAVE_INTTYPES_H
+//#ifdef HAVE_INTTYPES_H
 #include <inttypes.h>
-#endif
+//#endif
 
 #include "potracelib.h"
 #include "curve.h"

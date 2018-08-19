@@ -137,17 +137,26 @@ void IASceneView::initializeShaders()
 }
 
 
+extern bool initializeOpenGL();
+
 /**
  * Initialize all standard OpenGL settings of the current view.
  */
 void IASceneView::initializeView()
 {
+	Iota.clearError();
+	if (initializeOpenGL() == false) {
+		Iota.showError();
+		return;
+	}
+
+
     if (!valid()) {
         gl_font(FL_HELVETICA, 16 );
-        static GLfloat mat_specular[] = { 1.0, 1.0, 1.0, 1.0 };
-        static GLfloat mat_shininess[] = { 50.0 };
-        static GLfloat light_ambient[] = { 0.1, 0.1, 0.1, 1.0};
-        static GLfloat light_diffuse[] = { 1.0, 1.0, 1.0, 1.0};
+        static GLfloat mat_specular[] = { 1.0f, 1.0f, 1.0f, 1.0f };
+        static GLfloat mat_shininess[] = { 50.0f };
+        static GLfloat light_ambient[] = { 0.1f, 0.1f, 0.1f, 1.0f};
+        static GLfloat light_diffuse[] = { 1.0f, 1.0f, 1.0f, 1.0f};
 
         glClearColor (0.9, 0.9, 0.9, 0.0);
         glShadeModel (GL_SMOOTH);

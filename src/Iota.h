@@ -8,6 +8,8 @@
 #define MAIN_H
 
 #include <stdio.h>
+#include <memory>
+
 #include "geometry/IAMesh.h"
 #include "geometry/IASlice.h"
 #include "printer/IAPrinter.h"
@@ -20,6 +22,7 @@ const int IA_PROJECTION_FRONT       = 0;
 const int IA_PROJECTION_CYLINDER    = 1;
 const int IA_PROJECTION_SPHERE      = 2;
 
+
 /**
  * List of errors that the user may encounter.
  */
@@ -28,6 +31,7 @@ enum class Error {
     CantOpenFile_STR_BSD,
     UnknownFileType_STR,
     FileContentCorrupt_STR,
+	OpenGLFeatureNotSupported_STR,
 };
 
 
