@@ -180,6 +180,7 @@ int potrace_main(unsigned char *px) {
         /* at the end of a group of a positive path and its negative
          children, fill. */
         if (p->next == NULL || p->next->sign == '+') {
+            // TODO: close loop, the rapid move to the next loop
 //            fprintf(f, "0 setgray fill\n");
         }
         p = p->next;

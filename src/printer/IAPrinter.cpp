@@ -18,6 +18,25 @@
 
  For example, an M3D Crane:
     Build Volume: 214 X 214 X 230 mm, bottom front left is 0
+    The Crane is designed to extrude at a rate of 5.7 mm^3/s
+ Flow Rate (mm^3/s) = Feedrate (mm/s) (Filament Cross-section) (mm^2)*
+ Filament Cross-section = pi ((Filament Diameter) / 2)^2 __Filament Cross-section for 1.75mm filament: 2.405 mm^2*
+
+ For Example: You send the command G1 E100 F200, where you extrude 100mm of filament at 200 mm/min. You are using 1.75 mm filament.
+
+ Flow Rate = 8 mm/s = pi (1.75 / 2)^2 (200 / 60) = 2.405 3.333*
+
+ Remember that the G1 move command feedrate parameter, F, uses mm per minute. So divide the feedrate by 60 to obtain the feedrate in mm per second.
+
+ Printing Flow Rate
+
+ When printing, the flow rate depends on your layer height, nozzle diameter and print speed.
+
+ Flow Rate (mm^3/s) = (Extrusion Width)(mm) (Layer Height)(mm) Print Speed (mm/s) Extrusion Width is ~120% of nozzle diameter
+
+ For Example: You have a 0.5 mm nozzle mounted and you are printing at 0.25mm layer height at a print speed of 30 mm/s.
+
+ Extrusion Width = 0.6 mm = 1.2 0.5 Flow Rate = 4.5 mm^3/s = 0.6 0.25 * 30
  */
 IAPrinter::IAPrinter()
 {
