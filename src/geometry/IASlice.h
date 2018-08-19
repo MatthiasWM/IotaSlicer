@@ -54,6 +54,7 @@ public:
 private:
     /// edge list describing the outlines of a slice
     IAEdgeList pFlange;
+public: // TODO: should not be public!
     IAFramebuffer *pFramebuffer = nullptr;
 };
 

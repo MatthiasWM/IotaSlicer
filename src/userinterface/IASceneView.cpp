@@ -276,8 +276,8 @@ void IASceneView::draw()
     }
     endModels();
 
-    Iota.gMeshSlice.drawFlat(false, 1.0, 0.0, 0.0);
-    Iota.gMeshSlice.drawFlange();
+//    Iota.gMeshSlice.drawFlat(false, 1.0, 0.0, 0.0);
+//    Iota.gMeshSlice.drawFlange();
     Iota.gMeshSlice.drawFramebuffer();
 
     draw_children(); // draw FLTK user interface

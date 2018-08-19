@@ -139,10 +139,10 @@ void IAIota::menuWriteSlice()
 {
     char buf[FL_PATH_MAX];
     sprintf(buf, "%s/slice.jpg", getenv("HOME"));
-    IAFramebuffer fb;
-    fb.drawBegin();
-    fb.drawEnd();
-    fb.saveAsJpeg(buf);
+    Iota.gMeshSlice.pFramebuffer->saveAsJpeg(buf);
+
+    sprintf(buf, "%s/slice.gcode", getenv("HOME"));
+    Iota.gMeshSlice.pFramebuffer->saveAsOutline(buf);
 }
 
 

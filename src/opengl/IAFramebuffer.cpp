@@ -47,33 +47,36 @@ IAFramebuffer::~IAFramebuffer()
 void IAFramebuffer::drawBegin()
 {
     activateFBO();
-    // TODO: set matrices, lighting, etc. for this FBO
+
+    // set matrices, lighting, etc. for this FBO
     glClearColor(0.0, 0.0, 0.0, 0.0);
     glClearDepth(1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    //-------------------------
+
     glViewport(0, 0, pWidth, pHeight);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    glOrtho(-100, 100, -100, 100, -200.0, 200.0);
+    IAPrinter &p = Iota.gPrinter;
+    IAVector3d vol = p.pBuildVolume;
+    // FIXME: why is the range below [vol.z(), 0] negative? I tested the slice, and it does draw at the correct (positive) Z.
+    glOrtho(0, vol.x(), 0, vol.y(), -vol.z()-1, 1);
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
-    //-------------------------
+
+    // draw a aquare, just to see if this works at all
+    glEnable(GL_COLOR_MATERIAL);
     glDisable(GL_TEXTURE_2D);
     glDisable(GL_BLEND);
+    glDisable(GL_LIGHTING);
     glEnable(GL_DEPTH_TEST);
-    //-------------------------
-    //**************************
-    //Read http://www.opengl.org/wiki/VBO_-_just_examples
-    glColor3f(1.0, 0.5, 0.5);
-    glBegin(GL_POLYGON);
-    glVertex3f(-10.0, -10.0, 0.0);
-    glVertex3f(-10.0,  10.0, 0.0);
-    glVertex3f( 10.0,  10.0, 0.0);
-    glVertex3f( 10.0, -10.0, 0.0);
-    glEnd();
-//    Iota.gSlice.drawFlange();
-    // render...
+
+//    glColor3f(1.0, 0.5, 0.5);
+//    glBegin(GL_POLYGON);
+//    glVertex3f(-10.0, -10.0, 0.0);
+//    glVertex3f(-10.0,  10.0, 0.0);
+//    glVertex3f( 10.0,  10.0, 0.0);
+//    glVertex3f( 10.0, -10.0, 0.0);
+//    glEnd();
 }
 
 
@@ -92,15 +95,34 @@ void IAFramebuffer::drawEnd()
 
 /**
  * Convert the color buffer into a bitmap that potrace will understand.
+ *
+ * \return pointer to data as a shared pointer (use 'auto' as a type an
+ *         worry no longer.
  */
-unsigned char *IAFramebuffer::makeIntoBitmap()
+std::shared_ptr<unsigned char> IAFramebuffer::makeIntoBitmap()
 {
+    size_t size = pWidth*pHeight*3;
+    // use a shared_pointer, so the user does not have to worry about deleting
+    // the array ever.
+    std::shared_ptr<unsigned char> pixels(new unsigned char[size], std::default_delete<unsigned char[]>());
     // read the FBO content into RAM and make a bitmap for potrace
-    GLubyte pixels[pWidth*pHeight*4];
-    glReadPixels(0, 0, pWidth, pHeight, GL_BGR, GL_UNSIGNED_BYTE, pixels);
-//    potrace_main((unsigned char *)pixels);
+    // FIXME: at this point, potrace converts from RGB to bitmap.
+    GLvoid *px = pixels.get();
+    glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, pFramebuffer);
+    glReadPixels(0, 0, pWidth, pHeight, GL_RGB, GL_UNSIGNED_BYTE, px);
+    glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
+    return pixels;
+}
 
-    return nullptr;
+
+/**
+ * Crude code to trace around the image and write an outline to a file.
+ */
+int IAFramebuffer::saveAsOutline(const char *filename)
+{
+    auto pixels = makeIntoBitmap();
+    potrace_main(pixels.get());
+    return 0;
 }
 
 
@@ -110,7 +132,9 @@ unsigned char *IAFramebuffer::makeIntoBitmap()
 int IAFramebuffer::saveAsJpeg(const char *filename)
 {
     GLubyte imgdata[pWidth*pHeight*3];
-    glReadPixels(0, 0, pWidth, pHeight, GL_BGR, GL_UNSIGNED_BYTE, imgdata);
+    glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, pFramebuffer);
+    glReadPixels(0, 0, pWidth, pHeight, GL_RGB, GL_UNSIGNED_BYTE, imgdata);
+    glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
 
     FILE *ofp;
     struct jpeg_compress_struct cinfo;   /* JPEG compression struct */
@@ -159,22 +183,9 @@ int IAFramebuffer::saveAsJpeg(const char *filename)
  */
 void IAFramebuffer::draw()
 {
-    // TODO: set as texture and render out
     if (!hasFBO()) return;
 
-/* Something like that:
-    glGenTextures(1, &pColorbuffer);
-    glBindTexture(GL_TEXTURE_2D, tex);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB8, Iota.texture->w(), Iota.texture->h(),
-                 0, GL_RGB, GL_UNSIGNED_BYTE, *Iota.texture->data());
-    glEnable(GL_TEXTURE_2D);
-    lTexture = Iota.texture;
-
-    glBindTexture(GL_TEXTURE_2D, tex);
-    glEnable(GL_TEXTURE_2D);
-*/
+    // set as texture and render out
     double z = zSlider1->value();
     glBindTexture(GL_TEXTURE_2D, pColorbuffer);
     glEnable(GL_TEXTURE_2D);

@@ -11,6 +11,8 @@
 #include <FL/gl.h>
 #include <FL/glu.h>
 
+#include <memory>
+
 
 /**
  * Manage an OpenGL framebuffer object as a texture.
@@ -45,8 +47,9 @@ public:
     void drawBegin();
     void drawEnd();
 
-    unsigned char *makeIntoBitmap();
     void draw();
+    std::shared_ptr<unsigned char> makeIntoBitmap();
+    int saveAsOutline(const char *filename);
     int saveAsJpeg(const char *filename);
 
     int pWidth = 256, pHeight = 256;  // TODO: for now, this is fixed
