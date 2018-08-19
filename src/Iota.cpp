@@ -154,7 +154,7 @@ void IAIota::menuWriteSlice()
 	SHGetSpecialFolderPathA(HWND_DESKTOP, base, CSIDL_DESKTOPDIRECTORY, FALSE);
 #else
 	const char *base;
-	fl_getenv("HOME")
+    fl_getenv("HOME");
 #endif
 
 	snprintf(buf, FL_PATH_MAX, "%s/slice.jpg", base);
