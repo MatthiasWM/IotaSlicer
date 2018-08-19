@@ -49,6 +49,7 @@
 		C9D38737211A4B75009F7580 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = C9D38736211A4B75009F7580 /* README.md */; };
 		C9DC51B9211A7CE000AE069F /* index.html in Resources */ = {isa = PBXBuildFile; fileRef = C9DC51B8211A7CDF00AE069F /* index.html */; };
 		C9E4C31121285AFB004ED18C /* IAFramebuffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C9E4C31021285AFB004ED18C /* IAFramebuffer.cpp */; };
+		C9E4C31521299385004ED18C /* IAToolpath.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C9E4C31321299385004ED18C /* IAToolpath.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXBuildRule section */
@@ -145,6 +146,8 @@
 		C9DC51B8211A7CDF00AE069F /* index.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = index.html; sourceTree = "<group>"; };
 		C9E4C30F21285AFB004ED18C /* IAFramebuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IAFramebuffer.h; sourceTree = "<group>"; };
 		C9E4C31021285AFB004ED18C /* IAFramebuffer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = IAFramebuffer.cpp; sourceTree = "<group>"; };
+		C9E4C31321299385004ED18C /* IAToolpath.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = IAToolpath.cpp; sourceTree = "<group>"; };
+		C9E4C31421299385004ED18C /* IAToolpath.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IAToolpath.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -211,6 +214,7 @@
 				C97632EC211FA7CC00D9D4B5 /* printer */,
 				C97632CE211E2FFA00D9D4B5 /* geometry */,
 				C98C66B421205D1D00BD3ACE /* fileformats */,
+				C9E4C31221299385004ED18C /* toolpath */,
 				C99331EA2123881800629BE1 /* potrace */,
 				C97632E4211E41F700D9D4B5 /* data */,
 			);
@@ -369,6 +373,15 @@
 			path = opengl;
 			sourceTree = "<group>";
 		};
+		C9E4C31221299385004ED18C /* toolpath */ = {
+			isa = PBXGroup;
+			children = (
+				C9E4C31321299385004ED18C /* IAToolpath.cpp */,
+				C9E4C31421299385004ED18C /* IAToolpath.h */,
+			);
+			path = toolpath;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -459,6 +472,7 @@
 				C97632D4211E325C00D9D4B5 /* IAEdge.cpp in Sources */,
 				C9CD015A21204C2700713CAF /* IASceneView.cpp in Sources */,
 				C98C66BC21205D3C00BD3ACE /* IAGeometryReaderTextStl.cxx in Sources */,
+				C9E4C31521299385004ED18C /* IAToolpath.cpp in Sources */,
 				C97632CA211E2DD000D9D4B5 /* Iota.cpp in Sources */,
 				C98C66C321208C6400BD3ACE /* IACamera.cpp in Sources */,
 				C97632EF211FA7CC00D9D4B5 /* IAPrinter.cpp in Sources */,

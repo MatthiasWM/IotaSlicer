@@ -32,6 +32,7 @@
 #include "fileformats/IAGeometryReader.h"
 #include "fileformats/IAGeometryReaderBinaryStl.h"
 #include "opengl/IAFramebuffer.h"
+#include "toolpath/IAToolpath.h"
 
 #include <FL/fl_ask.H>
 #include <FL/fl_utf8.h>
@@ -93,6 +94,7 @@ IAIota::IAIota()
  */
 IAIota::~IAIota()
 {
+    delete pMachineToolpath;
     delete pMesh;
     if (pErrorString)
         ::free((void*)pErrorString);
