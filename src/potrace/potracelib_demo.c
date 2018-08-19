@@ -72,6 +72,7 @@ static void bm_free(potrace_bitmap_t *bm) {
 /* demo */
 
 int potrace_main(const char *filename, unsigned char *px) {
+    float scl = 214.0/WIDTH; // texture width, printer coordinates width
   int x, y, i;
   potrace_bitmap_t *bm;
   potrace_param_t *param;
@@ -160,25 +161,25 @@ int potrace_main(const char *filename, unsigned char *px) {
         tag = p->curve.tag;
         c = p->curve.c;
         if (start) {
-            startPath(c[n-1][2].x/2, c[n-1][2].y/2);
+            startPath(c[n-1][2].x*scl, c[n-1][2].y*scl);
             start = 0;
         } else {
-            continuePath(c[n-1][2].x/2, c[n-1][2].y/2);
+            continuePath(c[n-1][2].x*scl, c[n-1][2].y*scl);
         }
         for (i=0; i<n; i++) {
             switch (tag[i]) {
                 case POTRACE_CORNER:
-                    continuePath(c[i][1].x/2, c[i][1].y/2);
-                    continuePath(c[i][2].x/2, c[i][2].y/2);
+                    continuePath(c[i][1].x*scl, c[i][1].y*scl);
+                    continuePath(c[i][2].x*scl, c[i][2].y*scl);
                     break;
                 case POTRACE_CURVETO:
                     //                    fprintf(f, "%f %f %f %f %f %f curveto\n",
                     //                            c[i][0].x, c[i][0].y,
                     //                            c[i][1].x, c[i][1].y,
                     //                            c[i][2].x, c[i][2].y);
-                    continuePath(c[i][0].x/2, c[i][0].y/2);
-                    continuePath(c[i][1].x/2, c[i][1].y/2);
-                    continuePath(c[i][2].x/2, c[i][2].y/2);
+                    continuePath(c[i][0].x*scl, c[i][0].y*scl);
+                    continuePath(c[i][1].x*scl, c[i][1].y*scl);
+                    continuePath(c[i][2].x*scl, c[i][2].y*scl);
                     break;
             }
         }
