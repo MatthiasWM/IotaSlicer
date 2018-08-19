@@ -597,8 +597,8 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_TEAM = BK4ST6N599;
 				HEADER_SEARCH_PATHS = (
-					../..,
-					"/Users/matt/dev/fltk-1.4.svn/jpeg",
+					../../src,
+					../../include,
 				);
 				INFOPLIST_FILE = "$(SRCROOT)/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -622,8 +622,8 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_TEAM = BK4ST6N599;
 				HEADER_SEARCH_PATHS = (
-					../..,
-					"/Users/matt/dev/fltk-1.4.svn/jpeg",
+					../../src,
+					../../include,
 				);
 				INFOPLIST_FILE = "$(SRCROOT)/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
