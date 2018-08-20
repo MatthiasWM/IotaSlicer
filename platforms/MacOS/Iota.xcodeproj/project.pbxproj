@@ -33,7 +33,7 @@
 		C993323A21238A5100629BE1 /* trace.c in Sources */ = {isa = PBXBuildFile; fileRef = C99331F12123881800629BE1 /* trace.c */; };
 		C993323B21238A5900629BE1 /* decompose.c in Sources */ = {isa = PBXBuildFile; fileRef = C993320D2123881800629BE1 /* decompose.c */; };
 		C993323C21238A7200629BE1 /* potracelib.c in Sources */ = {isa = PBXBuildFile; fileRef = C993321A2123881800629BE1 /* potracelib.c */; };
-		C993323D21238A9700629BE1 /* potracelib_demo.c in Sources */ = {isa = PBXBuildFile; fileRef = C99332052123881800629BE1 /* potracelib_demo.c */; };
+		C993323D21238A9700629BE1 /* IAPotrace.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C99332052123881800629BE1 /* IAPotrace.cpp */; };
 		C9CD015A21204C2700713CAF /* IASceneView.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C9CD015921204C2600713CAF /* IASceneView.cpp */; };
 		C9D3871E211A425E009F7580 /* libfltk_images.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C9D38718211A425E009F7580 /* libfltk_images.a */; };
 		C9D3871F211A425E009F7580 /* libfltk_png.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C9D38719211A425E009F7580 /* libfltk_png.a */; };
@@ -121,7 +121,7 @@
 		C99331F12123881800629BE1 /* trace.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = trace.c; sourceTree = "<group>"; };
 		C99331F42123881800629BE1 /* curve.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = curve.c; sourceTree = "<group>"; };
 		C99331FD2123881800629BE1 /* config.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = config.h; sourceTree = "<group>"; };
-		C99332052123881800629BE1 /* potracelib_demo.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = potracelib_demo.c; sourceTree = "<group>"; };
+		C99332052123881800629BE1 /* IAPotrace.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = IAPotrace.cpp; sourceTree = "<group>"; };
 		C99332062123881800629BE1 /* potracelib.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = potracelib.h; sourceTree = "<group>"; };
 		C99332082123881800629BE1 /* curve.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = curve.h; sourceTree = "<group>"; };
 		C993320D2123881800629BE1 /* decompose.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = decompose.c; sourceTree = "<group>"; };
@@ -148,6 +148,7 @@
 		C9E4C31021285AFB004ED18C /* IAFramebuffer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = IAFramebuffer.cpp; sourceTree = "<group>"; };
 		C9E4C31321299385004ED18C /* IAToolpath.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = IAToolpath.cpp; sourceTree = "<group>"; };
 		C9E4C31421299385004ED18C /* IAToolpath.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IAToolpath.h; sourceTree = "<group>"; };
+		C9E4C316212AEF77004ED18C /* IAPotrace.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = IAPotrace.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -308,9 +309,10 @@
 		C99331EA2123881800629BE1 /* potrace */ = {
 			isa = PBXGroup;
 			children = (
+				C99332052123881800629BE1 /* IAPotrace.cpp */,
+				C9E4C316212AEF77004ED18C /* IAPotrace.h */,
 				C99331F42123881800629BE1 /* curve.c */,
 				C993320D2123881800629BE1 /* decompose.c */,
-				C99332052123881800629BE1 /* potracelib_demo.c */,
 				C993321A2123881800629BE1 /* potracelib.c */,
 				C99331F12123881800629BE1 /* trace.c */,
 				C938CC192125EF7000BAC374 /* auxiliary.h */,
@@ -481,7 +483,7 @@
 				C97632DD211E357500D9D4B5 /* IASlice.cpp in Sources */,
 				C97632D7211E33B000D9D4B5 /* IAMesh.cpp in Sources */,
 				C993323921238A4900629BE1 /* curve.c in Sources */,
-				C993323D21238A9700629BE1 /* potracelib_demo.c in Sources */,
+				C993323D21238A9700629BE1 /* IAPotrace.cpp in Sources */,
 				C97632CD211E2DD000D9D4B5 /* IAVector3d.cpp in Sources */,
 				C993323A21238A5100629BE1 /* trace.c in Sources */,
 				C97632DA211E348E00D9D4B5 /* IATriangle.cpp in Sources */,

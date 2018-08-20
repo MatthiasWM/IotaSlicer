@@ -9,12 +9,10 @@
 
 #include "../userinterface/IAGUIMain.h"
 #include "../toolpath/IAToolpath.h"
+#include "../potrace/IAPotrace.h"
 
 #include <stdio.h>
 #include <libjpeg/jpeglib.h>
-
-
-extern "C" int potrace_main(const char *filename, unsigned char *pixels256x256);
 
 
 #ifdef _WIN32
@@ -165,11 +163,11 @@ std::shared_ptr<unsigned char> IAFramebuffer::makeIntoBitmap()
 /**
  * Crude code to trace around the image and write an outline to a file.
  */
-int IAFramebuffer::saveAsOutline(const char *filename)
+int IAFramebuffer::writeOutlineToToolpath(double z)
 {
     auto pixels = makeIntoBitmap();
     Iota.pToolpath->clear();
-    potrace_main(filename, pixels.get());
+    potrace(this, Iota.pToolpath, z);
     return 0;
 }
 

@@ -165,7 +165,8 @@ void IAIota::menuWriteSlice()
     Iota.gMeshSlice.pFramebuffer->saveAsJpeg(buf);
 
     snprintf(buf, FL_PATH_MAX, "%s/slice.gcode", base);
-    Iota.gMeshSlice.pFramebuffer->saveAsOutline(buf);
+    Iota.gMeshSlice.pFramebuffer->writeOutlineToToolpath(zSlider1->value());
+    gSceneView->redraw();
 }
 
 

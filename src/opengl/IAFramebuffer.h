@@ -49,7 +49,7 @@ public:
 
     void draw();
     std::shared_ptr<unsigned char> makeIntoBitmap();
-    int saveAsOutline(const char *filename);
+    int writeOutlineToToolpath(double z);
     int saveAsJpeg(const char *filename);
 
     int pWidth = 256, pHeight = 256;  // TODO: for now, this is fixed

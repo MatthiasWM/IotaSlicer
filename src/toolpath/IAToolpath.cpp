@@ -11,19 +11,7 @@
 
 #include <FL/gl.h>
 
-static IAVector3d first, prev;
-extern "C" {
-    void startPath(double x, double y) { first.set(x, y, 100); prev = first;  }
-    void continuePath(double x, double y)  {
-        IAVector3d next(x, y, 100);
-        Iota.pToolpath->pList.push_back(new IAToolpathMotion(prev, next));
-        prev = next;
-    }
-    void closePath() {
-        Iota.pToolpath->pList.push_back(new IAToolpathMotion(prev, first));
-    }
-}
-    
+
 
 IAMachineToolpath::IAMachineToolpath()
 {
@@ -75,6 +63,27 @@ void IAToolpath::draw()
     }
     glLineWidth(1.0);
 }
+
+
+void IAToolpath::startPath(double x, double y, double z)
+{
+    tFirst.set(x, y, z); tPrev = tFirst;
+}
+
+
+void IAToolpath::continuePath(double x, double y, double z)
+{
+    IAVector3d next(x, y, z);
+    pList.push_back(new IAToolpathMotion(tPrev, next));
+    tPrev = next;
+}
+
+
+void IAToolpath::closePath()
+{
+    pList.push_back(new IAToolpathMotion(tPrev, tFirst));
+}
+
 
 
 

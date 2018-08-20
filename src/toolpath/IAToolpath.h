@@ -37,7 +37,9 @@ public:
  * to a machine to create the desired 3D printout.
  *
  * This class is used to draw the toolpath into the scene view. It is also
- * the source for generating GCode commands.
+ * the source for generating GCode commands. ALl coordinates in this class
+ * must be kept in world space. The GCode writer must flip or offset
+ * coordinates to math the printer space. Scaling should not be needed.
  */
 class IAToolpath
 {
@@ -46,8 +48,16 @@ public:
     ~IAToolpath();
     void clear();
     void draw();
+
+    void startPath(double x, double y, double z);
+    void continuePath(double x, double y, double z);
+    void closePath(void);
+
     IAToolpathElementList pList;
     // list of elements
+
+    IAVector3d tFirst, tPrev;
+
 };
 
 
@@ -71,6 +81,8 @@ class IAToolpathMotion : public IAToolpathElement
 public:
     IAToolpathMotion(IAVector3d &a, IAVector3d &b);
     virtual void draw();
+    // FIXME: we MUST NOT have start and end. The previous end and the current
+    // start are redundant and caus trouble if assumptions are made!
     IAVector3d pStart, pEnd;
     bool pIsRapid = false;
 };
