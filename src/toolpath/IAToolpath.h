@@ -8,7 +8,7 @@
 #define IA_TOOLPATH_H
 
 
-#include "../geometry/IAVector3d.h"
+#include "geometry/IAVector3d.h"
 
 #include <vector>
 #include <map>

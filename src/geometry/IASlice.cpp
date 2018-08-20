@@ -7,10 +7,10 @@
 
 #include "IASlice.h"
 
-#include "../Iota.h"
+#include "Iota.h"
 #include "IAMesh.h"
-#include "../userinterface/IAGUIMain.h"
-#include "../opengl/IAFramebuffer.h"
+#include "userinterface/IAGUIMain.h"
+#include "opengl/IAFramebuffer.h"
 
 #include <FL/gl.h>
 #include <FL/glu.h>
@@ -125,9 +125,6 @@ void IASlice::addFlange(IAMesh *m)
  created that splits the face on the z plane.
 
  \param IATriangle the face that is split in two; the face must cross zMin
- \param vCutA the first point on zMin along the first edge
- \param edgeIndex the index of the first edge that crosses zMin
- \param zMin slice on this z plane
  */
 void IASlice::addFirstFlangeVertex(IATriangle *tri)
 {

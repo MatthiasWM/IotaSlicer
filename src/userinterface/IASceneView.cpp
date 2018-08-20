@@ -7,14 +7,14 @@
 
 #include "IASceneView.h"
 
-#include "../Iota.h"
-#include "IACamera.h"
-#include "../geometry/IAMesh.h"
-#include "../geometry/IASlice.h"
-#include "../printer/IAPrinter.h"
-#include "../userinterface/IAGUIMain.h"
-#include "../toolpath/IAToolpath.h"
-#include "../opengl/IAFramebuffer.h"
+#include "Iota.h"
+#include "userinterface/IAGUIMain.h"
+#include "userinterface/IACamera.h"
+#include "geometry/IAMesh.h"
+#include "geometry/IASlice.h"
+#include "printer/IAPrinter.h"
+#include "toolpath/IAToolpath.h"
+#include "opengl/IAFramebuffer.h"
 
 #include <math.h>
 
@@ -121,7 +121,7 @@ void IASceneView::updateSlice()
             if (Iota.pMesh) {
                 Iota.gMeshSlice.generateFlange( Iota.pMesh );
                 Iota.gMeshSlice.tesselateLidFromFlange();
-                Iota.gMeshSlice.pFramebuffer->writeOutlineToToolpath(zSlider1->value());
+                Iota.gMeshSlice.pFramebuffer->traceOutline(Iota.pCurrentToolpath, zSlider1->value());
             }
         }
     }
@@ -139,8 +139,6 @@ void IASceneView::initializeShaders()
     }
 }
 
-
-extern bool initializeOpenGL();
 
 /**
  * Initialize all standard OpenGL settings of the current view.
@@ -328,6 +326,9 @@ void IASceneView::draw_children()
 }
 
 
+/**
+ * Change camera to ortho top view.
+ */
 void IASceneView::setTopView()
 {
     pCurrentCamera = pTopCamera;
@@ -335,6 +336,9 @@ void IASceneView::setTopView()
 }
 
 
+/**
+ * Change camera to perspective view.
+ */
 void IASceneView::setPerspectiveView()
 {
     pCurrentCamera = pPerspectiveCamera;

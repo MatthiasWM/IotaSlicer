@@ -14,18 +14,26 @@
 #include <math.h>
 
 
-
+/**
+ * Create a list of toolpaths for the entire printout.
+ */
 IAMachineToolpath::IAMachineToolpath()
 {
 }
 
 
+/**
+ * Free all allocations.
+ */
 IAMachineToolpath::~IAMachineToolpath()
 {
     clear();
 }
 
 
+/**
+ * Free all allocations.
+ */
 void IAMachineToolpath::clear()
 {
     delete pStartupPath;
@@ -39,6 +47,9 @@ void IAMachineToolpath::clear()
 }
 
 
+/**
+ * Draw the toolpath into the scene at world coordinates.
+ */
 void IAMachineToolpath::draw()
 {
     pStartupPath->draw();
@@ -49,6 +60,9 @@ void IAMachineToolpath::draw()
 }
 
 
+/**
+ * DRaw the toolpath of only one layer.
+ */
 void IAMachineToolpath::drawLayer(double z)
 {
     auto p = findLayer(z);
@@ -57,6 +71,9 @@ void IAMachineToolpath::drawLayer(double z)
 }
 
 
+/**
+ * Return a layer at the give z height, or nullptr if none found.
+ */
 IAToolpath *IAMachineToolpath::findLayer(double z)
 {
     int layer = roundLayerNumber(z);
@@ -68,6 +85,9 @@ IAToolpath *IAMachineToolpath::findLayer(double z)
 }
 
 
+/**
+ * Create a new toolpath for a layer at the give z height.
+ */
 IAToolpath *IAMachineToolpath::createLayer(double z)
 {
     int layer = roundLayerNumber(z);
@@ -79,6 +99,9 @@ IAToolpath *IAMachineToolpath::createLayer(double z)
 }
 
 
+/**
+ * Delete a toolpath at the give heigt.
+ */
 void IAMachineToolpath::deleteLayer(double z)
 {
     int layer = roundLayerNumber(z);
@@ -99,18 +122,25 @@ int IAMachineToolpath::roundLayerNumber(double z)
 
 
 /**
+ * Manage a single toolpath.
  */
 IAToolpath::IAToolpath()
 {
 }
 
 
+/**
+ * Delete a toolpath.
+ */
 IAToolpath::~IAToolpath()
 {
     clear();
 }
 
 
+/**
+ * Clear a toolpath for its next use.
+ */
 void IAToolpath::clear()
 {
     for (auto e: pList) {
@@ -120,6 +150,9 @@ void IAToolpath::clear()
 }
 
 
+/**
+ * Draw the current toolpath into the scene viewer at world coordinates.
+ */
 void IAToolpath::draw()
 {
     glLineWidth(5.0);
@@ -133,12 +166,18 @@ void IAToolpath::draw()
 }
 
 
+/**
+ * Start a new path.
+ */
 void IAToolpath::startPath(double x, double y, double z)
 {
     tFirst.set(x, y, z); tPrev = tFirst;
 }
 
 
+/**
+ * Add a motion segment to the path.
+ */
 void IAToolpath::continuePath(double x, double y, double z)
 {
     IAVector3d next(x, y, z);
@@ -147,6 +186,9 @@ void IAToolpath::continuePath(double x, double y, double z)
 }
 
 
+/**
+ * Create a loop by moving back to the very first vector.
+ */
 void IAToolpath::closePath()
 {
     pList.push_back(new IAToolpathMotion(tPrev, tFirst));
@@ -155,17 +197,25 @@ void IAToolpath::closePath()
 
 
 
-
+/**
+ * Create any sort of toolpath element.
+ */
 IAToolpathElement::IAToolpathElement()
 {
 }
 
 
+/**
+ * Destroy an element.
+ */
 IAToolpathElement::~IAToolpathElement()
 {
 }
 
 
+/**
+ * Draw any element.
+ */
 void IAToolpathElement::draw()
 {
     // nothing to here
@@ -173,9 +223,9 @@ void IAToolpathElement::draw()
 
 
 
-
-
-
+/**
+ * Create a toolpath for a head motion to a new position.
+ */
 IAToolpathMotion::IAToolpathMotion(IAVector3d &a, IAVector3d &b)
 :   IAToolpathElement(),
     pStart(a),
@@ -184,12 +234,12 @@ IAToolpathMotion::IAToolpathMotion(IAVector3d &a, IAVector3d &b)
 }
 
 
+/**
+ * Draw the toolpath motion into the scene viewer.
+ */
 void IAToolpathMotion::draw()
 {
     glBegin(GL_LINES);
-//    glVertex3f(0, 0, 200);
-//    glVertex3f(pStart.x(), pStart.y(), pStart.z());
-//    glVertex3f(pEnd.x(), pEnd.y(), pEnd.z());
     glVertex3dv(pStart.dataPointer());
     glVertex3dv(pEnd.dataPointer());
     glEnd();

@@ -7,9 +7,9 @@
 
 #include "IAFramebuffer.h"
 
-#include "../userinterface/IAGUIMain.h"
-#include "../toolpath/IAToolpath.h"
-#include "../potrace/IAPotrace.h"
+#include "userinterface/IAGUIMain.h"
+#include "toolpath/IAToolpath.h"
+#include "potrace/IAPotrace.h"
 
 #include <stdio.h>
 #include <libjpeg/jpeglib.h>
@@ -76,7 +76,7 @@ IAFramebuffer::IAFramebuffer()
 
 
 /**
- * Delete the framebuffer, if we ever create one.
+ * Delete the framebuffer, if we ever created one.
  */
 IAFramebuffer::~IAFramebuffer()
 {
@@ -84,6 +84,9 @@ IAFramebuffer::~IAFramebuffer()
 }
 
 
+/**
+ * Clear the framebuffer object for next use.
+ */
 void IAFramebuffer::clear()
 {
     if (hasFBO()) {
@@ -142,7 +145,7 @@ void IAFramebuffer::unbindFromRendering()
  *
  * \return pointer to data, must be free'd by caller!
  */
-uint8_t *IAFramebuffer::makeIntoBitmap()
+uint8_t *IAFramebuffer::getRawImageRGB()
 {
     size_t size = pWidth*pHeight*3;
     uint8_t *data = (uint8_t*)malloc(size);
@@ -154,12 +157,12 @@ uint8_t *IAFramebuffer::makeIntoBitmap()
 
 
 /**
- * Crude code to trace around the image and write an outline to a file.
+ * Trace around the image and write an outline to a toolpath.
  */
-int IAFramebuffer::writeOutlineToToolpath(double z)
+int IAFramebuffer::traceOutline(IAToolpath *toolpath, double z)
 {
-    Iota.pCurrentToolpath->clear();
-    potrace(this, Iota.pCurrentToolpath, z);
+    toolpath->clear();
+    potrace(this, toolpath, z);
     return 0;
 }
 
@@ -169,11 +172,7 @@ int IAFramebuffer::writeOutlineToToolpath(double z)
  */
 int IAFramebuffer::saveAsJpeg(const char *filename)
 {
-    GLubyte *imgdata = makeIntoBitmap();
-//    = (GLubyte*)malloc(pWidth*pHeight*3);
-//    glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, pFramebuffer);
-//    glReadPixels(0, 0, pWidth, pHeight, GL_RGB, GL_UNSIGNED_BYTE, imgdata);
-//    glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
+    GLubyte *imgdata = getRawImageRGB();
 
     FILE *ofp;
     struct jpeg_compress_struct cinfo;   /* JPEG compression struct */
@@ -217,7 +216,7 @@ int IAFramebuffer::saveAsJpeg(const char *filename)
 
 
 /**
- * Draw the RGBA buffer into the scene viewer.
+ * Draw the RGBA buffer into the scene viewer at world coordinates.
  */
 void IAFramebuffer::draw(double z)
 {
@@ -319,7 +318,6 @@ void IAFramebuffer::deleteFBO()
     //Bind 0, which means render to back buffer, as a result, fb is unbound
     glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
     glDeleteFramebuffersEXT(1, &pFramebuffer);
-    // TODO: get rid of this thing
     pFramebufferCreated = false;
 }
 

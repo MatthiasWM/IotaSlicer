@@ -8,7 +8,7 @@
 #define IA_GEOMETRY_READER_H
 
 
-#include "../geometry/IAMesh.h"
+#include "geometry/IAMesh.h"
 
 #include <stdio.h>
 #include <memory>

@@ -164,7 +164,7 @@ void IAIota::menuWriteSlice()
 	snprintf(buf, FL_PATH_MAX, "%s/slice.jpg", base);
     Iota.gMeshSlice.pFramebuffer->saveAsJpeg(buf);
 
-    Iota.gMeshSlice.pFramebuffer->writeOutlineToToolpath(zSlider1->value());
+    Iota.gMeshSlice.pFramebuffer->traceOutline(Iota.pCurrentToolpath, zSlider1->value());
     gSceneView->redraw();
 }
 
@@ -302,6 +302,20 @@ void IAIota::showError()
 
 
 /**
+ * Load a model and a texture that come with the app for an easy example.
+ *
+ * These are binary assets compiled into the code. There is no need for
+ * external files.
+ */
+void IAIota::loadDemoFiles()
+{
+    loadTexture("testcard1024.jpg", defaultTexture);
+    Iota.addGeometry("default.stl", defaultModel, sizeof(defaultModel));
+    Iota.pMesh->projectTexture(100.0, 100.0, IA_PROJECTION_FRONT);
+}
+
+
+/**
  * Launch our app.
  * \todo remember the window position and size in the preferences
  */
@@ -316,9 +330,7 @@ int main (int argc, char **argv)
     Iota.gMainWindow->show();
     Fl::flush();
 
-    loadTexture("testcard1024.jpg", defaultTexture);
-    Iota.addGeometry("default.stl", defaultModel, sizeof(defaultModel));
-    Iota.pMesh->projectTexture(100.0, 100.0, IA_PROJECTION_FRONT);
+    Iota.loadDemoFiles();
 
     gSceneView->redraw();
 

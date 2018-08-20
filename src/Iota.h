@@ -50,6 +50,7 @@ public:
     void menuWriteSlice();
     void menuQuit();
 
+    void loadDemoFiles();
     void loadAnyFile(const char *list);
 
     void clearError();

@@ -76,7 +76,9 @@ void IAVector3d::set(double x, double y, double z)
 }
 
 
-
+/**
+ * Set the lower value for each component of vector a and b.
+ */
 void IAVector3d::setMin(const IAVector3d &v)
 {
     pV[0] = min(pV[0], v.pV[0]);
@@ -85,13 +87,15 @@ void IAVector3d::setMin(const IAVector3d &v)
 }
 
 
+/**
+ * Set the higher value for each component of vector a and b.
+ */
 void IAVector3d::setMax(const IAVector3d &v)
 {
     pV[0] = max(pV[0], v.pV[0]);
     pV[1] = max(pV[1], v.pV[1]);
     pV[2] = max(pV[2], v.pV[2]);
 }
-
 
 
 /**
@@ -298,6 +302,9 @@ void IAVector3d::zRotate(double a)
 }
 
 
+/**
+ * Check if two vectors are equal with 1e-7 range.
+ */
 bool IAVector3d::operator==(const IAVector3d &rhs) const
 {
     if (fabs(pV[0]-rhs.pV[0])>1e-7) return false;

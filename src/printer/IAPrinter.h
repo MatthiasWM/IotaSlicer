@@ -7,7 +7,8 @@
 #ifndef IA_PRINTER_H
 #define IA_PRINTER_H
 
-#include "../geometry/IAVector3d.h"
+
+#include "geometry/IAVector3d.h"
 
 
 /**

@@ -6,10 +6,10 @@
 
 #include "IAPotrace.h"
 
-#include "../Iota.h"
-#include "../toolpath/IAToolpath.h"
-#include "../opengl/IAFramebuffer.h"
-#include "../printer/IAPrinter.h"
+#include "Iota.h"
+#include "toolpath/IAToolpath.h"
+#include "opengl/IAFramebuffer.h"
+#include "printer/IAPrinter.h"
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>
@@ -78,7 +78,7 @@ static void bm_free(potrace_bitmap_t *bm) {
  */
  int potrace(IAFramebuffer *framebuffer, IAToolpath *toolpath, double z)
 {
-    const uint8_t *px = framebuffer->makeIntoBitmap();
+    const uint8_t *px = framebuffer->getRawImageRGB();
 
     int width = framebuffer->pWidth;
     int height = framebuffer->pHeight;

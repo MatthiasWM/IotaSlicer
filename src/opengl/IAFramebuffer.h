@@ -14,6 +14,9 @@
 #include <memory>
 
 
+class IAToolpath;
+
+
 /**
  * MSWindows needs a lot of persuasion to provide some of the OpenGL calls.
  */
@@ -55,8 +58,8 @@ public:
     void unbindFromRendering();
 
     void draw(double z);
-    uint8_t *makeIntoBitmap();
-    int writeOutlineToToolpath(double z);
+    uint8_t *getRawImageRGB();
+    int traceOutline(IAToolpath *toolpath, double z);
     int saveAsJpeg(const char *filename);
 
     int pWidth = 1024, pHeight = 1024;  // TODO: for now, this is fixed

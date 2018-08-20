@@ -7,7 +7,9 @@
 #ifndef IA_EDGE_H
 #define IA_EDGE_H
 
+
 #include <vector>
+
 
 class IAVertex;
 class IATriangle;

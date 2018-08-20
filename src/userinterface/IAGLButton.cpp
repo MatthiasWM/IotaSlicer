@@ -6,7 +6,7 @@
 
 
 #include <FL/Fl.H>
-#include <FL/gl.H>
+#include <FL/gl.h>
 #include <FL/Fl_Button.H>
 #include <FL/fl_draw.H>
 
@@ -185,7 +185,3 @@ void IAGLButton::draw_focus(Fl_Boxtype B, int X, int Y, int W, int H) const {
 }
 
 
-
-//
-// End of "$Id".
-//

@@ -8,8 +8,8 @@
 #include "IACamera.h"
 
 #include "Iota.h"
-#include "IASceneView.h"
-#include "../geometry/IAMath.h"
+#include "userinterface/IASceneView.h"
+#include "geometry/IAMath.h"
 
 #include <FL/gl.h>
 #include <FL/glu.h>
@@ -120,6 +120,9 @@ void IAPerspectiveCamera::draw()
 }
 
 
+/**
+ * Set the point that we are looking at.
+ */
 void IAPerspectiveCamera::setInterest(IAVector3d &v)
 {
     pInterest = v;
@@ -182,6 +185,9 @@ void IAOrthoCamera::draw()
 }
 
 
+/**
+ * Set the point that we are looking at.
+ */
 void IAOrthoCamera::setInterest(IAVector3d &v)
 {
     pInterest = v;

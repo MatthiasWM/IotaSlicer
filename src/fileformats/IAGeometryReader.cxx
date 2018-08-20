@@ -6,7 +6,8 @@
 
 
 #include "IAGeometryReader.h"
-#include "../Iota.h"
+
+#include "Iota.h"
 #include "IAGeometryReaderBinaryStl.h"
 #include "IAGeometryReaderTextStl.h"
 
@@ -262,6 +263,9 @@ bool IAGeometryReader::getLine()
 }
 
 
+/**
+ * Check if the result of getWord() is the specified string.
+ */
 bool IAGeometryReader::wordIs(const char *key)
 {
     size_t len = strlen(key);
@@ -271,25 +275,13 @@ bool IAGeometryReader::wordIs(const char *key)
 }
 
 
+/**
+ * Print the result of getWord() to the console.
+ */
 void IAGeometryReader::printWord()
 {
     size_t len = pCurrData-pCurrWord;
     printf("%.*s\n", (int)len, (char*)pCurrWord);
 }
 
-
-
-
-
-#include <tuple>
-
-std::tuple<int, int> readByte() {
-    return { 3, 1 };
-}
-
-void test()
-{
-    int x, err;
-    std::tie(x, err) = readByte();
-}
 

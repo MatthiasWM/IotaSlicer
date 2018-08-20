@@ -7,7 +7,7 @@
 #ifndef IA_CAMERA_H
 #define IA_CAMERA_H
 
-#include "../geometry/IAVector3d.h"
+#include "geometry/IAVector3d.h"
 
 
 class IASceneView;

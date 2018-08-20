@@ -8,7 +8,7 @@
 #include "IAGeometryReaderTextStl.h"
 
 #include "Iota.h"
-#include "../geometry/IAMesh.h"
+#include "geometry/IAMesh.h"
 
 #include <FL/fl_utf8.h>
 

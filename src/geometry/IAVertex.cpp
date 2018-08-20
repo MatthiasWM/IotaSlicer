@@ -68,22 +68,6 @@ void IAVertex::print()
 
 
 /**
- Move a vertex from its original position along its inverted normal vector.
- Called for every vertex in a mesh, this function effectively shrinks the mesh.
- Make sure that the initial position is correct, and that all normal
- were calculated.
- */
-//void IAVertex::shrinkBy(double s)
-//{
-//    pShrunkPosition.set(
-//                  pGlobalPosition.x() - pGlobalNormal.x() * s,
-//                  pGlobalPosition.y() - pGlobalNormal.y() * s,
-//                  pGlobalPosition.z() - pGlobalNormal.z() * s
-//                  );
-//}
-
-
-/**
  Project a texture onto this vertex in a mesh.
  */
 void IAVertex::projectTexture(double w, double h, int type)

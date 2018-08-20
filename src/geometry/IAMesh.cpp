@@ -48,17 +48,6 @@ void IAMesh::clear()
 
 
 /**
- Move all vertices along the negative point normal, effectively shrining the mesh.
- */
-//void IAMesh::shrinkBy(double s)
-//{
-//    for (auto v: vertexList) {
-//        v->shrinkBy(s);
-//    }
-//}
-
-
-/**
  Various test that validate a watertight triangle mesh.
  \todo This was written a long time ago and must be verified.
  */
@@ -466,6 +455,9 @@ size_t IAMesh::addPoint(double x, double y, double z)
 }
 
 
+/**
+ * Expand the bounding bo to include the given vector.
+ */
 void IAMesh::updateBoundingBox(IAVector3d &v)
 {
     pMin.setMin(v);
