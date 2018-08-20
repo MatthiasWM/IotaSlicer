@@ -219,12 +219,11 @@ int IAFramebuffer::saveAsJpeg(const char *filename)
 /**
  * Draw the RGBA buffer into the scene viewer.
  */
-void IAFramebuffer::draw()
+void IAFramebuffer::draw(double z)
 {
     if (!hasFBO()) return;
 
     // set as texture and render out
-    double z = zSlider1->value();
     glBindTexture(GL_TEXTURE_2D, pColorbuffer);
     glEnable(GL_TEXTURE_2D);
     glColor3f(1.0, 1.0, 1.0);

@@ -17,7 +17,7 @@
 class IAToolpath;
 class IAToolpathElement;
 
-typedef std::map<double, IAToolpath*> IAToolpathMap;
+typedef std::map<int, IAToolpath*> IAToolpathMap;
 typedef std::vector<IAToolpathElement*> IAToolpathElementList;
 
 
@@ -41,7 +41,12 @@ public:
     void clear();
     void draw();
     void drawLayer(double);
+    IAToolpath *findLayer(double);
+    IAToolpath *createLayer(double);
+    void deleteLayer(double);
+    int roundLayerNumber(double);
 
+private:
     IAToolpath *pStartupPath = nullptr;
     IAToolpathMap pLayerMap;
     IAToolpath *pShutdownPath = nullptr;

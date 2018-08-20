@@ -51,6 +51,27 @@ void IASlice::clear()
 
 
 /**
+ * Set the layer height for this slice.
+ *
+ * Clears all data if the current slice is different.
+ *
+ * \return true, if the layer actually changed
+ */
+bool IASlice::changeZ(double z)
+{
+    if (pCurrentZ==z) {
+        // nothing changed, keep the data
+        return false;
+    } else {
+        // layer
+        pCurrentZ = z;
+        clear();
+        return true;
+    }
+}
+
+
+/**
  Create the outline of a lid by slicing all meshes at Z.
  */
 void IASlice::generateFlange(IAMesh *mesh)
@@ -231,7 +252,7 @@ void IASlice::drawFramebuffer()
 {
     if (pFramebuffer) {
         // TODO: set matrices and lighting!
-        pFramebuffer->draw();
+        pFramebuffer->draw(pCurrentZ);
     }
 }
 

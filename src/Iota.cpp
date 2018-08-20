@@ -160,6 +160,13 @@ void IAIota::menuWriteSlice()
 	const char *base = fl_getenv("HOME");
 #endif
 
+    double z = 70.0;
+    Iota.gMeshSlice.changeZ(z);
+    Iota.gMeshSlice.clear();
+    Iota.gMeshSlice.generateFlange(Iota.pMesh);
+    Iota.gMeshSlice.tesselateLidFromFlange();
+    Iota.gMeshSlice.drawFlat(false, 1, 1, 1);
+
 	snprintf(buf, FL_PATH_MAX, "%s/slice.jpg", base);
     Iota.gMeshSlice.pFramebuffer->saveAsJpeg(buf);
 

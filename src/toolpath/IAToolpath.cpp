@@ -11,6 +11,8 @@
 
 #include <FL/gl.h>
 
+#include <math.h>
+
 
 
 IAMachineToolpath::IAMachineToolpath()
@@ -49,10 +51,50 @@ void IAMachineToolpath::draw()
 
 void IAMachineToolpath::drawLayer(double z)
 {
-    auto p = pLayerMap.find(z);
-    if (p!=pLayerMap.end())
-        (*p).second->draw();
+    auto p = findLayer(z);
+    if (p)
+        p->draw();
 }
+
+
+IAToolpath *IAMachineToolpath::findLayer(double z)
+{
+    int layer = roundLayerNumber(z);
+    auto p = pLayerMap.find(layer);
+    if (p==pLayerMap.end())
+        return nullptr;
+    else
+        return p->second;
+}
+
+
+IAToolpath *IAMachineToolpath::createLayer(double z)
+{
+    int layer = roundLayerNumber(z);
+    auto p = pLayerMap.find(layer);
+    if (p==pLayerMap.end())
+        return pLayerMap[layer];
+    else
+        return p->second;
+}
+
+
+void IAMachineToolpath::deleteLayer(double z)
+{
+    int layer = roundLayerNumber(z);
+    pLayerMap.erase(layer);
+}
+
+
+/**
+ * Round the z height into a layer number to avoid imprecissions of floating
+ * point math.
+ */
+int IAMachineToolpath::roundLayerNumber(double z)
+{
+    return (int)lround(z*1000.0);
+}
+
 
 
 

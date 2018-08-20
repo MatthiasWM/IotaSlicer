@@ -48,7 +48,7 @@ public:
     void bindForRendering();
     void unbindFromRendering();
 
-    void draw();
+    void draw(double z);
     uint8_t *makeIntoBitmap();
     int writeOutlineToToolpath(double z);
     int saveAsJpeg(const char *filename);
