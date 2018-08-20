@@ -80,8 +80,15 @@ IAFramebuffer::IAFramebuffer()
  */
 IAFramebuffer::~IAFramebuffer()
 {
+    clear();
+}
+
+
+void IAFramebuffer::clear()
+{
     if (hasFBO()) {
         deleteFBO();
+        pFramebufferCreated = false;
     }
 }
 
@@ -89,7 +96,7 @@ IAFramebuffer::~IAFramebuffer()
 /**
  * Activate this buffer for drawing into it at global coordinates.
  */
-void IAFramebuffer::drawBegin()
+void IAFramebuffer::bindForRendering()
 {
     activateFBO();
 
@@ -114,14 +121,6 @@ void IAFramebuffer::drawBegin()
     glDisable(GL_BLEND);
     glDisable(GL_LIGHTING);
     glEnable(GL_DEPTH_TEST);
-
-//    glColor3f(1.0, 0.5, 0.5);
-//    glBegin(GL_POLYGON);
-//    glVertex3f(-10.0, -10.0, 0.0);
-//    glVertex3f(-10.0,  10.0, 0.0);
-//    glVertex3f( 10.0,  10.0, 0.0);
-//    glVertex3f( 10.0, -10.0, 0.0);
-//    glEnd();
 }
 
 
@@ -129,7 +128,7 @@ void IAFramebuffer::drawBegin()
  * Reactivate the regular framebuffer and signal the scene viewer to rectreate
  * all settings.
  */
-void IAFramebuffer::drawEnd()
+void IAFramebuffer::unbindFromRendering()
 {
     // deactivate the FBO and set render target to FL_BACKBUFFER
     glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
@@ -141,22 +140,16 @@ void IAFramebuffer::drawEnd()
 /**
  * Convert the color buffer into a bitmap that potrace will understand.
  *
- * \return pointer to data as a shared pointer (use 'auto' as a type an
- *         worry no longer.
+ * \return pointer to data, must be free'd by caller!
  */
-std::shared_ptr<unsigned char> IAFramebuffer::makeIntoBitmap()
+uint8_t *IAFramebuffer::makeIntoBitmap()
 {
     size_t size = pWidth*pHeight*3;
-    // use a shared_pointer, so the user does not have to worry about deleting
-    // the array ever.
-    std::shared_ptr<unsigned char> pixels(new unsigned char[size], std::default_delete<unsigned char[]>());
-    // read the FBO content into RAM and make a bitmap for potrace
-    // FIXME: at this point, potrace converts from RGB to bitmap.
-    GLvoid *px = pixels.get();
+    uint8_t *data = (uint8_t*)malloc(size);
     glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, pFramebuffer);
-    glReadPixels(0, 0, pWidth, pHeight, GL_RGB, GL_UNSIGNED_BYTE, px);
+    glReadPixels(0, 0, pWidth, pHeight, GL_RGB, GL_UNSIGNED_BYTE, data);
     glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
-    return pixels;
+    return data;
 }
 
 
@@ -165,7 +158,6 @@ std::shared_ptr<unsigned char> IAFramebuffer::makeIntoBitmap()
  */
 int IAFramebuffer::writeOutlineToToolpath(double z)
 {
-    auto pixels = makeIntoBitmap();
     Iota.pToolpath->clear();
     potrace(this, Iota.pToolpath, z);
     return 0;
@@ -177,10 +169,11 @@ int IAFramebuffer::writeOutlineToToolpath(double z)
  */
 int IAFramebuffer::saveAsJpeg(const char *filename)
 {
-    GLubyte *imgdata = (GLubyte*)malloc(pWidth*pHeight*3);
-    glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, pFramebuffer);
-    glReadPixels(0, 0, pWidth, pHeight, GL_RGB, GL_UNSIGNED_BYTE, imgdata);
-    glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
+    GLubyte *imgdata = makeIntoBitmap();
+//    = (GLubyte*)malloc(pWidth*pHeight*3);
+//    glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, pFramebuffer);
+//    glReadPixels(0, 0, pWidth, pHeight, GL_RGB, GL_UNSIGNED_BYTE, imgdata);
+//    glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
 
     FILE *ofp;
     struct jpeg_compress_struct cinfo;   /* JPEG compression struct */

@@ -347,9 +347,9 @@ void IASlice::tesselateLidFromFlange()
     gluTessEndPolygon(gGluTess);
 
     // FIXME: this does not belong here!
-    pFramebuffer->drawBegin(); // make sure we have a square in the buffer
+    pFramebuffer->bindForRendering(); // make sure we have a square in the buffer
     drawFlat(false, 1.0, 1.0, 0.0);
-    pFramebuffer->drawEnd();
+    pFramebuffer->unbindFromRendering();
 
 }
 

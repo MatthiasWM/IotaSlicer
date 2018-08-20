@@ -17,17 +17,8 @@
 class IAToolpath;
 class IAToolpathElement;
 
+typedef std::map<double, IAToolpath*> IAToolpathMap;
 typedef std::vector<IAToolpathElement*> IAToolpathElementList;
-
-
-class IAMachineToolpath
-{
-public:
-    IAMachineToolpath();
-    // startup path
-    // list of layer paths
-    // shutdown path
-};
 
 
 /**
@@ -37,9 +28,28 @@ public:
  * to a machine to create the desired 3D printout.
  *
  * This class is used to draw the toolpath into the scene view. It is also
- * the source for generating GCode commands. ALl coordinates in this class
+ * the source for generating GCode commands. All coordinates in this class
  * must be kept in world space. The GCode writer must flip or offset
  * coordinates to math the printer space. Scaling should not be needed.
+ */
+class IAMachineToolpath
+{
+public:
+    IAMachineToolpath();
+    ~IAMachineToolpath();
+
+    void clear();
+    void draw();
+    void drawLayer(double);
+
+    IAToolpath *pStartupPath = nullptr;
+    IAToolpathMap pLayerMap;
+    IAToolpath *pShutdownPath = nullptr;
+};
+
+
+/**
+ * A toolpath, usually for a single slice, for startup, or for shutdown.
  */
 class IAToolpath
 {

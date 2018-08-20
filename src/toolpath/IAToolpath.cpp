@@ -18,6 +18,44 @@ IAMachineToolpath::IAMachineToolpath()
 }
 
 
+IAMachineToolpath::~IAMachineToolpath()
+{
+    clear();
+}
+
+
+void IAMachineToolpath::clear()
+{
+    delete pStartupPath;
+    pStartupPath = nullptr;
+    for (auto p: pLayerMap) {
+        delete p.second;
+    }
+    pLayerMap.clear();
+    delete pShutdownPath;
+    pShutdownPath = nullptr;
+}
+
+
+void IAMachineToolpath::draw()
+{
+    pStartupPath->draw();
+    for (auto p: pLayerMap) {
+        p.second->draw();
+    }
+    pShutdownPath->draw();
+}
+
+
+void IAMachineToolpath::drawLayer(double z)
+{
+    auto p = pLayerMap.find(z);
+    if (p!=pLayerMap.end())
+        (*p).second->draw();
+}
+
+
+
 /**
  */
 IAToolpath::IAToolpath()
@@ -45,18 +83,6 @@ void IAToolpath::draw()
     glLineWidth(5.0);
     glDisable(GL_TEXTURE_2D);
     glDisable(GL_LIGHTING);
-//    {
-//        const float sze = 50.0f;
-//        glColor3f(0.0, 0.0, 0.0);
-//        glLineWidth(3.0);
-//        glBegin(GL_LINE_LOOP);
-//        glVertex3f( sze,  0.0, 100.0);
-//        glVertex3f( 0.0,  sze, 100.0);
-//        glVertex3f(-sze,  0.0, 100.0);
-//        glVertex3f( 0.0, -sze, 100.0);
-//        glEnd();
-//        glLineWidth(1.0);
-//    }
     glColor3f(0, 1, 0);
     for (auto e: pList) {
         e->draw();

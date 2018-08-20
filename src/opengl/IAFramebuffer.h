@@ -43,16 +43,17 @@ class IAFramebuffer
 public:
     IAFramebuffer();
     ~IAFramebuffer();
+    void clear();
 
-    void drawBegin();
-    void drawEnd();
+    void bindForRendering();
+    void unbindFromRendering();
 
     void draw();
-    std::shared_ptr<unsigned char> makeIntoBitmap();
+    uint8_t *makeIntoBitmap();
     int writeOutlineToToolpath(double z);
     int saveAsJpeg(const char *filename);
 
-    int pWidth = 256, pHeight = 256;  // TODO: for now, this is fixed
+    int pWidth = 1024, pHeight = 1024;  // TODO: for now, this is fixed
 
 protected:
     bool hasFBO();

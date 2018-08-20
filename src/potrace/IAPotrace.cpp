@@ -78,8 +78,7 @@ static void bm_free(potrace_bitmap_t *bm) {
  */
  int potrace(IAFramebuffer *framebuffer, IAToolpath *toolpath, double z)
 {
-    auto bitmap = framebuffer->makeIntoBitmap();
-    const unsigned char *px = bitmap.get();
+    const uint8_t *px = framebuffer->makeIntoBitmap();
 
     int width = framebuffer->pWidth;
     int height = framebuffer->pHeight;
@@ -100,16 +99,18 @@ static void bm_free(potrace_bitmap_t *bm) {
     bm = bm_new(width, height);
     if (!bm) {
         fprintf(stderr, "Error allocating bitmap: %s\n", strerror(errno));
+        ::free((void*)px);
         return 1;
     }
 
     /* fill the bitmap with some pattern */
     for (y=0; y<height; y++) {
         for (x=0; x<width; x++) {
-            unsigned char r = px[ (x+256*y)*3 ];
+            unsigned char r = px[ (x+width*y)*3 ];
             BM_PUT(bm, x, y, r>128 ? 1 : 0);
         }
     }
+    ::free((void*)px);
 
     /* set tracing parameters, starting from defaults */
     param = potrace_param_default();

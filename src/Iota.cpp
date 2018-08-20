@@ -157,14 +157,12 @@ void IAIota::menuWriteSlice()
 	char base[FL_PATH_MAX];
 	SHGetSpecialFolderPathA(HWND_DESKTOP, base, CSIDL_DESKTOPDIRECTORY, FALSE);
 #else
-	const char *base;
-    fl_getenv("HOME");
+	const char *base = fl_getenv("HOME");
 #endif
 
 	snprintf(buf, FL_PATH_MAX, "%s/slice.jpg", base);
     Iota.gMeshSlice.pFramebuffer->saveAsJpeg(buf);
 
-    snprintf(buf, FL_PATH_MAX, "%s/slice.gcode", base);
     Iota.gMeshSlice.pFramebuffer->writeOutlineToToolpath(zSlider1->value());
     gSceneView->redraw();
 }
