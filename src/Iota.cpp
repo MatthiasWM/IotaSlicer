@@ -145,13 +145,13 @@ void IAIota::loadAnyFile(const char *list)
  */
 void IAIota::menuWriteSlice()
 {
-	char buf[FL_PATH_MAX];
+    char buf[FL_PATH_MAX];
 
 #ifdef _WIN32
-	char base[FL_PATH_MAX];
-	SHGetSpecialFolderPathA(HWND_DESKTOP, base, CSIDL_DESKTOPDIRECTORY, FALSE);
+    char base[FL_PATH_MAX];
+    SHGetSpecialFolderPathA(HWND_DESKTOP, base, CSIDL_DESKTOPDIRECTORY, FALSE);
 #else
-	const char *base = fl_getenv("HOME");
+    const char *base = fl_getenv("HOME");
 #endif
 
     double z = 70.0;
@@ -161,10 +161,34 @@ void IAIota::menuWriteSlice()
     Iota.gMeshSlice.tesselateLidFromFlange();
     Iota.gMeshSlice.drawFlat(false, 1, 1, 1);
 
-	snprintf(buf, FL_PATH_MAX, "%s/slice.jpg", base);
+    snprintf(buf, FL_PATH_MAX, "%s/slice.jpg", base);
     Iota.gMeshSlice.pFramebuffer->saveAsJpeg(buf);
 
     Iota.gMeshSlice.pFramebuffer->traceOutline(Iota.pCurrentToolpath, zSlider1->value());
+    gSceneView->redraw();
+}
+
+
+/**
+ Experimental stuff.
+ */
+void IAIota::menuSliceMesh()
+{
+    if (!pMachineToolpath)
+        pMachineToolpath = new IAMachineToolpath();
+    else
+        pMachineToolpath->clear();
+    double hgt = pMesh->pMax.z() - pMesh->pMin.z();
+    for (double z=0.0; z<hgt; z+=1.0) {
+        Iota.gMeshSlice.changeZ(z);
+        Iota.gMeshSlice.clear();
+        Iota.gMeshSlice.generateFlange(Iota.pMesh);
+        Iota.gMeshSlice.tesselateLidFromFlange();
+        Iota.gMeshSlice.drawFlat(false, 1, 1, 1);
+
+        IAToolpath *tp = pMachineToolpath->createLayer(z);
+        Iota.gMeshSlice.pFramebuffer->traceOutline(tp, z);
+    }
     gSceneView->redraw();
 }
 

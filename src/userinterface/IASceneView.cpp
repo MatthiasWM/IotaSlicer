@@ -294,6 +294,7 @@ void IASceneView::draw()
 
     // draw the current toolpath
     if (Iota.pCurrentToolpath) Iota.pCurrentToolpath->draw();
+    if (Iota.pMachineToolpath) Iota.pMachineToolpath->draw();
 
     // draw FLTK user interface
     draw_children();

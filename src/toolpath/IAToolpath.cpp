@@ -52,11 +52,11 @@ void IAMachineToolpath::clear()
  */
 void IAMachineToolpath::draw()
 {
-    pStartupPath->draw();
+    if (pStartupPath) pStartupPath->draw();
     for (auto p: pLayerMap) {
         p.second->draw();
     }
-    pShutdownPath->draw();
+    if (pShutdownPath) pShutdownPath->draw();
 }
 
 
@@ -92,10 +92,13 @@ IAToolpath *IAMachineToolpath::createLayer(double z)
 {
     int layer = roundLayerNumber(z);
     auto p = pLayerMap.find(layer);
-    if (p==pLayerMap.end())
-        return pLayerMap[layer];
-    else
+    if (p==pLayerMap.end()) {
+        IAToolpath *tp = new IAToolpath();
+        pLayerMap.insert(std::make_pair(layer, tp));
+        return tp;
+    } else {
         return p->second;
+    }
 }
 
 

@@ -48,6 +48,7 @@ public:
     ~IAIota();
 
     void menuWriteSlice();
+    void menuSliceMesh();
     void menuQuit();
 
     void loadDemoFiles();
