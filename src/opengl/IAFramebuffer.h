@@ -15,6 +15,12 @@
 
 
 /**
+ * MSWindows needs a lot of persuasion to provide some of the OpenGL calls.
+ */
+extern bool initializeOpenGL();
+
+
+/**
  * Manage an OpenGL framebuffer object as a texture.
  *
  * Framebuffers are used to represent a single Z-layer of the overall

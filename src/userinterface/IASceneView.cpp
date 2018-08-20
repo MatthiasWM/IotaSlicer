@@ -101,7 +101,7 @@ int IASceneView::handle(int event)
         case FL_DND_DRAG: return 1;
         case FL_DND_RELEASE: return 1;
         case FL_PASTE:
-            Iota.loadAnyFileList(Fl::event_text());
+            Iota.loadAnyFile(Fl::event_text());
             break;
     }
     return Fl_Gl_Window::handle(event);
@@ -295,7 +295,7 @@ void IASceneView::draw()
     Iota.gMeshSlice.drawFramebuffer();
 
     // draw the current toolpath
-    if (Iota.pToolpath) Iota.pToolpath->draw();
+    if (Iota.pCurrentToolpath) Iota.pCurrentToolpath->draw();
 
     // draw FLTK user interface
     draw_children();

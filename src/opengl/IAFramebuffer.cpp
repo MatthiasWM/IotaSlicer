@@ -158,8 +158,8 @@ uint8_t *IAFramebuffer::makeIntoBitmap()
  */
 int IAFramebuffer::writeOutlineToToolpath(double z)
 {
-    Iota.pToolpath->clear();
-    potrace(this, Iota.pToolpath, z);
+    Iota.pCurrentToolpath->clear();
+    potrace(this, Iota.pCurrentToolpath, z);
     return 0;
 }
 

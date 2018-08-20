@@ -47,19 +47,21 @@ public:
     IAIota();
     ~IAIota();
 
-    void loadAnyFileList(const char *list);
-    bool addGeometry(const char *name, uint8_t *data, size_t size);
-    bool addGeometry(const char *filename);
-    bool addGeometry(std::shared_ptr<IAGeometryReader> reader);
-
     void menuWriteSlice();
     void menuQuit();
+
+    void loadAnyFile(const char *list);
 
     void clearError();
     void setError(const char *loc, Error err, const char *str=nullptr);
     bool hadError();
     Error lastError() { return pError; }
     void showError();
+
+private:
+    bool addGeometry(const char *name, uint8_t *data, size_t size);
+    bool addGeometry(const char *filename);
+    bool addGeometry(std::shared_ptr<IAGeometryReader> reader);
 
 public:
     /// the main UI window
@@ -76,9 +78,10 @@ public:
     IASlice gMeshSlice;
     /// the current 3d printwer
     IAPrinter gPrinter;
+    /// the toolpath for the entire scene
+    IAMachineToolpath *pMachineToolpath = nullptr;
     /// the current toolpath
-    //IAMachineToolpath *pMachineToolpath = nullptr;
-    IAToolpath *pToolpath = nullptr;
+    IAToolpath *pCurrentToolpath = nullptr;
     /// show the slice in the 3d view
     /// \todo move to UI class
     bool gShowSlice;
