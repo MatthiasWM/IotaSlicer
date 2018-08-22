@@ -36,6 +36,9 @@
     <Filter Include="src\potrace">
       <UniqueIdentifier>{f0cfdbd4-2007-4a7b-9ef0-733446d9259b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\toolpath">
+      <UniqueIdentifier>{5da277f0-54f1-4c9b-8e5a-2ea3fd37e97d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\src\geometry\IAEdge.cpp">
@@ -107,10 +110,13 @@
     <ClCompile Include="..\..\..\src\potrace\potracelib.c">
       <Filter>src\potrace</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\potrace\potracelib_demo.c">
+    <ClCompile Include="..\..\..\src\potrace\trace.c">
       <Filter>src\potrace</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\potrace\trace.c">
+    <ClCompile Include="..\..\..\src\toolpath\IAToolpath.cpp">
+      <Filter>src\toolpath</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\potrace\IAPotrace.cpp">
       <Filter>src\potrace</Filter>
     </ClCompile>
   </ItemGroup>
@@ -208,11 +214,14 @@
     <ClInclude Include="..\..\..\src\potrace\trace.h">
       <Filter>src\potrace</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\src\toolpath\IAToolpath.h">
+      <Filter>src\toolpath</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\potrace\IAPotrace.h">
+      <Filter>src\potrace</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\..\src\UserInterface.fl">
-      <Filter>src</Filter>
-    </None>
     <None Include="..\..\..\src\data\suzanne.stl">
       <Filter>src\data</Filter>
     </None>

@@ -57,7 +57,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(ProjectDir)\..\..\..\src\;$(ProjectDir)\..\..\..\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)\..\..\..\src\;$(ProjectDir)\..\..\..\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -91,7 +91,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(ProjectDir)\..\..\..\src\;$(ProjectDir)\..\..\..\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)\..\..\..\src\;$(ProjectDir)\..\..\..\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -137,9 +137,10 @@
     <ClCompile Include="..\..\..\src\potrace\curve.c" />
     <ClCompile Include="..\..\..\src\potrace\decompose.c" />
     <ClCompile Include="..\..\..\src\potrace\potracelib.c" />
-    <ClCompile Include="..\..\..\src\potrace\potracelib_demo.c" />
+    <ClCompile Include="..\..\..\src\potrace\IAPotrace.cpp" />
     <ClCompile Include="..\..\..\src\potrace\trace.c" />
     <ClCompile Include="..\..\..\src\printer\IAPrinter.cpp" />
+    <ClCompile Include="..\..\..\src\toolpath\IAToolpath.cpp" />
     <ClCompile Include="..\..\..\src\userinterface\IACamera.cpp" />
     <ClCompile Include="..\..\..\src\userinterface\IAGLButton.cpp" />
     <ClCompile Include="..\..\..\src\userinterface\IASceneView.cpp" />
@@ -167,12 +168,14 @@
     <ClInclude Include="..\..\..\src\potrace\config.h" />
     <ClInclude Include="..\..\..\src\potrace\curve.h" />
     <ClInclude Include="..\..\..\src\potrace\decompose.h" />
+    <ClInclude Include="..\..\..\src\potrace\IAPotrace.h" />
     <ClInclude Include="..\..\..\src\potrace\lists.h" />
     <ClInclude Include="..\..\..\src\potrace\platform.h" />
     <ClInclude Include="..\..\..\src\potrace\potracelib.h" />
     <ClInclude Include="..\..\..\src\potrace\progress.h" />
     <ClInclude Include="..\..\..\src\potrace\trace.h" />
     <ClInclude Include="..\..\..\src\printer\IAPrinter.h" />
+    <ClInclude Include="..\..\..\src\toolpath\IAToolpath.h" />
     <ClInclude Include="..\..\..\src\userinterface\IACamera.h" />
     <ClInclude Include="..\..\..\src\userinterface\IAGLButton.h" />
     <ClInclude Include="..\..\..\src\userinterface\IASceneView.h" />
@@ -219,7 +222,6 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     <None Include="..\..\..\html\index.html" />
     <None Include="..\..\..\src\data\suzanne.stl" />
     <None Include="..\..\..\src\data\xyz.stl" />
-    <None Include="..\..\..\src\UserInterface.fl" />
     <CustomBuild Include="..\..\..\src\userinterface\IAGUIMain.fl">
       <FileType>Document</FileType>
       <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">setlocal
