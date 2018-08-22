@@ -37,6 +37,28 @@
  For Example: You have a 0.5 mm nozzle mounted and you are printing at 0.25mm layer height at a print speed of 30 mm/s.
 
  Extrusion Width = 0.6 mm = 1.2 0.5 Flow Rate = 4.5 mm^3/s = 0.6 0.25 * 30
+
+
+ // The tool 0 box is mounted in a very bad place and can just barely be reached.
+ // We need to drive the head in a circle to actually wipe, and make a bee line
+ // so that waste goes into the waste box. Phew. Also, when usug repetier FW, the
+ // width needs to be corrected so that we reach the waste container at all.
+ // Wipe tool 0
+ // Box:     200, 0, 10
+ // Wipe:    180, 0, 10
+
+ // The tool 1 box is located a little bit better, but in order to reach it,
+ // tool 0 must be active. I am not even sure if we can send a command to extrude
+ // to head 1 without changing the position back onto the bed. In effect, we would
+ // have change the minimum position for x to minus whatever the offest is between heads.
+ // Maybe that's why in the original firmware, the *right* head is tool 0, and
+ // the *left* head ist tool 1?
+ // Wipe tool 1
+ // Box:     T0! 0, 0, 10
+ // Wipe:    T0! 0, 20, 10
+ // but can we extrude T1 without changing the position? Maybe by using relative
+ // positioning?
+
  */
 IAPrinter::IAPrinter()
 {

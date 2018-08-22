@@ -62,8 +62,8 @@ void IAGcodeWriter::sendInitialisation()
     fprintf(pFile, "M140 S60 ; set bed temperature\n");
     fprintf(pFile, "T0\n");
     fprintf(pFile, "M82 ; use absolute distances for extrusion\n");
-    fprintf(pFile, "M104 S200 ; set extruder temperature\n");
-    fprintf(pFile, "M109 S200 ; set temperature and wait for it to be reached\n");
+    fprintf(pFile, "M104 S230 ; set extruder temperature\n");
+    fprintf(pFile, "M109 S230 ; set temperature and wait for it to be reached\n");
     fprintf(pFile, "M190 S60 ; wait for bed temperature\n");
     sendExtrusionReset();
     sendMoveTo(pPosition); sendExtrusionAdd(-1.0); sendFeedrate(1800.0); sendNewLine("retract extruder");
@@ -77,6 +77,10 @@ void IAGcodeWriter::sendInitialisation()
     fprintf(pFile, "M300 S659.255 P100 ; beep\n");
     fprintf(pFile, "M300 S698.456 P100 ; beep\n");
     fprintf(pFile, "M300 S783.991 P100 ; beep\n");
+    sendMoveTo(pPosition);
+    sendExtrusionAdd(8);
+    sendFeedrate(1800);
+    sendNewLine("purge some filament");
 
 
 /*
@@ -545,7 +549,7 @@ void IAToolpathMotion::saveGCode(IAGcodeWriter &w)
         double length = (w.pPosition - pEnd).length();
         w.sendMoveTo(pEnd);
         w.sendFeedrate(1800.0);
-        w.sendExtrusionAdd(length/56.0); // 160? 32?
+        w.sendExtrusionAdd(length/32.0); // 160? 32? *1.5
         w.sendNewLine();
     }
 }

@@ -52,6 +52,7 @@ public:
     double pEFactor = 160.0;
 };
 
+
 /**
  * Represents a list commands (settings, motions) for a 3d printer.
  *
