@@ -41,6 +41,7 @@ public:
     void sendFeedrate(double f);
     void sendExtrusionAdd(double e);
     void sendExtrusionReset();
+    void sendPurgeTool(int t);
 
     FILE *pFile = nullptr;
     IAVector3d pPosition;
@@ -49,7 +50,7 @@ public:
     double pRapidF = 5400.0;
     double pPrintingF = 1800.0;
     double pLayerHeight = 0.3;
-    double pEFactor = 160.0;
+    double pEFactor = 22.0;
 };
 
 
@@ -93,10 +94,12 @@ private:
 class IAToolpath
 {
 public:
-    IAToolpath();
+    IAToolpath(double z);
     ~IAToolpath();
-    void clear();
+    void clear(double z);
     void draw();
+    void drawFlat(double w);
+    void add(IAToolpath &tp);
 
     void startPath(double x, double y, double z);
     void continuePath(double x, double y, double z);
@@ -108,6 +111,7 @@ public:
     // list of elements
 
     IAVector3d tFirst, tPrev;
+    double pZ;
 
 };
 
@@ -121,7 +125,9 @@ public:
     IAToolpathElement();
     virtual ~IAToolpathElement();
     virtual void draw();
+    virtual void drawFlat() { }
     virtual void saveGCode(IAGcodeWriter &g) { }
+    virtual IAToolpathElement *clone();
 };
 
 
@@ -133,7 +139,9 @@ class IAToolpathMotion : public IAToolpathElement
 public:
     IAToolpathMotion(IAVector3d &a, IAVector3d &b, bool rapid=false);
     virtual void draw() override;
+    virtual void drawFlat() override;
     virtual void saveGCode(IAGcodeWriter &g) override;
+    virtual IAToolpathElement *clone() override;
 
     // FIXME: we MUST NOT have start and end. The previous end and the current
     // start are redundant and caus trouble if assumptions are made!

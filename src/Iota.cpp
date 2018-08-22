@@ -73,7 +73,7 @@ const char *IAIota::kErrorMessage[] =
  * Creat the Iota Slicer application.
  */
 IAIota::IAIota()
-:   pCurrentToolpath( new IAToolpath() )
+:   pCurrentToolpath( new IAToolpath(0.0) )
 {
 }
 
@@ -179,7 +179,8 @@ void IAIota::menuSliceMesh()
     else
         pMachineToolpath->clear();
     double hgt = pMesh->pMax.z() - pMesh->pMin.z();
-    for (double z=0.15; z<hgt; z+=0.3) {
+    // initial height determines stickiness to bed
+    for (double z=0.2; z</*hgt*/ 5; z+=0.3) {
         printf("Slicing at z=%g\n", z);
         Iota.gMeshSlice.changeZ(z);
         Iota.gMeshSlice.clear();
@@ -187,8 +188,35 @@ void IAIota::menuSliceMesh()
         Iota.gMeshSlice.tesselateLidFromFlange();
         Iota.gMeshSlice.drawFlat(false, 1, 1, 1);
 
+        IAToolpath *tp1 = new IAToolpath(z);
+        Iota.gMeshSlice.pFramebuffer->traceOutline(tp1, z);
+        Iota.gMeshSlice.pFramebuffer->saveAsJpeg("/Users/matt/a1.jpg");
+
+        IAToolpath *tp2 = new IAToolpath(z);
+        Iota.gMeshSlice.pFramebuffer->bindForRendering();
+        glDisable(GL_DEPTH_TEST);
+        glColor3f(0.0, 0.0, 0.0);
+        tp1->drawFlat(4);
+        Iota.gMeshSlice.pFramebuffer->saveAsJpeg("/Users/matt/a2.jpg");
+        Iota.gMeshSlice.pFramebuffer->unbindFromRendering();
+        Iota.gMeshSlice.pFramebuffer->traceOutline(tp2, z);
+
+        IAToolpath *tp3 = new IAToolpath(z);
+        Iota.gMeshSlice.pFramebuffer->bindForRendering();
+        glDisable(GL_DEPTH_TEST);
+        glColor3f(0.0, 0.0, 0.0);
+        tp2->drawFlat(4);
+        Iota.gMeshSlice.pFramebuffer->saveAsJpeg("/Users/matt/a3.jpg");
+        Iota.gMeshSlice.pFramebuffer->unbindFromRendering();
+        Iota.gMeshSlice.pFramebuffer->traceOutline(tp3, z);
+
         IAToolpath *tp = pMachineToolpath->createLayer(z);
-        Iota.gMeshSlice.pFramebuffer->traceOutline(tp, z);
+        tp->add(*tp1);
+        tp->add(*tp2);
+        tp->add(*tp3);
+        delete tp1;
+        delete tp2;
+        delete tp3;
     }
     pMachineToolpath->saveGCode("/Users/matt/test.gcode");
     gSceneView->redraw();

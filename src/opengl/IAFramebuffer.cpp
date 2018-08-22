@@ -104,10 +104,6 @@ void IAFramebuffer::bindForRendering()
     activateFBO();
 
     // set matrices, lighting, etc. for this FBO
-    glClearColor(0.0, 0.0, 0.0, 0.0);
-    glClearDepth(1.0f);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
     glViewport(0, 0, pWidth, pHeight);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
@@ -161,7 +157,7 @@ uint8_t *IAFramebuffer::getRawImageRGB()
  */
 int IAFramebuffer::traceOutline(IAToolpath *toolpath, double z)
 {
-    toolpath->clear();
+    toolpath->clear(z);
     potrace(this, toolpath, z);
     return 0;
 }
@@ -303,7 +299,13 @@ void IAFramebuffer::createFBO()
             printf("not so good\n");
             return;
     }
+
     pFramebufferCreated = true;
+
+    glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, pFramebuffer);
+    glClearColor(0.0, 0.0, 0.0, 0.0);
+    glClearDepth(1.0f);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
 
