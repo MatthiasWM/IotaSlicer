@@ -179,7 +179,8 @@ void IAIota::menuSliceMesh()
     else
         pMachineToolpath->clear();
     double hgt = pMesh->pMax.z() - pMesh->pMin.z();
-    for (double z=0.0; z<hgt; z+=1.0) {
+    for (double z=0.15; z<hgt; z+=0.3) {
+        printf("Slicing at z=%g\n", z);
         Iota.gMeshSlice.changeZ(z);
         Iota.gMeshSlice.clear();
         Iota.gMeshSlice.generateFlange(Iota.pMesh);
@@ -189,6 +190,7 @@ void IAIota::menuSliceMesh()
         IAToolpath *tp = pMachineToolpath->createLayer(z);
         Iota.gMeshSlice.pFramebuffer->traceOutline(tp, z);
     }
+    pMachineToolpath->saveGCode("/Users/matt/test.gcode");
     gSceneView->redraw();
 }
 

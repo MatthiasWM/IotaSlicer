@@ -22,6 +22,37 @@ typedef std::vector<IAToolpathElement*> IAToolpathElementList;
 
 
 /**
+ * Helps the toolpath classes to write GCode
+ */
+class IAGcodeWriter
+{
+public:
+    IAGcodeWriter();
+    ~IAGcodeWriter();
+    bool open(const char *filename);
+    void close();
+    void sendNewLine(const char *comment=nullptr);
+    void sendInitialisation();
+    void sendShutdown();
+    void sendHome();
+    void sendMoveTo(IAVector3d &v);
+    void sendRapidMoveTo(IAVector3d &v);
+    void sendPosition(IAVector3d &v);
+    void sendFeedrate(double f);
+    void sendExtrusionAdd(double e);
+    void sendExtrusionReset();
+
+    FILE *pFile = nullptr;
+    IAVector3d pPosition;
+    double pE = 0.0;
+    double pF = 0.0;
+    double pRapidF = 5400.0;
+    double pPrintingF = 1800.0;
+    double pLayerHeight = 0.3;
+    double pEFactor = 160.0;
+};
+
+/**
  * Represents a list commands (settings, motions) for a 3d printer.
  *
  * This is an internal storage format for commands that need to be sent
@@ -46,6 +77,8 @@ public:
     void deleteLayer(double);
     int roundLayerNumber(double);
 
+    bool saveGCode(const char *filename);
+
 private:
     IAToolpath *pStartupPath = nullptr;
     IAToolpathMap pLayerMap;
@@ -68,6 +101,8 @@ public:
     void continuePath(double x, double y, double z);
     void closePath(void);
 
+    void saveGCode(IAGcodeWriter &g);
+
     IAToolpathElementList pList;
     // list of elements
 
@@ -85,6 +120,7 @@ public:
     IAToolpathElement();
     virtual ~IAToolpathElement();
     virtual void draw();
+    virtual void saveGCode(IAGcodeWriter &g) { }
 };
 
 
@@ -94,8 +130,10 @@ public:
 class IAToolpathMotion : public IAToolpathElement
 {
 public:
-    IAToolpathMotion(IAVector3d &a, IAVector3d &b);
-    virtual void draw();
+    IAToolpathMotion(IAVector3d &a, IAVector3d &b, bool rapid=false);
+    virtual void draw() override;
+    virtual void saveGCode(IAGcodeWriter &g) override;
+
     // FIXME: we MUST NOT have start and end. The previous end and the current
     // start are redundant and caus trouble if assumptions are made!
     IAVector3d pStart, pEnd;
