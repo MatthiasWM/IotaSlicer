@@ -24,7 +24,7 @@ public:
     void addNormal(const IAVector3d&);
     void averageNormal();
     void print();
-    void projectTexture(double w, double h, int type);
+    void projectTexture(double x, double y, double w, double h, int type);
 
     /// Point position in object space, as it comes from the 3d object file
     IAVector3d pLocalPosition;

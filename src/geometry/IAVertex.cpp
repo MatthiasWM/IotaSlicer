@@ -9,6 +9,8 @@
 
 #include "Iota.h"
 
+#include <math.h>
+
 
 /**
  Create a vertex at 0, 0, 0.
@@ -70,15 +72,18 @@ void IAVertex::print()
 /**
  Project a texture onto this vertex in a mesh.
  */
-void IAVertex::projectTexture(double w, double h, int type)
+void IAVertex::projectTexture(double x, double y, double w, double h, int type)
 {
+    double a;
     switch (type) {
         case IA_PROJECTION_FRONT:
-            pTex.set(pLocalPosition.x()/w+0.5, -pLocalPosition.z()/h+0.5, 0.0);
+            pTex.set((pLocalPosition.x()+x)*w, -(pLocalPosition.z()+y)*h, 0.0);
             break;
-        case IA_PROJECTION_CYLINDER:
+        case IA_PROJECTION_CYLINDRICAL:
+            a = atan2(pLocalPosition.x(), -pLocalPosition.y());
+            pTex.set((a/2.0/M_PI)*w, -(pLocalPosition.z()+y)*h, 0.0);
             break;
-        case IA_PROJECTION_SPHERE:
+        case IA_PROJECTION_SPHERICAL:
             break;
     }
 }

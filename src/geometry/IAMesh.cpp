@@ -402,12 +402,27 @@ void IAMesh::drawEdges() {
 /**
  Calculate new texture coordinates for all vertices.
  */
-void IAMesh::projectTexture(double w, double h, int type)
+void IAMesh::projectTexture(double wMult, double hMult, int type)
 {
-    int i, n = (int)vertexList.size();
-    for (i=0; i<n; i++) {
-        IAVertex *v = vertexList.at(i);
-        v->projectTexture(w, h, type);
+    double x = 0.0, w = 1.0;
+    double y = 0.0, h = 1.0;
+    switch (type) {
+        case IA_PROJECTION_FRONT:
+            x = pMin.x(); w = 1.0 / (pMax.x() - pMin.x()) * wMult;
+            y = pMin.z(); h = 1.0 / (pMax.z() - pMin.z()) * hMult;
+            for (auto v: vertexList) {
+                v->projectTexture(x, y, w, h, type);
+            }
+            break;
+        case IA_PROJECTION_CYLINDRICAL:
+            x = 0.0; w = wMult;
+            y = pMin.z(); h = 1.0 / (pMax.z() - pMin.z()) * hMult;
+            for (auto v: vertexList) {
+                v->projectTexture(x, y, w, h, type);
+            }
+            break;
+        case IA_PROJECTION_SPHERICAL:
+            break;
     }
 }
 

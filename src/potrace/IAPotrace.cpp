@@ -195,7 +195,6 @@ void bezier(IAToolpath *toolpath,
 
 
 static const double m_distance_tolerance = 0.1;
-int n;
 
 // http://www.antigrain.com/research/adaptive_bezier/index.html
 void recursive_bezier(IAToolpath *tp,
@@ -229,7 +228,6 @@ void recursive_bezier(IAToolpath *tp,
 
     if((d2 + d3)*(d2 + d3) < m_distance_tolerance * (dx*dx + dy*dy))
     {
-        n++;
         tp->continuePath(x1234, y1234, z);
         return;
     }
@@ -247,9 +245,7 @@ void bezier(IAToolpath *tp,
             double x3, double y3,
             double x4, double y4, double z)
 {
-    n = 0;
     //add_point(x1, y1);
     recursive_bezier(tp, x1, y1, x2, y2, x3, y3, x4, y4, z);
     tp->continuePath(x4, y4, z);
-    printf("Bezier gets %d points\n", n);
 }

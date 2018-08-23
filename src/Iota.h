@@ -22,8 +22,8 @@ class IAToolpath;
 // TODO globals that we want to get rid of.
 
 const int IA_PROJECTION_FRONT       = 0;
-const int IA_PROJECTION_CYLINDER    = 1;
-const int IA_PROJECTION_SPHERE      = 2;
+const int IA_PROJECTION_CYLINDRICAL = 1;
+const int IA_PROJECTION_SPHERICAL   = 2;
 
 
 /**

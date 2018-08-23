@@ -211,9 +211,9 @@ void IAIota::menuSliceMesh()
         Iota.gMeshSlice.pFramebuffer->traceOutline(tp3, z);
 
         IAToolpath *tp = pMachineToolpath->createLayer(z);
-        tp->add(*tp1);
-        tp->add(*tp2);
         tp->add(*tp3);
+        tp->add(*tp2);
+        tp->add(*tp1);
         delete tp1;
         delete tp2;
         delete tp3;
@@ -283,6 +283,7 @@ bool IAIota::addGeometry(std::shared_ptr<IAGeometryReader> reader)
     Iota.pMesh = geometry;
     if (pMesh) {
         pMesh->projectTexture(pMesh->pMax.x()*2, pMesh->pMax.y()*2, IA_PROJECTION_FRONT);
+        pMesh->projectTexture(3, 1, IA_PROJECTION_CYLINDRICAL);
         pMesh->centerOnPrintbed(&gPrinter);
     }
     return ret;
@@ -365,7 +366,6 @@ void IAIota::loadDemoFiles()
 {
     loadTexture("testcard1024.jpg", defaultTexture);
     Iota.addGeometry("default.stl", defaultModel, sizeof(defaultModel));
-    Iota.pMesh->projectTexture(100.0, 100.0, IA_PROJECTION_FRONT);
 }
 
 

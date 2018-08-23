@@ -83,7 +83,7 @@ void IAGcodeWriter::sendInitialisation()
     sendFeedrate(1800);
     sendNewLine("purge some filament");
 #else
-    sendPurgeTool(0);
+    sendPurgeTool(1);
 #endif
 
 /*
@@ -254,6 +254,7 @@ void IAGcodeWriter::sendPurgeTool(int t)
         fprintf(pFile, "G0 X0 Y0 F%d\n", (int)pRapidF);
         fprintf(pFile, "G0 X0 Y20 F%d\n", (int)pPrintingF);
         fprintf(pFile, "G0 X20 Y20 F%d\n", (int)pRapidF);
+        fprintf(pFile, "T1\n");
         pPosition = { 20, 20, pPosition.z() };
         sendExtrusionReset();
     }

@@ -3,9 +3,9 @@ version 1.0304
 header_name {.h}
 code_name {.cpp}
 data defaultTexture {
-  comment {Use this image for texture mapping tests} public local filename {./testcard1024.jpg}
+  comment {Use this image for texture mapping tests} selected public local filename {./defaultTexture.jpg}
 }
 
 data defaultModel {
-  comment {Use this model for testing} public local filename {./suzanne.stl}
+  comment {Use this model for testing} public local filename {./defaultModel.stl}
 }
