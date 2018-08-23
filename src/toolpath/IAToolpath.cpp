@@ -14,6 +14,33 @@
 #include <math.h>
 
 
+
+
+void IAToolpath::colorize(uint8_t *rgb, IAToolpath *black, IAToolpath *white)
+{
+    for (auto e: pList) {
+        IAToolpathMotion *m = dynamic_cast<IAToolpathMotion*>(e);
+        if (m) {
+            if (!m->pIsRapid) {
+                IAVector3d s = m->pStart * (1024.0 / 214.0);
+                // TODO: we need to follow the entire line and find color changes
+                //IAVector3d e = m->pEnd * (1024.0 / 214.0);
+                int xo = (int)s.x(), yo = (int)s.y();
+                uint8_t *c = rgb + (xo+1024*yo)*3;
+                if (c[0]<128 && c[1]<128 && c[2]<128) {
+                    black->pList.push_back(m->clone());
+                } else {
+                    white->pList.push_back(m->clone());
+                }
+            } else {
+
+            }
+        }
+    }
+}
+
+
+
 IAGcodeWriter::IAGcodeWriter()
 {
 }
@@ -614,6 +641,50 @@ void IAToolpathElement::draw()
 
 
 /**
+ * Create any sort of toolpath element.
+ */
+IAToolpathExtruder::IAToolpathExtruder(int tool)
+:   pTool( tool )
+{
+}
+
+
+/**
+ * Destroy an element.
+ */
+IAToolpathExtruder::~IAToolpathExtruder()
+{
+}
+
+
+IAToolpathElement *IAToolpathExtruder::clone()
+{
+    IAToolpathExtruder *tpe = new IAToolpathExtruder(pTool);
+    return tpe;
+}
+
+
+/**
+ * Save the toolpath element as a GCode file.
+ */
+void IAToolpathExtruder::saveGCode(IAGcodeWriter &w)
+{
+    fprintf(w.pFile, "T%d ; change tool\n", pTool);
+    // TODO: draw a purge tower
+    int x = pTool ? 100 : 48;
+    fprintf(w.pFile, "G0 X%d Y10 F1800\n", x);
+    for (int i=0; i<5; i++) {
+        fprintf(w.pFile, "G1 X%d Y%d E%f F800\n", x+50, 10+i, 50.0/w.pEFactor);
+        fprintf(w.pFile, "G1 X%d Y%d.5 F800\n", x+50, 10+i);
+        fprintf(w.pFile, "G1 X%d Y%d.5 E%f F800\n", x, 10+i, 50.0/w.pEFactor);
+        fprintf(w.pFile, "G1 X%d Y%d F800\n", x, 11+i);
+    }
+
+}
+
+
+
+/**
  * Create a toolpath for a head motion to a new position.
  */
 IAToolpathMotion::IAToolpathMotion(IAVector3d &a, IAVector3d &b, bool rapid)
@@ -670,7 +741,7 @@ void IAToolpathMotion::drawFlat()
  */
 void IAToolpathMotion::saveGCode(IAGcodeWriter &w)
 {
-    if (pIsRapid) {
+    if (pIsRapid || (!(w.pPosition==pStart))) {
         // retract
         w.sendMoveTo(w.pPosition);
         w.sendExtrusionAdd(-1.0);
@@ -685,7 +756,8 @@ void IAToolpathMotion::saveGCode(IAGcodeWriter &w)
         w.sendExtrusionAdd(1.0);
         w.sendFeedrate(w.pRapidF);
         w.sendNewLine();
-    } else {
+    }
+    if (!pIsRapid) {
         double length = (w.pPosition - pEnd).length();
         w.sendMoveTo(pEnd);
         w.sendFeedrate(w.pPrintingF);

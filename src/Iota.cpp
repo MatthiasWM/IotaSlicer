@@ -180,13 +180,15 @@ void IAIota::menuSliceMesh()
         pMachineToolpath->clear();
     double hgt = pMesh->pMax.z() - pMesh->pMin.z();
     // initial height determines stickiness to bed
-    for (double z=0.2; z</*hgt*/ 5; z+=0.3) {
+    for (double z=0.2; z<5 /*hgt*/; z+=0.3) {
         printf("Slicing at z=%g\n", z);
         Iota.gMeshSlice.changeZ(z);
         Iota.gMeshSlice.clear();
         Iota.gMeshSlice.generateFlange(Iota.pMesh);
         Iota.gMeshSlice.tesselateLidFromFlange();
         Iota.gMeshSlice.drawFlat(false, 1, 1, 1);
+
+        uint8_t *rgb = Iota.gMeshSlice.pColorbuffer->getRawImageRGB();
 
         IAToolpath *tp1 = new IAToolpath(z);
         Iota.gMeshSlice.pFramebuffer->traceOutline(tp1, z);
@@ -211,14 +213,34 @@ void IAIota::menuSliceMesh()
         Iota.gMeshSlice.pFramebuffer->traceOutline(tp3, z);
 
         IAToolpath *tp = pMachineToolpath->createLayer(z);
+#if 0
         tp->add(*tp3);
         tp->add(*tp2);
         tp->add(*tp1);
+#else
+        IAToolpath *b1 = new IAToolpath(z);
+        IAToolpath *w1 = new IAToolpath(z);
+        IAToolpath *b2 = new IAToolpath(z);
+        IAToolpath *w2 = new IAToolpath(z);
+        tp2->colorize(rgb, b1, w1);
+        tp3->colorize(rgb, b2, w2);
+        tp->pList.push_back(new IAToolpathExtruder(0));
+        tp->add(*w2);
+        tp->add(*w1);
+        tp->pList.push_back(new IAToolpathExtruder(1));
+        tp->add(*b2);
+        tp->add(*b1);
+        delete b1;
+        delete w1;
+        delete b2;
+        delete w2;
+#endif
         delete tp1;
         delete tp2;
         delete tp3;
+        free(rgb);
     }
-    pMachineToolpath->saveGCode("/Users/matt/test.gcode");
+    pMachineToolpath->saveGCode("/Users/matt/aaa.gcode");
     gSceneView->redraw();
 }
 

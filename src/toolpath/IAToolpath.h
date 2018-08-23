@@ -105,6 +105,8 @@ public:
     void continuePath(double x, double y, double z);
     void closePath(void);
 
+    void colorize(uint8_t *rgb, IAToolpath *black, IAToolpath *white);
+
     void saveGCode(IAGcodeWriter &g);
 
     IAToolpathElementList pList;
@@ -128,6 +130,23 @@ public:
     virtual void drawFlat() { }
     virtual void saveGCode(IAGcodeWriter &g) { }
     virtual IAToolpathElement *clone();
+};
+
+
+/**
+ * Element chagnes to another extruder.
+ */
+class IAToolpathExtruder : public IAToolpathElement
+{
+public:
+    IAToolpathExtruder(int i);
+    virtual ~IAToolpathExtruder() override;
+    virtual void draw() override { }
+    virtual void drawFlat() override { }
+    virtual void saveGCode(IAGcodeWriter &g) override;
+    virtual IAToolpathElement *clone();
+
+    int pTool = 0;
 };
 
 

@@ -389,7 +389,7 @@ void IASlice::drawShell()
     glClearColor(0.0, 0.0, 0.0, 0.0);
     glClearDepth(1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glColor3f(1, 1, 1);
+    glColor3f(1.0, 0.5, 0.2);
     glDisable(GL_LIGHTING);
     glBindTexture(GL_TEXTURE_2D, gSceneView->tex);
     glEnable(GL_TEXTURE_2D);
