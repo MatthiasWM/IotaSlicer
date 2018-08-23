@@ -194,7 +194,7 @@ void IASceneView::initializeView()
 void IASceneView::beginTextures()
 {
     static Fl_RGB_Image *lTexture = nullptr;
-    static GLuint tex = 0;
+//    static GLUInt tex = 0;
     if (lTexture != Iota.texture) {
         glGenTextures(1, &tex);
         glBindTexture(GL_TEXTURE_2D, tex);

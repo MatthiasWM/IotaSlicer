@@ -25,6 +25,7 @@ GLUtesselator *gGluTess = nullptr;
 IASlice::IASlice()
 {
     pFramebuffer = new IAFramebuffer();
+    pColorbuffer = new IAFramebuffer();
 }
 
 
@@ -34,6 +35,8 @@ IASlice::IASlice()
 IASlice::~IASlice()
 {
     clear();
+    delete pFramebuffer;
+    delete pColorbuffer;
 }
 
 
@@ -247,10 +250,15 @@ void IASlice::drawFlange()
  */
 void IASlice::drawFramebuffer()
 {
+#if 0 // TODO: temp hack
     if (pFramebuffer) {
-        // TODO: set matrices and lighting!
         pFramebuffer->draw(pCurrentZ);
     }
+#else
+    if (pColorbuffer) {
+        pColorbuffer->draw(pCurrentZ);
+    }
+#endif
 }
 
 
@@ -369,6 +377,35 @@ void IASlice::tesselateLidFromFlange()
     drawFlat(false, 1.0, 1.0, 0.0);
     pFramebuffer->unbindFromRendering();
 
+    // TODO: temporary hack
+    pColorbuffer->bindForRendering();
+    drawShell();
+    pColorbuffer->unbindFromRendering();
+}
+
+
+void IASlice::drawShell()
+{
+    glClearColor(0.0, 0.0, 0.0, 0.0);
+    glClearDepth(1.0f);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glColor3f(1, 1, 1);
+    glDisable(GL_LIGHTING);
+    glBindTexture(GL_TEXTURE_2D, gSceneView->tex);
+    glEnable(GL_TEXTURE_2D);
+    for (auto e: pFlange) {
+        if (!e) continue;
+        IAVertex *v0 = e->pVertex[0];
+        IAVertex *v1 = e->pVertex[1];
+        glBegin(GL_QUADS);
+        glTexCoord2dv(v0->pTex.dataPointer());
+        glVertex3dv(v0->pGlobalPosition.dataPointer());
+        glVertex3dv((v0->pGlobalPosition-v0->pNormal*5).dataPointer());
+        glTexCoord2dv(v1->pTex.dataPointer());
+        glVertex3dv((v1->pGlobalPosition-v1->pNormal*5).dataPointer());
+        glVertex3dv(v1->pGlobalPosition.dataPointer());
+        glEnd();
+    }
 }
 
 

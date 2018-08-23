@@ -10,6 +10,7 @@
 
 #include "IACamera.h"
 #include <FL/Fl_Gl_Window.H>
+#include <FL/gl.h>
 
 
 class IAMeshList;
@@ -45,6 +46,8 @@ public:
 
     void setTopView();
     void setPerspectiveView();
+
+    GLuint tex = 0;
 
 protected:
     int handle(int event) override;

@@ -62,6 +62,8 @@ IAVertex *IAEdge::findZGlobal(double zMin)
         v2->pGlobalPosition = vd0;
         v2->pLocalPosition = vd0;
         v2->pTex = vt0;
+        v2->pNormal = (v0->pNormal*m + v1->pNormal*(1.0-m));
+        v2->pNormal.normalize();
         return v2;
     } else {
         return nullptr;

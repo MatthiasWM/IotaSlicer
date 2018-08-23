@@ -36,6 +36,7 @@ public:
     void addFirstFlangeVertex(IATriangle *IATriangle);
     void addNextFlangeVertex(IATrianglePtr &IATriangle, ISVertexPtr &vCutA, int &edgeIndex);
     void drawFlange();
+    void drawShell();
     void drawFramebuffer();
     void tesselateLidFromFlange();
 
@@ -48,6 +49,7 @@ private:
 
 public: // TODO: should not be public!
     IAFramebuffer *pFramebuffer = nullptr;
+    IAFramebuffer *pColorbuffer = nullptr;
 };
 
 
