@@ -50,6 +50,7 @@
 		C9DC51B9211A7CE000AE069F /* index.html in Resources */ = {isa = PBXBuildFile; fileRef = C9DC51B8211A7CDF00AE069F /* index.html */; };
 		C9E4C31121285AFB004ED18C /* IAFramebuffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C9E4C31021285AFB004ED18C /* IAFramebuffer.cpp */; };
 		C9E4C31521299385004ED18C /* IAToolpath.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C9E4C31321299385004ED18C /* IAToolpath.cpp */; };
+		C9E4C3192130311F004ED18C /* IAGcodeWriter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C9E4C3182130311F004ED18C /* IAGcodeWriter.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXBuildRule section */
@@ -148,6 +149,8 @@
 		C9E4C31321299385004ED18C /* IAToolpath.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = IAToolpath.cpp; sourceTree = "<group>"; };
 		C9E4C31421299385004ED18C /* IAToolpath.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IAToolpath.h; sourceTree = "<group>"; };
 		C9E4C316212AEF77004ED18C /* IAPotrace.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = IAPotrace.h; sourceTree = "<group>"; };
+		C9E4C3172130311F004ED18C /* IAGcodeWriter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IAGcodeWriter.h; sourceTree = "<group>"; };
+		C9E4C3182130311F004ED18C /* IAGcodeWriter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = IAGcodeWriter.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -376,6 +379,8 @@
 		C9E4C31221299385004ED18C /* toolpath */ = {
 			isa = PBXGroup;
 			children = (
+				C9E4C3182130311F004ED18C /* IAGcodeWriter.cpp */,
+				C9E4C3172130311F004ED18C /* IAGcodeWriter.h */,
 				C9E4C31321299385004ED18C /* IAToolpath.cpp */,
 				C9E4C31421299385004ED18C /* IAToolpath.h */,
 			);
@@ -464,6 +469,7 @@
 				C97632D1211E317F00D9D4B5 /* IAVertex.cpp in Sources */,
 				C97632CB211E2DD000D9D4B5 /* IAGUIMain.fl in Sources */,
 				C938CC20212602F600BAC374 /* IAGeometryReaderBinaryStl.cxx in Sources */,
+				C9E4C3192130311F004ED18C /* IAGcodeWriter.cpp in Sources */,
 				C98C66BD21205D3C00BD3ACE /* IAFmtObj3ds.cxx in Sources */,
 				C9E4C31121285AFB004ED18C /* IAFramebuffer.cpp in Sources */,
 				C98C66B721205D1D00BD3ACE /* IAFmtTexJpeg.cxx in Sources */,

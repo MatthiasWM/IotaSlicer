@@ -20,6 +20,7 @@ public:
     IAVector3d(double*);
     IAVector3d(double, double, double);
     bool operator==(const IAVector3d &rhs) const;
+    bool operator!=(const IAVector3d &rhs) const { return (!(operator==(rhs))); }
     IAVector3d &operator=(const IAVector3d &rhs);
     IAVector3d operator+(const IAVector3d &rhs) const;
     IAVector3d operator-(const IAVector3d &rhs) const;

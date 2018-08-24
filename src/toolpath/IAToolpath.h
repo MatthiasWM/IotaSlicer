@@ -8,6 +8,7 @@
 #define IA_TOOLPATH_H
 
 
+#include "IAGcodeWriter.h"
 #include "geometry/IAVector3d.h"
 
 #include <vector>
@@ -20,38 +21,6 @@ class IAToolpathElement;
 typedef std::map<int, IAToolpath*> IAToolpathMap;
 typedef std::vector<IAToolpathElement*> IAToolpathElementList;
 
-
-/**
- * Helps the toolpath classes to write GCode
- */
-class IAGcodeWriter
-{
-public:
-    IAGcodeWriter();
-    ~IAGcodeWriter();
-    bool open(const char *filename);
-    void close();
-    void sendNewLine(const char *comment=nullptr);
-    void sendInitialisation();
-    void sendShutdown();
-    void sendHome();
-    void sendMoveTo(IAVector3d &v);
-    void sendRapidMoveTo(IAVector3d &v);
-    void sendPosition(IAVector3d &v);
-    void sendFeedrate(double f);
-    void sendExtrusionAdd(double e);
-    void sendExtrusionReset();
-    void sendPurgeTool(int t);
-
-    FILE *pFile = nullptr;
-    IAVector3d pPosition;
-    double pE = 0.0;
-    double pF = 0.0;
-    double pRapidF = 5400.0;
-    double pPrintingF = 1800.0;
-    double pLayerHeight = 0.3;
-    double pEFactor = 22.0;
-};
 
 
 /**
@@ -144,7 +113,7 @@ public:
     virtual void draw() override { }
     virtual void drawFlat() override { }
     virtual void saveGCode(IAGcodeWriter &g) override;
-    virtual IAToolpathElement *clone();
+    virtual IAToolpathElement *clone() override;
 
     int pTool = 0;
 };

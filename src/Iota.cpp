@@ -180,7 +180,14 @@ void IAIota::menuSliceMesh()
         pMachineToolpath->clear();
     double hgt = pMesh->pMax.z() - pMesh->pMin.z();
     // initial height determines stickiness to bed
-    for (double z=0.2; z<5 /*hgt*/; z+=0.3) {
+
+#if 0
+    double maxHgt = hgt;
+#else
+    double maxHgt = 25;
+#endif
+
+    for (double z=0.2; z<maxHgt; z+=0.3) {
         printf("Slicing at z=%g\n", z);
         Iota.gMeshSlice.changeZ(z);
         Iota.gMeshSlice.clear();
