@@ -1,5 +1,5 @@
 # data file for the Fltk User Interface Designer (fluid)
-version 1.0304
+version 1.0400
 use_FL_COMMAND
 header_name {.h}
 code_name {.cpp}
@@ -15,8 +15,10 @@ decl {\#include "IAGLButton.h"} {public global
 decl {\#include <unistd.h>} {public global
 }
 
-Function {createIotaAppWindow()} {open
-} {
+decl {\#include <utime.h>} {public global
+}
+
+Function {createIotaAppWindow()} {} {
   Fl_Window {} {
     label {Iota Slicer V0.1a} open
     xywh {472 202 800 600} type Double resizable visible
@@ -194,16 +196,10 @@ gSceneView->redraw();}
   }
 }
 
-data sHelpAbout {private local filename {../../html/helpAbout.html}
+data sHelpAbout {selected private local filename {../../html/helpAbout.html} textmode
 }
 
-decl {char dummy1[4] = { 0 };} {private local
-}
-
-data sHelpLicenses {private local filename {../../html/helpLicenses.html}
-}
-
-decl {char dummy2[4] = { 0 };} {private local
+data sHelpLicenses {private local filename {../../html/helpLicenses.html} textmode
 }
 
 Function {createIotaAboutWindow()} {open
@@ -335,6 +331,7 @@ Function {applySettings()} {open return_type void
   code {applySettingsHtml("/Users/matt/dev/IotaSlicer/html/helpAbout.html");
 applySettingsHtml("/Users/matt/dev/IotaSlicer/html/helpLicenses.html");
 applySettingsHtml("/Users/matt/dev/IotaSlicer/html/index.html");
+::utime("/Users/matt/dev/IotaSlicer/src/userinterface/IAGUIMain.fl", nullptr);
 
 /*
 char buf[1024];
@@ -344,8 +341,7 @@ sprintf(buf, "cd /Users/matt/dev/IotaSlicer; /usr/bin/git tag v%d.%d.%d%s",
         atoi(wBuild->value()),
         wClass->value());
 fl_system(buf);
-*/} {selected
-  }
+*/} {}
 }
 
 Function {gitTag()} {open return_type void
