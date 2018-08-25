@@ -1,7 +1,7 @@
 
 # Iota Model Slicer for 3D Color Printing #
 
-## Status: compiling, running, minimally useful
+## Status: compiling, running, first successful prints
 
 ### Overview ###
 
@@ -9,6 +9,9 @@ Iota is a voxel based slicer that can handle textured meshes for 3d
 printing. Iota can generate image slices for inkjet/powder based
 machines, and GCode files for color FDM/FFF printing with multiple
 extruders and mixing extruders.
+
+First ever color printout (XYZPrinting DaVinci Duo, dual extruders)
+![picture alt](html/first_color_print.jpg "First ever color printout")
 
 ### Why Voxels ###
 
@@ -26,6 +29,8 @@ inside a model, colors and transparencies.
 
 The current code generates somewhate expreimental Gcode files specifically for DaVinci Duo printers.
 
+* v0.0.4a
+  * mostly cleanup around Fluid userinterface design files and versioning
 * v0.0.3a 
   * CGode files print successfully on DaVinci Duo printers with Repetier firmware.
 * v0.0.2a
