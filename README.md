@@ -26,7 +26,8 @@ inside a model, colors and transparencies.
 
 The current code generates somewhate expreimental Gcode files specifically for DaVinci Duo printers.
 
-- v0.0.3a: CGode files print successfully on DaVinci Duo printers with Repetier firmware.
+* v0.0.3a 
+   *CGode files print successfully on DaVinci Duo printers with Repetier firmware.
 
 Iota shall be an easy-to-use system for the colorful future of 3D printing.
 
