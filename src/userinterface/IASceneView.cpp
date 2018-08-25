@@ -318,10 +318,6 @@ void IASceneView::draw_children()
 {
     if (!child(0)) return;
     
-    glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
-
-    glViewport(0,0,pixel_w(),pixel_h());
-
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     glOrtho(-0.5, w()-0.5, h()-0.5, -0.5, 1.0, -1.0);
