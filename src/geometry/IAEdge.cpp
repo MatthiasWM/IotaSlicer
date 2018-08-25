@@ -10,6 +10,8 @@
 #include "IAVertex.h"
 #include "IATriangle.h"
 
+#include <stdio.h>
+
 
 /**
  Create an edge with no connections.

@@ -9,6 +9,8 @@
 
 #include "IAVertex.h"
 
+#include <stdio.h>
+
 
 /**
  Create an emoty triangle.

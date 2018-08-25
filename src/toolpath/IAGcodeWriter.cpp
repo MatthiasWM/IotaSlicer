@@ -12,7 +12,7 @@
 #include <FL/gl.h>
 
 #include <math.h>
-
+#include <stdarg.h>
 
 
 IAGcodeWriter::IAGcodeWriter()

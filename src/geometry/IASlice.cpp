@@ -271,6 +271,9 @@ IAVertex *tessV0, *tessV1, *tessV2;
 #ifdef __APPLE__
 #define __stdcall
 #endif
+#ifdef __LINUX__
+#define __stdcall
+#endif
 
 void __stdcall tessBeginCallback(GLenum which)
 {
@@ -338,7 +341,7 @@ void IASlice::tesselateLidFromFlange()
 {
     if (!gGluTess)
         gGluTess = gluNewTess();
-    
+
 #ifdef __APPLE__
 	gluTessCallback(gGluTess, GLU_TESS_VERTEX, (GLvoid(*) ()) &tessVertexCallback);
 	gluTessCallback(gGluTess, GLU_TESS_BEGIN, (GLvoid (*) ()) &tessBeginCallback);
@@ -355,7 +358,7 @@ void IASlice::tesselateLidFromFlange()
 	gluTessCallback(gGluTess, GLU_TESS_EDGE_FLAG, (void(__stdcall*)()) &tessEdgeFlagCallback);
 #endif
     gluTessProperty(gGluTess, GLU_TESS_WINDING_RULE, GLU_TESS_WINDING_POSITIVE);
-    
+
     int i, n = (int)pFlange.size();
     tessVertexCount = 0;
     gluTessBeginPolygon(gGluTess, this);

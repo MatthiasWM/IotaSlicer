@@ -20,6 +20,14 @@ declblock {\#ifdef __APPLE__} {open public after {\#endif}
   }
 }
 
+declblock {\#ifdef __LINUX__} {open public after {\#endif}
+} {
+  decl {\#include <unistd.h>} {public global
+  }
+  decl {\#include <utime.h>} {public global
+  }
+}
+
 declblock {\#ifdef _WIN32} {open public after {\#endif}
 } {
   decl {\#include <sys/utime.h>} {selected public global
@@ -311,7 +319,7 @@ if (f) {
     char *b = strstr(buf, "<!--]-->");
     if (a!=nullptr && b!=nullptr) {
       char *c = strdup(b);
-      sprintf(a, 
+      sprintf(a,
         "<!--[ver-->v%d.%d.%d%s%s",
         atoi(wMajor->value()),
         atoi(wMinor->value()),

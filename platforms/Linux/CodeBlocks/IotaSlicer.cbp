@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="IotaSlicer" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Debug">
+				<Option output="bin/Debug/IotaSlicer" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Debug/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-g" />
+				</Compiler>
+			</Target>
+			<Target title="Release">
+				<Option output="bin/Release/IotaSlicer" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Release/" />
+				<Option type="0" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-O2" />
+					<Add option="-s" />
+				</Compiler>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="`fltk-config --use-gl --use-images --cxxflags`" />
+			<Add option="-D__LINUX__" />
+			<Add option="-DGL_GLEXT_PROTOTYPES" />
+			<Add directory="../../../include" />
+			<Add directory="../../../src" />
+		</Compiler>
+		<ResourceCompiler>
+			<Add directory="../bin" />
+		</ResourceCompiler>
+		<Linker>
+			<Add option="-lXft -lXrender -lm -lfontconfig -ldl" />
+			<Add library="libfltk_images.a" />
+			<Add library="libfltk_jpeg.a" />
+			<Add library="libfltk_png.a" />
+			<Add library="libfltk_z.a" />
+			<Add library="libfltk_gl.a" />
+			<Add library="GLU" />
+			<Add library="GL" />
+			<Add library="libfltk.a" />
+			<Add library="X11" />
+			<Add library="Xext" />
+			<Add library="pthread" />
+			<Add library="Xfixes" />
+			<Add library="Xft" />
+			<Add library="Xrender" />
+			<Add library="m" />
+			<Add library="fontconfig" />
+			<Add library="dl" />
+			<Add directory="../lib" />
+		</Linker>
+		<Unit filename="../../../src/Iota.cpp" />
+		<Unit filename="../../../src/Iota.h" />
+		<Unit filename="../../../src/data/binaryData.cpp" />
+		<Unit filename="../../../src/data/binaryData.fl">
+			<Option compile="1" />
+			<Option weight="10" />
+			<Option compiler="gcc" use="1" buildCommand="cd ../../../src/data/ &amp;&amp; ../../platforms/Linux/bin/fluid -c binaryData.fl" />
+		</Unit>
+		<Unit filename="../../../src/data/binaryData.h" />
+		<Unit filename="../../../src/fileformats/IAFmtObj3ds.cxx" />
+		<Unit filename="../../../src/fileformats/IAFmtObj3ds.h" />
+		<Unit filename="../../../src/fileformats/IAFmtTexJpeg.cxx" />
+		<Unit filename="../../../src/fileformats/IAFmtTexJpeg.h" />
+		<Unit filename="../../../src/fileformats/IAGeometryReader.cxx" />
+		<Unit filename="../../../src/fileformats/IAGeometryReader.h" />
+		<Unit filename="../../../src/fileformats/IAGeometryReaderBinaryStl.cxx" />
+		<Unit filename="../../../src/fileformats/IAGeometryReaderBinaryStl.h" />
+		<Unit filename="../../../src/fileformats/IAGeometryReaderTextStl.cxx" />
+		<Unit filename="../../../src/fileformats/IAGeometryReaderTextStl.h" />
+		<Unit filename="../../../src/fileformats/lib3ds.h" />
+		<Unit filename="../../../src/geometry/IAEdge.cpp" />
+		<Unit filename="../../../src/geometry/IAEdge.h" />
+		<Unit filename="../../../src/geometry/IAMath.cpp" />
+		<Unit filename="../../../src/geometry/IAMath.h" />
+		<Unit filename="../../../src/geometry/IAMesh.cpp" />
+		<Unit filename="../../../src/geometry/IAMesh.h" />
+		<Unit filename="../../../src/geometry/IASlice.cpp" />
+		<Unit filename="../../../src/geometry/IASlice.h" />
+		<Unit filename="../../../src/geometry/IATriangle.cpp" />
+		<Unit filename="../../../src/geometry/IATriangle.h" />
+		<Unit filename="../../../src/geometry/IAVector3d.cpp" />
+		<Unit filename="../../../src/geometry/IAVector3d.h" />
+		<Unit filename="../../../src/geometry/IAVertex.cpp" />
+		<Unit filename="../../../src/geometry/IAVertex.h" />
+		<Unit filename="../../../src/opengl/IAFramebuffer.cpp" />
+		<Unit filename="../../../src/opengl/IAFramebuffer.h" />
+		<Unit filename="../../../src/potrace/IAPotrace.cpp" />
+		<Unit filename="../../../src/potrace/IAPotrace.h" />
+		<Unit filename="../../../src/potrace/auxiliary.h" />
+		<Unit filename="../../../src/potrace/bitmap.h" />
+		<Unit filename="../../../src/potrace/config.h" />
+		<Unit filename="../../../src/potrace/curve.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../../src/potrace/curve.h" />
+		<Unit filename="../../../src/potrace/decompose.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../../src/potrace/decompose.h" />
+		<Unit filename="../../../src/potrace/lists.h" />
+		<Unit filename="../../../src/potrace/platform.h" />
+		<Unit filename="../../../src/potrace/potracelib.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../../src/potrace/potracelib.h" />
+		<Unit filename="../../../src/potrace/progress.h" />
+		<Unit filename="../../../src/potrace/trace.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../../src/potrace/trace.h" />
+		<Unit filename="../../../src/printer/IAPrinter.cpp" />
+		<Unit filename="../../../src/printer/IAPrinter.h" />
+		<Unit filename="../../../src/toolpath/IAGcodeWriter.cpp" />
+		<Unit filename="../../../src/toolpath/IAGcodeWriter.h" />
+		<Unit filename="../../../src/toolpath/IAToolpath.cpp" />
+		<Unit filename="../../../src/toolpath/IAToolpath.h" />
+		<Unit filename="../../../src/userinterface/IACamera.cpp" />
+		<Unit filename="../../../src/userinterface/IACamera.h" />
+		<Unit filename="../../../src/userinterface/IAGLButton.cpp" />
+		<Unit filename="../../../src/userinterface/IAGLButton.h" />
+		<Unit filename="../../../src/userinterface/IAGUIMain.cpp" />
+		<Unit filename="../../../src/userinterface/IAGUIMain.fl">
+			<Option compile="1" />
+			<Option weight="10" />
+			<Option compiler="gcc" use="1" buildCommand="cd ../../../src/userinterface/ &amp;&amp; ../../platforms/Linux/bin/fluid -c IAGUIMain.fl" />
+		</Unit>
+		<Unit filename="../../../src/userinterface/IAGUIMain.h" />
+		<Unit filename="../../../src/userinterface/IASceneView.cpp" />
+		<Unit filename="../../../src/userinterface/IASceneView.h" />
+		<Extensions>
+			<code_completion />
+			<debugger />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>
