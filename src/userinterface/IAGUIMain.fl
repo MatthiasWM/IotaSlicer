@@ -12,10 +12,18 @@ decl {\#include "IASceneView.h"} {public global
 decl {\#include "IAGLButton.h"} {public global
 }
 
-decl {\#include <unistd.h>} {public global
+declblock {\#ifdef __APPLE__} {open public after {\#endif}
+} {
+  decl {\#include <unistd.h>} {public global
+  }
+  decl {\#include <utime.h>} {public global
+  }
 }
 
-decl {\#include <utime.h>} {public global
+declblock {\#ifdef _WIN32} {open public after {\#endif}
+} {
+  decl {\#include <sys/utime.h>} {selected public global
+  }
 }
 
 Function {createIotaAppWindow()} {} {
@@ -196,7 +204,7 @@ gSceneView->redraw();}
   }
 }
 
-data sHelpAbout {selected private local filename {../../html/helpAbout.html} textmode
+data sHelpAbout {private local filename {../../html/helpAbout.html} textmode
 }
 
 data sHelpLicenses {private local filename {../../html/helpLicenses.html} textmode
