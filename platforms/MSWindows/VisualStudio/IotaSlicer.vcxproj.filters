@@ -119,6 +119,9 @@
     <ClCompile Include="..\..\..\src\potrace\IAPotrace.cpp">
       <Filter>src\potrace</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\src\toolpath\IAGcodeWriter.cpp">
+      <Filter>src\toolpath</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\src\geometry\IAEdge.h">
@@ -219,6 +222,9 @@
     </ClInclude>
     <ClInclude Include="..\..\..\src\potrace\IAPotrace.h">
       <Filter>src\potrace</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\toolpath\IAGcodeWriter.h">
+      <Filter>src\toolpath</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
