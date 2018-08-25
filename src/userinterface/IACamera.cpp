@@ -16,11 +16,6 @@
 
 #include <math.h>
 
-// FIXME: where does MS define M_PI?
-#ifndef M_PI
-#define M_PI 3.141592654
-#endif
-
 
 /**
  * Create a camera superclass.
