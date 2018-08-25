@@ -12,6 +12,9 @@ decl {\#include "IASceneView.h"} {public global
 decl {\#include "IAGLButton.h"} {public global
 }
 
+decl {\#include <unistd.h>} {public global
+}
+
 Function {createIotaAppWindow()} {open
 } {
   Fl_Window {} {
@@ -64,12 +67,21 @@ Function {createIotaAppWindow()} {open
         xywh {0 0 100 20}
       } {
         MenuItem {} {
+          label {Versioneer...}
+          callback {if (!wVersionWindow) {
+  createVersionWindow();
+}
+loadSettings();
+wVersionWindow->show();}
+          xywh {0 0 100 20}
+        }
+        MenuItem {} {
           label {About...}
           callback {static Fl_Window *aboutWindow = nullptr;
 if (!aboutWindow)
   aboutWindow = createIotaAboutWindow();
 aboutWindow->show();}
-          xywh {0 0 100 20}
+          xywh {12 12 100 20}
         }
       }
     }
@@ -90,7 +102,7 @@ aboutWindow->show();}
           code0 {// o->parent()->remove(o); gSceneView->add(o);}
           code1 {o->resize(0, 0, gSceneView->w(), gSceneView->h());  gSceneView->resizable(o);}
         } {
-          Fl_Group {} {open selected
+          Fl_Group {} {open
             xywh {10 38 35 552}
           } {
             Fl_Button {} {
@@ -241,6 +253,203 @@ Function {createIotaAboutWindow()} {open
       Fl_Box {} {
         xywh {10 360 418 28} resizable
       }
+    }
+  }
+}
+
+Function {loadSettings()} {open return_type void
+} {
+  code {Fl_Preferences pref(Fl_Preferences::USER, "iota.matthiasm.com", "versioneer");
+Fl_Preferences vers( pref, "version");
+int v;
+char buf[80];
+vers.get("major", v, 0);
+sprintf(buf, "%d", v);
+wMajor->value(buf);
+vers.get("minor", v, 0);
+sprintf(buf, "%d", v);
+wMinor->value(buf);
+vers.get("build", v, 0);
+sprintf(buf, "%d", v);
+wBuild->value(buf);
+vers.get("class", buf, "-", 8);
+wClass->value(buf);} {}
+}
+
+Function {saveSettings()} {open return_type void
+} {
+  code {Fl_Preferences pref(Fl_Preferences::USER, "iota.matthiasm.com", "versioneer");
+Fl_Preferences vers( pref, "version");
+vers.set("major", atoi(wMajor->value()));
+vers.set("minor", atoi(wMinor->value()));
+vers.set("build", atoi(wBuild->value()));
+vers.set("class", wClass->value());} {}
+}
+
+Function {applySettingsHtml(const char *filename)} {open return_type void
+} {
+  code {char out[2048];
+char buf[2048];
+strcpy(out, filename);
+strcat(out, "~");
+FILE *fOut = fopen(out, "wb");
+if (!fOut) {
+  perror(out);
+  return;
+}
+FILE *f = fopen(filename, "rb");
+if (f) {
+  int n = 0;
+  while (!feof(f)) {
+    fgets(buf, 1024, f);
+    if (feof(f)) break;
+    char *a = strstr(buf, "<!--[ver-->");
+    char *b = strstr(buf, "<!--]-->");
+    if (a!=nullptr && b!=nullptr) {
+      char *c = strdup(b);
+      sprintf(a, 
+        "<!--[ver-->v%d.%d.%d%s%s",
+        atoi(wMajor->value()),
+        atoi(wMinor->value()),
+        atoi(wBuild->value()),
+        wClass->value(),
+        c
+        );
+      free(c);
+      n++;
+    }
+    fputs(buf, fOut);
+  }
+  fclose(f);
+  fclose(fOut);
+  ::remove(filename);
+  ::rename(out, filename);
+  printf("Versioneer: %d replacements in %s\\n", n, filename);
+} else {
+  perror(filename);
+}} {}
+}
+
+Function {applySettings()} {open return_type void
+} {
+  code {applySettingsHtml("/Users/matt/dev/IotaSlicer/html/helpAbout.html");
+applySettingsHtml("/Users/matt/dev/IotaSlicer/html/helpLicenses.html");
+applySettingsHtml("/Users/matt/dev/IotaSlicer/html/index.html");
+
+/*
+char buf[1024];
+sprintf(buf, "cd /Users/matt/dev/IotaSlicer; /usr/bin/git tag v%d.%d.%d%s",
+        atoi(wMajor->value()),
+        atoi(wMinor->value()),
+        atoi(wBuild->value()),
+        wClass->value());
+fl_system(buf);
+*/} {selected
+  }
+}
+
+Function {gitTag()} {open return_type void
+} {
+  code {char buf[1024];
+sprintf(buf, "cd /Users/matt/dev/IotaSlicer; /usr/bin/git tag v%d.%d.%d%s",
+        atoi(wMajor->value()),
+        atoi(wMinor->value()),
+        atoi(wBuild->value()),
+        wClass->value());
+fl_system(buf);} {}
+}
+
+Function {createVersionWindow()} {open
+} {
+  Fl_Window wVersionWindow {
+    label {Versioneer for Iota Slicer} open
+    xywh {946 607 392 186} type Double visible
+  } {
+    Fl_Box {} {
+      label v
+      xywh {29 40 15 24}
+    }
+    Fl_Input wMajor {
+      xywh {44 40 52 24}
+    }
+    Fl_Box {} {
+      label {.}
+      xywh {96 40 15 24}
+    }
+    Fl_Input wMinor {
+      xywh {111 40 52 24}
+    }
+    Fl_Box {} {
+      label {.}
+      xywh {163 40 15 24}
+    }
+    Fl_Input wBuild {
+      xywh {178 40 52 24}
+    }
+    Fl_Input_Choice wClass {open
+      xywh {232 40 64 24}
+    } {
+      MenuItem {} {
+        label {-}
+        xywh {4 4 100 20}
+      }
+      MenuItem {} {
+        label a
+        xywh {4 4 100 20}
+      }
+      MenuItem {} {
+        label b
+        xywh {4 4 100 20}
+      }
+    }
+    Fl_Button wMajorPlus {
+      label {+}
+      callback {char buf[80];
+int vv = atoi(wMajor->value());
+vv++;
+sprintf(buf, "%d", vv);
+wMajor->value(buf);
+wMinor->value("0");
+wBuild->value("0");}
+      xywh {72 68 24 24}
+    }
+    Fl_Button wMinorPlus {
+      label {+}
+      callback {char buf[80];
+int vv = atoi(wMinor->value());
+vv++;
+sprintf(buf, "%d", vv);
+wMinor->value(buf);
+wBuild->value("0");}
+      xywh {139 68 24 24}
+    }
+    Fl_Button wBuildPlus {
+      label {+}
+      callback {char buf[80];
+int vv = atoi(wBuild->value());
+vv++;
+sprintf(buf, "%d", vv);
+wBuild->value(buf);}
+      xywh {206 68 24 24}
+    }
+    Fl_Button {} {
+      label Apply
+      callback {saveSettings();
+applySettings();
+wVersionWindow->hide();}
+      xywh {188 124 90 28}
+    }
+    Fl_Button {} {
+      label Cancel
+      callback {wVersionWindow->hide();}
+      xywh {288 124 78 28}
+    }
+    Fl_Button {} {
+      label {git tag}
+      callback {saveSettings();
+gitTag();
+wVersionWindow->hide();}
+      xywh {88 124 90 28}
     }
   }
 }
