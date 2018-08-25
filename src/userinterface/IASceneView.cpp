@@ -246,6 +246,7 @@ void IASceneView::draw()
 
     // initialize the frame buffer
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glEnable(GL_BLEND);
     beginTextures();
 
     pCurrentCamera->draw();
@@ -301,11 +302,26 @@ void IASceneView::draw()
 }
 
 
+void IASceneView::redraw()
+{
+//    if (child(0)) {
+//        child(0)->redraw();
+//    }
+    super::redraw();
+}
+
+
 /**
  * Draw FLTK child widgets
  */
 void IASceneView::draw_children()
 {
+    if (!child(0)) return;
+    
+    glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
+
+    glViewport(0,0,pixel_w(),pixel_h());
+
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     glOrtho(-0.5, w()-0.5, h()-0.5, -0.5, 1.0, -1.0);
@@ -315,15 +331,21 @@ void IASceneView::draw_children()
     glDisable(GL_LIGHTING);
     glDisable(GL_TEXTURE_2D);
     glDisable(GL_DEPTH_TEST);
+    glDisable(GL_BLEND);
+    glDisable(GL_CULL_FACE);
 
     // FIXME: buttons disappear when we start to slice until we resize the window
     // so, generating a slice or loading the texture for the first time seems to cause this!
+    Fl_Window::make_current();
+    fl_push_no_clip();
+    make_current();
     Fl_Widget*const* a = array();
     for (int i=children(); i--;) {
         Fl_Widget& o = **a++;
         draw_child(o);
         draw_outside_label(o);
     }
+    fl_pop_clip();
 }
 
 

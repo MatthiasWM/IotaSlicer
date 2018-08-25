@@ -199,14 +199,14 @@ void IAIota::menuSliceMesh()
 
         IAToolpath *tp1 = new IAToolpath(z);
         Iota.gMeshSlice.pFramebuffer->traceOutline(tp1, z);
-        Iota.gMeshSlice.pFramebuffer->saveAsJpeg("/Users/matt/a1.jpg");
+//        Iota.gMeshSlice.pFramebuffer->saveAsJpeg("/Users/matt/a1.jpg");
 
         IAToolpath *tp2 = new IAToolpath(z);
         Iota.gMeshSlice.pFramebuffer->bindForRendering();
         glDisable(GL_DEPTH_TEST);
         glColor3f(0.0, 0.0, 0.0);
         tp1->drawFlat(4);
-        Iota.gMeshSlice.pFramebuffer->saveAsJpeg("/Users/matt/a2.jpg");
+//        Iota.gMeshSlice.pFramebuffer->saveAsJpeg("/Users/matt/a2.jpg");
         Iota.gMeshSlice.pFramebuffer->unbindFromRendering();
         Iota.gMeshSlice.pFramebuffer->traceOutline(tp2, z);
 
@@ -215,7 +215,7 @@ void IAIota::menuSliceMesh()
         glDisable(GL_DEPTH_TEST);
         glColor3f(0.0, 0.0, 0.0);
         tp2->drawFlat(4);
-        Iota.gMeshSlice.pFramebuffer->saveAsJpeg("/Users/matt/a3.jpg");
+//        Iota.gMeshSlice.pFramebuffer->saveAsJpeg("/Users/matt/a3.jpg");
         Iota.gMeshSlice.pFramebuffer->unbindFromRendering();
         Iota.gMeshSlice.pFramebuffer->traceOutline(tp3, z);
 
@@ -404,7 +404,9 @@ void IAIota::loadDemoFiles()
  */
 int main (int argc, char **argv)
 {
+    Fl::scheme("gleam");
 	Fl::args(argc, argv);
+    Fl::set_color(FL_BACKGROUND_COLOR, 0xeeeeee00);
 
     Fl::use_high_res_GL(1);
 

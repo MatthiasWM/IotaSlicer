@@ -40,9 +40,11 @@ class IACamera;
  */
 class IASceneView : public Fl_Gl_Window
 {
+    typedef Fl_Gl_Window super;
 public:
     IASceneView(int x, int y, int w, int h, const char *l=0);
     ~IASceneView() override;
+    void redraw(); // TODO: Hack!
 
     void setTopView();
     void setPerspectiveView();

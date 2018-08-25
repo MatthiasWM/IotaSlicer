@@ -314,11 +314,11 @@ void IAFramebuffer::createFBO()
  */
 void IAFramebuffer::deleteFBO()
 {
+    //Bind 0, which means render to back buffer, as a result, fb is unbound
+    glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
     //Delete resources
     glDeleteTextures(1, &pColorbuffer);
     glDeleteRenderbuffersEXT(1, &pDepthbuffer);
-    //Bind 0, which means render to back buffer, as a result, fb is unbound
-    glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
     glDeleteFramebuffersEXT(1, &pFramebuffer);
     pFramebufferCreated = false;
 }
