@@ -29,6 +29,8 @@ inside a model, colors and transparencies.
 
 The current code generates somewhate expreimental Gcode files specifically for DaVinci Duo printers.
 
+* v0.0.5a
+  * Iota now compiles on MacOS (Xcode), MSWindows (VisualC 2017), and Ubuntu Linux (Code::Blocks)
 * v0.0.4a
   * mostly cleanup around Fluid userinterface design files and versioning
 * v0.0.3a 
