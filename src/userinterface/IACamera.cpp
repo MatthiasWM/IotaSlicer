@@ -102,7 +102,7 @@ void IAPerspectiveCamera::draw()
     printer -= position;
     double dist = printer.length();
     double aspect = (double(pView->pixel_w()))/(double(pView->pixel_h()));
-    double nearPlane = max(dist-2.0*Iota.gPrinter.pBuildVolumeRadius, 1.0);
+    double nearPlane = ia_max(dist-2.0*Iota.gPrinter.pBuildVolumeRadius, 1.0);
     double farPlane = dist+2.0*Iota.gPrinter.pBuildVolumeRadius;
     gluPerspective(50.0, aspect, nearPlane, farPlane);
 

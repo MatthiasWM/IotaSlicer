@@ -8,11 +8,11 @@
 #include "IAMath.h"
 
 
-float min(float a, float b) { return (a<b)?a:b; }
+float ia_min(float a, float b) { return (a<b)?a:b; }
 
-float max(float a, float b) { return (a>b)?a:b; }
+float ia_max(float a, float b) { return (a>b)?a:b; }
 
-double min(double a, double b) { return a<b?a:b; }
+double ia_min(double a, double b) { return a<b?a:b; }
 
-double max(double a, double b) { return a>b?a:b; }
+double ia_max(double a, double b) { return a>b?a:b; }
 
