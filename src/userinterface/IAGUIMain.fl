@@ -1,16 +1,19 @@
 # data file for the Fltk User Interface Designer (fluid)
-version 1.0400
-use_FL_COMMAND
-header_name {.h}
+version 1.0300 
+use_FL_COMMAND 
+header_name {.h} 
 code_name {.cpp}
 decl {\#include "../Iota.h"} {public global
-}
+} 
 
 decl {\#include "IASceneView.h"} {public global
-}
+} 
 
 decl {\#include "IAGLButton.h"} {public global
-}
+} 
+
+decl {\#include <FL/Fl_File_Chooser.H>} {public global
+} 
 
 declblock {\#ifdef __APPLE__} {open public after {\#endif}
 } {
@@ -18,7 +21,7 @@ declblock {\#ifdef __APPLE__} {open public after {\#endif}
   }
   decl {\#include <utime.h>} {public global
   }
-}
+} 
 
 declblock {\#ifdef __LINUX__} {open public after {\#endif}
 } {
@@ -26,15 +29,22 @@ declblock {\#ifdef __LINUX__} {open public after {\#endif}
   }
   decl {\#include <utime.h>} {public global
   }
-}
+} 
 
 declblock {\#ifdef _WIN32} {open public after {\#endif}
 } {
-  decl {\#include <sys/utime.h>} {selected public global
+  decl {\#include <sys/utime.h>} {public global
   }
-}
+} 
 
-Function {createIotaAppWindow()} {} {
+data sHelpAbout {private local filename {../../html/helpAbout.html}
+} 
+
+data sHelpLicenses {private local filename {../../html/helpLicenses.html}
+} 
+
+Function {createIotaAppWindow()} {open
+} {
   Fl_Window {} {
     label {Iota Slicer V0.1a} open
     xywh {472 202 800 600} type Double resizable visible
@@ -47,14 +57,63 @@ Function {createIotaAppWindow()} {} {
         xywh {0 0 100 20}
       } {
         MenuItem {} {
-          label {Write current Slice}
-          callback {Iota.menuWriteSlice();}
-          tooltip {Write to ~/slice.jpg} xywh {12 12 100 20} shortcut 0x400070
+          label {New Project}
+          xywh {0 0 100 20} deactivate
         }
         MenuItem {} {
-          label {Slice entire mesh}
-          callback {Iota.menuSliceMesh();}
-          tooltip {Write to ~/slice.jpg} xywh {24 24 100 20} shortcut 0x40006d divider
+          label {Open...}
+          xywh {12 12 100 20} deactivate
+        }
+        Submenu {} {
+          label {Open Recent} open
+          xywh {0 0 100 20} deactivate
+        } {
+          MenuItem {} {
+            xywh {0 0 100 20} deactivate
+          }
+          MenuItem {} {
+            xywh {12 12 100 20} deactivate
+          }
+          MenuItem {} {
+            xywh {20 20 100 20} deactivate
+          }
+          MenuItem {} {
+            xywh {32 32 100 20} deactivate
+          }
+          MenuItem {} {
+            xywh {40 40 100 20} deactivate
+          }
+          MenuItem {} {
+            xywh {52 52 100 20} deactivate
+          }
+          MenuItem {} {
+            xywh {60 60 100 20} deactivate
+          }
+          MenuItem {} {
+            xywh {72 72 100 20} deactivate
+          }
+          MenuItem {} {
+            xywh {80 80 100 20} deactivate
+          }
+          MenuItem {} {
+            xywh {92 92 100 20} deactivate divider
+          }
+          MenuItem {} {
+            label {Clear List}
+            xywh {100 100 100 20} deactivate
+          }
+        }
+        MenuItem {} {
+          label {Save Project}
+          xywh {24 24 100 20} deactivate
+        }
+        MenuItem {} {
+          label {Save Project As...}
+          xywh {36 36 100 20} deactivate divider
+        }
+        MenuItem {} {
+          label {Print 2D...}
+          xywh {48 48 100 20} deactivate divider
         }
         MenuItem {} {
           label Quit
@@ -67,8 +126,32 @@ Function {createIotaAppWindow()} {} {
         xywh {0 0 100 20}
       } {
         MenuItem {} {
-          label {Preferences...}
+          label Undo
           xywh {0 0 100 20} deactivate
+        }
+        MenuItem {} {
+          label Redo
+          xywh {12 12 100 20} deactivate divider
+        }
+        MenuItem {} {
+          label Duplicate
+          xywh {12 12 100 20} deactivate
+        }
+        MenuItem {} {
+          label Delete
+          xywh {20 20 100 20} deactivate divider
+        }
+        MenuItem {} {
+          label {Select All}
+          xywh {32 32 100 20} deactivate
+        }
+        MenuItem {} {
+          label {Inverst Selection}
+          xywh {40 40 100 20} deactivate
+        }
+        MenuItem {} {
+          label {Arrange All}
+          xywh {52 52 100 20} deactivate
         }
       }
       Submenu {} {
@@ -81,18 +164,84 @@ Function {createIotaAppWindow()} {} {
         }
       }
       Submenu {} {
-        label Help open
+        label Build open
         xywh {0 0 100 20}
       } {
+        MenuItem {} {
+          label {Slice...}
+          xywh {0 0 100 20} deactivate
+        }
+        MenuItem {} {
+          label {Analyse...}
+          xywh {12 12 100 20} deactivate
+        }
+        MenuItem {} {
+          label {Save GCode...}
+          xywh {24 24 100 20} deactivate
+        }
+        MenuItem {} {
+          label {Run GCode...}
+          xywh {36 36 100 20} deactivate
+        }
+      }
+      Submenu {} {
+        label Settings open
+        xywh {0 0 100 20}
+      } {
+        Submenu {} {
+          label {Select Printer} open
+          xywh {0 0 100 20} deactivate
+        } {
+          MenuItem {} {
+            xywh {0 0 100 20} deactivate
+          }
+          MenuItem {} {
+            xywh {0 0 100 20} deactivate
+          }
+          MenuItem {} {
+            xywh {0 0 100 20} deactivate
+          }
+          MenuItem {} {
+            xywh {0 0 100 20} deactivate
+          }
+        }
+        MenuItem {} {
+          label {Manage Printers...}
+          xywh {0 0 100 20} deactivate
+        }
+        MenuItem {} {
+          label {Manage Materials...}
+          xywh {0 0 100 20} deactivate
+        }
+      }
+      Submenu {} {
+        label Developer open
+        xywh {12 12 100 20}
+      } {
+        MenuItem {} {
+          label {Write current Slice}
+          callback {Iota.menuWriteSlice();}
+          tooltip {Write to ~/slice.jpg} xywh {24 24 100 20} shortcut 0x400070
+        }
+        MenuItem {} {
+          label {Slice entire mesh}
+          callback {Iota.menuSliceMesh();}
+          tooltip {Write to ~/slice.jpg} xywh {36 36 100 20} shortcut 0x40006d
+        }
         MenuItem {} {
           label {Versioneer...}
           callback {if (!wVersionWindow) {
   createVersionWindow();
 }
 loadSettings();
-wVersionWindow->show();}
-          xywh {0 0 100 20}
+wVersionWindow->show();} selected
+          xywh {4 4 100 20}
         }
+      }
+      Submenu {} {
+        label Help open
+        xywh {0 0 100 20}
+      } {
         MenuItem {} {
           label {About...}
           callback {static Fl_Window *aboutWindow = nullptr;
@@ -210,16 +359,9 @@ gSceneView->redraw();}
       }
     }
   }
-}
+} 
 
-data sHelpAbout {private local filename {../../html/helpAbout.html} textmode
-}
-
-data sHelpLicenses {private local filename {../../html/helpLicenses.html} textmode
-}
-
-Function {createIotaAboutWindow()} {open
-} {
+Function {createIotaAboutWindow()} {} {
   Fl_Window {} {
     label {About Iota} open
     xywh {643 176 600 400} type Double resizable modal visible
@@ -267,14 +409,22 @@ Function {createIotaAboutWindow()} {open
       }
     }
   }
-}
+} 
 
-Function {loadSettings()} {open return_type void
+comment {Versioneer: version control helper} {in_source in_header
+} 
+
+declblock {\#if 1} {after {\#endif}
 } {
-  code {Fl_Preferences pref(Fl_Preferences::USER, "iota.matthiasm.com", "versioneer");
+  Function {loadSettings()} {open return_type void
+  } {
+    code {int v;
+char buf[2048];
+
+Fl_Preferences pref(Fl_Preferences::USER, "iota.matthiasm.com", "versioneer");
+pref.get("path", buf, "/Users/matt/dev/IotaSlicer/", 2046);
+wBasePath->value(buf);
 Fl_Preferences vers( pref, "version");
-int v;
-char buf[80];
 vers.get("major", v, 0);
 sprintf(buf, "%d", v);
 wMajor->value(buf);
@@ -286,22 +436,28 @@ sprintf(buf, "%d", v);
 wBuild->value(buf);
 vers.get("class", buf, "-", 8);
 wClass->value(buf);} {}
-}
-
-Function {saveSettings()} {open return_type void
-} {
-  code {Fl_Preferences pref(Fl_Preferences::USER, "iota.matthiasm.com", "versioneer");
+  }
+  Function {saveSettings()} {open return_type void
+  } {
+    code {Fl_Preferences pref(Fl_Preferences::USER, "iota.matthiasm.com", "versioneer");
+pref.set("path", wBasePath->value());
 Fl_Preferences vers( pref, "version");
 vers.set("major", atoi(wMajor->value()));
 vers.set("minor", atoi(wMinor->value()));
 vers.set("build", atoi(wBuild->value()));
 vers.set("class", wClass->value());} {}
-}
-
-Function {applySettingsHtml(const char *filename)} {open return_type void
-} {
-  code {char out[2048];
+  }
+  Function {savePath()} {open return_type void
+  } {
+    code {Fl_Preferences pref(Fl_Preferences::USER, "iota.matthiasm.com", "versioneer");
+pref.set("path", wBasePath->value());} {}
+  }
+  Function {applySettingsHtml(const char *name)} {open return_type void
+  } {
+    code {char filename[2048];
+char out[2048];
 char buf[2048];
+sprintf(filename, "%s/%s", wBasePath->value(), name);
 strcpy(out, filename);
 strcat(out, "~");
 FILE *fOut = fopen(out, "wb");
@@ -340,128 +496,132 @@ if (f) {
 } else {
   perror(filename);
 }} {}
-}
-
-Function {applySettings()} {open return_type void
-} {
-  code {applySettingsHtml("/Users/matt/dev/IotaSlicer/html/helpAbout.html");
-applySettingsHtml("/Users/matt/dev/IotaSlicer/html/helpLicenses.html");
-applySettingsHtml("/Users/matt/dev/IotaSlicer/html/index.html");
-::utime("/Users/matt/dev/IotaSlicer/src/userinterface/IAGUIMain.fl", nullptr);
-
-/*
-char buf[1024];
-sprintf(buf, "cd /Users/matt/dev/IotaSlicer; /usr/bin/git tag v%d.%d.%d%s",
-        atoi(wMajor->value()),
-        atoi(wMinor->value()),
-        atoi(wBuild->value()),
-        wClass->value());
-fl_system(buf);
-*/} {}
-}
-
-Function {gitTag()} {open return_type void
-} {
-  code {char buf[1024];
+  }
+  Function {applySettings()} {open return_type void
+  } {
+    code {applySettingsHtml("html/helpAbout.html");
+applySettingsHtml("html/helpLicenses.html");
+applySettingsHtml("html/index.html");
+::utime("userinterface/IAGUIMain.fl", nullptr);} {}
+  }
+  Function {gitTag()} {open return_type void
+  } {
+    code {char buf[1024];
 sprintf(buf, "cd /Users/matt/dev/IotaSlicer; /usr/bin/git tag v%d.%d.%d%s",
         atoi(wMajor->value()),
         atoi(wMinor->value()),
         atoi(wBuild->value()),
         wClass->value());
 fl_system(buf);} {}
-}
-
-Function {createVersionWindow()} {open
-} {
-  Fl_Window wVersionWindow {
-    label {Versioneer for Iota Slicer} open
-    xywh {946 607 392 186} type Double visible
+  }
+  Function {createVersionWindow()} {open
   } {
-    Fl_Box {} {
-      label v
-      xywh {29 40 15 24}
-    }
-    Fl_Input wMajor {
-      xywh {44 40 52 24}
-    }
-    Fl_Box {} {
-      label {.}
-      xywh {96 40 15 24}
-    }
-    Fl_Input wMinor {
-      xywh {111 40 52 24}
-    }
-    Fl_Box {} {
-      label {.}
-      xywh {163 40 15 24}
-    }
-    Fl_Input wBuild {
-      xywh {178 40 52 24}
-    }
-    Fl_Input_Choice wClass {open
-      xywh {232 40 64 24}
+    Fl_Window wVersionWindow {
+      label {Versioneer for Iota Slicer} open
+      xywh {950 611 388 151} type Double visible
     } {
-      MenuItem {} {
-        label {-}
-        xywh {4 4 100 20}
+      Fl_Input wBasePath {
+        label {IotaBase Path}
+        callback {savePath();}
+        xywh {94 18 250 20} labelsize 12 textsize 12
       }
-      MenuItem {} {
-        label a
-        xywh {4 4 100 20}
+      Fl_Button {} {
+        label {@fileopen}
+        callback {const char *path = fl_dir_chooser(
+  "Choose the Iota Base Directory", 
+  wBasePath->value(), 
+  0);
+if (path) {
+  wBasePath->value(path);
+  wBasePath->do_callback();
+}}
+        xywh {344 18 33 20} labelcolor 3
       }
-      MenuItem {} {
-        label b
-        xywh {4 4 100 20}
+      Fl_Box {} {
+        label Version
+        xywh {95 47 0 20} labelsize 12 align 4
       }
-    }
-    Fl_Button wMajorPlus {
-      label {+}
-      callback {char buf[80];
+      Fl_Input wMajor {
+        xywh {95 47 52 20} labelsize 12 textsize 12
+      }
+      Fl_Box {} {
+        label {.}
+        xywh {147 47 15 20} labelsize 12
+      }
+      Fl_Input wMinor {
+        xywh {162 47 52 20} labelsize 12 textsize 12
+      }
+      Fl_Box {} {
+        label {.}
+        xywh {214 47 15 20} labelsize 12
+      }
+      Fl_Input wBuild {
+        xywh {229 47 52 20} labelsize 12 textsize 12
+      }
+      Fl_Input_Choice wClass {open
+        xywh {283 47 64 20} labelsize 12 textsize 12
+      } {
+        MenuItem {} {
+          label {-}
+          xywh {4 4 100 20} labelsize 12
+        }
+        MenuItem {} {
+          label a
+          xywh {4 4 100 20} labelsize 12
+        }
+        MenuItem {} {
+          label b
+          xywh {4 4 100 20} labelsize 12
+        }
+      }
+      Fl_Button wMajorPlus {
+        label {+}
+        callback {char buf[80];
 int vv = atoi(wMajor->value());
 vv++;
 sprintf(buf, "%d", vv);
 wMajor->value(buf);
 wMinor->value("0");
 wBuild->value("0");}
-      xywh {72 68 24 24}
-    }
-    Fl_Button wMinorPlus {
-      label {+}
-      callback {char buf[80];
+        xywh {123 70 24 20} labelsize 12
+      }
+      Fl_Button wMinorPlus {
+        label {+}
+        callback {char buf[80];
 int vv = atoi(wMinor->value());
 vv++;
 sprintf(buf, "%d", vv);
 wMinor->value(buf);
 wBuild->value("0");}
-      xywh {139 68 24 24}
-    }
-    Fl_Button wBuildPlus {
-      label {+}
-      callback {char buf[80];
+        xywh {190 70 24 20} labelsize 12
+      }
+      Fl_Button wBuildPlus {
+        label {+}
+        callback {char buf[80];
 int vv = atoi(wBuild->value());
 vv++;
 sprintf(buf, "%d", vv);
 wBuild->value(buf);}
-      xywh {206 68 24 24}
-    }
-    Fl_Button {} {
-      label Apply
-      callback {saveSettings();
+        xywh {257 70 24 20} labelsize 12
+      }
+      Fl_Button {} {
+        label Cancel
+        callback {wVersionWindow->hide();}
+        xywh {16 110 78 24} labelsize 12
+      }
+      Fl_Button {} {
+        label {git tag}
+        callback {saveSettings();
+gitTag();}
+        xywh {184 110 90 24} labelsize 12
+      }
+      Fl_Button {} {
+        label Apply
+        callback {saveSettings();
 applySettings();
 wVersionWindow->hide();}
-      xywh {188 124 90 28}
-    }
-    Fl_Button {} {
-      label Cancel
-      callback {wVersionWindow->hide();}
-      xywh {288 124 78 28}
-    }
-    Fl_Button {} {
-      label {git tag}
-      callback {saveSettings();
-gitTag();
-wVersionWindow->hide();}
-      xywh {88 124 90 28}
+        xywh {284 110 90 24} labelsize 12
+      }
     }
   }
-}
+} 

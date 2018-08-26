@@ -29,7 +29,7 @@
  Edit:
  - Undo/Redo: this should at least undo a number og move operations, probably also unload/load files
  - Cut/Copy/Pate: is this useful?
- - Dublicate: duplicate a model
+ - Duplicate: duplicate a model
  - Delete: remove the selected mesh(es)
  - Select all/Inverse selection: Useful?
 
