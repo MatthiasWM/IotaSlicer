@@ -33,6 +33,7 @@ public:
     void sendPosition(IAVector3d &v);
     void sendFeedrate(double f);
     void sendExtrusionAdd(double e);
+    void sendExtrusionRel(uint32_t color, double e);
     void sendNewLine(const char *comment=nullptr);
 
     void macroInit();
@@ -43,11 +44,13 @@ public:
     void cmdResetExtruder();
     void cmdSelectExtruder(int);
     void cmdExtrude(double distance, double feedrate=-1.0);
+    void cmdExtrudeRel(double distance, double feedrate=-1.0);
     void cmdComment(const char *format, ...);
     void cmdRapidMove(double x, double y);
     void cmdRapidMove(IAVector3d &v);
     void cmdMove(double x, double y, double feedrate=-1.0);
     void cmdMove(IAVector3d &v, double feedrate=-1.0);
+    void cmdMove(IAVector3d &v, uint32_t color, double feedrate=-1.0);
 
 private:
     FILE *pFile = nullptr;

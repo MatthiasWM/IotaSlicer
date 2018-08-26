@@ -212,9 +212,82 @@ void IAIota::menuWriteSlice()
     gSceneView->redraw();
 }
 
-
+#ifdef IA_QUAD
 /**
  Experimental stuff.
+ Slice the mesh into single hotend, multiple transport extruder.
+
+ M563: Define or remove a tool
+ Pnnn Tool number
+ Dnnn Extruder drive(s)  for example 0:1:2
+ Hnnn Heater(s)
+ Fnnn Fan(s)
+
+ M563 P0 D0:1:2:3 H0 F0 ; maps the Crane Quad head to tool 0
+ G1 X10 Y10 F800 E0.235:0.003:0:0 ; prints by mixing transports 0 and 1 into heater 0
+ */
+void IAIota::menuSliceMesh()
+{
+    if (!pMachineToolpath)
+        pMachineToolpath = new IAMachineToolpath();
+    else
+        pMachineToolpath->clear();
+    double hgt = pMesh->pMax.z() - pMesh->pMin.z();
+    // initial height determines stickiness to bed
+
+    double maxHgt = 25; // in mm, should be hgt
+    for (double z=0.2; z<maxHgt; z+=0.3) {
+        printf("Slicing at z=%g\n", z);
+        // create the slice surfec
+        Iota.gMeshSlice.changeZ(z);
+        Iota.gMeshSlice.clear();
+        Iota.gMeshSlice.generateFlange(Iota.pMesh);
+        // draw the sliced mesh surface into a framebuffer
+        // also draw the textured shell into the color buffer
+        Iota.gMeshSlice.tesselateLidFromFlange();
+//        Iota.gMeshSlice.drawFlat(false, 1, 1, 1);
+
+        uint8_t *rgb = Iota.gMeshSlice.pColorbuffer->getRawImageRGB();
+
+        IAToolpath *tp1 = new IAToolpath(z);
+        Iota.gMeshSlice.pFramebuffer->traceOutline(tp1, z);
+//        Iota.gMeshSlice.pFramebuffer->saveAsJpeg("/Users/matt/a1.jpg");
+
+        IAToolpath *tp2 = new IAToolpath(z);
+        Iota.gMeshSlice.pFramebuffer->bindForRendering();
+        glDisable(GL_DEPTH_TEST);
+        glColor3f(0.0, 0.0, 0.0);
+        tp1->drawFlat(4);
+//        Iota.gMeshSlice.pFramebuffer->saveAsJpeg("/Users/matt/a2.jpg");
+        Iota.gMeshSlice.pFramebuffer->unbindFromRendering();
+        Iota.gMeshSlice.pFramebuffer->traceOutline(tp2, z);
+
+        IAToolpath *tp3 = new IAToolpath(z);
+        Iota.gMeshSlice.pFramebuffer->bindForRendering();
+        glDisable(GL_DEPTH_TEST);
+        glColor3f(0.0, 0.0, 0.0);
+        tp2->drawFlat(4);
+//        Iota.gMeshSlice.pFramebuffer->saveAsJpeg("/Users/matt/a3.jpg");
+        Iota.gMeshSlice.pFramebuffer->unbindFromRendering();
+        Iota.gMeshSlice.pFramebuffer->traceOutline(tp3, z);
+
+        IAToolpath *tp = pMachineToolpath->createLayer(z);
+
+        tp1->colorizeSoft(rgb, tp); // add the colorized toolpath to tp
+        tp2->colorizeSoft(rgb, tp); // add the colorized toolpath to tp
+        tp3->colorizeSoft(rgb, tp); // add the colorized toolpath to tp
+        delete tp1;
+        delete tp2;
+        delete tp3;
+        free(rgb);
+    }
+    pMachineToolpath->saveGCode("/Users/matt/aaa.gcode");
+    gSceneView->redraw();
+}
+#else
+/**
+ Experimental stuff.
+ Slice the mesh into a two-color twin-extruder setup including waste piles.
  */
 void IAIota::menuSliceMesh()
 {
@@ -243,14 +316,14 @@ void IAIota::menuSliceMesh()
 
         IAToolpath *tp1 = new IAToolpath(z);
         Iota.gMeshSlice.pFramebuffer->traceOutline(tp1, z);
-//        Iota.gMeshSlice.pFramebuffer->saveAsJpeg("/Users/matt/a1.jpg");
+        //        Iota.gMeshSlice.pFramebuffer->saveAsJpeg("/Users/matt/a1.jpg");
 
         IAToolpath *tp2 = new IAToolpath(z);
         Iota.gMeshSlice.pFramebuffer->bindForRendering();
         glDisable(GL_DEPTH_TEST);
         glColor3f(0.0, 0.0, 0.0);
         tp1->drawFlat(4);
-//        Iota.gMeshSlice.pFramebuffer->saveAsJpeg("/Users/matt/a2.jpg");
+        //        Iota.gMeshSlice.pFramebuffer->saveAsJpeg("/Users/matt/a2.jpg");
         Iota.gMeshSlice.pFramebuffer->unbindFromRendering();
         Iota.gMeshSlice.pFramebuffer->traceOutline(tp2, z);
 
@@ -259,7 +332,7 @@ void IAIota::menuSliceMesh()
         glDisable(GL_DEPTH_TEST);
         glColor3f(0.0, 0.0, 0.0);
         tp2->drawFlat(4);
-//        Iota.gMeshSlice.pFramebuffer->saveAsJpeg("/Users/matt/a3.jpg");
+        //        Iota.gMeshSlice.pFramebuffer->saveAsJpeg("/Users/matt/a3.jpg");
         Iota.gMeshSlice.pFramebuffer->unbindFromRendering();
         Iota.gMeshSlice.pFramebuffer->traceOutline(tp3, z);
 
@@ -294,7 +367,7 @@ void IAIota::menuSliceMesh()
     pMachineToolpath->saveGCode("/Users/matt/aaa.gcode");
     gSceneView->redraw();
 }
-
+#endif
 
 /**
  * Just quit the app.

@@ -75,6 +75,66 @@ void IAToolpath::colorize(uint8_t *rgb, IAToolpath *black, IAToolpath *white)
 }
 
 
+uint32_t getRGB(uint8_t *rgb, IAVector3d v)
+{
+    IAVector3d s = v * (1024.0 / 214.0);
+    int xo = (int)s.x(), yo = (int)s.y();
+    uint8_t *c = rgb + (xo+1024*yo)*3;
+    return ((c[0]<<16)|(c[1]<<8)|(c[2]));
+}
+
+bool differ(uint32_t c1, uint32_t c2)
+{
+    if (c1==c2) return false;
+    int r1 = (c1>>16)&255, r2 = (c2>>16)&255, rd = r1-r2;
+    if (rd>10 || rd<-10) return true;
+    int g1 = (c1>>8)&255, g2 = (c2>>8)&255, gd = g1-g2;
+    if (gd>10 || gd<-10) return true;
+    int b1 = (c1>>0)&255, b2 = (c2>>0)&255, bd = b1-b2;
+    if (bd>10 || bd<-10) return true;
+    return false;
+}
+
+
+void IAToolpath::colorizeSoft(uint8_t *rgb, IAToolpath *dst)
+{
+    for (auto e: pList) {
+        IAToolpathMotion *m = dynamic_cast<IAToolpathMotion*>(e);
+        if (m) {
+            if (!m->pIsRapid) {
+                IAVector3d startVec = m->pStart;
+                IAVector3d currStartVec = startVec;
+                IAVector3d currVec = startVec;
+                IAVector3d endVec = m->pEnd;
+                IAVector3d deltaVec = endVec - startVec;
+                double len = (endVec-startVec).length();
+                double incr = 0.1;
+                uint32_t color = getRGB(rgb, startVec);
+                for (double i=incr; i<len; i+=incr) {
+                    currVec = startVec + (deltaVec*(i/len));
+                    uint32_t colorNow = getRGB(rgb, startVec);
+                    if (differ(colorNow, color)) {
+                        IAToolpathMotion *mtn = new IAToolpathMotion(currStartVec, currVec);
+                        mtn->setColor(color);
+                        dst->pList.push_back(mtn);
+                        currStartVec = currVec;
+                        color = colorNow;
+                    }
+                }
+                if (currStartVec!=endVec) {
+                    IAToolpathMotion *mtn = new IAToolpathMotion(currStartVec, endVec);
+                    mtn->setColor(color);
+                    dst->pList.push_back(mtn);
+                }
+            } else {
+
+            }
+        }
+    }
+}
+
+
+
 
 
 /**
@@ -484,6 +544,20 @@ void IAToolpathMotion::drawFlat()
  */
 void IAToolpathMotion::saveGCode(IAGcodeWriter &w)
 {
+#ifdef IA_QUAD
+    if (pIsRapid) {
+        w.cmdExtrudeRel(-1.0);
+        w.cmdRapidMove(pEnd);
+        w.cmdExtrudeRel(+1.0);
+    } else {
+        if (w.position()!=pStart) {
+            w.cmdExtrudeRel(-1.0);
+            w.cmdRapidMove(pStart);
+            w.cmdExtrudeRel(+1.0);
+        }
+        w.cmdMove(pEnd, pColor);
+    }
+#else
     if (pIsRapid) {
         w.cmdExtrude(-1.0);
         w.cmdRapidMove(pEnd);
@@ -496,6 +570,7 @@ void IAToolpathMotion::saveGCode(IAGcodeWriter &w)
         }
         w.cmdMove(pEnd);
     }
+#endif
 }
 
 /*

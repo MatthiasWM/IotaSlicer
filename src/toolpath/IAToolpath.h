@@ -75,6 +75,7 @@ public:
     void closePath(void);
 
     void colorize(uint8_t *rgb, IAToolpath *black, IAToolpath *white);
+    void colorizeSoft(uint8_t *rgb, IAToolpath *dst);
 
     void saveGCode(IAGcodeWriter &g);
 
@@ -130,10 +131,12 @@ public:
     virtual void drawFlat() override;
     virtual void saveGCode(IAGcodeWriter &g) override;
     virtual IAToolpathElement *clone() override;
+    void setColor(uint32_t c) { pColor = c; }
 
     // FIXME: we MUST NOT have start and end. The previous end and the current
     // start are redundant and caus trouble if assumptions are made!
     IAVector3d pStart, pEnd;
+    uint32_t pColor = 0;
     bool pIsRapid = false;
 };
 
