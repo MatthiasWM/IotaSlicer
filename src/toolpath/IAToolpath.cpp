@@ -501,7 +501,9 @@ IAToolpathMotion::IAToolpathMotion(IAVector3d &a, IAVector3d &b, bool rapid)
 
 IAToolpathElement *IAToolpathMotion::clone()
 {
-    return new IAToolpathMotion(pStart, pEnd, pIsRapid);
+    IAToolpathMotion *mtn = new IAToolpathMotion(pStart, pEnd, pIsRapid);
+    mtn->pColor = pColor;
+    return mtn;
 }
 
 
