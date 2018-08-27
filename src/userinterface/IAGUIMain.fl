@@ -1,19 +1,19 @@
 # data file for the Fltk User Interface Designer (fluid)
-version 1.0300 
-use_FL_COMMAND 
-header_name {.h} 
+version 1.0400
+use_FL_COMMAND
+header_name {.h}
 code_name {.cpp}
 decl {\#include "../Iota.h"} {public global
-} 
+}
 
 decl {\#include "IASceneView.h"} {public global
-} 
+}
 
 decl {\#include "IAGLButton.h"} {public global
-} 
+}
 
 decl {\#include <FL/Fl_File_Chooser.H>} {public global
-} 
+}
 
 declblock {\#ifdef __APPLE__} {open public after {\#endif}
 } {
@@ -21,7 +21,7 @@ declblock {\#ifdef __APPLE__} {open public after {\#endif}
   }
   decl {\#include <utime.h>} {public global
   }
-} 
+}
 
 declblock {\#ifdef __LINUX__} {open public after {\#endif}
 } {
@@ -29,22 +29,21 @@ declblock {\#ifdef __LINUX__} {open public after {\#endif}
   }
   decl {\#include <utime.h>} {public global
   }
-} 
+}
 
 declblock {\#ifdef _WIN32} {open public after {\#endif}
 } {
   decl {\#include <sys/utime.h>} {public global
   }
-} 
+}
 
 data sHelpAbout {private local filename {../../html/helpAbout.html}
-} 
+}
 
 data sHelpLicenses {private local filename {../../html/helpLicenses.html}
-} 
+}
 
-Function {createIotaAppWindow()} {open
-} {
+Function {createIotaAppWindow()} {} {
   Fl_Window {} {
     label {Iota Slicer V0.1a} open
     xywh {472 202 800 600} type Double resizable visible
@@ -234,7 +233,7 @@ Function {createIotaAppWindow()} {open
   createVersionWindow();
 }
 loadSettings();
-wVersionWindow->show();} selected
+wVersionWindow->show();}
           xywh {4 4 100 20}
         }
       }
@@ -359,7 +358,7 @@ gSceneView->redraw();}
       }
     }
   }
-} 
+}
 
 Function {createIotaAboutWindow()} {} {
   Fl_Window {} {
@@ -409,12 +408,12 @@ Function {createIotaAboutWindow()} {} {
       }
     }
   }
-} 
+}
 
 comment {Versioneer: version control helper} {in_source in_header
-} 
+}
 
-declblock {\#if 1} {after {\#endif}
+declblock {\#if 1} {open after {\#endif}
 } {
   Function {loadSettings()} {open return_type void
   } {
@@ -450,7 +449,8 @@ vers.set("class", wClass->value());} {}
   Function {savePath()} {open return_type void
   } {
     code {Fl_Preferences pref(Fl_Preferences::USER, "iota.matthiasm.com", "versioneer");
-pref.set("path", wBasePath->value());} {}
+pref.set("path", wBasePath->value());} {selected
+    }
   }
   Function {applySettingsHtml(const char *name)} {open return_type void
   } {
@@ -624,4 +624,4 @@ wVersionWindow->hide();}
       }
     }
   }
-} 
+}
