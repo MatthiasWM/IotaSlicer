@@ -159,6 +159,17 @@ double IAVector3d::normalize()
 
 
 /**
+ Return a new normalized vector.
+ */
+IAVector3d IAVector3d::normalized()
+{
+    IAVector3d v = *this;
+    v.normalize();
+    return v;
+}
+
+
+/**
  Subtract another vector from this vector.
  */
 IAVector3d& IAVector3d::operator-=(const IAVector3d &v)

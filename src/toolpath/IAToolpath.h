@@ -136,7 +136,7 @@ public:
     // FIXME: we MUST NOT have start and end. The previous end and the current
     // start are redundant and caus trouble if assumptions are made!
     IAVector3d pStart, pEnd;
-    uint32_t pColor = 0;
+    uint32_t pColor = 0x00FFFFFF;
     bool pIsRapid = false;
 };
 

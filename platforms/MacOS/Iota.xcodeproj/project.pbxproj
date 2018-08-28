@@ -617,7 +617,6 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_TEAM = BK4ST6N599;
 				GCC_PREPROCESSOR_DEFINITIONS = (
-					"IA_QUAD=1",
 					"DEBUG=1",
 					"$(inherited)",
 				);

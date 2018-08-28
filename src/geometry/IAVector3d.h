@@ -34,6 +34,7 @@ public:
     void setMin(const IAVector3d&);
     void setMax(const IAVector3d&);
     double normalize();
+    IAVector3d normalized();
     void zero();
     void write(double*) const;
     void read(float*);

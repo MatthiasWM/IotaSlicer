@@ -194,7 +194,7 @@ void bezier(IAToolpath *toolpath,
 }
 
 
-static const double m_distance_tolerance = 0.1;
+static const double m_distance_tolerance = 0.01;
 
 // http://www.antigrain.com/research/adaptive_bezier/index.html
 void recursive_bezier(IAToolpath *tp,
