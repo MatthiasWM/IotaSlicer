@@ -11,57 +11,10 @@
 // TODO: create a model class that contains meshes
 //   TODO: add a positional vertex (done) and a normal (still to do) for slicing in the printer coordinate system
 // TODO: create vector infills from slices
+// TODO: results get good with a framebuffer size of 4096x4096! But potrace get slow!
 // Done (LOL)
 
 // TODO: port to Linux
-
-/*
- Functionality and UI ideas:
-
- File: things related to the app and to the Iota build file
- - New: clear the build space
- - Open...: load any file type that we understand, same as dropping a file into the 3d view
- - Save: write supported files back (\see scene format, why would we write other formats?)
- - Save As...: above, ask for filename and file type, if appropriate
- - Print...: FLTK can print OpenGL contexts, so why not?
- - Quit
-
- Edit:
- - Undo/Redo: this should at least undo a number og move operations, probably also unload/load files
- - Cut/Copy/Pate: is this useful?
- - Duplicate: duplicate a model
- - Delete: remove the selected mesh(es)
- - Select all/Inverse selection: Useful?
-
- Build:
- - Slice one or all layers
- - Analyse
- - Clean
- - Simulate GCode
- - Load/Save GCode/Layers
- - Run GCode
-
- Printer:
- - Setup
- - Reset
- - Send data
-
- Window:
- - allow multipel windows with the same scene, or with differenrt scenes?
- - Show machine link
- - Show Toolpath Element properties?
- - Anything else?
-
- Help:
- - Interactive calibration?
- - General Help
- - About
-
- Scene Format: we should probably have a format that describes what is going on'
-    in the scene, which models are loaded, where they moved, what textures, so
-    we can load the same setup at a later point again. This saves only links to
-    files, not their content(?).
- */
 
 
 #include "Iota.h"
@@ -212,7 +165,8 @@ void IAIota::menuWriteSlice()
     gSceneView->redraw();
 }
 
-#ifdef IA_QUAD
+#if 0
+//#ifdef IA_QUAD
 /**
  Experimental stuff.
  Slice the mesh into single hotend, multiple transport extruder.
@@ -273,7 +227,7 @@ void IAIota::menuSliceMesh()
 
         IAToolpath *tp = pMachineToolpath->createLayer(z);
 
-        tp1->colorizeSoft(rgb, tp); // add the colorized toolpath to tp
+        //tp1->colorizeSoft(rgb, tp); // add the colorized toolpath to tp
         tp2->colorizeSoft(rgb, tp); // add the colorized toolpath to tp
         tp3->colorizeSoft(rgb, tp); // add the colorized toolpath to tp
         delete tp1;

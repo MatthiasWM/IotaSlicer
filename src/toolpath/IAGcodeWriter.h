@@ -51,6 +51,8 @@ public:
     void cmdMove(double x, double y, double feedrate=-1.0);
     void cmdMove(IAVector3d &v, double feedrate=-1.0);
     void cmdMove(IAVector3d &v, uint32_t color, double feedrate=-1.0);
+    void cmdRetract(double d=1.0);
+    void cmdUnretract(double d=1.0);
 
 private:
     FILE *pFile = nullptr;

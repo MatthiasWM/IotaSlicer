@@ -115,7 +115,7 @@ void IAToolpath::colorizeSoft(uint8_t *rgb, IAToolpath *dst)
                 uint32_t color = getRGB(rgb, startVec);
                 for (double i=incr; i<len; i+=incr) {
                     currVec = startVec + (deltaVec*(i/len));
-                    uint32_t colorNow = getRGB(rgb, startVec);
+                    uint32_t colorNow = getRGB(rgb, currVec);
                     if (differ(colorNow, color)) {
                         IAToolpathMotion *mtn = new IAToolpathMotion(currStartVec, currVec);
                         mtn->setColor(color);
@@ -528,7 +528,9 @@ void IAToolpathMotion::draw()
 {
 #ifdef RENDER_HEX_TOOLPATH
     if (pIsRapid) {
+        glDisable(GL_LIGHTING);
         glColor3f(1.0, 1.0, 0.0);
+        glEnable(GL_LIGHTING);
     } else {
         double r=0.15;
         // TODO: this should be cached
@@ -624,27 +626,27 @@ void IAToolpathMotion::saveGCode(IAGcodeWriter &w)
 {
 #ifdef IA_QUAD
     if (pIsRapid) {
-        w.cmdExtrudeRel(-1.0);
+        w.cmdRetract();
         w.cmdRapidMove(pEnd);
-        w.cmdExtrudeRel(+1.0);
+        w.cmdUnretract();
     } else {
         if (w.position()!=pStart) {
-            w.cmdExtrudeRel(-1.0);
+            w.cmdRetract();
             w.cmdRapidMove(pStart);
-            w.cmdExtrudeRel(+1.0);
+            w.cmdUnretract();
         }
         w.cmdMove(pEnd, pColor);
     }
 #else
     if (pIsRapid) {
-        w.cmdExtrude(-1.0);
+        w.cmdRetract();
         w.cmdRapidMove(pEnd);
-        w.cmdExtrude(+1.0);
+        w.cmdUnretract();
     } else {
         if (w.position()!=pStart) {
-            w.cmdExtrude(-1.0);
+            w.cmdRetract();
             w.cmdRapidMove(pStart);
-            w.cmdExtrude(+1.0);
+            w.cmdUnretract();
         }
         w.cmdMove(pEnd);
     }
