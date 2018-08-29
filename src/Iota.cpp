@@ -14,8 +14,6 @@
 // TODO: results get good with a framebuffer size of 4096x4096! But potrace get slow!
 // Done (LOL)
 
-// TODO: port to Linux
-
 
 #include "Iota.h"
 
@@ -77,7 +75,7 @@ IAIota::IAIota()
 
 /**
  * Release all resources.
- * \todo add a clear() function, so we can reset Ioat into accepting a new scene.
+ * \todo add a clear() function, so we can reset Iota into accepting a new scene.
  */
 IAIota::~IAIota()
 {

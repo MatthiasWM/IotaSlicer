@@ -63,7 +63,7 @@ public:
     int traceOutline(IAToolpath *toolpath, double z);
     int saveAsJpeg(const char *filename);
 
-    int pWidth = kFramebufferSize, pHeight = kFramebufferSize;  // TODO: for now, this is fixed (see: colorize)
+    int pWidth = kFramebufferSize, pHeight = kFramebufferSize; // see Iota.h
 
 protected:
     bool hasFBO();

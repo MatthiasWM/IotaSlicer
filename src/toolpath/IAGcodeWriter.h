@@ -63,7 +63,30 @@ private:
     double pRapidF = 5400.0;
     double pPrintingF = 1800.0;
     double pLayerHeight = 0.3;
-    double pEFactor = 22.0;
+
+    /*
+     Calculating the E-Factor:
+     When sending a G1 command, X, Y and Z give the distance of the move in mm.
+     E is the ditance in mm that the cold filament will be move.
+     If the E factor was 1, and there was no hotend, G1 would extrude exactly
+     the length of filament corresponding to the XYZ motion.
+
+     So, the incoming filament is 1.75mm in diameter. That gives an area
+     of PI*r^2 = (1.75/2)^2*pi = 2.41 . WIth a nozzle diameter of 0.4mm and
+     a layer heigt of 0.3mm, we want an area of 0.4*0.3 = 0.12 .
+     Dividing the surface areas 2.41/0.12 gives us the factor 20.0 .
+
+     For a layer height of 0.4, this would be 2.41/0.16 = 15.0 .
+
+     The lower the factor, the more material is extruded.
+
+     I am assuming that a printer with a 0.4mm nozzle can not generate
+     extrusions that are less wide or wider. Height however varies with
+     layer height. This may actually not be true because hot filament
+     may stretch or squash.
+     */
+
+    double pEFactor = 20.0;
 };
 
 

@@ -17,9 +17,6 @@
 #include <math.h>
 
 
-/* Bresenham line drawing
- */
-
 bool isBlack(uint8_t *rgb, IAVector3d v)
 {
     IAVector3d s = v * (kFramebufferSize / 214.0);
@@ -32,6 +29,10 @@ bool isBlack(uint8_t *rgb, IAVector3d v)
     }
 }
 
+/**
+ * This hack slices long Toolpath Motions into smaller pieces if the color
+ * of the object changes during that motion.
+ */
 void IAToolpath::colorize(uint8_t *rgb, IAToolpath *black, IAToolpath *white)
 {
     for (auto e: pList) {
@@ -533,6 +534,10 @@ void IAToolpathMotion::draw()
         glEnable(GL_LIGHTING);
     } else {
         double r=0.15;
+        // TODO: make the extrusion hexagonal so we can represent the squashing
+        // by the layer height. Also, use the current E factor to calculate the
+        // expected width of the extrusion and draw that.
+        // TODO: add lids or connecotrs to the next extrusion.
         // TODO: this should be cached
         IAVector3d d = (pEnd - pStart).normalized();
         IAVector3d n0 = { d.y(), -d.x(), 0.0 };
