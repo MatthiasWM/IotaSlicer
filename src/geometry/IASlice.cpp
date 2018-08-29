@@ -402,11 +402,11 @@ void IASlice::drawShell()
         IAVertex *v1 = e->pVertex[1];
         glBegin(GL_QUADS);
         glTexCoord2dv(v0->pTex.dataPointer());
-        glVertex3dv(v0->pGlobalPosition.dataPointer());
+        glVertex3dv((v0->pGlobalPosition+v0->pNormal).dataPointer());
         glVertex3dv((v0->pGlobalPosition-v0->pNormal*5).dataPointer());
         glTexCoord2dv(v1->pTex.dataPointer());
         glVertex3dv((v1->pGlobalPosition-v1->pNormal*5).dataPointer());
-        glVertex3dv(v1->pGlobalPosition.dataPointer());
+        glVertex3dv((v1->pGlobalPosition+v1->pNormal).dataPointer());
         glEnd();
     }
 }

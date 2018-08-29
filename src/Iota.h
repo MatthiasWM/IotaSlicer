@@ -25,6 +25,8 @@ const int IA_PROJECTION_FRONT       = 0;
 const int IA_PROJECTION_CYLINDRICAL = 1;
 const int IA_PROJECTION_SPHERICAL   = 2;
 
+const int kFramebufferSize = 1024;
+
 
 /**
  * List of errors that the user may encounter.

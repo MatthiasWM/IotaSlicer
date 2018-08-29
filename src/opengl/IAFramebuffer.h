@@ -7,6 +7,7 @@
 #ifndef IA_FRAMEBUFFER_H
 #define IA_FRAMEBUFFER_H
 
+#include "Iota.h"
 
 #include <FL/gl.h>
 #include <FL/glu.h>
@@ -62,7 +63,7 @@ public:
     int traceOutline(IAToolpath *toolpath, double z);
     int saveAsJpeg(const char *filename);
 
-    int pWidth = 1024, pHeight = 1024;  // TODO: for now, this is fixed (see: colorize)
+    int pWidth = kFramebufferSize, pHeight = kFramebufferSize;  // TODO: for now, this is fixed (see: colorize)
 
 protected:
     bool hasFBO();

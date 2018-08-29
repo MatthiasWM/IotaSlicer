@@ -22,9 +22,9 @@
 
 bool isBlack(uint8_t *rgb, IAVector3d v)
 {
-    IAVector3d s = v * (1024.0 / 214.0);
+    IAVector3d s = v * (kFramebufferSize / 214.0);
     int xo = (int)s.x(), yo = (int)s.y();
-    uint8_t *c = rgb + (xo+1024*yo)*3;
+    uint8_t *c = rgb + (xo+kFramebufferSize*yo)*3;
     if (c[0]<128 && c[1]<128 && c[2]<128) {
         return true;
     } else {
@@ -80,9 +80,9 @@ void IAToolpath::colorize(uint8_t *rgb, IAToolpath *black, IAToolpath *white)
 
 uint32_t getRGB(uint8_t *rgb, IAVector3d v)
 {
-    IAVector3d s = v * (1024.0 / 214.0);
+    IAVector3d s = v * (kFramebufferSize / 214.0);
     int xo = (int)s.x(), yo = (int)s.y();
-    uint8_t *c = rgb + (xo+1024*yo)*3;
+    uint8_t *c = rgb + (xo+kFramebufferSize*yo)*3;
     return ((c[0]<<16)|(c[1]<<8)|(c[2]));
 }
 
