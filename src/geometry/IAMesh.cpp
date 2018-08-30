@@ -573,7 +573,7 @@ void IAMesh::position(const IAVector3d &p)
 
 
 /**
- * Update all variables concerning global spacem needed for slicing.
+ * Update all variables concerning global space needed for slicing.
  */
 void IAMesh::updateGlobalSpace()
 {

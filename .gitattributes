@@ -2,3 +2,4 @@
 *.sln text eol=crlf
 *.vcxproj text eol=crlf
 *.vcxproj.filters text eol=crlf
+*.dxf text eol=crlf
