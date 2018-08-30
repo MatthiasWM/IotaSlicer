@@ -34,6 +34,7 @@
 		C993323B21238A5900629BE1 /* decompose.c in Sources */ = {isa = PBXBuildFile; fileRef = C993320D2123881800629BE1 /* decompose.c */; };
 		C993323C21238A7200629BE1 /* potracelib.c in Sources */ = {isa = PBXBuildFile; fileRef = C993321A2123881800629BE1 /* potracelib.c */; };
 		C993323D21238A9700629BE1 /* IAPotrace.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C99332052123881800629BE1 /* IAPotrace.cpp */; };
+		C9BC92442138692F00991240 /* IADxfWriter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C9BC92432138692F00991240 /* IADxfWriter.cpp */; };
 		C9CD015A21204C2700713CAF /* IASceneView.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C9CD015921204C2600713CAF /* IASceneView.cpp */; };
 		C9D3871E211A425E009F7580 /* libfltk_images.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C9D38718211A425E009F7580 /* libfltk_images.a */; };
 		C9D3871F211A425E009F7580 /* libfltk_png.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C9D38719211A425E009F7580 /* libfltk_png.a */; };
@@ -128,6 +129,8 @@
 		C993320E2123881800629BE1 /* trace.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = trace.h; sourceTree = "<group>"; };
 		C993321A2123881800629BE1 /* potracelib.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = potracelib.c; sourceTree = "<group>"; };
 		C993321C2123881800629BE1 /* platform.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = platform.h; sourceTree = "<group>"; };
+		C9BC92422138692E00991240 /* IADxfWriter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IADxfWriter.h; sourceTree = "<group>"; };
+		C9BC92432138692F00991240 /* IADxfWriter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = IADxfWriter.cpp; sourceTree = "<group>"; };
 		C9CD015821204C2600713CAF /* IASceneView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IASceneView.h; sourceTree = "<group>"; };
 		C9CD015921204C2600713CAF /* IASceneView.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = IASceneView.cpp; sourceTree = "<group>"; };
 		C9CD015B21204D0700713CAF /* Iota.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Iota.h; sourceTree = "<group>"; };
@@ -379,6 +382,8 @@
 		C9E4C31221299385004ED18C /* toolpath */ = {
 			isa = PBXGroup;
 			children = (
+				C9BC92432138692F00991240 /* IADxfWriter.cpp */,
+				C9BC92422138692E00991240 /* IADxfWriter.h */,
 				C9E4C3182130311F004ED18C /* IAGcodeWriter.cpp */,
 				C9E4C3172130311F004ED18C /* IAGcodeWriter.h */,
 				C9E4C31321299385004ED18C /* IAToolpath.cpp */,
@@ -470,6 +475,7 @@
 				C97632CB211E2DD000D9D4B5 /* IAGUIMain.fl in Sources */,
 				C938CC20212602F600BAC374 /* IAGeometryReaderBinaryStl.cxx in Sources */,
 				C9E4C3192130311F004ED18C /* IAGcodeWriter.cpp in Sources */,
+				C9BC92442138692F00991240 /* IADxfWriter.cpp in Sources */,
 				C98C66BD21205D3C00BD3ACE /* IAFmtObj3ds.cxx in Sources */,
 				C9E4C31121285AFB004ED18C /* IAFramebuffer.cpp in Sources */,
 				C98C66B721205D1D00BD3ACE /* IAFmtTexJpeg.cxx in Sources */,

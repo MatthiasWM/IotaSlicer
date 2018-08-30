@@ -9,6 +9,7 @@
 
 
 #include "IAGcodeWriter.h"
+#include "IADxfWriter.h"
 #include "geometry/IAVector3d.h"
 
 #include <vector>
@@ -49,6 +50,7 @@ public:
     int roundLayerNumber(double);
 
     bool saveGCode(const char *filename);
+    bool saveDXF(const char *filename);
 
 private:
     IAToolpath *pStartupPath = nullptr;
@@ -78,6 +80,7 @@ public:
     void colorizeSoft(uint8_t *rgb, IAToolpath *dst);
 
     void saveGCode(IAGcodeWriter &g);
+    void saveDXF(IADxfWriter &g);
 
     IAToolpathElementList pList;
     // list of elements
@@ -99,6 +102,7 @@ public:
     virtual void draw();
     virtual void drawFlat() { }
     virtual void saveGCode(IAGcodeWriter &g) { }
+    virtual void saveDXF(IADxfWriter &g) { }
     virtual IAToolpathElement *clone();
 };
 
@@ -130,6 +134,7 @@ public:
     virtual void draw() override;
     virtual void drawFlat() override;
     virtual void saveGCode(IAGcodeWriter &g) override;
+    virtual void saveDXF(IADxfWriter &g) { }
     virtual IAToolpathElement *clone() override;
     void setColor(uint32_t c) { pColor = c; }
 

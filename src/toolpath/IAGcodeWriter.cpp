@@ -15,33 +15,6 @@
 #include <stdarg.h>
 
 
-/*
-  0
-LINE
-  5
-3C
-330
-5D
-100
-AcDbEntity
-  8
-0
-100
-AcDbLine
- 10
- 0.0
- 20
- 0.0
- 30
- 0.0
- 11
- 0.0
- 21
- 13.0
- 31
- 0.0
-*/
-
 IAGcodeWriter::IAGcodeWriter()
 {
 }
