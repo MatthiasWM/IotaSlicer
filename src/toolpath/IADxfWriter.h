@@ -23,13 +23,14 @@ public:
     IADxfWriter();
     ~IADxfWriter();
 
-    bool open(const char *filename);
+    bool open(const char *filename, int nEntities);
     void close();
 
     void cmdLine(IAVector3d &a, IAVector3d &b);
 
 private:
     FILE *pFile = nullptr;
+    int pHandle = 0x3C;
 };
 
 

@@ -49,6 +49,8 @@ void IASlice::clear()
         delete e;
     }
     pFlange.clear();
+    pFramebuffer->clear();
+    pColorbuffer->clear();
     IAMesh::clear();
 }
 
@@ -188,14 +190,14 @@ void IASlice::addFirstFlangeVertex(IATriangle *tri)
  \param edgeIndex the index of the first edge that crosses zMin
  \param zMin slice on this z plane
  */
-void IASlice::addNextFlangeVertex(IATrianglePtr &IATriangle, ISVertexPtr &vCutA, int &edgeIndex)
+void IASlice::addNextFlangeVertex(IATrianglePtr &t, ISVertexPtr &vCutA, int &edgeIndex)
 {
     // setup
     double zMin = pCurrentZ;
 
     // find the other edge in the triangle that crosses Z. Faces are always clockwise
     // what happens if the triangle has one point exactly on Z?
-    IAVertex *vOpp = IATriangle->pVertex[(edgeIndex+2)%3];
+    IAVertex *vOpp = t->pVertex[(edgeIndex+2)%3];
     int newIndex;
     if (vOpp->pGlobalPosition.z()<zMin) {
         newIndex = (edgeIndex+1)%3;
@@ -204,7 +206,7 @@ void IASlice::addNextFlangeVertex(IATrianglePtr &IATriangle, ISVertexPtr &vCutA,
     }
 
     // Cut the new edge at Z
-    IAEdge *eCutB = IATriangle->pEdge[newIndex];
+    IAEdge *eCutB = t->pEdge[newIndex];
     IAVertex *vCutB = eCutB->findZGlobal(zMin);
     if (!vCutB) {
         puts("ERROR: addNextLidVertex failed, no Z point found!");
@@ -216,8 +218,8 @@ void IASlice::addNextFlangeVertex(IATrianglePtr &IATriangle, ISVertexPtr &vCutA,
     pFlange.push_back(lidEdge);
 
     vCutA = vCutB;
-    IATriangle = eCutB->otherFace(IATriangle);
-    edgeIndex = eCutB->indexIn(IATriangle);
+    t = eCutB->otherFace(t);
+    edgeIndex = eCutB->indexIn(t);
 }
 
 

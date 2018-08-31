@@ -163,7 +163,7 @@ void IAIota::menuWriteSlice()
     gSceneView->redraw();
 }
 
-#if 0
+#if 0 // save single extruder mixing code
 //#ifdef IA_QUAD
 /**
  Experimental stuff.
@@ -236,7 +236,7 @@ void IAIota::menuSliceMesh()
     pMachineToolpath->saveGCode("/Users/matt/aaa.gcode");
     gSceneView->redraw();
 }
-#else
+#elif 1 // save two color two extruder code
 /**
  Experimental stuff.
  Slice the mesh into a two-color twin-extruder setup including waste piles.
@@ -317,6 +317,49 @@ void IAIota::menuSliceMesh()
         free(rgb);
     }
     pMachineToolpath->saveGCode("/Users/matt/aaa.gcode");
+    gSceneView->redraw();
+}
+#else // save a series of dxf files
+/**
+ Experimental stuff.
+ Slice the mesh into a two-color twin-extruder setup including waste piles.
+ */
+void IAIota::menuSliceMesh()
+{
+    if (!pMachineToolpath)
+        pMachineToolpath = new IAMachineToolpath();
+    else
+        pMachineToolpath->clear();
+    double hgt = pMesh->pMax.z() - pMesh->pMin.z();
+    // initial height determines stickiness to bed
+
+    double maxHgt = 300;//hgt;
+    int layer = 1;
+    int nLayer = maxHgt/3.7;
+//    for (double z=1.5; z<maxHgt; z+=3.7, layer++) {
+    layer = 61;
+    for (double z=227.2-3.7; z<227; z+=3.7, layer++) {
+
+        printf("Slicing at z=%g %d of %d)\n", z, layer, nLayer);
+//        if (layer==61) continue;
+        Iota.gMeshSlice.changeZ(z);
+        Iota.gMeshSlice.clear();
+        Iota.gMeshSlice.generateFlange(Iota.pMesh);
+        Iota.gMeshSlice.tesselateLidFromFlange();
+        Iota.gMeshSlice.drawFlat(false, 1, 1, 1);
+
+        uint8_t *rgb = Iota.gMeshSlice.pColorbuffer->getRawImageRGB();
+        IAToolpath *tp = new IAToolpath(z);
+        Iota.gMeshSlice.pFramebuffer->traceOutline(tp, z);
+        tp->pList.push_back(new IAToolpathExtruder(1));
+
+        char filename[2048];
+        sprintf(filename, "/Users/matt/Desktop/drak280/drak280_%04d.dxf", layer);
+        tp->saveDXF(filename);
+
+        delete tp;
+        free(rgb);
+    }
     gSceneView->redraw();
 }
 #endif

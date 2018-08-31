@@ -83,7 +83,10 @@ IAFramebuffer::IAFramebuffer()
  */
 IAFramebuffer::~IAFramebuffer()
 {
-    clear();
+    if (hasFBO()) {
+        deleteFBO();
+        pFramebufferCreated = false;
+    }
 }
 
 
@@ -93,8 +96,9 @@ IAFramebuffer::~IAFramebuffer()
 void IAFramebuffer::clear()
 {
     if (hasFBO()) {
-        deleteFBO();
-        pFramebufferCreated = false;
+        bindForRendering();
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        unbindFromRendering();
     }
 }
 

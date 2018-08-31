@@ -407,6 +407,20 @@ void IAToolpath::saveGCode(IAGcodeWriter &w)
 }
 
 
+/**
+ * Save the toolpath as a DXF file.
+ */
+void IAToolpath::saveDXF(const char *filename)
+{
+    IADxfWriter w;
+    if (w.open(filename, (int)pList.size())) {
+        for (auto p: pList) {
+            p->saveDXF(w);
+        }
+        w.close();
+    }
+}
+
 
 
 
@@ -657,4 +671,17 @@ void IAToolpathMotion::saveGCode(IAGcodeWriter &w)
     }
 #endif
 }
+
+
+/**
+ * Save the toolpath element as line in a DXF file.
+ */
+void IAToolpathMotion::saveDXF(IADxfWriter &g)
+{
+    if (!pIsRapid) {
+        g.cmdLine(pStart, pEnd);
+    }
+}
+
+
 
