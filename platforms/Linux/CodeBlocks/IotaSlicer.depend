@@ -107,7 +107,7 @@
 1535230089 /home/matt/dev/IotaSlicer/src/fileformats/lib3ds.h
 	<stddef.h>
 
-1535230089 /home/matt/dev/IotaSlicer/src/Iota.h
+1535713360 /home/matt/dev/IotaSlicer/src/Iota.h
 	<stdio.h>
 	<memory>
 	"geometry/IAMesh.h"
@@ -126,7 +126,7 @@
 	"IAVector3d.h"
 	<vector>
 
-1535230089 /home/matt/dev/IotaSlicer/src/geometry/IAVector3d.h
+1535713360 /home/matt/dev/IotaSlicer/src/geometry/IAVector3d.h
 
 1535230089 /home/matt/dev/IotaSlicer/src/geometry/IATriangle.h
 	"IAVector3d.h"
@@ -138,7 +138,7 @@
 1535230089 /home/matt/dev/IotaSlicer/src/geometry/IASlice.h
 	"IAMesh.h"
 
-1535230089 /home/matt/dev/IotaSlicer/src/printer/IAPrinter.h
+1535713360 /home/matt/dev/IotaSlicer/src/printer/IAPrinter.h
 	"geometry/IAVector3d.h"
 
 1535230089 /home/matt/dev/IotaSlicer/src/geometry/IAMath.h
@@ -189,7 +189,7 @@
 	<unistd.h>
 	<errno.h>
 
-1535230089 source:/home/matt/dev/IotaSlicer/src/fileformats/IAGeometryReaderTextStl.cxx
+1535713360 source:/home/matt/dev/IotaSlicer/src/fileformats/IAGeometryReaderTextStl.cxx
 	"IAGeometryReaderTextStl.h"
 	"Iota.h"
 	"geometry/IAMesh.h"
@@ -207,7 +207,7 @@
 1535230089 source:/home/matt/dev/IotaSlicer/src/geometry/IAMath.cpp
 	"IAMath.h"
 
-1535230089 source:/home/matt/dev/IotaSlicer/src/geometry/IAMesh.cpp
+1535713360 source:/home/matt/dev/IotaSlicer/src/geometry/IAMesh.cpp
 	"IAMesh.h"
 	"Iota.h"
 	"geometry/IAEdge.h"
@@ -256,7 +256,7 @@
 	<OpenGL/glu.h>
 	<GL/glu.h>
 
-1535234101 source:/home/matt/dev/IotaSlicer/src/geometry/IASlice.cpp
+1535713360 source:/home/matt/dev/IotaSlicer/src/geometry/IASlice.cpp
 	"IASlice.h"
 	"Iota.h"
 	"IAMesh.h"
@@ -265,11 +265,12 @@
 	<FL/gl.h>
 	<FL/glu.h>
 
-1535235305 /home/matt/dev/IotaSlicer/src/userinterface/IAGUIMain.h
+1535713410 /home/matt/dev/IotaSlicer/src/userinterface/IAGUIMain.h
 	<FL/Fl.H>
 	"../Iota.h"
 	"IASceneView.h"
 	"IAGLButton.h"
+	<FL/Fl_File_Chooser.H>
 	<unistd.h>
 	<utime.h>
 	<unistd.h>
@@ -349,7 +350,8 @@
 1535230089 /home/matt/dev/IotaSlicer/include/FL/Fl_Menu_Button.H
 	"Fl_Menu_.H"
 
-1535230089 /home/matt/dev/IotaSlicer/src/opengl/IAFramebuffer.h
+1535713360 /home/matt/dev/IotaSlicer/src/opengl/IAFramebuffer.h
+	"Iota.h"
 	<FL/gl.h>
 	<FL/glu.h>
 	<memory>
@@ -359,7 +361,7 @@
 	"IAVertex.h"
 	<stdio.h>
 
-1535230089 source:/home/matt/dev/IotaSlicer/src/geometry/IAVector3d.cpp
+1535713360 source:/home/matt/dev/IotaSlicer/src/geometry/IAVector3d.cpp
 	"IAVector3d.h"
 	"IAMath.h"
 	<math.h>
@@ -369,7 +371,7 @@
 	"Iota.h"
 	<math.h>
 
-1535230089 source:/home/matt/dev/IotaSlicer/src/Iota.cpp
+1535713360 source:/home/matt/dev/IotaSlicer/src/Iota.cpp
 	"Iota.h"
 	"data/binaryData.h"
 	"userinterface/IAGUIMain.h"
@@ -384,16 +386,17 @@
 	<errno.h>
 	<ShlObj.h>
 
-1535234716 /home/matt/dev/IotaSlicer/src/data/binaryData.h
+1535713480 /home/matt/dev/IotaSlicer/src/data/binaryData.h
 	<FL/Fl.H>
 
-1535230089 /home/matt/dev/IotaSlicer/src/toolpath/IAToolpath.h
+1535713360 /home/matt/dev/IotaSlicer/src/toolpath/IAToolpath.h
 	"IAGcodeWriter.h"
+	"IADxfWriter.h"
 	"geometry/IAVector3d.h"
 	<vector>
 	<map>
 
-1535230089 /home/matt/dev/IotaSlicer/src/toolpath/IAGcodeWriter.h
+1535713360 /home/matt/dev/IotaSlicer/src/toolpath/IAGcodeWriter.h
 	"geometry/IAVector3d.h"
 	<vector>
 	<map>
@@ -401,10 +404,10 @@
 1535230089 /home/matt/dev/IotaSlicer/include/FL/fl_ask.H
 	"Enumerations.H"
 
-1535234716 source:/home/matt/dev/IotaSlicer/src/data/binaryData.cpp
+1535713480 source:/home/matt/dev/IotaSlicer/src/data/binaryData.cpp
 	"binaryData.h"
 
-1535234629 source:/home/matt/dev/IotaSlicer/src/opengl/IAFramebuffer.cpp
+1535713360 source:/home/matt/dev/IotaSlicer/src/opengl/IAFramebuffer.cpp
 	"IAFramebuffer.h"
 	"userinterface/IAGUIMain.h"
 	"toolpath/IAToolpath.h"
@@ -495,7 +498,7 @@
 
 1535230089 /home/matt/dev/IotaSlicer/src/potrace/progress.h
 
-1535230089 source:/home/matt/dev/IotaSlicer/src/potrace/IAPotrace.cpp
+1535713360 source:/home/matt/dev/IotaSlicer/src/potrace/IAPotrace.cpp
 	"IAPotrace.h"
 	"Iota.h"
 	"toolpath/IAToolpath.h"
@@ -545,14 +548,14 @@
 	<FL/gl.h>
 	<FL/glu.h>
 
-1535235075 source:/home/matt/dev/IotaSlicer/src/toolpath/IAGcodeWriter.cpp
+1535713360 source:/home/matt/dev/IotaSlicer/src/toolpath/IAGcodeWriter.cpp
 	"IAGcodeWriter.h"
 	"Iota.h"
 	<FL/gl.h>
 	<math.h>
 	<stdarg.h>
 
-1535230089 source:/home/matt/dev/IotaSlicer/src/toolpath/IAToolpath.cpp
+1535713360 source:/home/matt/dev/IotaSlicer/src/toolpath/IAToolpath.cpp
 	"IAToolpath.h"
 	"Iota.h"
 	<FL/gl.h>
@@ -574,14 +577,14 @@
 	<FL/fl_draw.H>
 	"IAGLButton.h"
 
-1535230089 source:/home/matt/dev/IotaSlicer/src/data/binaryData.fl
+1535713360 source:/home/matt/dev/IotaSlicer/src/data/binaryData.fl
 
-1535235155 source:/home/matt/dev/IotaSlicer/src/userinterface/IAGUIMain.fl
+1535713360 source:/home/matt/dev/IotaSlicer/src/userinterface/IAGUIMain.fl
 
-1535235305 source:/home/matt/dev/IotaSlicer/src/userinterface/IAGUIMain.cpp
+1535713410 source:/home/matt/dev/IotaSlicer/src/userinterface/IAGUIMain.cpp
 	"IAGUIMain.h"
 
-1535230089 source:/home/matt/dev/IotaSlicer/src/userinterface/IASceneView.cpp
+1535713360 source:/home/matt/dev/IotaSlicer/src/userinterface/IASceneView.cpp
 	"IASceneView.h"
 	"Iota.h"
 	"userinterface/IAGUIMain.h"
@@ -595,4 +598,66 @@
 	<FL/gl.h>
 	<FL/glu.h>
 	<FL/Fl_Slider.H>
+
+1535230089 /home/matt/dev/IotaSlicer/include/FL/Fl_File_Chooser.H
+	<FL/Fl.H>
+	<FL/Fl_Double_Window.H>
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<FL/Fl_Group.H>
+	<FL/Fl_Choice.H>
+	<FL/Fl_Menu_Button.H>
+	<FL/Fl_Button.H>
+	<FL/Fl_Preferences.H>
+	<FL/Fl_Tile.H>
+	<FL/Fl_File_Browser.H>
+	<FL/Fl_Box.H>
+	<FL/Fl_Check_Button.H>
+	<FL/Fl_File_Input.H>
+	<FL/Fl_Return_Button.H>
+	<FL/fl_ask.H>
+
+1535230089 /home/matt/dev/IotaSlicer/include/FL/Fl_Choice.H
+	"Fl_Menu_.H"
+
+1535230089 /home/matt/dev/IotaSlicer/include/FL/Fl_Tile.H
+	"Fl_Group.H"
+
+1535230089 /home/matt/dev/IotaSlicer/include/FL/Fl_File_Browser.H
+	"Fl_Browser.H"
+	"Fl_File_Icon.H"
+	"filename.H"
+
+1535230089 /home/matt/dev/IotaSlicer/include/FL/Fl_Browser.H
+	"Fl_Browser_.H"
+	"Fl_Image.H"
+
+1535230089 /home/matt/dev/IotaSlicer/include/FL/Fl_Browser_.H
+	"Fl_Group.H"
+	"Fl_Scrollbar.H"
+	<FL/Fl.H>
+
+1535230089 /home/matt/dev/IotaSlicer/include/FL/Fl_File_Icon.H
+	"Fl.H"
+
+1535230089 /home/matt/dev/IotaSlicer/include/FL/Fl_Check_Button.H
+	"Fl_Light_Button.H"
+
+1535230089 /home/matt/dev/IotaSlicer/include/FL/Fl_Light_Button.H
+	"Fl_Button.H"
+
+1535230089 /home/matt/dev/IotaSlicer/include/FL/Fl_File_Input.H
+	<FL/Fl_Input.H>
+
+1535713360 /home/matt/dev/IotaSlicer/src/toolpath/IADxfWriter.h
+	"geometry/IAVector3d.h"
+	<vector>
+	<map>
+
+1535713360 source:/home/matt/dev/IotaSlicer/src/toolpath/IADxfWriter.cpp
+	"IADxfWriter.h"
+	"Iota.h"
+	"data/binaryData.h"
+	<stdio.h>
 
