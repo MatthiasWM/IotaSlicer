@@ -9,11 +9,3 @@ data defaultTexture {
 data defaultModel {
   comment {Use this model for testing} public local filename {./defaultModel.stl}
 }
-
-data dxf_prolog {
-  comment {DXF R14 start of ASCII format} public local filename {minimalR14_prolog.dxf} textmode
-}
-
-data dxf_epilog {
-  comment {DXF R14 end of ASCII format} selected public local filename {minimalR14_epilog.dxf} textmode
-}

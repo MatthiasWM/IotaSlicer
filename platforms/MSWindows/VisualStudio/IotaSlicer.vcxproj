@@ -140,6 +140,7 @@
     <ClCompile Include="..\..\..\src\potrace\IAPotrace.cpp" />
     <ClCompile Include="..\..\..\src\potrace\trace.c" />
     <ClCompile Include="..\..\..\src\printer\IAPrinter.cpp" />
+    <ClCompile Include="..\..\..\src\toolpath\IADxfWriter.cpp" />
     <ClCompile Include="..\..\..\src\toolpath\IAGcodeWriter.cpp" />
     <ClCompile Include="..\..\..\src\toolpath\IAToolpath.cpp" />
     <ClCompile Include="..\..\..\src\userinterface\IACamera.cpp" />
@@ -176,6 +177,7 @@
     <ClInclude Include="..\..\..\src\potrace\progress.h" />
     <ClInclude Include="..\..\..\src\potrace\trace.h" />
     <ClInclude Include="..\..\..\src\printer\IAPrinter.h" />
+    <ClInclude Include="..\..\..\src\toolpath\IADxfWriter.h" />
     <ClInclude Include="..\..\..\src\toolpath\IAGcodeWriter.h" />
     <ClInclude Include="..\..\..\src\toolpath\IAToolpath.h" />
     <ClInclude Include="..\..\..\src\userinterface\IACamera.h" />
