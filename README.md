@@ -29,6 +29,11 @@ inside a model, colors and transparencies.
 
 The current code generates somewhate expreimental Gcode files specifically for DaVinci Duo printers.
 
+* v0.0.6a
+  * dxf file writer for slicing on laser cutters (rough code, proven)
+  * incremental UI improvements
+  * nicer rendering of toolpath extrusion
+  * fixes to colored extrusion
 * v0.0.5a
   * Iota now compiles on MacOS (Xcode), MSWindows (VisualC 2017), and Ubuntu Linux (Code::Blocks)
 * v0.0.4a
