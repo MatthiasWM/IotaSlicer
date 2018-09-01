@@ -45,25 +45,20 @@ typedef std::vector<IAEdge*> IAEdgeList;
 class IAHalfEdge
 {
 public:
-    IAHalfEdge(IATriangle *);
+    IAHalfEdge();
+    IAVertex *findZGlobal(double);
+    IAVertex *vertex(int i, IATriangle *f);
+    IATriangle *otherTriangle(IATriangle *);
+    IAVertex *otherVertex(IAVertex*);
+    int indexIn(IATriangle *);
+    int nTriangle();
 
-    IATriangle *pTriangle = nullptr;
-    IAVertex *pPosition = nullptr;
-    IAHalfEdge *pTwin = nullptr;
-    IAHalfEdge *pPrev = nullptr;
-    IAHalfEdge *pNext = nullptr;
+    IATriangle *pTriangle[2] = { nullptr, nullptr };
+    IAVertex *pVertex[2] = { nullptr, nullptr };
 };
 
-class IAHalfEdgeList
-{
-public:
-    IAHalfEdgeList(IAMesh *);
-    ~IAHalfEdgeList();
+typedef std::vector<IAHalfEdge*> IAHalfEdgeList;
 
-    IAMesh *pMesh;
-    //typedef std::vector<IAHalfEdge*> IAHalfEdgeList;
-
-};
 
 
 #endif /* IA_EDGE_H */

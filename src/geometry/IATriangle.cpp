@@ -29,7 +29,7 @@ void IATriangle::rotateVertices()
     pVertex[0] = pVertex[1];
     pVertex[1] = pVertex[2];
     pVertex[2] = v;
-    IAEdge *e = pEdge[0];
+    IAHalfEdge *e = pEdge[0];
     pEdge[0] = pEdge[1];
     pEdge[1] = pEdge[2];
     pEdge[2] = e;

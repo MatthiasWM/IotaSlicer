@@ -20,7 +20,7 @@
 class IAPrinter;
 
 typedef std::multimap<double, int> IAVertexMap;
-typedef std::multimap<double, IAEdge*> IAEdgeMap;
+typedef std::multimap<double, IAHalfEdge*> IAHalfEdgeMap;
 
 
 /**
@@ -54,11 +54,11 @@ public:
     void calculateVertexNormals();
     void calculateNormals() { calculateTriangleNormals(); calculateVertexNormals(); }
     void fixHoles();
-    void fixHole(IAEdge*);
+    void fixHole(IAHalfEdge*);
 //    void shrinkBy(double s);
     void projectTexture(double w, double h, int type);
-    IAEdge *findEdge(IAVertex*, IAVertex*);
-    IAEdge *addEdge(IAVertex*, IAVertex*, IATriangle*);
+    IAHalfEdge *findEdge(IAVertex*, IAVertex*);
+    IAHalfEdge *addEdge(IAVertex*, IAVertex*, IATriangle*);
     size_t addPoint(double x, double y, double z);
 
     void updateBoundingBox(IAVector3d&);
@@ -71,9 +71,8 @@ public:
 
     IAVertexList vertexList;
     IAVertexMap vertexMap;
-    IAEdgeList edgeList;
-    IAEdgeMap edgeMap;
-    IAHalfEdgeList pHalfEdgeList;
+    IAHalfEdgeList edgeList;
+    IAHalfEdgeMap edgeMap;
     IATriangleList faceList;
     IAVector3d pMin = { FLT_MAX, FLT_MAX, FLT_MAX};
     IAVector3d pMax = { FLT_MIN, FLT_MIN, FLT_MIN };

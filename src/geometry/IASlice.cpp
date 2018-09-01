@@ -206,7 +206,7 @@ void IASlice::addNextFlangeVertex(IATrianglePtr &t, ISVertexPtr &vCutA, int &edg
     }
 
     // Cut the new edge at Z
-    IAEdge *eCutB = t->pEdge[newIndex];
+    IAHalfEdge *eCutB = t->pEdge[newIndex];
     IAVertex *vCutB = eCutB->findZGlobal(zMin);
     if (!vCutB) {
         puts("ERROR: addNextLidVertex failed, no Z point found!");

@@ -14,7 +14,7 @@
 
 
 class IAVertex;
-class IAEdge;
+class IAHalfEdge;
 
 
 /**
@@ -35,7 +35,7 @@ public:
     int pointsBelowZGlobal(double z);
 
     IAVertex *pVertex[3] = { nullptr, nullptr, nullptr };
-    IAEdge *pEdge[3] = { nullptr, nullptr, nullptr };
+    IAHalfEdge *pEdge[3] = { nullptr, nullptr, nullptr };
     IAVector3d pNormal;
     int pNNormal = 0;
     bool pUsed = false;

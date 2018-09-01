@@ -19,7 +19,6 @@
  Create an empty mesh.
  */
 IAMesh::IAMesh()
-:   pHalfEdgeList(this)
 {
 }
 
@@ -59,7 +58,7 @@ bool IAMesh::validate()
     }
     int i, n = (int)edgeList.size();
     for (i=0; i<n; i++) {
-        IAEdge *e = edgeList[i];
+        IAHalfEdge *e = edgeList[i];
         if (e) {
             if (e->pTriangle[0]==0L) {
                 printf("ERROR: edge %d [%p] without face found!\n", i, e);
@@ -133,7 +132,7 @@ void IAMesh::fixHoles()
     printf("Fixing holes...\n");
     int i;
     for (i=0; i<(int)edgeList.size(); i++) {
-        IAEdge *e = edgeList[i];
+        IAHalfEdge *e = edgeList[i];
         while ( e->nTriangle()==1 ) // FIXME: make sure that this is not endless
             fixHole(e);
     }
@@ -145,7 +144,7 @@ void IAMesh::fixHoles()
 
  \todo: verify that this is robust
  */
-void IAMesh::fixHole(IAEdge *e)
+void IAMesh::fixHole(IAHalfEdge *e)
 {
     printf("Fixing a hole...\n");
     IATriangle *fFix;
@@ -155,7 +154,7 @@ void IAMesh::fixHole(IAEdge *e)
         fFix = e->pTriangle[1];
     // walk the fan to the left and find the next edge
     IATriangle *fLeft = fFix;
-    IAEdge *eLeft = e;
+    IAHalfEdge *eLeft = e;
     for (;;) {
         int ix = eLeft->indexIn(fLeft);
         eLeft = fLeft->pEdge[(ix+2)%3];
@@ -165,7 +164,7 @@ void IAMesh::fixHole(IAEdge *e)
     }
     // walk the fan to the right and find the next edge
     IATriangle *fRight = fFix;
-    IAEdge *eRight = e;
+    IAHalfEdge *eRight = e;
     for (;;) {
         int ix = eRight->indexIn(fRight);
         eRight = fRight->pEdge[(ix+1)%3];
@@ -229,13 +228,13 @@ void IAMesh::addTriangle(IATriangle *newTriangle)
  Create a new edge and add it to this mesh.
  \todo check for duplicates
  */
-IAEdge *IAMesh::addEdge(IAVertex *v0, IAVertex *v1, IATriangle *face)
+IAHalfEdge *IAMesh::addEdge(IAVertex *v0, IAVertex *v1, IATriangle *face)
 {
-    IAEdge *e = findEdge(v0, v1);
+    IAHalfEdge *e = findEdge(v0, v1);
     if (e) {
         e->pTriangle[1] = face;
     } else {
-        e = new IAEdge();
+        e = new IAHalfEdge();
         e->pVertex[0] = v0;
         e->pVertex[1] = v1;
         e->pTriangle[0] = face;
@@ -249,7 +248,7 @@ IAEdge *IAMesh::addEdge(IAVertex *v0, IAVertex *v1, IATriangle *face)
 /**
  Find an edge that connects two vertices.
  */
-IAEdge *IAMesh::findEdge(IAVertex *v0, IAVertex *v1)
+IAHalfEdge *IAMesh::findEdge(IAVertex *v0, IAVertex *v1)
 {
 #if 0
     for (auto e: edgeList) {
@@ -263,7 +262,7 @@ IAEdge *IAMesh::findEdge(IAVertex *v0, IAVertex *v1)
     auto itlow = edgeMap.lower_bound(key-0.0001);
     auto itup = edgeMap.upper_bound(key+0.0001);
     for (auto it=itlow; it!=itup; ++it) {
-        IAEdge *e = (*it).second;
+        IAHalfEdge *e = (*it).second;
         IAVertex *ev0 = e->pVertex[0];
         IAVertex *ev1 = e->pVertex[1];
         if ((ev0==v0 && ev1==v1)||(ev0==v1 && ev1==v0))
