@@ -30,6 +30,7 @@ inside a model, colors and transparencies.
 The current code generates somewhate expreimental Gcode files specifically for DaVinci Duo printers.
 
 * v0.0.6a
+  * https://github.com/MatthiasWM/IotaSlicer/releases/tag/v0.0.6a
   * dxf file writer for slicing on laser cutters (rough code, proven)
   * incremental UI improvements
   * nicer rendering of toolpath extrusion
