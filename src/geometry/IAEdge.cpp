@@ -7,6 +7,7 @@
 
 #include "IAEdge.h"
 
+#include "IAMesh.h"
 #include "IAVertex.h"
 #include "IATriangle.h"
 
@@ -26,9 +27,9 @@ IAEdge::IAEdge()
  */
 IAVertex *IAEdge::vertex(int i, IATriangle *f)
 {
-    if (pFace[0]==f) {
+    if (pTriangle[0]==f) {
         return pVertex[i];
-    } else if (pFace[1]==f) {
+    } else if (pTriangle[1]==f) {
         return pVertex[1-i];
     } else {
         puts("ERROR: vertex() - this edge is not associated with this face!");
@@ -78,14 +79,14 @@ IAVertex *IAEdge::findZGlobal(double zMin)
  \return null, there is no other face, or if the given face is not part of
          this edge.
  */
-IATriangle *IAEdge::otherFace(IATriangle *f)
+IATriangle *IAEdge::otherTriangle(IATriangle *f)
 {
-    if (pFace[0]==f) {
-        return pFace[1];
-    } else if (pFace[1]==f) {
-        return pFace[0];
+    if (pTriangle[0]==f) {
+        return pTriangle[1];
+    } else if (pTriangle[1]==f) {
+        return pTriangle[0];
     } else {
-        puts("ERROR: otherFace() - this edge is not associated with this face!");
+        puts("ERROR: otherTriangle() - this edge is not associated with this face!");
         return 0L;
     }
 }
@@ -108,11 +109,38 @@ int IAEdge::indexIn(IATriangle *f)
 /**
  Return the number of faces connected to this edge.
  */
-int IAEdge::nFaces()
+int IAEdge::nTriangle()
 {
     int n = 0;
-    if (pFace[0]) n++;
-    if (pFace[1]) n++;
+    if (pTriangle[0]) n++;
+    if (pTriangle[1]) n++;
     return n;
 }
+
+
+//============================================================================//
+
+
+IAHalfEdge::IAHalfEdge(IATriangle *t)
+:   pTriangle(t)
+{
+}
+
+
+//============================================================================//
+
+
+IAHalfEdgeList::IAHalfEdgeList(IAMesh *m)
+:   pMesh(m)
+{
+}
+
+
+IAHalfEdgeList::~IAHalfEdgeList()
+{
+}
+
+
+
+
 

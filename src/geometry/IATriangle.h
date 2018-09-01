@@ -21,8 +21,7 @@ class IAEdge;
  Represent a triangle inside a mesh.
 
  Every geometry in Ioat is reduced to triangles. There are no quads, polygons,
- or even higher level geometries. "Face" and "Triangle" are used in this
- document interchangibly, simply because "face" is quicker to type.
+ or even higher level geometries.
 
  Triangles share points and share edges, but they do not manage them.
  */

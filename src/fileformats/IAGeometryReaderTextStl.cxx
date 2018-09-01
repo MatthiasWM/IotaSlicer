@@ -186,7 +186,7 @@ IAMesh *IAGeometryReaderTextStl::load()
             t->pVertex[0] = msh->vertexList[p1];
             t->pVertex[1] = msh->vertexList[p2];
             t->pVertex[2] = msh->vertexList[p3];
-            msh->addFace(t);
+            msh->addTriangle(t);
         }
     }
     // FIXME: fixing the mesh should be done after loading *any* mesh, not just this one

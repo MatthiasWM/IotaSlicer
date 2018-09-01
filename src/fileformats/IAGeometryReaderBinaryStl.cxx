@@ -116,8 +116,8 @@ IAMesh *IAGeometryReaderBinaryStl::load()
     IAMesh *msh = new IAMesh();
 
     skip(80);
-    uint32_t nFaces = getUInt32LSB();
-    for (int i=0; i<nFaces; i++) {
+    uint32_t nTriangle = getUInt32LSB();
+    for (int i=0; i<nTriangle; i++) {
         float x, y, z;
         size_t p1, p2, p3;
         // face normal
@@ -147,7 +147,7 @@ IAMesh *IAGeometryReaderBinaryStl::load()
         t->pVertex[0] = msh->vertexList[p1];
         t->pVertex[1] = msh->vertexList[p2];
         t->pVertex[2] = msh->vertexList[p3];
-        msh->addFace(t);
+        msh->addTriangle(t);
         // color
         getUInt16LSB(); // color information, if there was a standard
     }

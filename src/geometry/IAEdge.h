@@ -13,7 +13,7 @@
 
 class IAVertex;
 class IATriangle;
-class IAFace;
+class IAMesh;
 
 
 /**
@@ -30,16 +30,41 @@ public:
     IAEdge();
     IAVertex *findZGlobal(double);
     IAVertex *vertex(int i, IATriangle *f);
-    IATriangle *otherFace(IATriangle *);
+    IATriangle *otherTriangle(IATriangle *);
     IAVertex *otherVertex(IAVertex*);
     int indexIn(IATriangle *);
-    int nFaces();
+    int nTriangle();
 
-    IATriangle *pFace[2] = { nullptr, nullptr };
+    IATriangle *pTriangle[2] = { nullptr, nullptr };
     IAVertex *pVertex[2] = { nullptr, nullptr };
 };
 
 typedef std::vector<IAEdge*> IAEdgeList;
+
+
+class IAHalfEdge
+{
+public:
+    IAHalfEdge(IATriangle *);
+
+    IATriangle *pTriangle = nullptr;
+    IAVertex *pPosition = nullptr;
+    IAHalfEdge *pTwin = nullptr;
+    IAHalfEdge *pPrev = nullptr;
+    IAHalfEdge *pNext = nullptr;
+};
+
+class IAHalfEdgeList
+{
+public:
+    IAHalfEdgeList(IAMesh *);
+    ~IAHalfEdgeList();
+
+    IAMesh *pMesh;
+    //typedef std::vector<IAHalfEdge*> IAHalfEdgeList;
+
+};
+
 
 #endif /* IA_EDGE_H */
 

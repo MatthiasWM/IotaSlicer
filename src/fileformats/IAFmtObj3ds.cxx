@@ -137,7 +137,7 @@ void load3ds(Lib3dsFile *f, Lib3dsMeshInstanceNode *node) {
             t->pVertex[1] = msh->vertexList[mesh->faces[i].index[1]];
             t->pVertex[2] = msh->vertexList[mesh->faces[i].index[2]];
             //      IATriangle->print();
-            msh->addFace(t);
+            msh->addTriangle(t);
             //        fprintf(o, "%d", mesh->faces[i].index[j] + max_vertices + 1);
             //        int vi;
             //        float *fv;

@@ -46,13 +46,13 @@ public:
 //    void drawShrunk(unsigned int, double);
     void drawEdges();
     void drawSliced(double z);
-    void addFace(IATriangle*);
-    void clearFaceNormals();
+    void addTriangle(IATriangle*);
+    void clearTriangleNormals();
     void clearVertexNormals();
-    void clearNormals() { clearFaceNormals(); clearVertexNormals(); }
-    void calculateFaceNormals();
+    void clearNormals() { clearTriangleNormals(); clearVertexNormals(); }
+    void calculateTriangleNormals();
     void calculateVertexNormals();
-    void calculateNormals() { calculateFaceNormals(); calculateVertexNormals(); }
+    void calculateNormals() { calculateTriangleNormals(); calculateVertexNormals(); }
     void fixHoles();
     void fixHole(IAEdge*);
 //    void shrinkBy(double s);
@@ -73,6 +73,7 @@ public:
     IAVertexMap vertexMap;
     IAEdgeList edgeList;
     IAEdgeMap edgeMap;
+    IAHalfEdgeList pHalfEdgeList;
     IATriangleList faceList;
     IAVector3d pMin = { FLT_MAX, FLT_MAX, FLT_MAX};
     IAVector3d pMax = { FLT_MIN, FLT_MIN, FLT_MIN };

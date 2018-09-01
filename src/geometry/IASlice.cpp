@@ -135,7 +135,7 @@ void IASlice::addFirstFlangeVertex(IATriangle *tri)
 {
     // setup
     double zMin = pCurrentZ;
-    IATriangle *firstFace = tri;
+    IATriangle *firstTriangle = tri;
 
     // find first edge that crosses Z
     int edgeIndex = -1;
@@ -167,7 +167,7 @@ void IASlice::addFirstFlangeVertex(IATriangle *tri)
 
     // some statistics (should always be a loop if the model is watertight
     //    printf("%d edges linked\n", cc);
-    if (firstFace==tri) {
+    if (firstTriangle==tri) {
         //        puts("It's a loop!");
     } else {
         //        puts("It's NOT a loop!");
@@ -195,7 +195,7 @@ void IASlice::addNextFlangeVertex(IATrianglePtr &t, ISVertexPtr &vCutA, int &edg
     // setup
     double zMin = pCurrentZ;
 
-    // find the other edge in the triangle that crosses Z. Faces are always clockwise
+    // find the other edge in the triangle that crosses Z. Triangles are always clockwise
     // what happens if the triangle has one point exactly on Z?
     IAVertex *vOpp = t->pVertex[(edgeIndex+2)%3];
     int newIndex;
@@ -218,7 +218,7 @@ void IASlice::addNextFlangeVertex(IATrianglePtr &t, ISVertexPtr &vCutA, int &edg
     pFlange.push_back(lidEdge);
 
     vCutA = vCutB;
-    t = eCutB->otherFace(t);
+    t = eCutB->otherTriangle(t);
     edgeIndex = eCutB->indexIn(t);
 }
 
@@ -301,7 +301,7 @@ void __stdcall tessVertexCallback(GLvoid *vertex)
         f->pVertex[0] = tessV0;
         f->pVertex[1] = tessV1;
         f->pVertex[2] = tessV2;
-        Iota.gMeshSlice.addFace(f);
+        Iota.gMeshSlice.addTriangle(f);
         tessVertexCount = 0;
     }
 }
