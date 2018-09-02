@@ -96,6 +96,22 @@ void IASlice::addRim(IAMesh *m)
     // setup
     m->updateGlobalSpace();
 
+    // this is a pretty daft hack. To avoid boundary cases, we test if any of
+    // the model's z coordinates are exactly equal to the slicing plane. If they
+    // are, we move the z plane a tiny bit and try again.
+    double oldZ = pCurrentZ;
+    bool done = true;
+    do {
+        done = true;
+        for (auto v: m->vertexList) {
+            if (v->pGlobalPosition.z()==pCurrentZ) {
+                pCurrentZ += 1e-7;
+                done = false;
+                break;
+            }
+        }
+    } while (!done);
+
     // run through all faces and mark them as unused
     for (auto t: m->triangleList) {
         t->pUsed = false;
@@ -108,6 +124,9 @@ void IASlice::addRim(IAMesh *m)
         if (t->crossesZGlobal(pCurrentZ))
             addFirstRimVertex(t);
     }
+
+    // restore the old setup
+    pCurrentZ = oldZ;
 }
 
 
@@ -141,6 +160,8 @@ void IASlice::addFirstRimVertex(IATriangle *t)
     IAVector3d &v0 = t->pEdge[0]->vertex()->pGlobalPosition;
     IAVector3d &v1 = t->pEdge[1]->vertex()->pGlobalPosition;
     IAVector3d &v2 = t->pEdge[2]->vertex()->pGlobalPosition;
+
+    if (v0.z()==z && v1.z()==z && v2.z()==z) return; // case 4, defensive
 
     IAHalfEdge *e = nullptr;
     if ( (v0.z()<z) && (v1.z()>z) ) {
@@ -209,8 +230,6 @@ bool IASlice::addNextRimVertex(IAHalfEdgePtr &e)
     //      triangle must be below z
     // case 4: z touches all vertices (triangle is coplanar to z)
     //      triangle is coplanar to z
-
-    // setup
 
     // find the other edge in the triangle that crosses Z. Triangles are always clockwise
     // what happens if the triangle has one point exactly on Z?
