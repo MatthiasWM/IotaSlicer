@@ -43,9 +43,8 @@ data sHelpAbout {private local filename {../../html/helpAbout.html}
 data sHelpLicenses {private local filename {../../html/helpLicenses.html}
 }
 
-Function {createIotaAppWindow()} {open
-} {
-  Fl_Window {} {
+Function {createIotaAppWindow()} {} {
+  Fl_Window wMainWindow {
     label {Iota Slicer V0.1a} open
     xywh {472 202 800 600} type Double resizable visible
   } {
@@ -80,7 +79,7 @@ Function {createIotaAppWindow()} {open
           MenuItem {} {
             xywh {32 32 100 20} deactivate
           }
-          MenuItem {} {selected
+          MenuItem {} {
             xywh {40 40 100 20} deactivate
           }
           MenuItem {} {
@@ -623,5 +622,59 @@ wVersionWindow->hide();}
         xywh {284 110 90 24} labelsize 12
       }
     }
+  }
+}
+
+comment {Progress bar} {in_source in_header
+}
+
+decl {bool progressDialogCanceled;} {selected private local
+}
+
+declblock {\#if 1} {open after {\#endif}
+} {
+  Function {createProgressDialog()} {open
+  } {
+    Fl_Window wProgressDialog {
+      label Progress open
+      xywh {587 454 436 102} type Double modal visible
+    } {
+      Fl_Progress wProgressValue {
+        xywh {24 37 388 20}
+      }
+      Fl_Button {} {
+        label Abort
+        callback {progressDialogCanceled = true;}
+        xywh {320 67 92 24}
+      }
+      Fl_Box wProgressText {
+        label {Creating slice %d of %d.}
+        xywh {24 9 388 28} labelsize 12
+      }
+    }
+  }
+  Function {showProgressDialog()} {open
+  } {
+    code {if (!wProgressDialog) {
+  createProgressDialog();
+}
+progressDialogCanceled = false;
+
+int x = wMainWindow->x() + (wMainWindow->w()-wProgressDialog->w())/2;
+int y = wMainWindow->y() + (wMainWindow->h()-wProgressDialog->h())/2;
+
+wProgressDialog->position(x, y);
+
+wProgressDialog->show();} {}
+  }
+  Function {hideProgressDialog()} {open
+  } {
+    code {wProgressDialog->hide();} {}
+  }
+  Function {updateProgressDialog()} {
+    comment {Returns true, if the user interrupted the action.} open return_type bool
+  } {
+    code {Fl::check();
+return progressDialogCanceled;} {}
   }
 }

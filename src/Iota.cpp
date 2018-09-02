@@ -250,14 +250,30 @@ void IAIota::menuSliceMesh()
     double hgt = pMesh->pMax.z() - pMesh->pMin.z();
     // initial height determines stickiness to bed
 
+    double zMin = 0.2;
+    double zLayerHeight = 0.3;
 #if 0
-    double maxHgt = hgt;
+    double zMax = hgt;
 #else
-    double maxHgt = 25;
+    double zMax = 25;
 #endif
 
-    for (double z=0.2; z<maxHgt; z+=0.3) {
+    showProgressDialog();
+    char buf[1024];
+    strcpy(buf, "Genrating slices");
+    wProgressText->copy_label(buf);
+    wProgressValue->value(0);
+    int i = 0, n = (int)((zMax-zMin)/zLayerHeight);
+
+    for (double z=zMin; z<zMax; z+=zLayerHeight) {
         printf("Slicing at z=%g\n", z);
+
+        sprintf(buf, "Slicing layer %d of %d at %.3f (%d%%)", i, n, z, i*100/n);
+        wProgressText->copy_label(buf);
+        wProgressValue->value(i*100/n);
+        bool abort = updateProgressDialog();
+        if (abort) break;
+
         Iota.gMeshSlice.changeZ(z);
         Iota.gMeshSlice.clear();
         Iota.gMeshSlice.generateRim(Iota.pMesh);
@@ -315,8 +331,10 @@ void IAIota::menuSliceMesh()
         delete tp2;
         delete tp3;
         free(rgb);
+        i++;
     }
     pMachineToolpath->saveGCode("/Users/matt/aaa.gcode");
+    hideProgressDialog();
     gSceneView->redraw();
 }
 #else // save a series of dxf files
