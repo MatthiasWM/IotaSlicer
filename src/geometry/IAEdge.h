@@ -101,6 +101,7 @@ private:
 
 typedef std::vector<IAHalfEdge*> IAHalfEdgeList;
 
+typedef IAHalfEdge *IAHalfEdgePtr;
 
 
 #endif /* IA_EDGE_H */

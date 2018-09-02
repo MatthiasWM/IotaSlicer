@@ -95,7 +95,6 @@ void IASlice::addRim(IAMesh *m)
 {
     // setup
     m->updateGlobalSpace();
-    double zMin = pCurrentZ;
 
     // run through all faces and mark them as unused
     for (auto t: m->triangleList) {
@@ -106,18 +105,8 @@ void IASlice::addRim(IAMesh *m)
     for (auto t: m->triangleList) {
         if (t->pUsed) continue;
         t->pUsed = true;
-        int nBelow = t->pointsBelowZGlobal(zMin);
-        if (nBelow==0) {
-            // do nothing, all vertices are above zMin
-        } else if (nBelow==1) {
-            // starting from here, find all faces that intersect zMin and generate an outline for this slice
+        if (t->crossesZGlobal(pCurrentZ))
             addFirstRimVertex(t);
-        } else if (nBelow==2) {
-            // starting from here, find all faces that intersect zMin and generate an outline for this slice
-            addFirstRimVertex(t);
-        } else if (nBelow==3) {
-            // do nothing, all vertices are below zMin
-        }
     }
 }
 
@@ -135,48 +124,59 @@ void IASlice::addRim(IAMesh *m)
  *
  * \todo handle cases where a point is exactly on z
  */
-void IASlice::addFirstRimVertex(IATriangle *tri)
+void IASlice::addFirstRimVertex(IATriangle *t)
 {
-    // setup
-    double zMin = pCurrentZ;
-    IATriangle *firstTriangle = tri;
+    // case 1: z crosses two edges
+    // case 2: z touches one vertex and crosses one edge
+    // case 3: z touches one vertex and crosses no edge
+    //      triangle must be above z
+    // case 3: z touches two vertices
+    //      triangle must be below z
+    // case 4: z touches all vertices (triangle is coplanar to z)
+    //      crossesZGlobal() returns false, ignored here
 
-    // find first edge that crosses Z
-    int edgeIndex = -1;
-    if (tri->vertex(0)->pGlobalPosition.z()<zMin && tri->vertex(1)->pGlobalPosition.z()>=zMin) edgeIndex = 0;
-    if (tri->vertex(1)->pGlobalPosition.z()<zMin && tri->vertex(2)->pGlobalPosition.z()>=zMin) edgeIndex = 1;
-    if (tri->vertex(2)->pGlobalPosition.z()<zMin && tri->vertex(0)->pGlobalPosition.z()>=zMin) edgeIndex = 2;
-    if (edgeIndex==-1) {
-        puts("ERROR: addFirstRimVertex failed, not crossing zMin!");
+    double z = pCurrentZ;
+    IATriangle *firstTriangle = t;
+
+    IAVector3d &v0 = t->pEdge[0]->vertex()->pGlobalPosition;
+    IAVector3d &v1 = t->pEdge[1]->vertex()->pGlobalPosition;
+    IAVector3d &v2 = t->pEdge[2]->vertex()->pGlobalPosition;
+
+    IAHalfEdge *e = nullptr;
+    if ( (v0.z()<z) && (v1.z()>z) ) {
+        e = t->pEdge[0]; // case 1
+    } else if ( (v1.z()<z) && (v2.z()>z) ) {
+        e = t->pEdge[1]; // case 1
+    } else if ( (v2.z()<z) && (v0.z()>z) ) {
+        e = t->pEdge[2]; // case 1
+    } else {
+        // boundary condition
+        puts("ERROR: addFirstRimVertex boundary condition not implemented!");
+        assert(0);
     }
 
-    // create a vertex where the edge crosses Z.
-    IAVertex *vCutA = tri->pEdge[edgeIndex]->findZGlobal(zMin);
+    IAVertex *vCutA = e->findZGlobal(z);
     if (!vCutA) {
         puts("ERROR: addFirstRimVertex failed, no Z point found!");
+        assert(0);
     }
-
-    // add this edge to list
     vertexList.push_back(vCutA);
 
     // find more connected edges
-    int cc = 0;
     for (;;) {
-        if (!addNextRimVertex(tri, vCutA, edgeIndex))
+        if (!addNextRimVertex(e))
             break;
-        cc++;
-        if (tri->pUsed)
+        t = e->triangle();
+        if (t->pUsed)
             break;
-        tri->pUsed = true;
+        t->pUsed = true;
     }
     // TODO: if addNextRimVertex failed because this is not a watertight model (or
     // something else went wrong) we still may save the day somewhat by tracing
     // the flange in the other direction. Either way, the result is
     // pretty random.
 
-    // some statistics (should always be a loop if the model is watertight
-    //    printf("%d edges linked\n", cc);
-    if (firstTriangle==tri) {
+    if (firstTriangle==t) {
         // puts("It's a loop!");
     } else {
         puts("WARNING: the rim of the slice is not a loop. Model not watertight?");
@@ -199,40 +199,44 @@ void IASlice::addFirstRimVertex(IATriangle *tri)
  \param edgeIndex the index of the first edge that crosses zMin
  \param zMin slice on this z plane
  */
-bool IASlice::addNextRimVertex(IATrianglePtr &t, ISVertexPtr &vCutA, int &edgeIndex)
+bool IASlice::addNextRimVertex(IAHalfEdgePtr &e)
 {
+    // case 1: z crosses two edges
+    // case 2: z touches one vertex and crosses one edge
+    // case 3: z touches one vertex and crosses no edge
+    //      triangle must be above z
+    // case 3: z touches two vertices
+    //      triangle must be below z
+    // case 4: z touches all vertices (triangle is coplanar to z)
+    //      triangle is coplanar to z
+
     // setup
-    double zMin = pCurrentZ;
 
     // find the other edge in the triangle that crosses Z. Triangles are always clockwise
     // what happens if the triangle has one point exactly on Z?
-    IAVertex *vOpp = t->vertex((edgeIndex+2)%3);
-    int newIndex;
-    if (vOpp->pGlobalPosition.z()<zMin) {
-        newIndex = (edgeIndex+1)%3;
+    if (e->prev()->vertex()->pGlobalPosition.z()<pCurrentZ) { // FIXME; >, >=
+        e = e->next();
     } else {
-        newIndex = (edgeIndex+2)%3;
+        e = e->prev();
     }
 
     // Cut the new edge at Z
-    IAHalfEdge *eCutB = t->pEdge[newIndex];
-    IAVertex *vCutB = eCutB->findZGlobal(zMin);
+    IAVertex *vCutB = e->findZGlobal(pCurrentZ);
     if (!vCutB) {
         puts("ERROR: addNextLidVertex failed, no Z point found!");
+        assert(0);
     }
-    vertexList.push_back(vCutB);
+
     IAEdge *lidEdge = new IAEdge();
-    lidEdge->pVertex[0] = vCutA;
+    lidEdge->pVertex[0] = vertexList.back();
     lidEdge->pVertex[1] = vCutB;
+    vertexList.push_back(vCutB);
     pRim.push_back(lidEdge);
 
-    vCutA = vCutB;
-    assert(eCutB->twin()); // must be true in a watertight model!
-    if (!eCutB->twin())
+    if (!e->twin())
         return false;
-    eCutB = eCutB->twin();
-    t = eCutB->triangle();
-    edgeIndex = eCutB->indexIn(t);
+
+    e = e->twin();
     return true;
 }
 

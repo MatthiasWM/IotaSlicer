@@ -34,7 +34,7 @@ public:
     void generateRim(IAMesh*);
     void addRim(IAMesh*);
     void addFirstRimVertex(IATriangle *IATriangle);
-    bool addNextRimVertex(IATrianglePtr &IATriangle, ISVertexPtr &vCutA, int &edgeIndex);
+    bool addNextRimVertex(IAHalfEdgePtr &edge);
     void drawRim();
     void drawShell();
     void drawFramebuffer();

@@ -34,6 +34,7 @@ public:
     bool validNormal() { return pNNormal==1; }
     void rotateVertices();
     void print();
+    bool crossesZGlobal(double z);
     int pointsBelowZGlobal(double z);
 
     IAVertex *vertex(int i) { return pEdge[i]->vertex(); }
