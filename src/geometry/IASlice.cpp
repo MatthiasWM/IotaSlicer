@@ -122,14 +122,18 @@ void IASlice::addRim(IAMesh *m)
 }
 
 
-/*
- Create the edge that cuts this triangle in half.
-
- The first point is know to be on the z slice. The second edge that crosses
- z is found and the point of intersection is calculated. Then an edge is
- created that splits the face on the z plane.
-
- \param IATriangle the face that is split in two; the face must cross zMin
+/**
+ * Create the edge that cuts this triangle in half.
+ *
+ * This finds one half-edge in the triangle that crosses z. It then
+ * calls addNextRimVertex which will run along the mesh to find the next
+ * edge that crosses z, and so on until we reach the starting triangle again.
+ *
+ * In a watertight mesh, this should always create a loop.
+ *
+ * \param starting triangle.
+ *
+ * \todo handle cases where a point is exactly on z
  */
 void IASlice::addFirstRimVertex(IATriangle *tri)
 {
@@ -165,7 +169,7 @@ void IASlice::addFirstRimVertex(IATriangle *tri)
             break;
         tri->pUsed = true;
     }
-    // TODO: if addNextRim failed because this is not a watertight model (or
+    // TODO: if addNextRimVertex failed because this is not a watertight model (or
     // something else went wrong) we still may save the day somewhat by tracing
     // the flange in the other direction. Either way, the result is
     // pretty random.
