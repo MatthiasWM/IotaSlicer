@@ -98,12 +98,12 @@ void IASlice::addFlange(IAMesh *m)
     double zMin = pCurrentZ;
 
     // run through all faces and mark them as unused
-    for (auto t: m->faceList) {
+    for (auto t: m->triangleList) {
         t->pUsed = false;
     }
 
     // run through all faces again and add all faces to the first lid that intersect with zMin
-    for (auto t: m->faceList) {
+    for (auto t: m->triangleList) {
         if (t->pUsed) continue;
         t->pUsed = true;
         int nBelow = t->pointsBelowZGlobal(zMin);
@@ -297,11 +297,7 @@ void __stdcall tessVertexCallback(GLvoid *vertex)
         tessVertexCount = 2;
     } else {
         tessV2 = (IAVertex*)vertex;
-        IATriangle *f = new IATriangle();
-        f->pVertex[0] = tessV0;
-        f->pVertex[1] = tessV1;
-        f->pVertex[2] = tessV2;
-        Iota.gMeshSlice.addTriangle(f);
+        Iota.gMeshSlice.addNewTriangle(tessV0, tessV1, tessV2);
         tessVertexCount = 0;
     }
 }

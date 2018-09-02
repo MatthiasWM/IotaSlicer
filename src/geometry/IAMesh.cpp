@@ -34,10 +34,10 @@ void IAMesh::clear()
     edgeList.clear();
     edgeMap.clear();
 
-    for (auto f: faceList) {
+    for (auto f: triangleList) {
         delete f;
     }
-    faceList.clear();
+    triangleList.clear();
 
     for (auto v: vertexList) {
         delete v;
@@ -53,38 +53,38 @@ void IAMesh::clear()
  */
 bool IAMesh::validate()
 {
-    if (faceList.size()>0 && edgeList.size()==0) {
+    if (triangleList.size()>0 && edgeList.size()==0) {
         puts("ERROR: empty edge list!");
     }
     int i, n = (int)edgeList.size();
     for (i=0; i<n; i++) {
         IAHalfEdge *e = edgeList[i];
         if (e) {
-            if (e->pTriangle[0]==0L) {
+            if (e->triangle(0)==nullptr) {
                 printf("ERROR: edge %d [%p] without face found!\n", i, e);
-            } else if (e->pTriangle[1]==0L) {
+            } else if (e->triangle(1)==nullptr) {
                 printf("ERROR: edge %d [%p] with single face found (hole in mesh)!\n", i, e);
             }
-            if (e->pTriangle[0]) {
-                if (e->pTriangle[0]->pEdge[0]!=e && e->pTriangle[0]->pEdge[1]!=e && e->pTriangle[0]->pEdge[2]!=e) {
-                    printf("ERROR: face [%p] is not pointing back at edge %d [%p]!\n", e->pTriangle[0], i, e);
+            if (e->triangle(0)) {
+                if (e->triangle(0)->pEdge[0]!=e && e->triangle(0)->pEdge[1]!=e && e->triangle(0)->pEdge[2]!=e) {
+                    printf("ERROR: face [%p] is not pointing back at edge %d [%p]!\n", e->triangle(0), i, e);
                 }
             }
-            if (e->pTriangle[1]) {
-                if (e->pTriangle[1]->pEdge[0]!=e && e->pTriangle[1]->pEdge[1]!=e && e->pTriangle[1]->pEdge[2]!=e) {
-                    printf("ERROR: face [%p] is not pointing back at edge %d [%p]!\n", e->pTriangle[1], i, e);
+            if (e->triangle(0)) {
+                if (e->triangle(0)->pEdge[0]!=e && e->triangle(0)->pEdge[1]!=e && e->triangle(0)->pEdge[2]!=e) {
+                    printf("ERROR: face [%p] is not pointing back at edge %d [%p]!\n", e->triangle(0), i, e);
                 }
             }
-            if (e->pVertex[0]==0L || e->pVertex[1]==0L) {
+            if (e->vertex(0)==nullptr || e->vertex(1)==nullptr) {
                 printf("ERROR: edge %d [%p] missing a vertex reference!\n", i, e);
             }
         } else {
             puts("ERROR: zero edge found!");
         }
     }
-    n = (int)faceList.size();
+    n = (int)triangleList.size();
     for (i=0; i<n; i++) {
-        IATriangle *f = faceList[i];
+        IATriangle *f = triangleList[i];
         if (f) {
             if (f->pVertex[0]==0L || f->pVertex[1]==0L || f->pVertex[1]==0L) {
                 printf("ERROR: face %d has an empty vertex field.\n", i);
@@ -104,11 +104,11 @@ bool IAMesh::validate()
                     printf("ERROR: face %d has an edge2/vertex2 missmatch.\n", i);
                 if (f->pEdge[2]->vertex(1, f)!=f->pVertex[0])
                     printf("ERROR: face %d has an edge2/vertex0 missmatch.\n", i);
-                if (f->pEdge[0]->pTriangle[0]!=f && f->pEdge[0]->pTriangle[1]!=f)
+                if (f->pEdge[0]->triangle(0)!=f && f->pEdge[0]->triangle(1)!=f)
                     printf("ERROR: face %d edge0 does not point back at face.\n", i);
-                if (f->pEdge[1]->pTriangle[0]!=f && f->pEdge[1]->pTriangle[1]!=f)
+                if (f->pEdge[1]->triangle(0)!=f && f->pEdge[1]->triangle(1)!=f)
                     printf("ERROR: face %d edge1 does not point back at face.\n", i);
-                if (f->pEdge[2]->pTriangle[0]!=f && f->pEdge[2]->pTriangle[1]!=f)
+                if (f->pEdge[2]->triangle(0)!=f && f->pEdge[2]->triangle(1)!=f)
                     printf("ERROR: face %d edge2 does not point back at face.\n", i);
             }
         } else {
@@ -148,10 +148,10 @@ void IAMesh::fixHole(IAHalfEdge *e)
 {
     printf("Fixing a hole...\n");
     IATriangle *fFix;
-    if (e->pTriangle[0])
-        fFix = e->pTriangle[0];
+    if (e->triangle(0))
+        fFix = e->triangle(0);
     else
-        fFix = e->pTriangle[1];
+        fFix = e->triangle(1);
     // walk the fan to the left and find the next edge
     IATriangle *fLeft = fFix;
     IAHalfEdge *eLeft = e;
@@ -181,30 +181,20 @@ void IAMesh::fixHole(IAHalfEdge *e)
         // this is a zero size hole: merge the edges
         puts("ERROR: zero size hole!");
     } else if ( vLeft==vRight ) {
-        // this triangle fill conpletely fill the hole
-        IATriangle *fNew = new IATriangle();
-        fNew->pVertex[0] = e->vertex(1, fFix);
-        fNew->pVertex[1] = e->vertex(0, fFix);
-        fNew->pVertex[2] = vLeft;
-        addTriangle(fNew);
+        addNewTriangle(e->vertex(1, fFix), e->vertex(0, fFix), vLeft);
     } else if (fFix==fRight) {
         if (fLeft==fRight) {
-            // we have a single triangle without any connections, delete?
-            IATriangle *fNew = new IATriangle();
-            fNew->pVertex[0] = fFix->pVertex[2];
-            fNew->pVertex[1] = fFix->pVertex[1];
-            fNew->pVertex[2] = fFix->pVertex[0];
-            addTriangle(fNew);
+            addNewTriangle(fFix->pVertex[2],
+                           fFix->pVertex[1],
+                           fFix->pVertex[0]);
         } else {
             fixHole(eRight);
         }
     } else {
         // add one more triangle to get closer to filling the hole
-        IATriangle *fNew = new IATriangle();
-        fNew->pVertex[0] = e->vertex(1, fFix);
-        fNew->pVertex[1] = e->vertex(0, fFix);
-        fNew->pVertex[2] = eRight->vertex(1, fRight);
-        addTriangle(fNew);
+        addNewTriangle(e->vertex(1, fFix),
+                       e->vertex(0, fFix),
+                       eRight->vertex(1, fRight));
     }
 }
 
@@ -215,29 +205,33 @@ void IAMesh::fixHole(IAHalfEdge *e)
  \todo make sure we do not create duplicate edges
  \todo make sure that we also do not add duplicate points
  */
-void IAMesh::addTriangle(IATriangle *newTriangle)
+IATriangle *IAMesh::addNewTriangle(IAVertex *v0, IAVertex *v1, IAVertex *v2)
 {
-    newTriangle->pEdge[0] = addEdge(newTriangle->pVertex[0], newTriangle->pVertex[1], newTriangle);
-    newTriangle->pEdge[1] = addEdge(newTriangle->pVertex[1], newTriangle->pVertex[2], newTriangle);
-    newTriangle->pEdge[2] = addEdge(newTriangle->pVertex[2], newTriangle->pVertex[0], newTriangle);
-    faceList.push_back(newTriangle);
+    IATriangle *t = new IATriangle( this );
+    t->pVertex[0] = v0;
+    t->pVertex[1] = v1;
+    t->pVertex[2] = v2;
+    t->pEdge[0] = addEdge(v0, v1, t);
+    t->pEdge[1] = addEdge(v1, v2, t);
+    t->pEdge[2] = addEdge(v2, v0, t);
+    triangleList.push_back(t);
+    return t;
 }
 
 
 /**
  Create a new edge and add it to this mesh.
- \todo check for duplicates
  */
 IAHalfEdge *IAMesh::addEdge(IAVertex *v0, IAVertex *v1, IATriangle *face)
 {
     IAHalfEdge *e = findEdge(v0, v1);
     if (e) {
-        e->pTriangle[1] = face;
+        e->setTriangle(1, face);
     } else {
         e = new IAHalfEdge();
-        e->pVertex[0] = v0;
-        e->pVertex[1] = v1;
-        e->pTriangle[0] = face;
+        e->setVertex(0, v0);
+        e->setVertex(1, v1);
+        e->setTriangle(0, face);
         edgeList.push_back(e);
         edgeMap.insert(std::make_pair(v0->pLocalPosition.length()+v1->pLocalPosition.length(), e));
     }
@@ -263,8 +257,8 @@ IAHalfEdge *IAMesh::findEdge(IAVertex *v0, IAVertex *v1)
     auto itup = edgeMap.upper_bound(key+0.0001);
     for (auto it=itlow; it!=itup; ++it) {
         IAHalfEdge *e = (*it).second;
-        IAVertex *ev0 = e->pVertex[0];
-        IAVertex *ev1 = e->pVertex[1];
+        IAVertex *ev0 = e->vertex(0);
+        IAVertex *ev1 = e->vertex(1);
         if ((ev0==v0 && ev1==v1)||(ev0==v1 && ev1==v0))
             return e;
     }
@@ -278,7 +272,7 @@ IAHalfEdge *IAMesh::findEdge(IAVertex *v0, IAVertex *v1)
  */
 void IAMesh::clearTriangleNormals()
 {
-    for (auto t: faceList) {
+    for (auto t: triangleList) {
         t->pNNormal = 0;
     }
 }
@@ -300,7 +294,7 @@ void IAMesh::clearVertexNormals()
  */
 void IAMesh::calculateTriangleNormals()
 {
-    for (auto t: faceList) {
+    for (auto t: triangleList) {
         IAVector3d p0(t->pVertex[0]->pLocalPosition);
         IAVector3d p1(t->pVertex[1]->pLocalPosition);
         IAVector3d p2(t->pVertex[2]->pLocalPosition);
@@ -319,7 +313,7 @@ void IAMesh::calculateTriangleNormals()
  */
 void IAMesh::calculateVertexNormals()
 {
-    for (auto t: faceList) {
+    for (auto t: triangleList) {
         IAVector3d n(t->pNormal);
         t->pVertex[0]->addNormal(n);
         t->pVertex[1]->addNormal(n);
@@ -338,7 +332,7 @@ void IAMesh::drawGouraud()
 {
     glColor3f(1.0f, 1.0f, 1.0f);
     glBegin(GL_TRIANGLES);
-    for (auto t: faceList) {
+    for (auto t: triangleList) {
         for (int j = 0; j < 3; ++j) {
             IAVertex *v = t->pVertex[j];
             glNormal3dv(v->pNormal.dataPointer());
@@ -366,7 +360,7 @@ void IAMesh::drawFlat(bool textured, float r, float g, float b, float a)
 
     glColor4f(r, g, b, a);
     glBegin(GL_TRIANGLES);
-    for (auto t: faceList) {
+    for (auto t: triangleList) {
         glNormal3dv(t->pNormal.dataPointer());
         for (int j = 0; j < 3; ++j) {
             IAVertex *v = t->pVertex[j];
@@ -390,7 +384,7 @@ void IAMesh::drawEdges() {
     glBegin(GL_LINES);
     for (auto e: edgeList) {
         for (int j = 0; j < 2; ++j) {
-            IAVertex *v = e->pVertex[j];
+            IAVertex *v = e->vertex(j);
             glTexCoord2dv(v->pTex.dataPointer());
             glVertex3dv(v->pLocalPosition.dataPointer());
         }

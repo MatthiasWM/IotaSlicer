@@ -13,6 +13,7 @@
 #include <vector>
 
 
+class IAMesh;
 class IAVertex;
 class IAHalfEdge;
 
@@ -28,7 +29,7 @@ class IAHalfEdge;
 class IATriangle
 {
 public:
-    IATriangle();
+    IATriangle(IAMesh *m);
     bool validNormal() { return pNNormal==1; }
     void rotateVertices();
     void print();
@@ -40,6 +41,9 @@ public:
     int pNNormal = 0;
     bool pUsed = false;
     bool pPatched = false;
+
+private:
+    IAMesh *pMesh = nullptr;
 };
 
 typedef IATriangle *IATrianglePtr;

@@ -46,7 +46,6 @@ public:
 //    void drawShrunk(unsigned int, double);
     void drawEdges();
     void drawSliced(double z);
-    void addTriangle(IATriangle*);
     void clearTriangleNormals();
     void clearVertexNormals();
     void clearNormals() { clearTriangleNormals(); clearVertexNormals(); }
@@ -57,6 +56,9 @@ public:
     void fixHole(IAHalfEdge*);
 //    void shrinkBy(double s);
     void projectTexture(double w, double h, int type);
+
+    IATriangle *addNewTriangle(IAVertex *v0, IAVertex *v1, IAVertex *v2);
+
     IAHalfEdge *findEdge(IAVertex*, IAVertex*);
     IAHalfEdge *addEdge(IAVertex*, IAVertex*, IATriangle*);
     size_t addPoint(double x, double y, double z);
@@ -73,7 +75,7 @@ public:
     IAVertexMap vertexMap;
     IAHalfEdgeList edgeList;
     IAHalfEdgeMap edgeMap;
-    IATriangleList faceList;
+    IATriangleList triangleList;
     IAVector3d pMin = { FLT_MAX, FLT_MAX, FLT_MAX};
     IAVector3d pMax = { FLT_MIN, FLT_MIN, FLT_MIN };
 

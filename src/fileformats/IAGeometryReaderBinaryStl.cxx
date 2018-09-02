@@ -143,11 +143,9 @@ IAMesh *IAGeometryReaderBinaryStl::load()
         p3 = msh->addPoint(x, y, z);
         msh->vertexList[p3]->pTex.set(x*0.8+0.5, -z*0.8+0.5, 0.0);
         // add face
-        IATriangle *t = new IATriangle();
-        t->pVertex[0] = msh->vertexList[p1];
-        t->pVertex[1] = msh->vertexList[p2];
-        t->pVertex[2] = msh->vertexList[p3];
-        msh->addTriangle(t);
+        msh->addNewTriangle(msh->vertexList[p1],
+                            msh->vertexList[p2],
+                            msh->vertexList[p3]);
         // color
         getUInt16LSB(); // color information, if there was a standard
     }
