@@ -9,6 +9,7 @@
 
 
 #include "IAVector3d.h"
+#include "IAEdge.h"
 
 #include <vector>
 
@@ -35,7 +36,8 @@ public:
     void print();
     int pointsBelowZGlobal(double z);
 
-    IAVertex *pVertex[3] = { nullptr, nullptr, nullptr };
+    IAVertex *vertex(int i) { return pEdge[i]->vertex(); }
+
     IAHalfEdge *pEdge[3] = { nullptr, nullptr, nullptr };
     IAVector3d pNormal;
     int pNNormal = 0;
@@ -43,6 +45,7 @@ public:
     bool pPatched = false;
 
 private:
+    //IAVertex *pVertex[3] = { nullptr, nullptr, nullptr };
     IAMesh *pMesh = nullptr;
 };
 

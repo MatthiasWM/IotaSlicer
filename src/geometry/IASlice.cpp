@@ -143,9 +143,9 @@ void IASlice::addFirstRimVertex(IATriangle *tri)
 
     // find first edge that crosses Z
     int edgeIndex = -1;
-    if (tri->pVertex[0]->pGlobalPosition.z()<zMin && tri->pVertex[1]->pGlobalPosition.z()>=zMin) edgeIndex = 0;
-    if (tri->pVertex[1]->pGlobalPosition.z()<zMin && tri->pVertex[2]->pGlobalPosition.z()>=zMin) edgeIndex = 1;
-    if (tri->pVertex[2]->pGlobalPosition.z()<zMin && tri->pVertex[0]->pGlobalPosition.z()>=zMin) edgeIndex = 2;
+    if (tri->vertex(0)->pGlobalPosition.z()<zMin && tri->vertex(1)->pGlobalPosition.z()>=zMin) edgeIndex = 0;
+    if (tri->vertex(1)->pGlobalPosition.z()<zMin && tri->vertex(2)->pGlobalPosition.z()>=zMin) edgeIndex = 1;
+    if (tri->vertex(2)->pGlobalPosition.z()<zMin && tri->vertex(0)->pGlobalPosition.z()>=zMin) edgeIndex = 2;
     if (edgeIndex==-1) {
         puts("ERROR: addFirstRimVertex failed, not crossing zMin!");
     }
@@ -206,7 +206,7 @@ bool IASlice::addNextRimVertex(IATrianglePtr &t, ISVertexPtr &vCutA, int &edgeIn
 
     // find the other edge in the triangle that crosses Z. Triangles are always clockwise
     // what happens if the triangle has one point exactly on Z?
-    IAVertex *vOpp = t->pVertex[(edgeIndex+2)%3];
+    IAVertex *vOpp = t->vertex((edgeIndex+2)%3);
     int newIndex;
     if (vOpp->pGlobalPosition.z()<zMin) {
         newIndex = (edgeIndex+1)%3;

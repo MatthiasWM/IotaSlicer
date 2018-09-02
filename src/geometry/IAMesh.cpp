@@ -108,26 +108,10 @@ bool IAMesh::validate()
     i = 0;
     for (auto t: triangleList) {
         if (t) {
-            if (t->pVertex[0]==0L || t->pVertex[1]==0L || t->pVertex[1]==0L) {
-                printf("ERROR: face %d has an empty vertex field.\n", i);
-                assert(0);
-            }
             if (t->pEdge[0]==0L || t->pEdge[1]==0L || t->pEdge[1]==0L) {
                 printf("ERROR: face %d has an empty edge field.\n", i);
                 assert(0);
             } else {
-                if (t->pEdge[0]->vertex()!=t->pVertex[0]) {
-                    printf("ERROR: face %d has an edge0/vertex0 missmatch.\n", i);
-                    assert(0);
-                }
-                if (t->pEdge[1]->vertex()!=t->pVertex[1]) {
-                    printf("ERROR: face %d has an edge1/vertex1 missmatch.\n", i);
-                    assert(0);
-                }
-                if (t->pEdge[2]->vertex()!=t->pVertex[2]) {
-                    printf("ERROR: face %d has an edge2/vertex2 missmatch.\n", i);
-                    assert(0);
-                }
                 if (t->pEdge[0]->triangle()!=t) {
                     printf("ERROR: face %d edge0 does not point back at face.\n", i);
                     assert(0);
@@ -221,9 +205,9 @@ void IAMesh::fixHole(IAHalfEdge *e)
         addNewTriangle(e->vertex(1, fFix), e->vertex(0, fFix), vLeft);
     } else if (fFix==fRight) {
         if (fLeft==fRight) {
-            addNewTriangle(fFix->pVertex[2],
-                           fFix->pVertex[1],
-                           fFix->pVertex[0]);
+            addNewTriangle(fFix->vertex(2),
+                           fFix->vertex(1),
+                           fFix->vertex(0));
         } else {
             fixHole(eRight);
         }
@@ -247,9 +231,6 @@ void IAMesh::fixHole(IAHalfEdge *e)
 IATriangle *IAMesh::addNewTriangle(IAVertex *v0, IAVertex *v1, IAVertex *v2)
 {
     IATriangle *t = new IATriangle( this );
-    t->pVertex[0] = v0;
-    t->pVertex[1] = v1;
-    t->pVertex[2] = v2;
 
     IAHalfEdge *e0 = t->pEdge[0] = new IAHalfEdge(t, v0);
     IAHalfEdge *e1 = t->pEdge[1] = new IAHalfEdge(t, v1);
@@ -355,9 +336,9 @@ void IAMesh::clearVertexNormals()
 void IAMesh::calculateTriangleNormals()
 {
     for (auto t: triangleList) {
-        IAVector3d p0(t->pVertex[0]->pLocalPosition);
-        IAVector3d p1(t->pVertex[1]->pLocalPosition);
-        IAVector3d p2(t->pVertex[2]->pLocalPosition);
+        IAVector3d p0(t->vertex(0)->pLocalPosition);
+        IAVector3d p1(t->vertex(1)->pLocalPosition);
+        IAVector3d p2(t->vertex(2)->pLocalPosition);
         p1 -= p0;
         p2 -= p0;
         IAVector3d n = p1.cross(p2);
@@ -375,9 +356,9 @@ void IAMesh::calculateVertexNormals()
 {
     for (auto t: triangleList) {
         IAVector3d n(t->pNormal);
-        t->pVertex[0]->addNormal(n);
-        t->pVertex[1]->addNormal(n);
-        t->pVertex[2]->addNormal(n);
+        t->vertex(0)->addNormal(n);
+        t->vertex(1)->addNormal(n);
+        t->vertex(2)->addNormal(n);
     }
     for (auto v: vertexList) {
         v->averageNormal();
@@ -394,7 +375,7 @@ void IAMesh::drawGouraud()
     glBegin(GL_TRIANGLES);
     for (auto t: triangleList) {
         for (int j = 0; j < 3; ++j) {
-            IAVertex *v = t->pVertex[j];
+            IAVertex *v = t->vertex(j);
             glNormal3dv(v->pNormal.dataPointer());
             glTexCoord2dv(v->pTex.dataPointer());
             glVertex3dv(v->pLocalPosition.dataPointer());
@@ -423,7 +404,7 @@ void IAMesh::drawFlat(bool textured, float r, float g, float b, float a)
     for (auto t: triangleList) {
         glNormal3dv(t->pNormal.dataPointer());
         for (int j = 0; j < 3; ++j) {
-            IAVertex *v = t->pVertex[j];
+            IAVertex *v = t->vertex(j);
             glTexCoord2dv(v->pTex.dataPointer());
             glVertex3dv(v->pLocalPosition.dataPointer());
         }

@@ -26,10 +26,6 @@ IATriangle::IATriangle(IAMesh *m)
  */
 void IATriangle::rotateVertices()
 {
-    IAVertex *v = pVertex[0];
-    pVertex[0] = pVertex[1];
-    pVertex[1] = pVertex[2];
-    pVertex[2] = v;
     IAHalfEdge *e = pEdge[0];
     pEdge[0] = pEdge[1];
     pEdge[1] = pEdge[2];
@@ -43,9 +39,9 @@ void IATriangle::rotateVertices()
 void IATriangle::print()
 {
     printf("Face: \n");
-    pVertex[0]->print();
-    pVertex[1]->print();
-    pVertex[2]->print();
+    vertex(0)->print();
+    vertex(1)->print();
+    vertex(2)->print();
 }
 
 
@@ -54,9 +50,9 @@ void IATriangle::print()
  */
 int IATriangle::pointsBelowZGlobal(double zMin)
 {
-    double z0 = pVertex[0]->pGlobalPosition.z();
-    double z1 = pVertex[1]->pGlobalPosition.z();
-    double z2 = pVertex[2]->pGlobalPosition.z();
+    double z0 = vertex(0)->pGlobalPosition.z();
+    double z1 = vertex(1)->pGlobalPosition.z();
+    double z2 = vertex(2)->pGlobalPosition.z();
     int n = (z0<zMin) + (z1<zMin) + (z2<zMin);
     return n;
 }
