@@ -42,7 +42,7 @@ public:
 };
 
 
-typedef IAVertex *ISVertexPtr;
+typedef IAVertex *IAVertexPtr;
 typedef std::vector<IAVertex*> IAVertexList;
 
 
