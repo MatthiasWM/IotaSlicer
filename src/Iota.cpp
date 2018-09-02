@@ -4,6 +4,7 @@
 //  Copyright (c) 2013-2018 Matthias Melcher. All rights reserved.
 //
 
+// FIXME: the mesh fixing code is now broken and loops endlessly!
 // TODO: still buggy: fix STL importer to generate only watertight models (crashes when fixing holes!)
 // TODO: make STL importer bullet proof (no reads beyond end of line, for example)
 // TODO: make class method names more consistent
