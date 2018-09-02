@@ -119,7 +119,7 @@ IAMesh *IAGeometryReaderBinaryStl::load()
     uint32_t nTriangle = getUInt32LSB();
     for (int i=0; i<nTriangle; i++) {
         float x, y, z;
-        size_t p1, p2, p3;
+        size_t p1, p2, p3; // FIXME: use the pointer to the vertex instead
         // face normal
         getFloatLSB();
         getFloatLSB();

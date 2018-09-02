@@ -122,9 +122,11 @@ int IAEdge::nTriangle()
 
 
 /**
- Create an edge with no connections.
+ * Create a half-edge that will be part of a triangle, pointing at a vertex.
  */
-IAHalfEdge::IAHalfEdge()
+IAHalfEdge::IAHalfEdge(IATriangle *t, IAVertex *v)
+:   pTriangle( t ),
+    pVertex( v )
 {
 }
 
@@ -134,13 +136,14 @@ IAHalfEdge::IAHalfEdge()
  */
 IAVertex *IAHalfEdge::vertex(int i, IATriangle *f)
 {
-    if (pTriangle[0]==f) {
-        return pVertex[i];
-    } else if (pTriangle[1]==f) {
-        return pVertex[1-i];
+    if (triangle()==f) {
+        return vertex(i);
+    } else if (twin() && twin()->triangle()==f) {
+        return vertex(1-i);
     } else {
         puts("ERROR: vertex() - this edge is not associated with this face!");
-        return 0L;
+        assert(0);
+        return nullptr;
     }
 }
 
@@ -152,7 +155,7 @@ IAVertex *IAHalfEdge::vertex(int i, IATriangle *f)
  */
 IAVertex *IAHalfEdge::findZGlobal(double zMin)
 {
-    IAVertex *v0 = pVertex[0], *v1 = pVertex[1];
+    IAVertex *v0 = vertex(0), *v1 = vertex(1);
     IAVector3d vd0(v0->pGlobalPosition);
     bool retVec = false;
     vd0 -= v1->pGlobalPosition;
@@ -188,12 +191,13 @@ IAVertex *IAHalfEdge::findZGlobal(double zMin)
  */
 IATriangle *IAHalfEdge::otherTriangle(IATriangle *f)
 {
-    if (pTriangle[0]==f) {
-        return pTriangle[1];
-    } else if (pTriangle[1]==f) {
-        return pTriangle[0];
+    if (triangle()==f) {
+        return triangle(1);
+    } else if (triangle(1)==f) {
+        return triangle();
     } else {
         puts("ERROR: otherTriangle() - this edge is not associated with this face!");
+        assert(0);
         return 0L;
     }
 }
@@ -218,8 +222,7 @@ int IAHalfEdge::indexIn(IATriangle *f)
  */
 int IAHalfEdge::nTriangle()
 {
-    int n = 0;
-    if (pTriangle[0]) n++;
-    if (pTriangle[1]) n++;
+    int n = 1;
+    if (twin()) n = 2;
     return n;
 }

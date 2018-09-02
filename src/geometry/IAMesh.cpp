@@ -53,99 +53,137 @@ void IAMesh::clear()
  */
 bool IAMesh::validate()
 {
+    bool isWatertight = true;
+    printf("Validating mesh with %ld triangles, %ld vertices, and %ld edges...\n",
+           triangleList.size(), vertexList.size(), edgeList.size());
     if (triangleList.size()>0 && edgeList.size()==0) {
-        puts("ERROR: empty edge list!");
+        puts("WARNING: empty edge list!");
     }
-    int i, n = (int)edgeList.size();
-    for (i=0; i<n; i++) {
-        IAHalfEdge *e = edgeList[i];
-        if (e) {
-            if (e->triangle(0)==nullptr) {
-                printf("ERROR: edge %d [%p] without face found!\n", i, e);
-            } else if (e->triangle(1)==nullptr) {
-                printf("ERROR: edge %d [%p] with single face found (hole in mesh)!\n", i, e);
-            }
-            if (e->triangle(0)) {
-                if (e->triangle(0)->pEdge[0]!=e && e->triangle(0)->pEdge[1]!=e && e->triangle(0)->pEdge[2]!=e) {
-                    printf("ERROR: face [%p] is not pointing back at edge %d [%p]!\n", e->triangle(0), i, e);
-                }
-            }
-            if (e->triangle(0)) {
-                if (e->triangle(0)->pEdge[0]!=e && e->triangle(0)->pEdge[1]!=e && e->triangle(0)->pEdge[2]!=e) {
-                    printf("ERROR: face [%p] is not pointing back at edge %d [%p]!\n", e->triangle(0), i, e);
-                }
-            }
-            if (e->vertex(0)==nullptr || e->vertex(1)==nullptr) {
-                printf("ERROR: edge %d [%p] missing a vertex reference!\n", i, e);
-            }
-        } else {
-            puts("ERROR: zero edge found!");
-        }
+    if (edgeList.size()!=triangleList.size()*3) {
+        puts("WARNING: invalid edge list size!");
     }
-    n = (int)triangleList.size();
-    for (i=0; i<n; i++) {
-        IATriangle *f = triangleList[i];
-        if (f) {
-            if (f->pVertex[0]==0L || f->pVertex[1]==0L || f->pVertex[1]==0L) {
-                printf("ERROR: face %d has an empty vertex field.\n", i);
-            }
-            if (f->pEdge[0]==0L || f->pEdge[1]==0L || f->pEdge[1]==0L) {
-                printf("ERROR: face %d has an empty edge field.\n", i);
+    int i = 0;
+    for (auto he: edgeList) {
+        if (he) {
+            IATriangle *t = he->triangle();
+            if (t==nullptr) {
+                printf("ERROR: edge %d [%p] is not linked to a triangle!\n", i, he);
+                assert(0);
             } else {
-                if (f->pEdge[0]->vertex(0, f)!=f->pVertex[0])
-                    printf("ERROR: face %d has an edge0/vertex0 missmatch.\n", i);
-                if (f->pEdge[0]->vertex(1, f)!=f->pVertex[1])
-                    printf("ERROR: face %d has an edge0/vertex1 missmatch.\n", i);
-                if (f->pEdge[1]->vertex(0, f)!=f->pVertex[1])
-                    printf("ERROR: face %d has an edge1/vertex1 missmatch.\n", i);
-                if (f->pEdge[1]->vertex(1, f)!=f->pVertex[2])
-                    printf("ERROR: face %d has an edge1/vertex2 missmatch.\n", i);
-                if (f->pEdge[2]->vertex(0, f)!=f->pVertex[2])
-                    printf("ERROR: face %d has an edge2/vertex2 missmatch.\n", i);
-                if (f->pEdge[2]->vertex(1, f)!=f->pVertex[0])
-                    printf("ERROR: face %d has an edge2/vertex0 missmatch.\n", i);
-                if (f->pEdge[0]->triangle(0)!=f && f->pEdge[0]->triangle(1)!=f)
-                    printf("ERROR: face %d edge0 does not point back at face.\n", i);
-                if (f->pEdge[1]->triangle(0)!=f && f->pEdge[1]->triangle(1)!=f)
-                    printf("ERROR: face %d edge1 does not point back at face.\n", i);
-                if (f->pEdge[2]->triangle(0)!=f && f->pEdge[2]->triangle(1)!=f)
-                    printf("ERROR: face %d edge2 does not point back at face.\n", i);
+                if (t->pEdge[0]!=he && t->pEdge[1]!=he && t->pEdge[2]!=he) {
+                    printf("ERROR: face [%p] is not pointing back at edge %d [%p]!\n", t, i, he);
+                    assert(0);
+                }
+            }
+            if (he->vertex()==nullptr) {
+                printf("ERROR: edge %d [%p] is not linked to a vertex!\n", i, he);
+                assert(0);
+            }
+            if (he->prev()==nullptr) {
+                printf("ERROR: edge %d [%p] is not linked to a previous edge!\n", i, he);
+                assert(0);
+            }
+            if (he->next()==nullptr) {
+                printf("ERROR: edge %d [%p] is not linked to a next edge!\n", i, he);
+                assert(0);
+            }
+            if (he->twin()!=nullptr) {
+                if (he->twin()->twin()!=he) {
+                    printf("ERROR: edge %d [%p] twin link is broken!\n", i, he);
+                    assert(0);
+                }
+                if (he->twin()==he) {
+                    printf("ERROR: edge %d [%p] twin links to itself!\n", i, he);
+                    assert(0);
+                }
+            } else {
+                isWatertight = false;
             }
         } else {
-            puts("ERROR: zero face found!");
+            puts("ERROR: half-edge nullptr found!");
+            assert(0);
         }
+        i++;
     }
-    return true;
+    i = 0;
+    for (auto t: triangleList) {
+        if (t) {
+            if (t->pVertex[0]==0L || t->pVertex[1]==0L || t->pVertex[1]==0L) {
+                printf("ERROR: face %d has an empty vertex field.\n", i);
+                assert(0);
+            }
+            if (t->pEdge[0]==0L || t->pEdge[1]==0L || t->pEdge[1]==0L) {
+                printf("ERROR: face %d has an empty edge field.\n", i);
+                assert(0);
+            } else {
+                if (t->pEdge[0]->vertex()!=t->pVertex[0]) {
+                    printf("ERROR: face %d has an edge0/vertex0 missmatch.\n", i);
+                    assert(0);
+                }
+                if (t->pEdge[1]->vertex()!=t->pVertex[1]) {
+                    printf("ERROR: face %d has an edge1/vertex1 missmatch.\n", i);
+                    assert(0);
+                }
+                if (t->pEdge[2]->vertex()!=t->pVertex[2]) {
+                    printf("ERROR: face %d has an edge2/vertex2 missmatch.\n", i);
+                    assert(0);
+                }
+                if (t->pEdge[0]->triangle()!=t) {
+                    printf("ERROR: face %d edge0 does not point back at face.\n", i);
+                    assert(0);
+                }
+                if (t->pEdge[1]->triangle()!=t) {
+                    printf("ERROR: face %d edge1 does not point back at face.\n", i);
+                    assert(0);
+                }
+                if (t->pEdge[2]->triangle()!=t) {
+                    printf("ERROR: face %d edge2 does not point back at face.\n", i);
+                    assert(0);
+                }
+            }
+        } else {
+            puts("ERROR: triangle nullptr found!");
+            assert(0);
+        }
+        i++;
+    }
+    if (isWatertight) {
+        printf("Done. Mesh is watertight.\n");
+    } else {
+        printf("Done. Mesh is *NOT* watertight.\n");
+    }
+    return isWatertight;
 }
 
 
 /**
- This function finds edges that have only a single face associated.
- It then adds a face to this edge and the next edge without a second face.
- If three edges are connected and none has a second face, a new triangle
- will fill the hole.
-
- \todo: verify that this is robust
+ * Find outside edges and connect them to other outside edges with new triangles.
+ *
+ * Find half-edges that have no twin and call the fixHole() on them.
+ *
+ * \todo: verify that this is robust
  */
 void IAMesh::fixHoles()
 {
     printf("Fixing holes...\n");
-    int i;
-    for (i=0; i<(int)edgeList.size(); i++) {
-        IAHalfEdge *e = edgeList[i];
-        while ( e->nTriangle()==1 ) // FIXME: make sure that this is not endless
+    for (auto e: edgeList) {
+        while ( e->twin()==nullptr ) { // FIXME: make sure that this is not endless
             fixHole(e);
+        }
     }
 }
 
 
 /**
- Add a triangle in an attempt to fill a hole in the mesh.
-
- \todo: verify that this is robust
+ * Add a triangle in an attempt to fill a hole in the mesh.
+ *
+ * \todo: verify that this is robust
  */
 void IAMesh::fixHole(IAHalfEdge *e)
 {
+    if (e->twin()) return;
+
+    
     printf("Fixing a hole...\n");
     IATriangle *fFix;
     if (e->triangle(0))
@@ -211,31 +249,52 @@ IATriangle *IAMesh::addNewTriangle(IAVertex *v0, IAVertex *v1, IAVertex *v2)
     t->pVertex[0] = v0;
     t->pVertex[1] = v1;
     t->pVertex[2] = v2;
-    t->pEdge[0] = addEdge(v0, v1, t);
-    t->pEdge[1] = addEdge(v1, v2, t);
-    t->pEdge[2] = addEdge(v2, v0, t);
+
+    IAHalfEdge *e0 = t->pEdge[0] = new IAHalfEdge(t, v0);
+    IAHalfEdge *e1 = t->pEdge[1] = new IAHalfEdge(t, v1);
+    IAHalfEdge *e2 = t->pEdge[2] = new IAHalfEdge(t, v2);
+
+    e0->setNext(e1);
+    e0->setPrev(e2);
+
+    e1->setNext(e2);
+    e1->setPrev(e0);
+
+    e2->setNext(e0);
+    e2->setPrev(e1);
+
+    addHalfEdge(e0);
+    addHalfEdge(e1);
+    addHalfEdge(e2);
+
     triangleList.push_back(t);
     return t;
 }
 
 
 /**
- Create a new edge and add it to this mesh.
+ * Add a fully initialized half-edge to the mesh for management.
+ *
+ * If the corresponding half-edge already exists, link them as twins.
+ * If there is no twin, just add the half-edge to the list.
+ * If there is a twin that already found another twin, we may have a damaged
+ * mesh that needs to be repaired later. Just add this edge to the list
+ * without linking, so maybe another twin will be added later.
  */
-IAHalfEdge *IAMesh::addEdge(IAVertex *v0, IAVertex *v1, IATriangle *face)
+IAHalfEdge *IAMesh::addHalfEdge(IAHalfEdge *e)
 {
-    IAHalfEdge *e = findEdge(v0, v1);
-    if (e) {
-        e->setTriangle(1, face);
-    } else {
-        e = new IAHalfEdge();
-        e->setVertex(0, v0);
-        e->setVertex(1, v1);
-        e->setTriangle(0, face);
-        edgeList.push_back(e);
-        edgeMap.insert(std::make_pair(v0->pLocalPosition.length()+v1->pLocalPosition.length(), e));
+    // if all triangles are orinted correctly, the twin will have vertices
+    // in the opposite order.
+    IAVertex *v0 = e->vertex();
+    IAVertex *v1 = e->next()->vertex();
+    IAHalfEdge *matchingHalfEdge = findEdge(v1, v0);
+    if (matchingHalfEdge && matchingHalfEdge->twin()==nullptr) {
+        e->setTwin(matchingHalfEdge);
+        matchingHalfEdge->setTwin(e);
     }
-    return e;
+    edgeList.push_back(e);
+    edgeMap.insert(std::make_pair(v0->pLocalPosition.length()+v1->pLocalPosition.length(), e));
+    return matchingHalfEdge;
 }
 
 
@@ -259,7 +318,7 @@ IAHalfEdge *IAMesh::findEdge(IAVertex *v0, IAVertex *v1)
         IAHalfEdge *e = (*it).second;
         IAVertex *ev0 = e->vertex(0);
         IAVertex *ev1 = e->vertex(1);
-        if ((ev0==v0 && ev1==v1)||(ev0==v1 && ev1==v0))
+        if (ev0==v0 && ev1==v1)
             return e;
     }
 #endif

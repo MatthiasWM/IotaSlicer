@@ -44,15 +44,19 @@ typedef std::vector<IAEdge*> IAEdgeList;
 
 class IAHalfEdge
 {
+    friend IAMesh;
 public:
     // new stuff
+    IAHalfEdge(IATriangle *t, IAVertex *v);
+
     IAHalfEdge *twin() { return pTwin; }
     IAHalfEdge *prev() { return pPrev; }
     IAHalfEdge *next() { return pNext; }
 
-    // old stuff
-    IAHalfEdge();
+    IATriangle *triangle() { return pTriangle; }
+    IAVertex *vertex() { return pVertex; }
 
+    // old stuff
     IAVertex *findZGlobal(double);
     IAVertex *vertex(int i, IATriangle *f);
     IATriangle *otherTriangle(IATriangle *);
@@ -60,10 +64,24 @@ public:
     int indexIn(IATriangle *);
     int nTriangle();
 
-    IATriangle *triangle(int i) { return pTriangle[i]; }
-    void setTriangle(int i, IATriangle *t) { pTriangle[i] = t; }
-    IAVertex *vertex(int i) { return pVertex[i]; }
-    void setVertex(int i, IAVertex *v) { pVertex[i] = v; }
+    IATriangle *triangle(int i) {
+        if (i==0) return pTriangle;
+        if (i==1) {
+            assert(pNext);
+            return next()->triangle();
+        }
+        assert(0);
+        return nullptr;
+    }
+    IAVertex *vertex(int i) {
+        if (i==0) return vertex();
+        if (i==1) {
+            assert(pNext);
+            return next()->vertex();
+        }
+        assert(0);
+        return nullptr;
+    }
 
 protected:
     // new stuff
@@ -72,13 +90,13 @@ protected:
     void setNext(IAHalfEdge *he) { pNext = he; }
 
 private:
-    IAHalfEdge *pTwin = nullptr; // FIXME: continue here, implement these
+    IAHalfEdge *pTwin = nullptr;
     IAHalfEdge *pPrev = nullptr;
     IAHalfEdge *pNext = nullptr;
 
     // old stuff
-    IATriangle *pTriangle[2] = { nullptr, nullptr };
-    IAVertex *pVertex[2] = { nullptr, nullptr };
+    IATriangle *pTriangle = nullptr;
+    IAVertex *pVertex = nullptr;
 };
 
 typedef std::vector<IAHalfEdge*> IAHalfEdgeList;

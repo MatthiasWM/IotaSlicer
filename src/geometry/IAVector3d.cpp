@@ -318,6 +318,7 @@ void IAVector3d::zRotate(double a)
  */
 bool IAVector3d::operator==(const IAVector3d &rhs) const
 {
+    // TODO: this should actually look at the IEEE representation and ignore the last two bit of the mantissa
     if (fabs(pV[0]-rhs.pV[0])>1e-7) return false;
     if (fabs(pV[1]-rhs.pV[1])>1e-7) return false;
     if (fabs(pV[2]-rhs.pV[2])>1e-7) return false;

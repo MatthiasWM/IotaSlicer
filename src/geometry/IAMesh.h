@@ -60,7 +60,7 @@ public:
     IATriangle *addNewTriangle(IAVertex *v0, IAVertex *v1, IAVertex *v2);
 
     IAHalfEdge *findEdge(IAVertex*, IAVertex*);
-    IAHalfEdge *addEdge(IAVertex*, IAVertex*, IATriangle*);
+    IAHalfEdge *addHalfEdge(IAHalfEdge*);
     size_t addPoint(double x, double y, double z);
 
     void updateBoundingBox(IAVector3d&);
