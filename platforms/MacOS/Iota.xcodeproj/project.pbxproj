@@ -11,6 +11,7 @@
 		C938CC182125CFB100BAC374 /* IAGeometryReader.cxx in Sources */ = {isa = PBXBuildFile; fileRef = C938CC162125CFB100BAC374 /* IAGeometryReader.cxx */; };
 		C938CC20212602F600BAC374 /* IAGeometryReaderBinaryStl.cxx in Sources */ = {isa = PBXBuildFile; fileRef = C938CC1F212602F600BAC374 /* IAGeometryReaderBinaryStl.cxx */; };
 		C938CC232126E67700BAC374 /* IAMath.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C938CC212126E67600BAC374 /* IAMath.cpp */; };
+		C9554699213C9A530061E60E /* IAPreferences.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C9554697213C9A520061E60E /* IAPreferences.cpp */; };
 		C96B1434211A3E9F00978AC7 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C96B1433211A3E9F00978AC7 /* Assets.xcassets */; };
 		C97632CA211E2DD000D9D4B5 /* Iota.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C97632C5211E2DD000D9D4B5 /* Iota.cpp */; };
 		C97632CB211E2DD000D9D4B5 /* IAGUIMain.fl in Sources */ = {isa = PBXBuildFile; fileRef = C97632C6211E2DD000D9D4B5 /* IAGUIMain.fl */; };
@@ -82,6 +83,8 @@
 		C938CC1F212602F600BAC374 /* IAGeometryReaderBinaryStl.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = IAGeometryReaderBinaryStl.cxx; sourceTree = "<group>"; };
 		C938CC212126E67600BAC374 /* IAMath.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = IAMath.cpp; sourceTree = "<group>"; };
 		C938CC222126E67700BAC374 /* IAMath.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IAMath.h; sourceTree = "<group>"; };
+		C9554697213C9A520061E60E /* IAPreferences.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = IAPreferences.cpp; sourceTree = "<group>"; };
+		C9554698213C9A530061E60E /* IAPreferences.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IAPreferences.h; sourceTree = "<group>"; };
 		C96B142D211A3E9E00978AC7 /* Iota.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Iota.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C96B1433211A3E9F00978AC7 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		C96B1438211A3E9F00978AC7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -336,6 +339,8 @@
 		C9CD015721204C2600713CAF /* userinterface */ = {
 			isa = PBXGroup;
 			children = (
+				C9554697213C9A520061E60E /* IAPreferences.cpp */,
+				C9554698213C9A530061E60E /* IAPreferences.h */,
 				C97632C6211E2DD000D9D4B5 /* IAGUIMain.fl */,
 				C9CD015921204C2600713CAF /* IASceneView.cpp */,
 				C9CD015821204C2600713CAF /* IASceneView.h */,
@@ -492,6 +497,7 @@
 				C938CC182125CFB100BAC374 /* IAGeometryReader.cxx in Sources */,
 				C97632DD211E357500D9D4B5 /* IASlice.cpp in Sources */,
 				C97632D7211E33B000D9D4B5 /* IAMesh.cpp in Sources */,
+				C9554699213C9A530061E60E /* IAPreferences.cpp in Sources */,
 				C993323921238A4900629BE1 /* curve.c in Sources */,
 				C993323D21238A9700629BE1 /* IAPotrace.cpp in Sources */,
 				C97632CD211E2DD000D9D4B5 /* IAVector3d.cpp in Sources */,

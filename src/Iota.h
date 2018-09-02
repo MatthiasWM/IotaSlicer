@@ -13,6 +13,7 @@
 #include "geometry/IAMesh.h"
 #include "geometry/IASlice.h"
 #include "printer/IAPrinter.h"
+#include "userinterface/IAPreferences.h"
 
 class IAGeometryReader;
 class IAMachineToolpath;
@@ -92,6 +93,8 @@ public:
     /// show the texture in the 3d view
     /// \todo move to UI class
     bool gShowTexture;
+
+    IAPreferences gPreferences;
 
 private:
     /// user definable string explaining the details of an error

@@ -268,7 +268,7 @@ void IAIota::menuSliceMesh()
     for (double z=zMin; z<zMax; z+=zLayerHeight) {
         printf("Slicing at z=%g\n", z);
 
-        sprintf(buf, "Slicing layer %d of %d at %.3f (%d%%)", i, n, z, i*100/n);
+        sprintf(buf, "Slicing layer %d of %d at %.3fmm (%d%%)", i, n, z, i*100/n);
         wProgressText->copy_label(buf);
         wProgressValue->value(i*100/n);
         bool abort = updateProgressDialog();
@@ -335,6 +335,8 @@ void IAIota::menuSliceMesh()
     }
     pMachineToolpath->saveGCode("/Users/matt/aaa.gcode");
     hideProgressDialog();
+    zSlider1->value(1.0);
+    zSlider1->do_callback();
     gSceneView->redraw();
 }
 #else // save a series of dxf files
@@ -542,6 +544,15 @@ int main (int argc, char **argv)
 
     // TODO: The whole user interface must be in its own class.
     Iota.gMainWindow = createIotaAppWindow();
+    if (Iota.gPreferences.pMainWindowX==-1) {
+        Iota.gMainWindow->size(Iota.gPreferences.pMainWindowW,
+                               Iota.gPreferences.pMainWindowH);
+    } else {
+        Iota.gMainWindow->resize(Iota.gPreferences.pMainWindowX,
+                                 Iota.gPreferences.pMainWindowY,
+                                 Iota.gPreferences.pMainWindowW,
+                                 Iota.gPreferences.pMainWindowH);
+    }
     Iota.gMainWindow->show();
     Fl::flush();
 
