@@ -14,6 +14,7 @@ Notes/a.out
 Notes/colorcard.psd
 Notes/test.cpp
 docs/
-platforms/MacOS/Iota.xcodeproj/xcuserdata/
+/platforms/MacOS/Iota.xcodeproj/xcuserdata/
 
-
+/Notes/Iota.jpg
+/Notes/Iota.psd
