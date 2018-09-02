@@ -43,7 +43,8 @@ data sHelpAbout {private local filename {../../html/helpAbout.html}
 data sHelpLicenses {private local filename {../../html/helpLicenses.html}
 }
 
-Function {createIotaAppWindow()} {} {
+Function {createIotaAppWindow()} {open
+} {
   Fl_Window {} {
     label {Iota Slicer V0.1a} open
     xywh {472 202 800 600} type Double resizable visible
@@ -79,7 +80,7 @@ Function {createIotaAppWindow()} {} {
           MenuItem {} {
             xywh {32 32 100 20} deactivate
           }
-          MenuItem {} {
+          MenuItem {} {selected
             xywh {40 40 100 20} deactivate
           }
           MenuItem {} {
@@ -225,7 +226,7 @@ Function {createIotaAppWindow()} {} {
         MenuItem {} {
           label {Slice entire mesh}
           callback {Iota.menuSliceMesh();}
-          tooltip {Write to ~/slice.jpg} xywh {36 36 100 20} shortcut 0x40006d
+          tooltip {Write to ~/slice.jpg} xywh {36 36 100 20} shortcut 0x40006d divider
         }
         MenuItem {} {
           label {Versioneer...}
@@ -413,7 +414,7 @@ Function {createIotaAboutWindow()} {} {
 comment {Versioneer: version control helper} {in_source in_header
 }
 
-declblock {\#if 1} {open after {\#endif}
+declblock {\#if 1} {after {\#endif}
 } {
   Function {loadSettings()} {open return_type void
   } {
@@ -449,8 +450,7 @@ vers.set("class", wClass->value());} {}
   Function {savePath()} {open return_type void
   } {
     code {Fl_Preferences pref(Fl_Preferences::USER, "iota.matthiasm.com", "versioneer");
-pref.set("path", wBasePath->value());} {selected
-    }
+pref.set("path", wBasePath->value());} {}
   }
   Function {applySettingsHtml(const char *name)} {open return_type void
   } {
