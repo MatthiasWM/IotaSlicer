@@ -183,7 +183,6 @@ void IAMesh::fixHole(IAHalfEdge *e)
 {
     if (e->twin()) return;
 
-    
     printf("Fixing a hole...\n");
     IATriangle *fFix;
     if (e->triangle(0))
@@ -238,10 +237,12 @@ void IAMesh::fixHole(IAHalfEdge *e)
 
 
 /**
- Add a given face to the mesh.
- \todo we should probably check if this triangle already exists
- \todo make sure we do not create duplicate edges
- \todo make sure that we also do not add duplicate points
+ * Create a new triangles and corresponding edges and add it to the mesh.
+ *
+ * \todo we should probably check if this triangle already exists
+ * \param v0, v1, v2 Points that make up the triangle. Make sure that these
+ *      points were already checked for duplicats.
+ * \return the newly created triangle
  */
 IATriangle *IAMesh::addNewTriangle(IAVertex *v0, IAVertex *v1, IAVertex *v2)
 {
@@ -481,52 +482,44 @@ void IAMesh::projectTexture(double wMult, double hMult, int type)
 
 
 /**
- Add a point to a mesh, avoiding duplicates.
- \todo: this should be a function of the mesh or its vertex list
- \todo: this must be accelerated by sorting vertices or better, using a map
- \todo: there should probably be a minimal tollerance when comparinf doubles!
- \return the index of the point in the mesh
+ * Add a vertex to a mesh, avoiding duplicates.
+ *
+ * Find an existing vertex with the given coordinates. If none is found,
+ * create a new vertex and add it to list.
+ *
+ * \param the positin of this vertex in mesh space
+ * \return the existing or newly created vertex. There is no way of knowing if
+ *      the vertex was found or created.
+ *
+ * \todo there should probably be a minimal toloerance when comparing positions!
+ * \todo create a vertex list class and move this methode there
  */
-size_t IAMesh::addPoint(double x, double y, double z)
+IAVertex *IAMesh::findOrAddNewVertex(IAVector3d const& pos)
 {
-    IAVector3d pos(x, y, z);
-    size_t n = vertexList.size();
-#if 0
-    size_t i;
-    for (i = 0; i < n; ++i) {
-        IAVertex *v = vertexList[i];
-        if (   v->pPosition.x()==x
-            && v->pPosition.y()==y
-            && v->pPosition.z()==z)
-        {
-            return i;
-        }
-    }
-#else
     double length = pos.length();
     auto itlow = vertexMap.lower_bound(length-0.0001);
     auto itup = vertexMap.upper_bound(length+0.0001);
 
     for (auto it=itlow; it!=itup; ++it) {
-        int ix = (*it).second;
-        if (vertexList[ix]->pLocalPosition==pos) {
-            return ix;
+        IAVertex *v = (*it).second;
+        if (v->pLocalPosition==pos) {
+            return v;
         }
     }
-#endif
+
     IAVertex *v = new IAVertex();
     v->pLocalPosition = pos;
     updateBoundingBox(pos);
     vertexList.push_back(v);
-    vertexMap.insert(std::make_pair(v->pLocalPosition.length(), n));
-    return n;
+    vertexMap.insert(std::make_pair(v->pLocalPosition.length(), v));
+    return v;
 }
 
 
 /**
  * Expand the bounding bo to include the given vector.
  */
-void IAMesh::updateBoundingBox(IAVector3d &v)
+void IAMesh::updateBoundingBox(IAVector3d const& v)
 {
     pMin.setMin(v);
     pMax.setMax(v);

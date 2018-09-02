@@ -19,7 +19,7 @@
 
 class IAPrinter;
 
-typedef std::multimap<double, int> IAVertexMap;
+typedef std::multimap<double, IAVertex*> IAVertexMap;
 typedef std::multimap<double, IAHalfEdge*> IAHalfEdgeMap;
 
 
@@ -61,9 +61,9 @@ public:
 
     IAHalfEdge *findEdge(IAVertex*, IAVertex*);
     IAHalfEdge *addHalfEdge(IAHalfEdge*);
-    size_t addPoint(double x, double y, double z);
+    IAVertex *findOrAddNewVertex(IAVector3d const&);
 
-    void updateBoundingBox(IAVector3d&);
+    void updateBoundingBox(IAVector3d const&);
     void centerOnPrintbed(IAPrinter *printer);
 
     IAVector3d position() const;

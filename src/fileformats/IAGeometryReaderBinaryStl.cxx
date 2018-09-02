@@ -119,7 +119,7 @@ IAMesh *IAGeometryReaderBinaryStl::load()
     uint32_t nTriangle = getUInt32LSB();
     for (int i=0; i<nTriangle; i++) {
         float x, y, z;
-        size_t p1, p2, p3; // FIXME: use the pointer to the vertex instead
+        IAVertex *p1, *p2, *p3;
         // face normal
         getFloatLSB();
         getFloatLSB();
@@ -128,24 +128,22 @@ IAMesh *IAGeometryReaderBinaryStl::load()
         x = getFloatLSB();
         y = getFloatLSB();
         z = getFloatLSB();
-        p1 = msh->addPoint(x, y, z);
-        msh->vertexList[p1]->pTex.set(x*0.8+0.5, -z*0.8+0.5, 0.0);
+        p1 = msh->findOrAddNewVertex(IAVector3d(x, y, z));
+        p1->pTex.set(x*0.8+0.5, -z*0.8+0.5, 0.0);
         // point 2
         x = getFloatLSB();
         y = getFloatLSB();
         z = getFloatLSB();
-        p2 = msh->addPoint(x, y, z);
-        msh->vertexList[p2]->pTex.set(x*0.8+0.5, -z*0.8+0.5, 0.0);
+        p2 = msh->findOrAddNewVertex(IAVector3d(x, y, z));
+        p2->pTex.set(x*0.8+0.5, -z*0.8+0.5, 0.0);
         // point 3
         x = getFloatLSB();
         y = getFloatLSB();
         z = getFloatLSB();
-        p3 = msh->addPoint(x, y, z);
-        msh->vertexList[p3]->pTex.set(x*0.8+0.5, -z*0.8+0.5, 0.0);
+        p3 = msh->findOrAddNewVertex(IAVector3d(x, y, z));
+        p3->pTex.set(x*0.8+0.5, -z*0.8+0.5, 0.0);
         // add face
-        msh->addNewTriangle(msh->vertexList[p1],
-                            msh->vertexList[p2],
-                            msh->vertexList[p3]);
+        msh->addNewTriangle(p1, p2, p3);
         // color
         getUInt16LSB(); // color information, if there was a standard
     }

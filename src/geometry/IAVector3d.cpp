@@ -79,7 +79,7 @@ void IAVector3d::set(double x, double y, double z)
 /**
  * Set the lower value for each component of vector a and b.
  */
-void IAVector3d::setMin(const IAVector3d &v)
+void IAVector3d::setMin(IAVector3d const& v)
 {
     pV[0] = ia_min(pV[0], v.pV[0]);
     pV[1] = ia_min(pV[1], v.pV[1]);
@@ -90,7 +90,7 @@ void IAVector3d::setMin(const IAVector3d &v)
 /**
  * Set the higher value for each component of vector a and b.
  */
-void IAVector3d::setMax(const IAVector3d &v)
+void IAVector3d::setMax(IAVector3d const& v)
 {
     pV[0] = ia_max(pV[0], v.pV[0]);
     pV[1] = ia_max(pV[1], v.pV[1]);

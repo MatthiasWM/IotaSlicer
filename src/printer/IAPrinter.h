@@ -20,11 +20,11 @@ public:
     IAPrinter();
     void draw();
 
-//    IAVector3d pBuildVolume = { 214.0, 214.0, 230.0 };
-    IAVector3d pBuildVolume = { 214.0, 214.0, 330.0 };
+    IAVector3d pBuildVolume = { 214.0, 214.0, 230.0 };
+//    IAVector3d pBuildVolume = { 214.0, 214.0, 330.0 };
     IAVector3d pBuildVolumeMin = { 0.0, 0.0, 0.0 };
-//    IAVector3d pBuildVolumeMax = { 214.0, 214.0, 230.0 };
-    IAVector3d pBuildVolumeMax = { 214.0, 214.0, 330.0 };
+    IAVector3d pBuildVolumeMax = { 214.0, 214.0, 230.0 };
+//    IAVector3d pBuildVolumeMax = { 214.0, 214.0, 330.0 };
     double pBuildVolumeRadius = 200.0; // sphere that contains the entire centered build volume
 
 };
