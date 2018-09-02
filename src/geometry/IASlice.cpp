@@ -45,10 +45,10 @@ IASlice::~IASlice()
  */
 void IASlice::clear()
 {
-    for (auto e: pFlange) { // pLid is an edge list
+    for (auto e: pRim) { // pLid is an edge list
         delete e;
     }
-    pFlange.clear();
+    pRim.clear();
     pFramebuffer->clear();
     pColorbuffer->clear();
     IAMesh::clear();
@@ -79,10 +79,10 @@ bool IASlice::changeZ(double z)
 /**
  Create the outline of a lid by slicing all meshes at Z.
  */
-void IASlice::generateFlange(IAMesh *mesh)
+void IASlice::generateRim(IAMesh *mesh)
 {
     clear();
-    addFlange(mesh);
+    addRim(mesh);
 }
 
 
@@ -91,7 +91,7 @@ void IASlice::generateFlange(IAMesh *mesh)
  The egde list runs clockwise for a connected outline, and counterclockwise for
  holes. Every outline loop can followed by a null ptr and more outlines.
  */
-void IASlice::addFlange(IAMesh *m)
+void IASlice::addRim(IAMesh *m)
 {
     // setup
     m->updateGlobalSpace();
@@ -111,10 +111,10 @@ void IASlice::addFlange(IAMesh *m)
             // do nothing, all vertices are above zMin
         } else if (nBelow==1) {
             // starting from here, find all faces that intersect zMin and generate an outline for this slice
-            addFirstFlangeVertex(t);
+            addFirstRimVertex(t);
         } else if (nBelow==2) {
             // starting from here, find all faces that intersect zMin and generate an outline for this slice
-            addFirstFlangeVertex(t);
+            addFirstRimVertex(t);
         } else if (nBelow==3) {
             // do nothing, all vertices are below zMin
         }
@@ -131,7 +131,7 @@ void IASlice::addFlange(IAMesh *m)
 
  \param IATriangle the face that is split in two; the face must cross zMin
  */
-void IASlice::addFirstFlangeVertex(IATriangle *tri)
+void IASlice::addFirstRimVertex(IATriangle *tri)
 {
     // setup
     double zMin = pCurrentZ;
@@ -143,13 +143,13 @@ void IASlice::addFirstFlangeVertex(IATriangle *tri)
     if (tri->pVertex[1]->pGlobalPosition.z()<zMin && tri->pVertex[2]->pGlobalPosition.z()>=zMin) edgeIndex = 1;
     if (tri->pVertex[2]->pGlobalPosition.z()<zMin && tri->pVertex[0]->pGlobalPosition.z()>=zMin) edgeIndex = 2;
     if (edgeIndex==-1) {
-        puts("ERROR: addFirstLidVertex failed, not crossing zMin!");
+        puts("ERROR: addFirstRimVertex failed, not crossing zMin!");
     }
 
     // create a vertex where the edge crosses Z.
     IAVertex *vCutA = tri->pEdge[edgeIndex]->findZGlobal(zMin);
     if (!vCutA) {
-        puts("ERROR: addFirstLidVertex failed, no Z point found!");
+        puts("ERROR: addFirstRimVertex failed, no Z point found!");
     }
 
     // add this edge to list
@@ -158,23 +158,28 @@ void IASlice::addFirstFlangeVertex(IATriangle *tri)
     // find more connected edges
     int cc = 0;
     for (;;) {
-        addNextFlangeVertex(tri, vCutA, edgeIndex);
+        if (!addNextRimVertex(tri, vCutA, edgeIndex))
+            break;
         cc++;
         if (tri->pUsed)
             break;
         tri->pUsed = true;
     }
+    // TODO: if addNextRim failed because this is not a watertight model (or
+    // something else went wrong) we still may save the day somewhat by tracing
+    // the flange in the other direction. Either way, the result is
+    // pretty random.
 
     // some statistics (should always be a loop if the model is watertight
     //    printf("%d edges linked\n", cc);
     if (firstTriangle==tri) {
-        //        puts("It's a loop!");
+        // puts("It's a loop!");
     } else {
-        //        puts("It's NOT a loop!");
+        puts("WARNING: the rim of the slice is not a loop. Model not watertight?");
     }
 
     // mark the end of an edge list, start with a hole or separate mesh
-    pFlange.push_back(0L);
+    pRim.push_back(0L);
 }
 
 
@@ -190,7 +195,7 @@ void IASlice::addFirstFlangeVertex(IATriangle *tri)
  \param edgeIndex the index of the first edge that crosses zMin
  \param zMin slice on this z plane
  */
-void IASlice::addNextFlangeVertex(IATrianglePtr &t, ISVertexPtr &vCutA, int &edgeIndex)
+bool IASlice::addNextRimVertex(IATrianglePtr &t, ISVertexPtr &vCutA, int &edgeIndex)
 {
     // setup
     double zMin = pCurrentZ;
@@ -215,23 +220,28 @@ void IASlice::addNextFlangeVertex(IATrianglePtr &t, ISVertexPtr &vCutA, int &edg
     IAEdge *lidEdge = new IAEdge();
     lidEdge->pVertex[0] = vCutA;
     lidEdge->pVertex[1] = vCutB;
-    pFlange.push_back(lidEdge);
+    pRim.push_back(lidEdge);
 
     vCutA = vCutB;
-    t = eCutB->otherTriangle(t);
+    assert(eCutB->twin()); // must be true in a watertight model!
+    if (!eCutB->twin())
+        return false;
+    eCutB = eCutB->twin();
+    t = eCutB->triangle();
     edgeIndex = eCutB->indexIn(t);
+    return true;
 }
 
 
 /**
  Draw the edge where the slice intersects the model.
  */
-void IASlice::drawFlange()
+void IASlice::drawRim()
 {
     glColor3f(0.8f, 1.0f, 1.0f);
     glLineWidth(12.0);
     glBegin(GL_LINES);
-    for (auto e: pFlange) {
+    for (auto e: pRim) {
         if (e) {
             for (int j = 0; j < 2; ++j) {
                 IAVertex *v = e->pVertex[j];
@@ -328,14 +338,14 @@ void __stdcall tessErrorCallback(GLenum errorCode)
 /**
  Fill the sliced outline with triangles, considering complex polygons and holes.
 
- This call requires a flange, so you must call generateFlange() first.
+ This call requires a flange, so you must call generateRim() first.
 
  \todo Glu's tesselation calls are deprecated. Please find a library:
  \todo http://www.cs.man.ac.uk/~toby/alan/software/
  \todo http://www.flipcode.com/archives/Efficient_Polygon_Triangulation.shtml
  \todo https://github.com/greenm01/poly2tri
  */
-void IASlice::tesselateLidFromFlange()
+void IASlice::tesselateLidFromRim()
 {
     if (!gGluTess)
         gGluTess = gluNewTess();
@@ -357,12 +367,12 @@ void IASlice::tesselateLidFromFlange()
 #endif
     gluTessProperty(gGluTess, GLU_TESS_WINDING_RULE, GLU_TESS_WINDING_POSITIVE);
 
-    int i, n = (int)pFlange.size();
+    int i, n = (int)pRim.size();
     tessVertexCount = 0;
     gluTessBeginPolygon(gGluTess, this);
     gluTessBeginContour(gGluTess);
     for (i=0; i<n; i++) {
-        IAEdge *e = pFlange[i];
+        IAEdge *e = pRim[i];
         if (e==NULL) {
             gluTessEndContour(gGluTess);
             gluTessBeginContour(gGluTess);
@@ -394,7 +404,7 @@ void IASlice::drawShell()
     glDisable(GL_LIGHTING);
     glBindTexture(GL_TEXTURE_2D, gSceneView->tex);
     glEnable(GL_TEXTURE_2D);
-    for (auto e: pFlange) {
+    for (auto e: pRim) {
         if (!e) continue;
         IAVertex *v0 = e->pVertex[0];
         IAVertex *v1 = e->pVertex[1];

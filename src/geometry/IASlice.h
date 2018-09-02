@@ -18,10 +18,10 @@ class IAFramebuffer;
 /**
  * A mesh that represents a slice through another mesh at a give Z coordinate.
  *
- * \todo The pFlange edge list and the mesh are sharing the same vertexList in
+ * \todo The pRim edge list and the mesh are sharing the same vertexList in
  * IAMesh. This is not a big deal, but not very clean either.
  *
- * IAMesh has its own edge list that does not interfere with pFlange.
+ * IAMesh has its own edge list that does not interfere with pRim.
  */
 class IASlice : public IAMesh
 {
@@ -31,19 +31,19 @@ public:
     virtual void clear() override;
 
     bool changeZ(double z);
-    void generateFlange(IAMesh*);
-    void addFlange(IAMesh*);
-    void addFirstFlangeVertex(IATriangle *IATriangle);
-    void addNextFlangeVertex(IATrianglePtr &IATriangle, ISVertexPtr &vCutA, int &edgeIndex);
-    void drawFlange();
+    void generateRim(IAMesh*);
+    void addRim(IAMesh*);
+    void addFirstRimVertex(IATriangle *IATriangle);
+    bool addNextRimVertex(IATrianglePtr &IATriangle, ISVertexPtr &vCutA, int &edgeIndex);
+    void drawRim();
     void drawShell();
     void drawFramebuffer();
-    void tesselateLidFromFlange();
+    void tesselateLidFromRim();
 
 
 private:
     /// edge list describing the outlines of a slice
-    IAEdgeList pFlange;
+    IAEdgeList pRim;
     /// current Z layer of the entire slice
     double pCurrentZ = -1e9;
 

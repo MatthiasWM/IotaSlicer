@@ -152,8 +152,8 @@ void IAIota::menuWriteSlice()
     double z = 70.0;
     Iota.gMeshSlice.changeZ(z);
     Iota.gMeshSlice.clear();
-    Iota.gMeshSlice.generateFlange(Iota.pMesh);
-    Iota.gMeshSlice.tesselateLidFromFlange();
+    Iota.gMeshSlice.generateRim(Iota.pMesh);
+    Iota.gMeshSlice.tesselateLidFromRim();
     Iota.gMeshSlice.drawFlat(false, 1, 1, 1);
 
     snprintf(buf, FL_PATH_MAX, "%s/slice.jpg", base);
@@ -193,10 +193,10 @@ void IAIota::menuSliceMesh()
         // create the slice surfec
         Iota.gMeshSlice.changeZ(z);
         Iota.gMeshSlice.clear();
-        Iota.gMeshSlice.generateFlange(Iota.pMesh);
+        Iota.gMeshSlice.generateRim(Iota.pMesh);
         // draw the sliced mesh surface into a framebuffer
         // also draw the textured shell into the color buffer
-        Iota.gMeshSlice.tesselateLidFromFlange();
+        Iota.gMeshSlice.tesselateLidFromRim();
 //        Iota.gMeshSlice.drawFlat(false, 1, 1, 1);
 
         uint8_t *rgb = Iota.gMeshSlice.pColorbuffer->getRawImageRGB();
@@ -260,8 +260,8 @@ void IAIota::menuSliceMesh()
         printf("Slicing at z=%g\n", z);
         Iota.gMeshSlice.changeZ(z);
         Iota.gMeshSlice.clear();
-        Iota.gMeshSlice.generateFlange(Iota.pMesh);
-        Iota.gMeshSlice.tesselateLidFromFlange();
+        Iota.gMeshSlice.generateRim(Iota.pMesh);
+        Iota.gMeshSlice.tesselateLidFromRim();
         Iota.gMeshSlice.drawFlat(false, 1, 1, 1);
 
         uint8_t *rgb = Iota.gMeshSlice.pColorbuffer->getRawImageRGB();
@@ -344,8 +344,8 @@ void IAIota::menuSliceMesh()
 //        if (layer==61) continue;
         Iota.gMeshSlice.changeZ(z);
         Iota.gMeshSlice.clear();
-        Iota.gMeshSlice.generateFlange(Iota.pMesh);
-        Iota.gMeshSlice.tesselateLidFromFlange();
+        Iota.gMeshSlice.generateRim(Iota.pMesh);
+        Iota.gMeshSlice.tesselateLidFromRim();
         Iota.gMeshSlice.drawFlat(false, 1, 1, 1);
 
         uint8_t *rgb = Iota.gMeshSlice.pColorbuffer->getRawImageRGB();

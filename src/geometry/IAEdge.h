@@ -67,8 +67,8 @@ public:
     IATriangle *triangle(int i) {
         if (i==0) return pTriangle;
         if (i==1) {
-            assert(pNext);
-            return next()->triangle();
+            assert(pTwin);
+            return twin()->triangle();
         }
         assert(0);
         return nullptr;
