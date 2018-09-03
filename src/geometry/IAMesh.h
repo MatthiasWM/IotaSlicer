@@ -60,6 +60,7 @@ public:
     IATriangle *addNewTriangle(IAVertex *v0, IAVertex *v1, IAVertex *v2);
 
     IAHalfEdge *findEdge(IAVertex*, IAVertex*);
+    IAHalfEdge *findSingleEdge(IAVertex*, IAVertex*);
     IAHalfEdge *addHalfEdge(IAHalfEdge*);
     IAVertex *findOrAddNewVertex(IAVector3d const&);
 

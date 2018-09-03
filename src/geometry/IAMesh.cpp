@@ -150,8 +150,12 @@ bool IAMesh::validate()
 void IAMesh::fixHoles()
 {
     printf("Fixing holes...\n");
-    for (auto e: edgeList) {
-        while ( e->twin()==nullptr ) { // FIXME: make sure that this is not endless
+    // we can't use a foreach loop here because edges will be added
+    // in the process! Don't use iterators either because std:vector may
+    // reallocate the array.
+    for (IAHalfEdgeList::size_type i=0; i<edgeList.size(); ++i) {
+        IAHalfEdge *e = edgeList[i];
+        if ( e->twin()==nullptr ) {
             fixHole(e);
         }
     }
@@ -165,8 +169,44 @@ void IAMesh::fixHoles()
  */
 void IAMesh::fixHole(IAHalfEdge *e)
 {
-    if (e->twin()) return;
+    if (e->twin()) return; // defensive
 
+    // cases:
+    // 1: just one edge in this triangle is open
+    //      find the open edge in the left and right fan and choose the one
+    //      that creates the better triangle
+    // 2: two edges in this triangle are open
+    //      avoid adding a triangle around the point that has both open edges
+    // 3: all three edges in this triangle are open
+    //      This triangle is basically useless. A good repair tool would
+    //      maybe thicken the triangle, or delete it. We are doing a non-
+    //      destructive minimum repair, so we just duplicate it
+
+    if (e->next()->twin()==nullptr && e->prev()->twin()==nullptr) {
+        // case 3: just add the same triange flipped to create a single
+        // manifold triangle
+        IATriangle *t = e->triangle();
+        addNewTriangle(t->vertex(2), e->vertex(1), e->vertex(0));
+    } else if (e->next()->twin()==nullptr) {
+        // case 2: our vertex is a good fan candidate
+        IAHalfEdge *e2 = e->findPrevSingleEdgeInFan();
+        assert(e2);
+        addNewTriangle(e->next()->vertex(), e->vertex(), e2->vertex());
+    } else if (e->prev()->twin()==nullptr) {
+        // case 2: prev->vertex is a good fan candidate
+        IAHalfEdge *e2 = e->next()->findNextSingleEdgeInFan();
+        assert(e2);
+        addNewTriangle(e->next()->vertex(), e->vertex(), e2->next()->vertex());
+    } else {
+        // case 1: either vertex is a candidate
+        IAHalfEdge *e2 = e->next()->findNextSingleEdgeInFan();
+        assert(e2);
+        addNewTriangle(e->next()->vertex(), e->vertex(), e2->next()->vertex());
+    }
+
+
+#if 1
+#else
     printf("Fixing a hole...\n");
     IATriangle *fFix;
     if (e->triangle(0))
@@ -217,6 +257,7 @@ void IAMesh::fixHole(IAHalfEdge *e)
                        e->vertex(0, fFix),
                        eRight->vertex(1, fRight));
     }
+#endif
 }
 
 
@@ -269,8 +310,8 @@ IAHalfEdge *IAMesh::addHalfEdge(IAHalfEdge *e)
     // in the opposite order.
     IAVertex *v0 = e->vertex();
     IAVertex *v1 = e->next()->vertex();
-    IAHalfEdge *matchingHalfEdge = findEdge(v1, v0);
-    if (matchingHalfEdge && matchingHalfEdge->twin()==nullptr) {
+    IAHalfEdge *matchingHalfEdge = findSingleEdge(v1, v0);
+    if (matchingHalfEdge) {
         e->setTwin(matchingHalfEdge);
         matchingHalfEdge->setTwin(e);
     }
@@ -285,14 +326,6 @@ IAHalfEdge *IAMesh::addHalfEdge(IAHalfEdge *e)
  */
 IAHalfEdge *IAMesh::findEdge(IAVertex *v0, IAVertex *v1)
 {
-#if 0
-    for (auto e: edgeList) {
-        IAVertex *ev0 = e->pVertex[0];
-        IAVertex *ev1 = e->pVertex[1];
-        if ((ev0==v0 && ev1==v1)||(ev0==v1 && ev1==v0))
-            return e;
-    }
-#else
     double key = v0->pLocalPosition.length()+v1->pLocalPosition.length();
     auto itlow = edgeMap.lower_bound(key-0.0001);
     auto itup = edgeMap.upper_bound(key+0.0001);
@@ -303,7 +336,25 @@ IAHalfEdge *IAMesh::findEdge(IAVertex *v0, IAVertex *v1)
         if (ev0==v0 && ev1==v1)
             return e;
     }
-#endif
+    return 0;
+}
+
+
+/**
+ Find an edge that connects two vertices, and that has no twin.
+ */
+IAHalfEdge *IAMesh::findSingleEdge(IAVertex *v0, IAVertex *v1)
+{
+    double key = v0->pLocalPosition.length()+v1->pLocalPosition.length();
+    auto itlow = edgeMap.lower_bound(key-0.0001);
+    auto itup = edgeMap.upper_bound(key+0.0001);
+    for (auto it=itlow; it!=itup; ++it) {
+        IAHalfEdge *e = (*it).second;
+        IAVertex *ev0 = e->vertex(0);
+        IAVertex *ev1 = e->vertex(1);
+        if (ev0==v0 && ev1==v1 && !e->twin())
+            return e;
+    }
     return 0;
 }
 
@@ -421,16 +472,29 @@ void IAMesh::drawFlat(bool textured, float r, float g, float b, float a)
  Draw all the edges in the mesh.
  */
 void IAMesh::drawEdges() {
-    glColor3f(0.8f, 1.0f, 1.0f);
-    glBegin(GL_LINES);
+    glDisable(GL_TEXTURE_2D);
+    glDisable(GL_LIGHTING);
+//    glPolygonOffset( -1.0, -1.0 );
+//    glEnable( GL_POLYGON_OFFSET_LINE );
     for (auto e: edgeList) {
-        for (int j = 0; j < 2; ++j) {
-            IAVertex *v = e->vertex(j);
-            glTexCoord2dv(v->pTex.dataPointer());
-            glVertex3dv(v->pLocalPosition.dataPointer());
+        if (e->twin()) {
+            glColor3f(0.8f, 1.0f, 1.0f);
+            glLineWidth(2.0);
+            glBegin(GL_LINES);
+            glVertex3dv(e->vertex(0)->pLocalPosition.dataPointer());
+            glVertex3dv(e->vertex(1)->pLocalPosition.dataPointer());
+            glEnd();
+        } else {
+            glColor3f(1.0f, 0.5f, 0.5f);
+            glLineWidth(4.0);
+            glBegin(GL_LINES);
+            glVertex3dv(e->vertex(0)->pLocalPosition.dataPointer());
+            glVertex3dv(e->vertex(1)->pLocalPosition.dataPointer());
+            glEnd();
         }
     }
-    glEnd();
+//    glDisable( GL_POLYGON_OFFSET_LINE );
+//    glPolygonOffset( 0.0, 0.0 );
 }
 
 
