@@ -203,61 +203,6 @@ void IAMesh::fixHole(IAHalfEdge *e)
         assert(e2);
         addNewTriangle(e->next()->vertex(), e->vertex(), e2->next()->vertex());
     }
-
-
-#if 1
-#else
-    printf("Fixing a hole...\n");
-    IATriangle *fFix;
-    if (e->triangle(0))
-        fFix = e->triangle(0);
-    else
-        fFix = e->triangle(1);
-    // walk the fan to the left and find the next edge
-    IATriangle *fLeft = fFix;
-    IAHalfEdge *eLeft = e;
-    for (;;) {
-        int ix = eLeft->indexIn(fLeft);
-        eLeft = fLeft->pEdge[(ix+2)%3];
-        if (eLeft->nTriangle()==1)
-            break;
-        fLeft = eLeft->otherTriangle(fLeft);
-    }
-    // walk the fan to the right and find the next edge
-    IATriangle *fRight = fFix;
-    IAHalfEdge *eRight = e;
-    for (;;) {
-        int ix = eRight->indexIn(fRight);
-        eRight = fRight->pEdge[(ix+1)%3];
-        if (eRight->nTriangle()==1)
-            break;
-        fRight = eRight->otherTriangle(fRight);
-    }
-    // eLeft and eRight are the next connecting edges
-    // fLeft and fRight are the only connected faces
-    // fLeft and fRight can well be fFix
-    IAVertex *vLeft = eLeft->vertex(0, fLeft);
-    IAVertex *vRight = eRight->vertex(1, fRight);
-    if (eLeft==eRight) {
-        // this is a zero size hole: merge the edges
-        puts("ERROR: zero size hole!");
-    } else if ( vLeft==vRight ) {
-        addNewTriangle(e->vertex(1, fFix), e->vertex(0, fFix), vLeft);
-    } else if (fFix==fRight) {
-        if (fLeft==fRight) {
-            addNewTriangle(fFix->vertex(2),
-                           fFix->vertex(1),
-                           fFix->vertex(0));
-        } else {
-            fixHole(eRight);
-        }
-    } else {
-        // add one more triangle to get closer to filling the hole
-        addNewTriangle(e->vertex(1, fFix),
-                       e->vertex(0, fFix),
-                       eRight->vertex(1, fRight));
-    }
-#endif
 }
 
 
