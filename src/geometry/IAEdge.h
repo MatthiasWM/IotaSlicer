@@ -9,6 +9,7 @@
 
 
 #include <vector>
+#include <assert.h>
 
 
 class IAVertex;

@@ -37,7 +37,6 @@
 			<Add directory="../bin" />
 		</ResourceCompiler>
 		<Linker>
-			<Add option="-lXft -lXrender -lm -lfontconfig -ldl" />
 			<Add library="libfltk_images.a" />
 			<Add library="libfltk_jpeg.a" />
 			<Add library="libfltk_png.a" />
@@ -119,6 +118,8 @@
 		<Unit filename="../../../src/potrace/trace.h" />
 		<Unit filename="../../../src/printer/IAPrinter.cpp" />
 		<Unit filename="../../../src/printer/IAPrinter.h" />
+		<Unit filename="../../../src/toolpath/IADxfWriter.cpp" />
+		<Unit filename="../../../src/toolpath/IADxfWriter.h" />
 		<Unit filename="../../../src/toolpath/IAGcodeWriter.cpp" />
 		<Unit filename="../../../src/toolpath/IAGcodeWriter.h" />
 		<Unit filename="../../../src/toolpath/IAToolpath.cpp" />

@@ -504,6 +504,9 @@ void IAIota::menuOpen()
 }
 
 
+static bool firstTimeSlice = true;
+
+
 /**
  * As for a filename and write the GCode file there.
  */
@@ -535,16 +538,14 @@ void IAIota::menuSliceAs()
     }
     gPreferences.flush();
     sliceMesh(gPreferences.pLastGCodeFilename);
+    firstTimeSlice = false;
 }
 
 
 void IAIota::menuSliceAgain()
 {
-    static bool firstTime = true;
-
-    if (firstTime) {
+    if (firstTimeSlice) {
         menuSliceAs();
-        firstTime = false;
     } else {
         sliceMesh(gPreferences.pLastGCodeFilename);
     }
