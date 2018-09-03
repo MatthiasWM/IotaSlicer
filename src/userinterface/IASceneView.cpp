@@ -332,8 +332,6 @@ void IASceneView::draw_children()
     glDisable(GL_BLEND);
     glDisable(GL_CULL_FACE);
 
-    // FIXME: buttons disappear when we start to slice until we resize the window
-    // so, generating a slice or loading the texture for the first time seems to cause this!
     Fl_Window::make_current();
     fl_push_no_clip();
     make_current();
@@ -342,6 +340,12 @@ void IASceneView::draw_children()
         Fl_Widget& o = **a++;
         draw_child(o);
         draw_outside_label(o);
+    }
+    if (!Iota.pMesh) {
+        gl_color(FL_BLACK);
+        gl_font(FL_HELVETICA, 18);
+        // FIXME: Multiline output will write bottom to top instead of top to bottom!
+        gl_draw("Drag and drop STL files here", 0, 0, w(), h(), FL_ALIGN_CENTER|FL_ALIGN_INSIDE);
     }
     fl_pop_clip();
 }

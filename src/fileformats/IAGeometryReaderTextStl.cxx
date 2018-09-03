@@ -32,16 +32,31 @@ std::shared_ptr<IAGeometryReader> IAGeometryReaderTextStl::findReaderFor(const c
         return nullptr;
     }
     
-    uint8_t data[5];
-    size_t n = ::read(f, data, 5);
+    uint8_t data[80];
+    size_t n = ::read(f, data, 80);
     ::close(f);
-    
-    if (n<5)  // TODO: set error
+
+    if (n<80) {
+        Iota.setError("STL Geometry reader", Error::UnknownFileType_STR, filename);
         return nullptr;
-    
-    if (strncmp((char*)data, "solid", 5)!=0)   // TODO: set error
+    }
+
+    // skip leading whitespace
+    char *src = (char*)data;
+    // don;t skip more than 70 characters
+    for (int i=0; i<70; i++) {
+        char c = *src;
+        if (c!=' ' && c!='\t' && c!='\r' && c!='\n')
+            break;
+        src++;
+    }
+
+    if (strncmp(src, "solid", 5)!=0) {
+        Iota.setError("STL Geometry reader", Error::UnknownFileType_STR, filename);
         return nullptr;
+    }
     
+    Iota.clearError();
     return std::make_shared<IAGeometryReaderTextStl>(filename);
 }
 
