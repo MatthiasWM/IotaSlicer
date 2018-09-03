@@ -23,6 +23,11 @@ IAPreferences::IAPreferences()
     window.get("y", pMainWindowY, -1);
     window.get("w", pMainWindowW, 800);
     window.get("h", pMainWindowH, 600);
+
+    Fl_Preferences filenames(main, "filenames");
+
+    filenames.get("lastGCode", pLastGCodeFilename, "", sizeof(pLastGCodeFilename));
+    filenames.get("lastLoad", pLastLoadFilename, "", sizeof(pLastLoadFilename));
 }
 
 
@@ -43,6 +48,11 @@ void IAPreferences::flush()
     window.set("y", wMainWindow->y());
     window.set("w", wMainWindow->w());
     window.set("h", wMainWindow->h());
+
+    Fl_Preferences filenames(main, "filenames");
+
+    filenames.set("lastGCode", pLastGCodeFilename);
+    filenames.set("lastLoad", pLastLoadFilename);
 
     pPrefs->flush();
 }

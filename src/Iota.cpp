@@ -26,6 +26,7 @@
 
 #include <FL/fl_ask.H>
 #include <FL/fl_utf8.h>
+#include <FL/Fl_Native_File_Chooser.H>
 
 #include <errno.h>
 
@@ -176,7 +177,7 @@ void IAIota::menuWriteSlice()
  M563 P0 D0:1:2:3 H0 F0 ; maps the Crane Quad head to tool 0
  G1 X10 Y10 F800 E0.235:0.003:0:0 ; prints by mixing transports 0 and 1 into heater 0
  */
-void IAIota::menuSliceMesh()
+void IAIota::sliceMesh(const char *filename)
 {
     if (!pMachineToolpath)
         pMachineToolpath = new IAMachineToolpath();
@@ -231,7 +232,9 @@ void IAIota::menuSliceMesh()
         delete tp3;
         free(rgb);
     }
-    pMachineToolpath->saveGCode("/Users/matt/aaa.gcode");
+    pMachineToolpath->saveGCode(filename);
+    zSlider1->value(0.0);
+    zSlider1->do_callback();
     gSceneView->redraw();
 }
 #elif 1 // save two color two extruder code
@@ -239,7 +242,7 @@ void IAIota::menuSliceMesh()
  Experimental stuff.
  Slice the mesh into a two-color twin-extruder setup including waste piles.
  */
-void IAIota::menuSliceMesh()
+void IAIota::sliceMesh(const char *filename)
 {
     if (!pMachineToolpath)
         pMachineToolpath = new IAMachineToolpath();
@@ -250,7 +253,7 @@ void IAIota::menuSliceMesh()
 
     double zMin = 0.2;
     double zLayerHeight = 0.3;
-#if 0
+#if 1
     double zMax = hgt;
 #else
     double zMax = 25;
@@ -303,7 +306,7 @@ void IAIota::menuSliceMesh()
         Iota.gMeshSlice.pFramebuffer->traceOutline(tp3, z);
 
         IAToolpath *tp = pMachineToolpath->createLayer(z);
-#if 0
+#if 1
         tp->add(*tp3);
         tp->add(*tp2);
         tp->add(*tp1);
@@ -331,9 +334,9 @@ void IAIota::menuSliceMesh()
         free(rgb);
         i++;
     }
-    pMachineToolpath->saveGCode("/Users/matt/aaa.gcode");
+    pMachineToolpath->saveGCode(filename);
     hideProgressDialog();
-    zSlider1->value(1.0);
+    zSlider1->value(0.0);
     zSlider1->do_callback();
     gSceneView->redraw();
 }
@@ -381,6 +384,16 @@ void IAIota::menuSliceMesh()
     gSceneView->redraw();
 }
 #endif
+
+
+/**
+ * Developer shortcut.
+ */
+void IAIota::menuSliceMesh()
+{
+    sliceMesh("/Users/matt/aaa.gcode");
+}
+
 
 /**
  * Just quit the app.
@@ -438,6 +451,7 @@ bool IAIota::addGeometry(std::shared_ptr<IAGeometryReader> reader)
 {
     bool ret = false;
     delete Iota.pMesh; Iota.pMesh = nullptr;
+    gMeshSlice.clear();
     auto geometry = reader->load();
     Iota.pMesh = geometry;
     if (pMesh) {
@@ -446,6 +460,94 @@ bool IAIota::addGeometry(std::shared_ptr<IAGeometryReader> reader)
         pMesh->centerOnPrintbed(&gPrinter);
     }
     return ret;
+}
+
+
+/**
+ * Clear the build playform and start a new build.
+ */
+void IAIota::menuNewProject()
+{
+    delete Iota.pMesh; Iota.pMesh = nullptr;
+    gMeshSlice.clear();
+    gSceneView->redraw();
+}
+
+
+/**
+ * Load any kind of file from disk.
+ *
+ * Currently that would be STL files
+ */
+void IAIota::menuOpen()
+{
+    Fl_Native_File_Chooser fc(Fl_Native_File_Chooser::BROWSE_FILE);
+    fc.title("Open mesh file");
+    fc.filter("*.{stl,STL}");
+    fc.directory(gPreferences.pLastLoadFilename);
+    switch (fc.show()) {
+        case -1: // error
+        case 1: // cancel
+            return;
+        default: // filename choosen
+            break;
+    }
+    const char *filename = fc.filename();
+    if (!filename || !*filename)
+        return;
+    fl_filename_absolute(gPreferences.pLastLoadFilename,
+                         sizeof(gPreferences.pLastLoadFilename),
+                         filename);
+    gPreferences.flush();
+    menuNewProject();
+    addGeometry(gPreferences.pLastLoadFilename);
+}
+
+
+/**
+ * As for a filename and write the GCode file there.
+ */
+void IAIota::menuSliceAs()
+{
+    Fl_Native_File_Chooser fc(Fl_Native_File_Chooser::BROWSE_SAVE_FILE);
+    fc.title("Save toolpath as GCode");
+    fc.filter("*.gcode");
+    fc.directory(gPreferences.pLastGCodeFilename);
+    switch (fc.show()) {
+        case -1: // error
+        case 1: // cancel
+            return;
+        default: // filename choosen
+            break;
+    }
+    const char *filename = fc.filename();
+    if (!filename || !*filename)
+        return;
+//    strcpy(gPreferences.pLastGCodeFilename, filename);
+    fl_filename_absolute(gPreferences.pLastGCodeFilename,
+                         sizeof(gPreferences.pLastGCodeFilename),
+                         filename);
+    const char *ext = fl_filename_ext(gPreferences.pLastGCodeFilename);
+    if (!ext || !*ext) {
+        fl_filename_setext(gPreferences.pLastGCodeFilename,
+                           sizeof(gPreferences.pLastGCodeFilename),
+                           ".gcode");
+    }
+    gPreferences.flush();
+    sliceMesh(gPreferences.pLastGCodeFilename);
+}
+
+
+void IAIota::menuSliceAgain()
+{
+    static bool firstTime = true;
+
+    if (firstTime) {
+        menuSliceAs();
+        firstTime = false;
+    } else {
+        sliceMesh(gPreferences.pLastGCodeFilename);
+    }
 }
 
 

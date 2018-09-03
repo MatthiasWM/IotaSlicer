@@ -15,6 +15,7 @@
 #include "printer/IAPrinter.h"
 #include "userinterface/IAPreferences.h"
 
+
 class IAGeometryReader;
 class IAMachineToolpath;
 class IAToolpath;
@@ -26,7 +27,7 @@ const int IA_PROJECTION_FRONT       = 0;
 const int IA_PROJECTION_CYLINDRICAL = 1;
 const int IA_PROJECTION_SPHERICAL   = 2;
 
-const int kFramebufferSize = 4096;
+const int kFramebufferSize = 2048;
 
 
 /**
@@ -50,9 +51,15 @@ public:
     IAIota();
     ~IAIota();
 
+    void sliceMesh(const char *filename);
+
     void menuWriteSlice();
     void menuSliceMesh();
+    void menuNewProject();
+    void menuOpen();
     void menuQuit();
+    void menuSliceAs();
+    void menuSliceAgain();
 
     void loadDemoFiles();
     void loadAnyFile(const char *list);

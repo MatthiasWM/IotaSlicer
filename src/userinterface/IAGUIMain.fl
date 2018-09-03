@@ -3,7 +3,7 @@ version 1.0400
 use_FL_COMMAND
 header_name {.h}
 code_name {.cpp}
-decl {\#include "../Iota.h"} {public global
+decl {\#include "Iota.h"} {public global
 }
 
 decl {\#include "IASceneView.h"} {public global
@@ -43,7 +43,8 @@ data sHelpAbout {private local filename {../../html/helpAbout.html}
 data sHelpLicenses {private local filename {../../html/helpLicenses.html}
 }
 
-Function {createIotaAppWindow()} {} {
+Function {createIotaAppWindow()} {open
+} {
   Fl_Window wMainWindow {
     label {Iota Slicer V0.1a} open
     xywh {472 202 800 600} type Double resizable visible
@@ -57,14 +58,16 @@ Function {createIotaAppWindow()} {} {
       } {
         MenuItem {} {
           label {New Project}
-          xywh {0 0 100 20} deactivate
+          callback {Iota.menuNewProject();}
+          xywh {0 0 100 20} shortcut 0x40006e
         }
         MenuItem {} {
           label {Open...}
-          xywh {12 12 100 20} deactivate
+          callback {Iota.menuOpen();}
+          xywh {12 12 100 20} shortcut 0x40006f
         }
         Submenu {} {
-          label {Open Recent} open
+          label {Open Recent}
           xywh {0 0 100 20} deactivate
         } {
           MenuItem {} {
@@ -168,7 +171,13 @@ Function {createIotaAppWindow()} {} {
       } {
         MenuItem {} {
           label {Slice...}
-          xywh {0 0 100 20} deactivate
+          callback {Iota.menuSliceAs();}
+          xywh {0 0 100 20} shortcut 0x410062
+        }
+        MenuItem {} {
+          label {Slice again}
+          callback {Iota.menuSliceAgain();}
+          xywh {12 12 100 20} shortcut 0x400062
         }
         MenuItem {} {
           label {Analyse...}
@@ -351,8 +360,9 @@ gSceneView->redraw();}
               tooltip {Stop slicing the model} xywh {605 565 40 30} hide
             }
           }
-          Fl_Group {} {open
-            xywh {645 33 150 562} resizable
+          Fl_Group {} {
+            label {(placeholder)} open selected
+            xywh {645 33 150 562} labelsize 12 align 16 resizable
           } {}
         }
       }
@@ -628,10 +638,10 @@ wVersionWindow->hide();}
 comment {Progress bar} {in_source in_header
 }
 
-decl {bool progressDialogCanceled;} {selected private local
+decl {bool progressDialogCanceled;} {private local
 }
 
-declblock {\#if 1} {open after {\#endif}
+declblock {\#if 1} {after {\#endif}
 } {
   Function {createProgressDialog()} {open
   } {

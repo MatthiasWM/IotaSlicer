@@ -29,6 +29,8 @@ inside a model, colors and transparencies.
 
 The current code generates somewhate expreimental Gcode files specifically for DaVinci Duo printers.
 
+* v0.0.8a
+  * added some aspects of the future menu system
 * v0.0.7a
   * fixed STL importer to better differentiate binary and ASCII STL files
   * rewrote the mesh fixer to reliably create watertight models every time
