@@ -226,3 +226,55 @@ int IAHalfEdge::nTriangle()
     if (twin()) n = 2;
     return n;
 }
+
+
+/**
+ * Find the next edge (ccw) in this fan that has no twin.
+ *
+ * Walk the fan until we either find an edge without twin, or we find this edge
+ * again, which indicates a complete fan. This is normally called when this
+ * edge has no twin either.
+ *
+ * \return the next edge in the fan that has no twin; the returned half-edge
+ *      next->vertex is the same as \e this vertex.
+ * \return nullptr if the fan is complete, like a cocktail umbrella.
+ */
+IAHalfEdge *IAHalfEdge::findPrevSingleEdgeInFan()
+{
+    IAHalfEdge *e = prev();
+    for (;;) {
+        if (!e->twin()) return e;
+        if (e->twin()==this) return nullptr;
+        e = e->twin()->prev();
+        // if this loops endlessly, the mesh is seriously broken
+    }
+}
+
+
+/**
+ * Find the prev edge (cw) in this fan that has no twin.
+ *
+ * Walk the fan until we either find an edge without twin, or we find this edge
+ * again, which indicates a complete fan. This is normally called when this
+ * edge has no twin either.
+ *
+ * \return the prev edge in the fan that has no twin; the returned half-edge
+ *      vertex is the same as this vertex. Can return \e this.
+ * \return nullptr if the fan is complete, like a cocktail umbrella.
+ */
+IAHalfEdge *IAHalfEdge::findNextSingleEdgeInFan()
+{
+    if (!twin()) return this;
+    IAHalfEdge *e = twin()->next();
+    for (;;) {
+        if (e==this) return nullptr;
+        if (!e->twin()) return e;
+        e = e->twin()->next();
+        // if this loops endlessly, the mesh is seriously broken
+    }
+}
+
+
+
+
+

@@ -56,6 +56,9 @@ public:
     IATriangle *triangle() { return pTriangle; }
     IAVertex *vertex() { return pVertex; }
 
+    IAHalfEdge *findNextSingleEdgeInFan();
+    IAHalfEdge *findPrevSingleEdgeInFan();
+
     // old stuff
     IAVertex *findZGlobal(double);
     IAVertex *vertex(int i, IATriangle *f);
