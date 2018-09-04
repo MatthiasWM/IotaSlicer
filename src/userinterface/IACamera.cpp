@@ -61,7 +61,7 @@ void IAPerspectiveCamera::drag(double dx, double dy)
     position.zRotate(pZRotation);
     position += pInterest;
 
-    IAVector3d printer = Iota.gPrinter.pBuildVolume;
+    IAVector3d printer = Iota.pCurrentPrinter->pBuildVolume;
     printer *= 0.5;
     printer -= position;
     double dist = printer.length();
@@ -97,13 +97,13 @@ void IAPerspectiveCamera::draw()
     position.zRotate(pZRotation);
     position += pInterest;
 
-    IAVector3d printer = Iota.gPrinter.pBuildVolume;
+    IAVector3d printer = Iota.pCurrentPrinter->pBuildVolume;
     printer *= 0.5;
     printer -= position;
     double dist = printer.length();
     double aspect = (double(pView->pixel_w()))/(double(pView->pixel_h()));
-    double nearPlane = ia_max(dist-2.0*Iota.gPrinter.pBuildVolumeRadius, 1.0);
-    double farPlane = dist+2.0*Iota.gPrinter.pBuildVolumeRadius;
+    double nearPlane = ia_max(dist-2.0*Iota.pCurrentPrinter->pBuildVolumeRadius, 1.0);
+    double farPlane = dist+2.0*Iota.pCurrentPrinter->pBuildVolumeRadius;
     gluPerspective(50.0, aspect, nearPlane, farPlane);
 
     glMatrixMode (GL_MODELVIEW);
@@ -161,7 +161,7 @@ void IAOrthoCamera::dolly(double dx, double dy)
 {
     pZoom = pZoom * (1.0+0.01*dy);
     if (pZoom<1.0) pZoom = 1.0;
-    if (pZoom>4.0*Iota.gPrinter.pBuildVolumeRadius) pZoom = 4.0*Iota.gPrinter.pBuildVolumeRadius;
+    if (pZoom>4.0*Iota.pCurrentPrinter->pBuildVolumeRadius) pZoom = 4.0*Iota.pCurrentPrinter->pBuildVolumeRadius;
 }
 
 
@@ -173,7 +173,7 @@ void IAOrthoCamera::draw()
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     double aspect = (double(pView->pixel_w()))/(double(pView->pixel_h()));
-    glOrtho(-pZoom*aspect, pZoom*aspect, -pZoom, pZoom, -Iota.gPrinter.pBuildVolumeRadius, Iota.gPrinter.pBuildVolumeRadius);
+    glOrtho(-pZoom*aspect, pZoom*aspect, -pZoom, pZoom, -Iota.pCurrentPrinter->pBuildVolumeRadius, Iota.pCurrentPrinter->pBuildVolumeRadius);
     glMatrixMode (GL_MODELVIEW);
     glLoadIdentity();
     glTranslated(-pInterest.x(), -pInterest.y(), -pInterest.z());

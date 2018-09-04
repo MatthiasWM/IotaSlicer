@@ -36,9 +36,9 @@ IASceneView::IASceneView(int x, int y, int w, int h, const char *l)
     pCurrentCamera( pPerspectiveCamera )
 {
     IAVector3d interest = {
-        Iota.gPrinter.pBuildVolume.x() * 0.5,
-        Iota.gPrinter.pBuildVolume.y() * 0.5,
-        Iota.gPrinter.pBuildVolume.z() * 0.333
+        Iota.pCurrentPrinter->pBuildVolume.x() * 0.5,
+        Iota.pCurrentPrinter->pBuildVolume.y() * 0.5,
+        Iota.pCurrentPrinter->pBuildVolume.z() * 0.2
     };
     pPerspectiveCamera->setInterest(interest);
     pTopCamera->setInterest(interest);
@@ -271,7 +271,7 @@ void IASceneView::draw()
     glEnable(GL_LIGHTING);
 
     glPushMatrix();
-    Iota.gPrinter.draw();
+    Iota.pCurrentPrinter->draw();
     glPopMatrix();
 
     beginModels();

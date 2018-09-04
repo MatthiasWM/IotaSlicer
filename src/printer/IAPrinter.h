@@ -12,7 +12,7 @@
 
 
 /**
- Manage different types of 3D printers.
+ * Manage different types of 3D printers.
  */
 class IAPrinter
 {
@@ -27,6 +27,16 @@ public:
 //    IAVector3d pBuildVolumeMax = { 214.0, 214.0, 330.0 };
     double pBuildVolumeRadius = 200.0; // sphere that contains the entire centered build volume
 
+};
+
+
+/**
+ * Manage a list of printers.
+ */
+class IAPrinterList
+{
+public:
+    IAPrinterList() { }
 };
 
 

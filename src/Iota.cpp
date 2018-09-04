@@ -67,7 +67,8 @@ const char *IAIota::kErrorMessage[] =
  * Creat the Iota Slicer application.
  */
 IAIota::IAIota()
-:   pCurrentToolpath( new IAToolpath(0.0) )
+:   pCurrentToolpath( new IAToolpath(0.0) ),
+    pCurrentPrinter( new IAPrinter )
 {
 }
 
@@ -457,7 +458,7 @@ bool IAIota::addGeometry(std::shared_ptr<IAGeometryReader> reader)
     if (pMesh) {
         pMesh->projectTexture(pMesh->pMax.x()*2, pMesh->pMax.y()*2, IA_PROJECTION_FRONT);
         pMesh->projectTexture(3, 1, IA_PROJECTION_CYLINDRICAL);
-        pMesh->centerOnPrintbed(&gPrinter);
+        pMesh->centerOnPrintbed(pCurrentPrinter);
     }
     return ret;
 }

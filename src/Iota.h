@@ -89,7 +89,8 @@ public:
     /// \todo create a current slice and hashed slices for other z-layers
     IASlice gMeshSlice;
     /// the current 3d printwer
-    IAPrinter gPrinter;
+    IAPrinter *pCurrentPrinter = nullptr;
+    IAPrinterList pAvailablePrinters;
     /// the toolpath for the entire scene
     IAMachineToolpath *pMachineToolpath = nullptr;
     /// the current toolpath

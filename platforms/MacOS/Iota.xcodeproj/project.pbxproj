@@ -7,6 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		C9163EBA213EA6A700876F17 /* IAPrinterSLS.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C9163EB2213EA6A600876F17 /* IAPrinterSLS.cpp */; };
+		C9163EBB213EA6A700876F17 /* IAPrinterFDM.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C9163EB5213EA6A700876F17 /* IAPrinterFDM.cpp */; };
+		C9163EBC213EA6A700876F17 /* IAPrinterInkjet.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C9163EB6213EA6A700876F17 /* IAPrinterInkjet.cpp */; };
+		C9163EBD213EA6A700876F17 /* IAPrinterLasercutter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C9163EB9213EA6A700876F17 /* IAPrinterLasercutter.cpp */; };
+		C9163EC0213EAA4300876F17 /* IAPrinterFDMBelt.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C9163EBE213EAA4300876F17 /* IAPrinterFDMBelt.cpp */; };
 		C938CC152124D51200BAC374 /* IAGLButton.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C938CC142124D51200BAC374 /* IAGLButton.cpp */; };
 		C938CC182125CFB100BAC374 /* IAGeometryReader.cxx in Sources */ = {isa = PBXBuildFile; fileRef = C938CC162125CFB100BAC374 /* IAGeometryReader.cxx */; };
 		C938CC20212602F600BAC374 /* IAGeometryReaderBinaryStl.cxx in Sources */ = {isa = PBXBuildFile; fileRef = C938CC1F212602F600BAC374 /* IAGeometryReaderBinaryStl.cxx */; };
@@ -71,6 +76,16 @@
 /* End PBXBuildRule section */
 
 /* Begin PBXFileReference section */
+		C9163EB2213EA6A600876F17 /* IAPrinterSLS.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = IAPrinterSLS.cpp; sourceTree = "<group>"; };
+		C9163EB3213EA6A700876F17 /* IAPrinterLasercutter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IAPrinterLasercutter.h; sourceTree = "<group>"; };
+		C9163EB4213EA6A700876F17 /* IAPrinterSLS.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IAPrinterSLS.h; sourceTree = "<group>"; };
+		C9163EB5213EA6A700876F17 /* IAPrinterFDM.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = IAPrinterFDM.cpp; sourceTree = "<group>"; };
+		C9163EB6213EA6A700876F17 /* IAPrinterInkjet.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = IAPrinterInkjet.cpp; sourceTree = "<group>"; };
+		C9163EB7213EA6A700876F17 /* IAPrinterFDM.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IAPrinterFDM.h; sourceTree = "<group>"; };
+		C9163EB8213EA6A700876F17 /* IAPrinterInkjet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IAPrinterInkjet.h; sourceTree = "<group>"; };
+		C9163EB9213EA6A700876F17 /* IAPrinterLasercutter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = IAPrinterLasercutter.cpp; sourceTree = "<group>"; };
+		C9163EBE213EAA4300876F17 /* IAPrinterFDMBelt.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = IAPrinterFDMBelt.cpp; sourceTree = "<group>"; };
+		C9163EBF213EAA4300876F17 /* IAPrinterFDMBelt.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IAPrinterFDMBelt.h; sourceTree = "<group>"; };
 		C938CC132124D51200BAC374 /* IAGLButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IAGLButton.h; sourceTree = "<group>"; };
 		C938CC142124D51200BAC374 /* IAGLButton.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = IAGLButton.cpp; sourceTree = "<group>"; };
 		C938CC162125CFB100BAC374 /* IAGeometryReader.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = IAGeometryReader.cxx; sourceTree = "<group>"; };
@@ -281,6 +296,16 @@
 			children = (
 				C97632ED211FA7CC00D9D4B5 /* IAPrinter.cpp */,
 				C97632EE211FA7CC00D9D4B5 /* IAPrinter.h */,
+				C9163EB5213EA6A700876F17 /* IAPrinterFDM.cpp */,
+				C9163EB7213EA6A700876F17 /* IAPrinterFDM.h */,
+				C9163EBE213EAA4300876F17 /* IAPrinterFDMBelt.cpp */,
+				C9163EBF213EAA4300876F17 /* IAPrinterFDMBelt.h */,
+				C9163EB6213EA6A700876F17 /* IAPrinterInkjet.cpp */,
+				C9163EB8213EA6A700876F17 /* IAPrinterInkjet.h */,
+				C9163EB9213EA6A700876F17 /* IAPrinterLasercutter.cpp */,
+				C9163EB3213EA6A700876F17 /* IAPrinterLasercutter.h */,
+				C9163EB2213EA6A600876F17 /* IAPrinterSLS.cpp */,
+				C9163EB4213EA6A700876F17 /* IAPrinterSLS.h */,
 			);
 			path = printer;
 			sourceTree = "<group>";
@@ -480,6 +505,7 @@
 				C97632CB211E2DD000D9D4B5 /* IAGUIMain.fl in Sources */,
 				C938CC20212602F600BAC374 /* IAGeometryReaderBinaryStl.cxx in Sources */,
 				C9E4C3192130311F004ED18C /* IAGcodeWriter.cpp in Sources */,
+				C9163EBA213EA6A700876F17 /* IAPrinterSLS.cpp in Sources */,
 				C9BC92442138692F00991240 /* IADxfWriter.cpp in Sources */,
 				C98C66BD21205D3C00BD3ACE /* IAFmtObj3ds.cxx in Sources */,
 				C9E4C31121285AFB004ED18C /* IAFramebuffer.cpp in Sources */,
@@ -493,15 +519,19 @@
 				C97632CA211E2DD000D9D4B5 /* Iota.cpp in Sources */,
 				C98C66C321208C6400BD3ACE /* IACamera.cpp in Sources */,
 				C97632EF211FA7CC00D9D4B5 /* IAPrinter.cpp in Sources */,
+				C9163EC0213EAA4300876F17 /* IAPrinterFDMBelt.cpp in Sources */,
 				C938CC152124D51200BAC374 /* IAGLButton.cpp in Sources */,
 				C938CC182125CFB100BAC374 /* IAGeometryReader.cxx in Sources */,
 				C97632DD211E357500D9D4B5 /* IASlice.cpp in Sources */,
 				C97632D7211E33B000D9D4B5 /* IAMesh.cpp in Sources */,
+				C9163EBC213EA6A700876F17 /* IAPrinterInkjet.cpp in Sources */,
 				C9554699213C9A530061E60E /* IAPreferences.cpp in Sources */,
 				C993323921238A4900629BE1 /* curve.c in Sources */,
 				C993323D21238A9700629BE1 /* IAPotrace.cpp in Sources */,
 				C97632CD211E2DD000D9D4B5 /* IAVector3d.cpp in Sources */,
 				C993323A21238A5100629BE1 /* trace.c in Sources */,
+				C9163EBD213EA6A700876F17 /* IAPrinterLasercutter.cpp in Sources */,
+				C9163EBB213EA6A700876F17 /* IAPrinterFDM.cpp in Sources */,
 				C97632DA211E348E00D9D4B5 /* IATriangle.cpp in Sources */,
 				C993323B21238A5900629BE1 /* decompose.c in Sources */,
 			);
