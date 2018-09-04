@@ -21,8 +21,7 @@ class IAMachineToolpath;
 class IAToolpath;
 
 
-// TODO globals that we want to get rid of.
-
+// temp kludge
 const int IA_PROJECTION_FRONT       = 0;
 const int IA_PROJECTION_CYLINDRICAL = 1;
 const int IA_PROJECTION_SPHERICAL   = 2;
@@ -44,6 +43,18 @@ enum class Error {
 
 /**
  * The main class that manages this app.
+ *
+ * \todo generally make class method names more consistent
+ * \todo make high level functions automatically execute lower rank functions,
+ *       if they were not run yet
+ * \todo create a model class that contains one or more meshes
+ * \todo allow multiple meshes in a scene
+ * \todo assign color methids to meshes and models
+ * \todo add a positional vertex (done) and a normal (still to do) for slicing
+ *       in the printer coordinate system
+ * \todo create vector infills from slices
+ * \todo results get good with a framebuffer size of 4096x4096! But potrace
+ *       gets slow!
  */
 class IAIota
 {

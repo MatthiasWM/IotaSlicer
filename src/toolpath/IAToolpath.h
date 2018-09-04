@@ -137,8 +137,6 @@ public:
     virtual IAToolpathElement *clone() override;
     void setColor(uint32_t c) { pColor = c; }
 
-    // FIXME: we MUST NOT have start and end. The previous end and the current
-    // start are redundant and caus trouble if assumptions are made!
     IAVector3d pStart, pEnd;
     uint32_t pColor = 0x00FFFFFF;
     bool pIsRapid = false;

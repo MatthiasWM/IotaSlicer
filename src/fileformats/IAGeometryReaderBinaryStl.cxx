@@ -101,6 +101,7 @@ std::shared_ptr<IAGeometryReader> IAGeometryReaderBinaryStl::findReaderFor(const
 /**
  * Create a reader for the indicated memory block.
  * \return 0 if the format is not STL
+ * \todo handle file reading errors
  */
 std::shared_ptr<IAGeometryReader> IAGeometryReaderBinaryStl::findReaderFor(const char *name, uint8_t *data, size_t size)
 {
@@ -111,10 +112,10 @@ std::shared_ptr<IAGeometryReader> IAGeometryReaderBinaryStl::findReaderFor(const
     for (i=0; i<80; i++) {
         if (data[i]>126) break;
     }
-    if (i<80)  // TODO: set error
+    if (i<80)
         return nullptr;
 
-    if (strncmp((char*)data, "solid", 5)==0)   // TODO: set error
+    if (strncmp((char*)data, "solid", 5)==0)
         return nullptr;
     
     return std::make_shared<IAGeometryReaderBinaryStl>(name, data, size);
@@ -150,6 +151,10 @@ IAGeometryReaderBinaryStl::~IAGeometryReaderBinaryStl()
 
 /**
  * Interprete the geometry data and create a mesh list.
+ *
+ * \todo fix seams
+ * \todo fix zero size holes
+ * \todo fix degenrate triangles
  */
 IAMesh *IAGeometryReaderBinaryStl::load()
 {
@@ -188,11 +193,7 @@ IAMesh *IAGeometryReaderBinaryStl::load()
         getUInt16LSB(); // color information, if there was a standard
     }
 
-    // FIXME: fixing the mesh should be done after loading *any* mesh, not just this one
     msh->validate();
-    // TODO: fix seams
-    // TODO: fix zero size holes
-    // TODO: fix degenrate triangles
     msh->fixHoles();
     msh->validate();
 

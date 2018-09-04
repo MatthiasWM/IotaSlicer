@@ -19,6 +19,11 @@
 #include <FL/gl.h>
 #include <FL/glu.h>
 #include <FL/Fl_Menu_Item.H>
+#include <FL/Fl_Window.H>
+#include <FL/fl_ask.H>
+#include <FL/Fl_Preferences.H>
+#include <FL/Fl_Native_File_Chooser.H>
+#include <FL/filename.H>
 
 
 /**
@@ -45,32 +50,60 @@
  For Example: You have a 0.5 mm nozzle mounted and you are printing at 0.25mm layer height at a print speed of 30 mm/s.
 
  Extrusion Width = 0.6 mm = 1.2 0.5 Flow Rate = 4.5 mm^3/s = 0.6 0.25 * 30
-
-
-
  */
-IAPrinter::IAPrinter()
+IAPrinter::IAPrinter(const char *newName)
 {
+    setName(newName);
+    loadSettings();
 }
 
 
-
-IAPrinter::IAPrinter(const char *name)
-{
-    IAPrinter();
-    if (name) {
-        Iota.pPrinterList.add(this, name);
-    }
-}
-
-
+/**
+ * Release all resources.
+ */
 IAPrinter::~IAPrinter()
 {
     if (pName)
         ::free((void*)pName);
+    if (pOutputPath)
+        ::free((void*)pOutputPath);
 }
 
 
+/**
+ * Load all settings of this printer to a Preferences file.
+ *
+ * The file path is the general app data area for every platform, followed by
+ * the vendor string. The filename is the name of the printer.
+ */
+void IAPrinter::loadSettings()
+{
+    if (name()==nullptr || *name()==0) return;
+
+    char buf[FL_PATH_MAX];
+    Fl_Preferences prefs(Fl_Preferences::USER, "com.matthiasm.iota.printer", name());
+    Fl_Preferences output(prefs, "output");
+    output.get("lastFilename", buf, "", sizeof(buf));
+    setOutputPath( buf );
+}
+
+
+/**
+ * Save all settings of this printer to a Preferences file.
+ */
+void IAPrinter::saveSettings()
+{
+    if (name()==nullptr || *name()==0) return;
+
+    Fl_Preferences prefs(Fl_Preferences::USER, "com.matthiasm.iota.printer", name());
+    Fl_Preferences output(prefs, "output");
+    output.set("lastFilename", outputPath());
+}
+
+
+/**
+ * Change the printer name and save the new settings.
+ */
 void IAPrinter::setName(const char *name)
 {
     if (pName)
@@ -78,16 +111,127 @@ void IAPrinter::setName(const char *name)
     pName = nullptr;
     if (name)
         pName = (char*)::strdup(name);
+    saveSettings();
 }
 
 
+/**
+ * Return the name of the printer driver.
+ */
 const char *IAPrinter::name()
 {
     return pName;
 }
 
+
 /**
- Draw a minimal shape representing the printer in the scene.
+ * Set the ouput filename.
+ *
+ * The filename will be saved for each named printer and restored when Iota
+ * is started again.
+ */
+void IAPrinter::setOutputPath(const char *name)
+{
+    if (pOutputPath)
+        ::free((void*)pOutputPath);
+    pOutputPath = nullptr;
+    if (name)
+        pOutputPath = (char*)::strdup(name);
+    saveSettings();
+}
+
+
+/**
+ * Return the filename and path of the output file.
+ */
+const char *IAPrinter::outputPath()
+{
+    return pOutputPath;
+}
+
+
+/**
+ * User asked us to select a file or directory, slice all layers in the scene,
+ * and save the result.
+ */
+void IAPrinter::userSliceAs()
+{
+    fl_message("The printer\n\"%s\"\ndoes not support slicing yet.", name());
+}
+
+
+/**
+ * User asks us to slice and save to the previously used output file.
+ *
+ * If this is the first request in this session, make sure that the user
+ * still agrees with the previous filename.
+ */
+void IAPrinter::userSliceAgain()
+{
+    if (pFirstWrite) {
+        userSliceAs();
+    } else {
+        sliceAndWrite();
+    }
+}
+
+
+/**
+ * Slice the entire scene and write the result to disk.
+ */
+void IAPrinter::sliceAndWrite(const char *filename)
+{
+    /* empty */
+}
+
+
+/**
+ * Ask the user to give us a filename for writing.
+ *
+ * \param title a free text that is displayed at the top of the dialog
+ * \param filter highlight certain filename, for example "*.{jpg|png}"
+ * \param extension add this extension if none is given
+ *
+ * \return false, if the user canceled the request
+ */
+bool IAPrinter::queryOutputFilename(const char *title,
+                                  const char *filter,
+                                  const char *extension)
+{
+    char buf[FL_PATH_MAX];
+
+    Fl_Native_File_Chooser fc(Fl_Native_File_Chooser::BROWSE_SAVE_FILE);
+    fc.title(title);
+    fc.filter(filter);
+    fc.directory(outputPath());
+    fc.preset_file(fl_filename_name(outputPath()));
+    fc.options(Fl_Native_File_Chooser::NEW_FOLDER |
+               Fl_Native_File_Chooser::PREVIEW);
+    switch (fc.show()) {
+        case -1: // error
+        case 1: // cancel
+            return false;
+        default: // filename choosen
+            break;
+    }
+    const char *filename = fc.filename();
+    if (!filename || !*filename)
+        return false;
+    //    strcpy(gPreferences.pLastGCodeFilename, filename);
+    fl_filename_absolute(buf, sizeof(buf), filename);
+    const char *ext = fl_filename_ext(buf);
+    if (!ext || !*ext) {
+        fl_filename_setext(buf, sizeof(buf), extension);
+    }
+    setOutputPath(buf);
+    saveSettings();
+    pFirstWrite = false;
+    return true;
+}
+
+
+/**
+ * Draw a minimal shape representing the printer in the scene.
  */
 void IAPrinter::draw()
 {
@@ -183,17 +327,33 @@ void IAPrinter::draw()
 }
 
 
+//===========================================================================//
+
+
+/**
+ * Manage a number of printers.
+ *
+ * Not setting printermenu should manage a printer list without user interface.
+ *
+ * \param printermenu a menu item that will be modified to point at all the
+ *        printers in this list.
+ */
 IAPrinterList::IAPrinterList(Fl_Menu_Item *printermenu)
 :   pMenuItem( printermenu )
 {
-    new IAPrinterFDM("Generic FDM Printer");
-    new IAPrinterFDMBelt("Generic FDM Belt Printer");
-    new IAPrinterInkjet("Generic Inkjet Printer");
-    new IAPrinterLasercutter("Generic Laser Cutter");
-    new IAPrinterSLS("Generic SLS Printer");
+    Iota.pPrinterList.add(new IAPrinterFDM("Generic FDM Printer"));
+    Iota.pPrinterList.add(new IAPrinterFDMBelt("Generic FDM Belt Printer"));
+    Iota.pPrinterList.add(new IAPrinterInkjet("Generic Inkjet Printer"));
+    Iota.pPrinterList.add(new IAPrinterLasercutter("Generic Laser Cutter"));
+    Iota.pPrinterList.add(new IAPrinterSLS("Generic SLS Printer"));
 }
 
 
+/**
+ * Relase all userinterface parts of the list.
+ *
+ * Does not release the individual printers.
+ */
 IAPrinterList::~IAPrinterList()
 {
     if (pMenuItem) {
@@ -206,6 +366,10 @@ IAPrinterList::~IAPrinterList()
 }
 
 
+/**
+ * Return the first printer in the list, or a new generic printer, if there
+ * is none.
+ */
 IAPrinter *IAPrinterList::defaultPrinter()
 {
     if (pPrinterList.size()) {
@@ -218,15 +382,25 @@ IAPrinter *IAPrinterList::defaultPrinter()
 }
 
 
-bool IAPrinterList::add(IAPrinter *printer, const char *name)
+/**
+ * Add a printer to the list and rebuild the menu item list.
+ */
+bool IAPrinterList::add(IAPrinter *printer)
 {
-    printer->setName(name);
     pPrinterList.push_back(printer);
     buildMenuArray();
     return true;
 }
 
 
+/**
+ * Buold a menu array and link it to the printer selection menu.
+ *
+ * \todo a checkmark at the selected printer would be nice
+ * \todo just show customized printers, not the generic ones
+ * \todo append menu item "Add new printer..."
+ * \todo create a printer creation dialog
+ */
 void IAPrinterList::buildMenuArray()
 {
     if (pMenuArray) ::free((void*)pMenuArray);
@@ -236,30 +410,33 @@ void IAPrinterList::buildMenuArray()
     Fl_Menu_Item *m = pMenuArray;
     for (auto p: pPrinterList) {
         m->label(p->name());
-        m->callback((Fl_Callback*)printerSelectedCB, p);
+        m->callback((Fl_Callback*)userSelectedPrinterCB, p);
         m++;
     }
-
-    // TODO: a checkmark at the selected printer would be nice
-    // TODO: just show customized printers, not the generic ones
-    // TODO: append menu item "Add new printer..."
-    // TODO: create a printer creation dialog
 
     pMenuItem->flags |= FL_SUBMENU_POINTER;
     pMenuItem->user_data(pMenuArray);
 }
 
 
+/**
+ * Select another printer.
+ *
+ * \todo flush all kinds of things
+ * \todo move this code into Iota class
+ * \todo redraw the entire user interface
+ */
 void IAPrinterList::userSelectedPrinter(IAPrinter *p)
 {
-    // FIXME: flush all kinds of things
-    // FIXME: move this code into Iota class
     Iota.pCurrentPrinter = p;
-    // FIXME: redraw the entire user interface
+    Iota.gMainWindow->redraw();
 }
 
 
-void IAPrinterList::printerSelectedCB(Fl_Menu_Item*, void *p)
+/**
+ * User selected a printer from the menu item list.
+ */
+void IAPrinterList::userSelectedPrinterCB(Fl_Menu_Item*, void *p)
 {
     Iota.pPrinterList.userSelectedPrinter((IAPrinter*)p);
 }

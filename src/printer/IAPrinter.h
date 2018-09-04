@@ -16,17 +16,26 @@ class Fl_Menu_Item;
 
 
 /**
- * Manage different types of 3D printers.
+ * Base class to manage different types of 3D printers.
  */
 class IAPrinter
 {
 public:
-    IAPrinter();
     IAPrinter(const char *name);
-    ~IAPrinter();
-    void draw();
+    virtual ~IAPrinter();
+    virtual void draw();
+
+    void loadSettings();
+    void saveSettings();
+    
     void setName(const char *name);
     const char *name();
+    void setOutputPath(const char *name);
+    const char *outputPath();
+
+    virtual void userSliceAs();
+    virtual void userSliceAgain();
+    virtual void sliceAndWrite(const char *filename=nullptr);
 
     IAVector3d pBuildVolume = { 214.0, 214.0, 230.0 };
 //    IAVector3d pBuildVolume = { 214.0, 214.0, 330.0 };
@@ -35,8 +44,17 @@ public:
 //    IAVector3d pBuildVolumeMax = { 214.0, 214.0, 330.0 };
     double pBuildVolumeRadius = 200.0; // sphere that contains the entire centered build volume
 
+protected:
+    bool queryOutputFilename(const char *title,
+                           const char *filter,
+                           const char *extension);
+
+    bool pFirstWrite = true;
+
 private:
     char *pName = nullptr;
+
+    char *pOutputPath = nullptr;
 };
 
 
@@ -48,13 +66,13 @@ class IAPrinterList
 public:
     IAPrinterList(Fl_Menu_Item *printermenu);
     ~IAPrinterList();
-    bool add(IAPrinter *printer, const char *name);
+    bool add(IAPrinter *printer);
     IAPrinter *defaultPrinter();
     void userSelectedPrinter(IAPrinter *p);
 
 private:
     void buildMenuArray();
-    static void printerSelectedCB(Fl_Menu_Item*, void *p);
+    static void userSelectedPrinterCB(Fl_Menu_Item*, void *p);
 
     Fl_Menu_Item *pMenuItem = nullptr;
     Fl_Menu_Item *pMenuArray = nullptr;

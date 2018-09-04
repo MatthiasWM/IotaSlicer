@@ -50,7 +50,10 @@ IAVertex *IAEdge::findZGlobal(double zMin)
     bool retVec = false;
     vd0 -= v1->pGlobalPosition;
     double dzo = vd0.z(), dzn = zMin-v1->pGlobalPosition.z();
-    double m = dzn/dzo;  // FIXME: division by zero should not be possible...
+    /** \todo division by zero should not be possible...
+              we did avoid it by the z-offset hack, but, ugh!
+     */
+    double m = dzn/dzo;
     if (m>=0.0 && m<=1) retVec = true;
     if (retVec) {
         // calculate the coordinate at zMin
@@ -160,7 +163,10 @@ IAVertex *IAHalfEdge::findZGlobal(double zMin)
     bool retVec = false;
     vd0 -= v1->pGlobalPosition;
     double dzo = vd0.z(), dzn = zMin-v1->pGlobalPosition.z();
-    double m = dzn/dzo;  // FIXME: division by zero should not be possible...
+    /** \todo division by zero should not be possible...
+     we did avoid it by the z-offset hack, but, ugh!
+     */
+    double m = dzn/dzo;
     if (m>=0.0 && m<=1) retVec = true;
     if (retVec) {
         // calculate the coordinate at zMin

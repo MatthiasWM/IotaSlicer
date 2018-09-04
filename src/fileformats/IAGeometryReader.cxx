@@ -30,16 +30,16 @@
 /**
  * Create a file reader for the indicated file.
  * \return 0 if the format is not supported
+ * \todo first look at the filename extension and prefer that file format
+ * \todo set error to Unsupported File Format
  */
 std::shared_ptr<IAGeometryReader> IAGeometryReader::findReaderFor(const char *filename)
 {
     std::shared_ptr<IAGeometryReader> reader = nullptr;
-    // TODO: first look at the filename extension and prefer that file format
     if (!reader)
         reader = IAGeometryReaderBinaryStl::findReaderFor(filename);
     if (!reader)
         reader = IAGeometryReaderTextStl::findReaderFor(filename);
-    // TODO: set error to Unsupported File Format
     return reader;
 }
 
@@ -47,22 +47,23 @@ std::shared_ptr<IAGeometryReader> IAGeometryReader::findReaderFor(const char *fi
 /**
  * Create a reader for the indicated memory block.
  * \return 0 if the format is not supported
+ * \todo first look at the filename extension and prefer that file format
+ * \todo set error to Unsupported File Format
  */
 std::shared_ptr<IAGeometryReader> IAGeometryReader::findReaderFor(const char *name, unsigned char *data, size_t size)
 {
     std::shared_ptr<IAGeometryReader> reader = nullptr;
-    // TODO: first look at the name extension and prefer that file format
     if (!reader)
         reader = IAGeometryReaderBinaryStl::findReaderFor(name, data, size);
     if (!reader)
         reader = IAGeometryReaderTextStl::findReaderFor(name, data, size);
-    // TODO: set error to Unsupported File Format
     return reader;
 }
 
 
 /**
  * Create a universal reader by mapping the file to memory.
+ * \todo Use memory mapped files on MSWindows as well.
  */
 IAGeometryReader::IAGeometryReader(const char *filename)
 :   pName(strdup(filename))
@@ -79,7 +80,6 @@ IAGeometryReader::IAGeometryReader(const char *filename)
     ::lseek(fd, 0, SEEK_SET);
 
 #ifdef _WIN32
-	// TODO: use file mapping!
 	pData = (uint8_t*)malloc(len);
 	read(fd, pData, len);
 #else
@@ -114,12 +114,13 @@ IAGeometryReader::IAGeometryReader(const char *name, uint8_t *data, size_t size)
 
 /**
  * Release any allocated resources.
+ *
+ * \todo Use memory mapped files on MSWindows
  */
 IAGeometryReader::~IAGeometryReader()
 {
     if (pMustUnmapOnDelete) {
 #ifdef _WIN32
-		// FIXME: we should use file mapping instead
 		free(pData);
 #else
         ::munmap((void*)pData, pSize);
@@ -176,11 +177,12 @@ void IAGeometryReader::skip(size_t n)
 
 /**
  * Find the next keyword in a text file.
+ *
+ * \todo test for end of buffer and other errors!
  */
 bool IAGeometryReader::getWord()
 {
     // skip whitespace
-    // FIXME: test for end of buffer!
     for (;;) {
         uint8_t c = *pCurrData;
         if (c!=' ' && c!='\t' && c!='\r' && c!='\n')

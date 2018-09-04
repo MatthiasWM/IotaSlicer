@@ -116,7 +116,7 @@ void IAFramebuffer::bindForRendering()
     glLoadIdentity();
     IAPrinter *p = Iota.pCurrentPrinter;
     IAVector3d vol = p->pBuildVolume;
-    // FIXME: why is the range below [vol.z(), 0] negative? I tested the slice, and it does draw at the correct (positive) Z.
+    /** \todo why is the range below [vol.z(), 0] negative? I tested the slice, and it does draw at the correct (positive) Z. */
     glOrtho(0, vol.x(), 0, vol.y(), -vol.z()-1, 1);
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
@@ -260,7 +260,7 @@ void IAFramebuffer::activateFBO()
     if (!pFramebufferCreated) {
         createFBO();
     }
-    // FIXME: what if there was an error and FBO is still not created
+    /** \todo what if there was an error and FBO is still not created */
     glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, pFramebuffer);
 }
 

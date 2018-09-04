@@ -57,7 +57,7 @@ IASceneView::~IASceneView()
 /**
  * Handle all events that FLTK sends here.
  *
- * \todo FIXME: Handle all mouse input for manipulating the scene or the camera.
+ * \todo Handle all mouse input for manipulating the scene or the camera.
  * \todo Handle drag'n'drop events to add new models or textures.
  * \todo Handle copy and paste events.
  * \todo Handle context menus.
@@ -111,10 +111,10 @@ int IASceneView::handle(int event)
 /**
  * Update the preview slice if the Z slice level changed and it needs to be rendered.
  * \todo This should be a function of IASlice.
+ * \todo refactor into slice class
  */
 void IASceneView::updateSlice()
 {
-    // TODO: refactor into slice class
     if ( Iota.gShowSlice) {
         if (Iota.gMeshSlice.changeZ(zSlider1->value())) {
             Iota.gMeshSlice.clear();
@@ -344,7 +344,7 @@ void IASceneView::draw_children()
     if (!Iota.pMesh) {
         gl_color(FL_BLACK);
         gl_font(FL_HELVETICA, 18);
-        // FIXME: Multiline output will write bottom to top instead of top to bottom!
+        /** \todo Fix in FLTK: Multiline output will write bottom to top instead of top to bottom! */
         gl_draw("Drag and drop STL files here", 0, 0, w(), h(), FL_ALIGN_CENTER|FL_ALIGN_INSIDE);
     }
     fl_pop_clip();

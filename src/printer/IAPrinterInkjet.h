@@ -25,7 +25,6 @@
 class IAPrinterInkjet : public IAPrinter
 {
 public:
-    IAPrinterInkjet() { }
     IAPrinterInkjet(const char *name) : IAPrinter(name) { }
 };
 

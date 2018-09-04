@@ -25,7 +25,9 @@ static int max_normals = 0;
 
 
 /**
- Load a single node from a 3ds file.
+ * Load a single node from a 3ds file.
+ *
+ * \todo rewrite this
  */
 void load3ds(Lib3dsFile *f, Lib3dsMeshInstanceNode *node) {
     float (*orig_vertices)[3];
@@ -170,9 +172,6 @@ void load3ds(Lib3dsFile *f, Lib3dsMeshInstanceNode *node) {
     free(orig_vertices);
 
     msh->validate();
-    // TODO: fix seams
-    // TODO: fix zero size holes
-    // TODO: fix degenrate triangles
     msh->fixHoles();
     msh->validate();
 

@@ -81,6 +81,9 @@ void bezier(IAToolpath *toolpath,
  *
  * \todo It may be useful to choose a component, r, g, b, or a, and a threshold
  * \todo Conversion to bitmap is expensive. Can't we rewrite that to use bytes?
+ * \todo Not handling holes, not handling hierarchies of loops
+ * \todo don't render noise specs
+ *       http://potrace.sourceforge.net/potracelib.pdf
  */
  int potrace(IAFramebuffer *framebuffer, IAToolpath *toolpath, double z)
 {
@@ -136,9 +139,6 @@ void bezier(IAToolpath *toolpath,
 
     char start = 1;
     /* draw each curve */
-    // FIXME: Not handling holes, not handling hierarchies of loops
-    // FIXME: don't render noise specs
-    // http://potrace.sourceforge.net/potracelib.pdf
     p = st->plist;
     while (p != NULL) {
         n = p->curve.n;
@@ -162,7 +162,6 @@ void bezier(IAToolpath *toolpath,
                     toolpath->continuePath(c[i][0].x*xScl, c[i][0].y*yScl, z);
                     toolpath->continuePath(c[i][1].x*xScl, c[i][1].y*yScl, z);
                     toolpath->continuePath(c[i][2].x*xScl, c[i][2].y*yScl, z);
-                    // FIXME: make this into a nice curve!
 #else
                     j = i ? i-1 : n-1;
                     bezier(toolpath,
@@ -179,8 +178,8 @@ void bezier(IAToolpath *toolpath,
         /* at the end of a group of a positive path and its negative
          children, fill. */
         //if (p->next == NULL || p->next->sign == '+') {
-            // TODO: NULL-> close path and quit layer?
-            // TODO: + -> rapid move to next shape
+            // NULL-> close path and quit layer?
+            // + -> rapid move to next shape
             toolpath->closePath();
             start = 1;
         //}

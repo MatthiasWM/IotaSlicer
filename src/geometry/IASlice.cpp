@@ -142,6 +142,10 @@ void IASlice::addRim(IAMesh *m)
  * \param starting triangle.
  *
  * \todo handle cases where a point is exactly on z
+ * \todo if addNextRimVertex failed because this is not a watertight model (or
+ *       something else went wrong) we still may save the day somewhat by tracing
+ *       the flange in the other direction. Either way, the result is
+ *       pretty random.
  */
 void IASlice::addFirstRimVertex(IATriangle *t)
 {
@@ -192,10 +196,6 @@ void IASlice::addFirstRimVertex(IATriangle *t)
             break;
         t->pUsed = true;
     }
-    // TODO: if addNextRimVertex failed because this is not a watertight model (or
-    // something else went wrong) we still may save the day somewhat by tracing
-    // the flange in the other direction. Either way, the result is
-    // pretty random.
 
     if (firstTriangle==t) {
         // puts("It's a loop!");
@@ -233,7 +233,8 @@ bool IASlice::addNextRimVertex(IAHalfEdgePtr &e)
 
     // find the other edge in the triangle that crosses Z. Triangles are always clockwise
     // what happens if the triangle has one point exactly on Z?
-    if (e->prev()->vertex()->pGlobalPosition.z()<pCurrentZ) { // FIXME; >, >=
+    /** \todo  >, >= ?? */
+    if (e->prev()->vertex()->pGlobalPosition.z()<pCurrentZ) {
         e = e->next();
     } else {
         e = e->prev();
@@ -289,7 +290,7 @@ void IASlice::drawRim()
  */
 void IASlice::drawFramebuffer()
 {
-#if 0 // TODO: temp hack
+#if 0 // temp hack
     if (pFramebuffer) {
         pFramebuffer->draw(pCurrentZ);
     }
@@ -345,7 +346,7 @@ void __stdcall tessCombineCallback(GLdouble coords[3],
 {
     IAVertex *v = new IAVertex();
     v->pLocalPosition.read(coords);
-    // TODO: or used mesh.addVertex()? It would save space, but be a bit slower.
+    // or used mesh.addVertex()? It would save space, but be a bit slower.
     Iota.gMeshSlice.vertexList.push_back(v);
     *dataOut = v;
 }
@@ -371,6 +372,8 @@ void __stdcall tessErrorCallback(GLenum errorCode)
  \todo http://www.cs.man.ac.uk/~toby/alan/software/
  \todo http://www.flipcode.com/archives/Efficient_Polygon_Triangulation.shtml
  \todo https://github.com/greenm01/poly2tri
+ \todo drawFlat should not be called here!
+ \todo drawShell should not be called here!
  */
 void IASlice::tesselateLidFromRim()
 {
@@ -410,12 +413,12 @@ void IASlice::tesselateLidFromRim()
     gluTessEndContour(gGluTess);
     gluTessEndPolygon(gGluTess);
 
-    // FIXME: this does not belong here!
+    // temporary hack
     pFramebuffer->bindForRendering(); // make sure we have a square in the buffer
     drawFlat(false, 1.0, 1.0, 0.0);
     pFramebuffer->unbindFromRendering();
 
-    // TODO: temporary hack
+    // temporary hack
     pColorbuffer->bindForRendering();
     drawShell();
     pColorbuffer->unbindFromRendering();

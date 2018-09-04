@@ -44,7 +44,7 @@ class IASceneView : public Fl_Gl_Window
 public:
     IASceneView(int x, int y, int w, int h, const char *l=0);
     ~IASceneView() override;
-    void redraw(); // TODO: Hack!
+    void redraw();
 
     void setTopView();
     void setPerspectiveView();

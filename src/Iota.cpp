@@ -4,14 +4,6 @@
 //  Copyright (c) 2013-2018 Matthias Melcher. All rights reserved.
 //
 
-// TODO: make class method names more consistent
-// TODO: make high level functions automatically execute lower rank functions, if they were not run yet
-// TODO: create a model class that contains meshes
-//   TODO: add a positional vertex (done) and a normal (still to do) for slicing in the printer coordinate system
-// TODO: create vector infills from slices
-// TODO: results get good with a framebuffer size of 4096x4096! But potrace get slow!
-// Done (LOL)
-
 
 #include "Iota.h"
 
@@ -514,6 +506,10 @@ static bool firstTimeSlice = true;
  */
 void IAIota::menuSliceAs()
 {
+#if 1
+    if (pCurrentPrinter)
+        pCurrentPrinter->userSliceAs();
+#else
     Fl_Native_File_Chooser fc(Fl_Native_File_Chooser::BROWSE_SAVE_FILE);
     fc.title("Save toolpath as GCode");
     fc.filter("*.gcode");
@@ -541,16 +537,22 @@ void IAIota::menuSliceAs()
     gPreferences.flush();
     sliceMesh(gPreferences.pLastGCodeFilename);
     firstTimeSlice = false;
+#endif
 }
 
 
 void IAIota::menuSliceAgain()
 {
+#if 1
+    if (pCurrentPrinter)
+        pCurrentPrinter->userSliceAgain();
+#else
     if (firstTimeSlice) {
         menuSliceAs();
     } else {
         sliceMesh(gPreferences.pLastGCodeFilename);
     }
+#endif
 }
 
 
@@ -635,7 +637,8 @@ void IAIota::loadDemoFiles()
 
 /**
  * Launch our app.
- * \todo remember the window position and size in the preferences
+ *
+ * \todo The whole user interface must be in its own class.
  */
 int main (int argc, char **argv)
 {
@@ -646,7 +649,6 @@ int main (int argc, char **argv)
 
     Iota.pCurrentPrinter = Iota.pPrinterList.defaultPrinter();
 
-    // TODO: The whole user interface must be in its own class.
     Iota.gMainWindow = createIotaAppWindow();
     if (Iota.gPreferences.pMainWindowX==-1) {
         Iota.gMainWindow->size(Iota.gPreferences.pMainWindowW,

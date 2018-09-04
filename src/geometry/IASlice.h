@@ -22,6 +22,8 @@ class IAFramebuffer;
  * IAMesh. This is not a big deal, but not very clean either.
  *
  * IAMesh has its own edge list that does not interfere with pRim.
+ *
+ * \todo framebuffer member variables should not be public!
  */
 class IASlice : public IAMesh
 {
@@ -47,7 +49,7 @@ private:
     /// current Z layer of the entire slice
     double pCurrentZ = -1e9;
 
-public: // TODO: should not be public!
+public:
     IAFramebuffer *pFramebuffer = nullptr;
     IAFramebuffer *pColorbuffer = nullptr;
 };

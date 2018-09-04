@@ -19,7 +19,6 @@
 class IAPrinterFDMBelt : public IAPrinterFDM
 {
 public:
-    IAPrinterFDMBelt() { }
     IAPrinterFDMBelt(const char *name) : IAPrinterFDM(name) { }
 };
 

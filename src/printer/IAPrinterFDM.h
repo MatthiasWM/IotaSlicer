@@ -20,8 +20,11 @@
 class IAPrinterFDM : public IAPrinter
 {
 public:
-    IAPrinterFDM() { }
     IAPrinterFDM(const char *name) : IAPrinter(name) { }
+
+    virtual void userSliceAs() override;
+    virtual void userSliceAgain() override;
+    virtual void sliceAndWrite(const char *filename=nullptr) override;
 };
 
 

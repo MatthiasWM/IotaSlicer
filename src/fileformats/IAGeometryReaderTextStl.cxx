@@ -64,13 +64,14 @@ std::shared_ptr<IAGeometryReader> IAGeometryReaderTextStl::findReaderFor(const c
 /**
  * Create a reader for the indicated memory block.
  * \return 0 if the format is not STL
+ * \todo handle file reading errors
  */
 std::shared_ptr<IAGeometryReader> IAGeometryReaderTextStl::findReaderFor(const char *name, uint8_t *data, size_t size)
 {
-    if (size<5)  // TODO: set error
+    if (size<5)
         return nullptr;
     
-    if (strncmp((char*)data, "solid", 5)!=0)   // TODO: set error
+    if (strncmp((char*)data, "solid", 5)!=0)
         return nullptr;
     
     return std::make_shared<IAGeometryReaderTextStl>(name, data, size);
@@ -105,6 +106,11 @@ IAGeometryReaderTextStl::~IAGeometryReaderTextStl()
 
 /**
  * Interprete the geometry data and create a mesh list.
+ *
+ * \todo gracefully handle outer loops with more than three vertices
+ * \todo fix seams
+ * \todo fix zero size holes
+ * \todo fix degenrate triangles
  */
 IAMesh *IAGeometryReaderTextStl::load()
 {
@@ -124,7 +130,7 @@ IAMesh *IAGeometryReaderTextStl::load()
     for (;;) {
         // the first word must be "solid"
         getWord();
-        // TODO: we found STLs that contain mutiple solids!
+        // we found STLs that contain mutiple solids!
         if (!wordIs("solid")) break;
         // the rest of the line is not important
         getLine();
@@ -189,7 +195,7 @@ IAMesh *IAGeometryReaderTextStl::load()
             // to support this perfectly, we would need to tesselate the emtire
             // llop then.
             getWord();
-            // FIXME: word can actually be "vertex" to add more vertices to this polygon
+            /** \todo word can actually be "vertex" to add more vertices to this polygon */
             if (!wordIs("endloop")) goto fileFormatErr;
             
             // this should be the end of the facet
@@ -200,11 +206,7 @@ IAMesh *IAGeometryReaderTextStl::load()
             msh->addNewTriangle(p1, p2, p3);
         }
     }
-    // FIXME: fixing the mesh should be done after loading *any* mesh, not just this one
     msh->validate();
-    // TODO: fix seams
-    // TODO: fix zero size holes
-    // TODO: fix degenrate triangles
     msh->fixHoles();
     msh->validate();
     

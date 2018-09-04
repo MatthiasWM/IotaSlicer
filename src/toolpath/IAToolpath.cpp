@@ -538,6 +538,12 @@ IAToolpathElement *IAToolpathMotion::clone()
 
 /**
  * Draw the toolpath motion into the scene viewer.
+ *
+ * \todo make the extrusion hexagonal so we can represent the squashing
+ *       by the layer height. Also, use the current E factor to calculate the
+ *       expected width of the extrusion and draw that.
+ * \todo add lids or connecotrs to the next extrusion.
+ * \todo this should be cached
  */
 void IAToolpathMotion::draw()
 {
@@ -548,11 +554,6 @@ void IAToolpathMotion::draw()
         glEnable(GL_LIGHTING);
     } else {
         double r=0.15;
-        // TODO: make the extrusion hexagonal so we can represent the squashing
-        // by the layer height. Also, use the current E factor to calculate the
-        // expected width of the extrusion and draw that.
-        // TODO: add lids or connecotrs to the next extrusion.
-        // TODO: this should be cached
         IAVector3d d = (pEnd - pStart).normalized();
         IAVector3d n0 = { d.y(), -d.x(), 0.0 };
         IAVector3d n1 = { 0.0, 0.0, 1.0 };

@@ -91,11 +91,15 @@ void IAGcodeWriter::cmdSelectExtruder(int n)
 }
 
 
+/**
+ * Send the cmd for a controlled move while extruding.
+ *
+ * \todo no need to send feedrate if it did not change
+ * \todo we need a different pE for each extruder
+ */
 void IAGcodeWriter::cmdExtrude(double distance, double feedrate)
 {
     if (feedrate<0.0) feedrate = pPrintingF;
-    // TODO: no need to send feedrate if it did not change
-    // TODO: we need a different pE for each extruder
     fprintf(pFile, "G1 E%.4f F%.4f\n", pE+distance, feedrate);
     pE += distance;
     pF = feedrate;
