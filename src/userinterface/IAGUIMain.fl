@@ -196,22 +196,9 @@ Function {createIotaAppWindow()} {open
         label Settings open
         xywh {0 0 100 20}
       } {
-        Submenu {} {
-          label {Select Printer} open
-          xywh {0 0 100 20} deactivate
-        } {
-          MenuItem {} {
-            xywh {0 0 100 20} deactivate
-          }
-          MenuItem {} {
-            xywh {0 0 100 20} deactivate
-          }
-          MenuItem {} {
-            xywh {0 0 100 20} deactivate
-          }
-          MenuItem {} {
-            xywh {0 0 100 20} deactivate
-          }
+        MenuItem wPrinterSelectionMenu {
+          label {Select Printer} selected
+          xywh {12 12 100 20}
         }
         MenuItem {} {
           label {Manage Printers...}
@@ -361,7 +348,7 @@ gSceneView->redraw();}
             }
           }
           Fl_Group {} {
-            label {(placeholder)} open selected
+            label {(placeholder)} open
             xywh {645 33 150 562} labelsize 12 align 16 resizable
           } {}
         }

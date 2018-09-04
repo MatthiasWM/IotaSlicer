@@ -68,7 +68,8 @@ const char *IAIota::kErrorMessage[] =
  */
 IAIota::IAIota()
 :   pCurrentToolpath( new IAToolpath(0.0) ),
-    pCurrentPrinter( new IAPrinter )
+    pCurrentPrinter( nullptr ),
+    pPrinterList( wPrinterSelectionMenu )
 {
 }
 
@@ -641,8 +642,9 @@ int main (int argc, char **argv)
     Fl::scheme("gleam");
 	Fl::args(argc, argv);
     Fl::set_color(FL_BACKGROUND_COLOR, 0xeeeeee00);
-
     Fl::use_high_res_GL(1);
+
+    Iota.pCurrentPrinter = Iota.pPrinterList.defaultPrinter();
 
     // TODO: The whole user interface must be in its own class.
     Iota.gMainWindow = createIotaAppWindow();

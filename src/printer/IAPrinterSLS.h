@@ -23,6 +23,7 @@ class IAPrinterSLS : public IAPrinter
 {
 public:
     IAPrinterSLS() { }
+    IAPrinterSLS(const char *name) : IAPrinter(name) { }
 };
 
 

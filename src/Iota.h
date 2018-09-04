@@ -90,7 +90,7 @@ public:
     IASlice gMeshSlice;
     /// the current 3d printwer
     IAPrinter *pCurrentPrinter = nullptr;
-    IAPrinterList pAvailablePrinters;
+    IAPrinterList pPrinterList;
     /// the toolpath for the entire scene
     IAMachineToolpath *pMachineToolpath = nullptr;
     /// the current toolpath

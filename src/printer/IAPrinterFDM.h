@@ -21,6 +21,7 @@ class IAPrinterFDM : public IAPrinter
 {
 public:
     IAPrinterFDM() { }
+    IAPrinterFDM(const char *name) : IAPrinter(name) { }
 };
 
 

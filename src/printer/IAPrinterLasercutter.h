@@ -22,6 +22,7 @@ class IAPrinterLasercutter : public IAPrinter
 {
 public:
     IAPrinterLasercutter() { }
+    IAPrinterLasercutter(const char *name) : IAPrinter(name) { }
 };
 
 

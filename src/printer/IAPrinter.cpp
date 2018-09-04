@@ -7,10 +7,18 @@
 
 #include "IAPrinter.h"
 
+#include "Iota.h"
+#include "IAPrinterFDM.h"
+#include "IAPrinterFDMBelt.h"
+#include "IAPrinterInkjet.h"
+#include "IAPrinterLasercutter.h"
+#include "IAPrinterSLS.h"
+
 #include <math.h>
 
 #include <FL/gl.h>
 #include <FL/glu.h>
+#include <FL/Fl_Menu_Item.H>
 
 
 /**
@@ -45,6 +53,38 @@ IAPrinter::IAPrinter()
 {
 }
 
+
+
+IAPrinter::IAPrinter(const char *name)
+{
+    IAPrinter();
+    if (name) {
+        Iota.pPrinterList.add(this, name);
+    }
+}
+
+
+IAPrinter::~IAPrinter()
+{
+    if (pName)
+        ::free((void*)pName);
+}
+
+
+void IAPrinter::setName(const char *name)
+{
+    if (pName)
+        ::free((void*)pName);
+    pName = nullptr;
+    if (name)
+        pName = (char*)::strdup(name);
+}
+
+
+const char *IAPrinter::name()
+{
+    return pName;
+}
 
 /**
  Draw a minimal shape representing the printer in the scene.
@@ -141,4 +181,89 @@ void IAPrinter::draw()
     glLineWidth(1.0);
     glPopMatrix();
 }
+
+
+IAPrinterList::IAPrinterList(Fl_Menu_Item *printermenu)
+:   pMenuItem( printermenu )
+{
+    new IAPrinterFDM("Generic FDM Printer");
+    new IAPrinterFDMBelt("Generic FDM Belt Printer");
+    new IAPrinterInkjet("Generic Inkjet Printer");
+    new IAPrinterLasercutter("Generic Laser Cutter");
+    new IAPrinterSLS("Generic SLS Printer");
+}
+
+
+IAPrinterList::~IAPrinterList()
+{
+    if (pMenuItem) {
+        pMenuItem->flags &= ~FL_SUBMENU_POINTER;
+        pMenuItem->user_data(nullptr);
+    }
+    if (pMenuArray) {
+        ::free((void*)pMenuArray);
+    }
+}
+
+
+IAPrinter *IAPrinterList::defaultPrinter()
+{
+    if (pPrinterList.size()) {
+        return pPrinterList[0];
+    } else {
+        IAPrinter *ret = new IAPrinter("default printer");
+        // automatically adds this printer to the list
+        return ret;
+    }
+}
+
+
+bool IAPrinterList::add(IAPrinter *printer, const char *name)
+{
+    printer->setName(name);
+    pPrinterList.push_back(printer);
+    buildMenuArray();
+    return true;
+}
+
+
+void IAPrinterList::buildMenuArray()
+{
+    if (pMenuArray) ::free((void*)pMenuArray);
+
+    pMenuArray = (Fl_Menu_Item*)::calloc( sizeof(Fl_Menu_Item),
+                                         pPrinterList.size()+1);
+    Fl_Menu_Item *m = pMenuArray;
+    for (auto p: pPrinterList) {
+        m->label(p->name());
+        m->callback((Fl_Callback*)printerSelectedCB, p);
+        m++;
+    }
+
+    // TODO: a checkmark at the selected printer would be nice
+    // TODO: just show customized printers, not the generic ones
+    // TODO: append menu item "Add new printer..."
+    // TODO: create a printer creation dialog
+
+    pMenuItem->flags |= FL_SUBMENU_POINTER;
+    pMenuItem->user_data(pMenuArray);
+}
+
+
+void IAPrinterList::userSelectedPrinter(IAPrinter *p)
+{
+    // FIXME: flush all kinds of things
+    // FIXME: move this code into Iota class
+    Iota.pCurrentPrinter = p;
+    // FIXME: redraw the entire user interface
+}
+
+
+void IAPrinterList::printerSelectedCB(Fl_Menu_Item*, void *p)
+{
+    Iota.pPrinterList.userSelectedPrinter((IAPrinter*)p);
+}
+
+
+
 
