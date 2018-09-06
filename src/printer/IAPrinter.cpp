@@ -422,6 +422,12 @@ void IAPrinterList::buildMenuArray()
 }
 
 
+static Fl_Menu_Item qualityMenu[] = {
+    { "Draft" },
+    { "Normal" },
+    { "Best" }
+};
+
 /**
  * Select another printer.
  *
@@ -434,11 +440,26 @@ void IAPrinterList::userSelectedPrinter(IAPrinter *p)
     Iota.pCurrentPrinter = p;
     Iota.gMainWindow->redraw();
     wPrinterName->copy_label(p->name());
-//    Fl_Tree_Item *it;
     wSessionSettings->showroot(0);
     wSessionSettings->item_labelsize(12);
+    wSessionSettings->item_draw_mode(FL_TREE_ITEM_DRAW_LABEL_AND_WIDGET);
+    // the code below should be in a virtual call, so it can be adapted to the printer type
     wSessionSettings->clear();
-    wSessionSettings->add("Quality");
+
+    wSessionSettings->begin();
+
+    Fl_Tree_Item *it;
+
+    it = wSessionSettings->add("Quality");
+#if 1
+    Fl_Menu_Button *mb = new Fl_Menu_Button(1, 1, 120, 1);
+    mb->menu(qualityMenu);
+#else
+    Fl_Button *mb = new Fl_Button(1, 1, 120, 1, "Hi!");
+#endif
+    it->widget(mb);
+//    mb->show();
+
     wSessionSettings->add("Quality/Resolution (pulldown)");
     wSessionSettings->add("Quality/Color (pulldown)");
     wSessionSettings->add("Quality/Details");
@@ -450,6 +471,8 @@ void IAPrinterList::userSelectedPrinter(IAPrinter *p)
     wSessionSettings->add("Hotend 2/Filament 2 (pulldown)");
     wSessionSettings->add("Scene");
     wSessionSettings->add("Scene/Colormode (pulldown)");
+
+    wSessionSettings->end();
 }
 
 

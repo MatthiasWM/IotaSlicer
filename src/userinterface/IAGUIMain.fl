@@ -46,7 +46,7 @@ data sHelpLicenses {private local filename {../../html/helpLicenses.html}
 Function {createIotaAppWindow()} {open
 } {
   Fl_Window wMainWindow {
-    label {Iota Slicer V0.1a} open
+    label {Iota Slicer V0.1a} open selected
     xywh {472 202 850 600} type Double resizable visible
   } {
     Fl_Menu_Bar {} {
@@ -347,13 +347,13 @@ gSceneView->redraw();}
             Fl_Button {} {
               label SLC
               callback {Iota.gShowSlice = !Iota.gShowSlice;
-    gSceneView->redraw();} selected
+    gSceneView->redraw();}
               tooltip {Stop slicing the model} xywh {605 565 40 30} hide
             }
           }
           Fl_Group {} {
             comment {Session settings container} open
-            xywh {643 33 200 562} labelsize 12 align 16 resizable
+            xywh {645 33 200 562} labelsize 12 align 16 resizable
           } {
             Fl_Box wPrinterName {
               xywh {645 33 200 28} box THIN_UP_BOX color 46 labelsize 12
