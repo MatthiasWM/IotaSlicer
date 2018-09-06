@@ -47,10 +47,10 @@ Function {createIotaAppWindow()} {open
 } {
   Fl_Window wMainWindow {
     label {Iota Slicer V0.1a} open
-    xywh {472 202 800 600} type Double resizable visible
+    xywh {472 202 850 600} type Double resizable visible
   } {
-    Fl_Menu_Bar {} {open
-      xywh {0 0 800 28}
+    Fl_Menu_Bar {} {
+      xywh {0 0 850 28}
     } {
       Submenu {} {
         label File open
@@ -98,7 +98,7 @@ Function {createIotaAppWindow()} {open
             xywh {80 80 100 20} deactivate
           }
           MenuItem {} {
-            xywh {92 92 100 20} deactivate divider
+            xywh {92 92 100 20} deactivate
           }
           MenuItem {} {
             label {Clear List}
@@ -111,11 +111,11 @@ Function {createIotaAppWindow()} {open
         }
         MenuItem {} {
           label {Save Project As...}
-          xywh {36 36 100 20} deactivate divider
+          xywh {36 36 100 20} deactivate
         }
         MenuItem {} {
           label {Print 2D...}
-          xywh {48 48 100 20} deactivate divider
+          xywh {48 48 100 20} deactivate
         }
         MenuItem {} {
           label Quit
@@ -133,7 +133,7 @@ Function {createIotaAppWindow()} {open
         }
         MenuItem {} {
           label Redo
-          xywh {12 12 100 20} deactivate divider
+          xywh {12 12 100 20} deactivate
         }
         MenuItem {} {
           label Duplicate
@@ -141,7 +141,7 @@ Function {createIotaAppWindow()} {open
         }
         MenuItem {} {
           label Delete
-          xywh {20 20 100 20} deactivate divider
+          xywh {20 20 100 20} deactivate
         }
         MenuItem {} {
           label {Select All}
@@ -197,7 +197,7 @@ Function {createIotaAppWindow()} {open
         xywh {0 0 100 20}
       } {
         MenuItem wPrinterSelectionMenu {
-          label {Select Printer} selected
+          label {Select Printer}
           xywh {12 12 100 20}
         }
         MenuItem {} {
@@ -221,7 +221,7 @@ Function {createIotaAppWindow()} {open
         MenuItem {} {
           label {Slice entire mesh}
           callback {Iota.menuSliceMesh();}
-          tooltip {Write to ~/slice.jpg} xywh {36 36 100 20} shortcut 0x40006d divider
+          tooltip {Write to ~/slice.jpg} xywh {36 36 100 20} shortcut 0x40006d
         }
         MenuItem {} {
           label {Versioneer...}
@@ -248,7 +248,7 @@ aboutWindow->show();}
       }
     }
     Fl_Group {} {open
-      xywh {0 28 800 572} resizable
+      xywh {0 28 850 572} resizable
     } {
       Fl_Group gSceneView {open
         xywh {0 28 600 572} resizable
@@ -311,16 +311,20 @@ gSceneView->redraw();}
           }
         }
       }
-      Fl_Group {} {open
-        xywh {600 28 200 572} box FLAT_BOX
+      Fl_Group {} {
+        comment {Properties Column} open
+        xywh {600 28 250 572} box FLAT_BOX
       } {
-        Fl_Group {} {open
-          xywh {605 33 190 562} box FLAT_BOX resizable
+        Fl_Group {} {
+          comment {Properties inset} open
+          xywh {605 33 240 562} box FLAT_BOX resizable
         } {
-          Fl_Group {} {open
+          Fl_Group {} {
+            comment {3D View Cotrol (TODO: move left)} open
             xywh {605 33 40 562}
           } {
-            Fl_Group {} {open
+            Fl_Group {} {
+              comment {Slider container} open
               xywh {605 33 40 502} resizable
             } {
               Fl_Slider zSlider1 {
@@ -331,7 +335,7 @@ gSceneView->redraw();}
               Fl_Slider zSlider2 {
                 callback {Iota.gShowSlice = true;
     gSceneView->redraw();}
-                tooltip {Thickness of slice in mm} xywh {625 33 20 502} minimum 10 maximum -10 step 1 deactivate
+                tooltip {Thickness of slice in mm} xywh {625 33 20 502} minimum 10 maximum -10 step 1 hide deactivate
               }
             }
             Fl_Button {} {
@@ -343,14 +347,21 @@ gSceneView->redraw();}
             Fl_Button {} {
               label SLC
               callback {Iota.gShowSlice = !Iota.gShowSlice;
-    gSceneView->redraw();}
+    gSceneView->redraw();} selected
               tooltip {Stop slicing the model} xywh {605 565 40 30} hide
             }
           }
           Fl_Group {} {
-            label {(placeholder)} open
-            xywh {645 33 150 562} labelsize 12 align 16 resizable
-          } {}
+            comment {Session settings container} open
+            xywh {643 33 200 562} labelsize 12 align 16 resizable
+          } {
+            Fl_Box wPrinterName {
+              xywh {645 33 200 28} box THIN_UP_BOX color 46 labelsize 12
+            }
+            Fl_Tree wSessionSettings {
+              xywh {645 62 200 475} resizable
+            }
+          }
         }
       }
     }

@@ -662,6 +662,7 @@ int main (int argc, char **argv)
     Iota.gMainWindow->show();
     Fl::flush();
 
+    Iota.pPrinterList.userSelectedPrinter(Iota.pPrinterList.defaultPrinter());
     Iota.loadDemoFiles();
 
     gSceneView->redraw();

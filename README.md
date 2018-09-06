@@ -29,6 +29,8 @@ inside a model, colors and transparencies.
 
 The current code generates somewhate expreimental Gcode files specifically for DaVinci Duo printers.
 
+* v0.0.9a
+  * starting 3d printer management
 * v0.0.8a
   * added some aspects of the future menu system
 * v0.0.7a

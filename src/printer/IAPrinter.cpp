@@ -13,6 +13,7 @@
 #include "IAPrinterInkjet.h"
 #include "IAPrinterLasercutter.h"
 #include "IAPrinterSLS.h"
+#include "userinterface/IAGUIMain.h"
 
 #include <math.h>
 
@@ -24,6 +25,8 @@
 #include <FL/Fl_Preferences.H>
 #include <FL/Fl_Native_File_Chooser.H>
 #include <FL/filename.H>
+#include <FL/Fl_Tree.H>
+#include <FL/Fl_Tree_Item.H>
 
 
 /**
@@ -430,6 +433,23 @@ void IAPrinterList::userSelectedPrinter(IAPrinter *p)
 {
     Iota.pCurrentPrinter = p;
     Iota.gMainWindow->redraw();
+    wPrinterName->copy_label(p->name());
+//    Fl_Tree_Item *it;
+    wSessionSettings->showroot(0);
+    wSessionSettings->item_labelsize(12);
+    wSessionSettings->clear();
+    wSessionSettings->add("Quality");
+    wSessionSettings->add("Quality/Resolution (pulldown)");
+    wSessionSettings->add("Quality/Color (pulldown)");
+    wSessionSettings->add("Quality/Details");
+    wSessionSettings->add("Quality/Details/Layer Height");
+    wSessionSettings->add("Quality/Details/...");
+    wSessionSettings->add("Hotend 1");
+    wSessionSettings->add("Hotend 1/Filament 1 (pulldown)");
+    wSessionSettings->add("Hotend 2");
+    wSessionSettings->add("Hotend 2/Filament 2 (pulldown)");
+    wSessionSettings->add("Scene");
+    wSessionSettings->add("Scene/Colormode (pulldown)");
 }
 
 
