@@ -184,7 +184,7 @@ void IAPrinter::userSliceAgain()
  */
 void IAPrinter::sliceAndWrite(const char *filename)
 {
-    /* empty */
+    fl_message("The printer\n\"%s\"\ndoes not support slicing yet.", name());
 }
 
 
@@ -330,6 +330,13 @@ void IAPrinter::draw()
 }
 
 
+void IAPrinter::buildSessionSettings()
+{
+    // there are currently no common settings for all printer types
+}
+
+
+
 //===========================================================================//
 
 
@@ -413,7 +420,7 @@ void IAPrinterList::buildMenuArray()
     Fl_Menu_Item *m = pMenuArray;
     for (auto p: pPrinterList) {
         m->label(p->name());
-        m->callback((Fl_Callback*)userSelectedPrinterCB, p);
+        m->callback((Fl_Callback*)userSelectsPrinterCB, p);
         m++;
     }
 
@@ -422,12 +429,6 @@ void IAPrinterList::buildMenuArray()
 }
 
 
-static Fl_Menu_Item qualityMenu[] = {
-    { "Draft" },
-    { "Normal" },
-    { "Best" }
-};
-
 /**
  * Select another printer.
  *
@@ -435,43 +436,23 @@ static Fl_Menu_Item qualityMenu[] = {
  * \todo move this code into Iota class
  * \todo redraw the entire user interface
  */
-void IAPrinterList::userSelectedPrinter(IAPrinter *p)
+void IAPrinterList::userSelectsPrinter(IAPrinter *p)
 {
     Iota.pCurrentPrinter = p;
     Iota.gMainWindow->redraw();
     wPrinterName->copy_label(p->name());
+    buildSessionSettings(p);
+}
+
+
+void IAPrinterList::buildSessionSettings(IAPrinter *p)
+{
     wSessionSettings->showroot(0);
     wSessionSettings->item_labelsize(12);
     wSessionSettings->item_draw_mode(FL_TREE_ITEM_DRAW_LABEL_AND_WIDGET);
-    // the code below should be in a virtual call, so it can be adapted to the printer type
     wSessionSettings->clear();
-
     wSessionSettings->begin();
-
-    Fl_Tree_Item *it;
-
-    it = wSessionSettings->add("Quality");
-#if 1
-    Fl_Menu_Button *mb = new Fl_Menu_Button(1, 1, 120, 1);
-    mb->menu(qualityMenu);
-#else
-    Fl_Button *mb = new Fl_Button(1, 1, 120, 1, "Hi!");
-#endif
-    it->widget(mb);
-//    mb->show();
-
-    wSessionSettings->add("Quality/Resolution (pulldown)");
-    wSessionSettings->add("Quality/Color (pulldown)");
-    wSessionSettings->add("Quality/Details");
-    wSessionSettings->add("Quality/Details/Layer Height");
-    wSessionSettings->add("Quality/Details/...");
-    wSessionSettings->add("Hotend 1");
-    wSessionSettings->add("Hotend 1/Filament 1 (pulldown)");
-    wSessionSettings->add("Hotend 2");
-    wSessionSettings->add("Hotend 2/Filament 2 (pulldown)");
-    wSessionSettings->add("Scene");
-    wSessionSettings->add("Scene/Colormode (pulldown)");
-
+    p->buildSessionSettings();
     wSessionSettings->end();
 }
 
@@ -479,9 +460,9 @@ void IAPrinterList::userSelectedPrinter(IAPrinter *p)
 /**
  * User selected a printer from the menu item list.
  */
-void IAPrinterList::userSelectedPrinterCB(Fl_Menu_Item*, void *p)
+void IAPrinterList::userSelectsPrinterCB(Fl_Menu_Item*, void *p)
 {
-    Iota.pPrinterList.userSelectedPrinter((IAPrinter*)p);
+    Iota.pPrinterList.userSelectsPrinter((IAPrinter*)p);
 }
 
 

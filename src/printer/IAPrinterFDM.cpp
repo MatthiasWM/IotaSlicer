@@ -14,6 +14,7 @@
 
 
 #include <FL/Fl_Native_File_Chooser.H>
+#include <FL/Fl_Input_Choice.H>
 #include <FL/filename.H>
 
 
@@ -21,16 +22,6 @@
 void IAPrinterFDM::userSliceAs()
 {
     if (queryOutputFilename("Save toolpath as GCode", "*.gcode", ".gcode")) {
-        sliceAndWrite();
-    }
-}
-
-
-void IAPrinterFDM::userSliceAgain()
-{
-    if (pFirstWrite) {
-        userSliceAs();
-    } else {
         sliceAndWrite();
     }
 }
@@ -49,7 +40,7 @@ void IAPrinterFDM::sliceAndWrite(const char *filename)
     // initial height determines stickiness to bed
 
     double zMin = 0.2;
-    double zLayerHeight = 0.3;
+    double zLayerHeight = layerHeight();
 #if 1
     double zMax = hgt;
 #else
@@ -137,3 +128,70 @@ void IAPrinterFDM::sliceAndWrite(const char *filename)
     zSlider1->do_callback();
     gSceneView->redraw();
 }
+
+
+void IAPrinterFDM::buildSessionSettings()
+{
+    char buf[80];
+
+    static Fl_Menu_Item lHgtMenu[] = {
+        { "0.1" },
+        { "0.2" },
+        { "0.3" }
+    };
+
+    Fl_Input_Choice *lHgt = new Fl_Input_Choice(1, 1, 60, 1, "mm");
+    lHgt->align(FL_ALIGN_RIGHT);
+    lHgt->labelsize(12);
+    lHgt->textsize(12);
+    lHgt->menu(lHgtMenu);
+    sprintf(buf, "%.2f", layerHeight()); lHgt->value(buf);
+    lHgt->callback(userSetLayerHeightCB, this);
+    Fl_Tree_Item *it = wSessionSettings->add("Layer Height: ");
+    it->widget(lHgt);
+
+#if 0
+    static Fl_Menu_Item qualityMenu[] = {
+        { "Draft" },
+        { "Normal" },
+        { "Best" }
+    };
+
+    super::buildSessionSettings();
+
+    Fl_Tree_Item *it;
+
+    it = wSessionSettings->add("Quality");
+#if 1
+    Fl_Menu_Button *mb = new Fl_Menu_Button(1, 1, 120, 1);
+    mb->menu(qualityMenu);
+#else
+    Fl_Button *mb = new Fl_Button(1, 1, 120, 1, "Hi!");
+#endif
+    it->widget(mb);
+    //    mb->show();
+
+    wSessionSettings->add("Quality/Resolution (pulldown)");
+    wSessionSettings->add("Quality/Color (pulldown)");
+    wSessionSettings->add("Quality/Details");
+    wSessionSettings->add("Quality/Details/Layer Height");
+    wSessionSettings->add("Quality/Details/...");
+    wSessionSettings->add("Hotend 1");
+    wSessionSettings->add("Hotend 1/Filament 1 (pulldown)");
+    wSessionSettings->add("Hotend 2");
+    wSessionSettings->add("Hotend 2/Filament 2 (pulldown)");
+    wSessionSettings->add("Scene");
+    wSessionSettings->add("Scene/Colormode (pulldown)");
+#endif
+}
+
+
+void IAPrinterFDM::userSetLayerHeight(Fl_Input_Choice *w)
+{
+    // TODO: warn if layer height is 0, negative, or huge
+    pLayerHeight = atof(w->value());
+}
+
+
+
+

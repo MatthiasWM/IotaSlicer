@@ -37,6 +37,8 @@ public:
     virtual void userSliceAgain();
     virtual void sliceAndWrite(const char *filename=nullptr);
 
+    virtual void buildSessionSettings();
+
     IAVector3d pBuildVolume = { 214.0, 214.0, 230.0 };
 //    IAVector3d pBuildVolume = { 214.0, 214.0, 330.0 };
     IAVector3d pBuildVolumeMin = { 0.0, 0.0, 0.0 };
@@ -68,11 +70,12 @@ public:
     ~IAPrinterList();
     bool add(IAPrinter *printer);
     IAPrinter *defaultPrinter();
-    void userSelectedPrinter(IAPrinter *p);
+    void userSelectsPrinter(IAPrinter *p);
 
 private:
     void buildMenuArray();
-    static void userSelectedPrinterCB(Fl_Menu_Item*, void *p);
+    void buildSessionSettings(IAPrinter *p);
+    static void userSelectsPrinterCB(Fl_Menu_Item*, void *p);
 
     Fl_Menu_Item *pMenuItem = nullptr;
     Fl_Menu_Item *pMenuArray = nullptr;
