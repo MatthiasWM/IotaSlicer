@@ -166,7 +166,7 @@ static inline double quadform(quadform_t Q, dpoint_t w) {
 
 /* calculate p1 x p2 */
 static inline int xprod(point_t p1, point_t p2) {
-  return p1.x*p2.y - p1.y*p2.x;
+  return (int)(p1.x*p2.y - p1.y*p2.x);
 }
 
 /* calculate (p1-p0)x(p3-p2) */
@@ -272,14 +272,14 @@ static int calc_sums(privpath_t *pp) {
   SAFE_CALLOC(pp->sums, pp->len+1, sums_t);
 
   /* origin */
-  pp->x0 = pp->pt[0].x;
-  pp->y0 = pp->pt[0].y;
+  pp->x0 = (int)(pp->pt[0].x);
+  pp->y0 = (int)(pp->pt[0].y);
 
   /* preparatory computation for later fast summing */
   pp->sums[0].x2 = pp->sums[0].xy = pp->sums[0].y2 = pp->sums[0].x = pp->sums[0].y = 0;
   for (i=0; i<n; i++) {
-    x = pp->pt[i].x - pp->x0;
-    y = pp->pt[i].y - pp->y0;
+    x = (int)(pp->pt[i].x - pp->x0);
+    y = (int)(pp->pt[i].y - pp->y0);
     pp->sums[i+1].x = pp->sums[i].x + x;
     pp->sums[i+1].y = pp->sums[i].y + y;
     pp->sums[i+1].x2 = pp->sums[i].x2 + (double)x*x;
@@ -362,7 +362,7 @@ static int calc_lon(privpath_t *pp) {
     ct[0] = ct[1] = ct[2] = ct[3] = 0;
 
     /* keep track of "directions" that have occurred */
-    dir = (3+3*(pt[mod(i+1,n)].x-pt[i].x)+(pt[mod(i+1,n)].y-pt[i].y))/2;
+    dir = (int)((3+3*(pt[mod(i+1,n)].x-pt[i].x)+(pt[mod(i+1,n)].y-pt[i].y))/2);
     ct[dir]++;
 
     constraint[0].x = 0;

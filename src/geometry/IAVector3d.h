@@ -25,12 +25,12 @@ public:
     IAVector3d operator+(const IAVector3d &rhs) const;
     IAVector3d operator-(const IAVector3d &rhs) const;
     IAVector3d operator*(double) const;
+    IAVector3d operator^(const IAVector3d&) const;
 
     IAVector3d& operator-=(const IAVector3d&);
     IAVector3d& operator+=(const IAVector3d&);
     IAVector3d& operator*=(double);
     double *dataPointer() { return pV; }
-    IAVector3d& cross(const IAVector3d&);
     void setMin(const IAVector3d&);
     void setMax(const IAVector3d&);
     double normalize();

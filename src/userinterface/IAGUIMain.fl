@@ -46,7 +46,7 @@ data sHelpLicenses {private local filename {../../html/helpLicenses.html}
 Function {createIotaAppWindow()} {open
 } {
   Fl_Window wMainWindow {
-    label {Iota Slicer V0.1a} open selected
+    label {Iota Slicer V0.1a} open
     xywh {472 202 850 600} type Double resizable visible
   } {
     Fl_Menu_Bar {} {
@@ -68,7 +68,7 @@ Function {createIotaAppWindow()} {open
         }
         Submenu {} {
           label {Open Recent}
-          xywh {0 0 100 20} deactivate
+          xywh {0 0 100 20} deactivate divider
         } {
           MenuItem {} {
             xywh {0 0 100 20} deactivate
@@ -111,11 +111,11 @@ Function {createIotaAppWindow()} {open
         }
         MenuItem {} {
           label {Save Project As...}
-          xywh {36 36 100 20} deactivate
+          xywh {36 36 100 20} deactivate divider
         }
         MenuItem {} {
           label {Print 2D...}
-          xywh {48 48 100 20} deactivate
+          xywh {48 48 100 20} deactivate divider
         }
         MenuItem {} {
           label Quit
@@ -221,7 +221,7 @@ Function {createIotaAppWindow()} {open
         MenuItem {} {
           label {Slice entire mesh}
           callback {Iota.menuSliceMesh();}
-          tooltip {Write to ~/slice.jpg} xywh {36 36 100 20} shortcut 0x40006d
+          tooltip {Write to ~/slice.jpg} xywh {36 36 100 20} shortcut 0x40006d divider
         }
         MenuItem {} {
           label {Versioneer...}
@@ -421,7 +421,7 @@ Function {createIotaAboutWindow()} {} {
 comment {Versioneer: version control helper} {in_source in_header
 }
 
-declblock {\#if 1} {after {\#endif}
+declblock {\#if 1} {open after {\#endif}
 } {
   Function {loadSettings()} {open return_type void
   } {
@@ -489,7 +489,7 @@ if (f) {
         atoi(wBuild->value()),
         wClass->value(),
         c
-        );
+      );
       free(c);
       n++;
     }
@@ -504,11 +504,58 @@ if (f) {
   perror(filename);
 }} {}
   }
+  Function {applySettingsCpp(const char *name)} {open return_type void
+  } {
+    code {char filename[2048];
+char out[2048];
+char buf[2048];
+sprintf(filename, "%s/%s", wBasePath->value(), name);
+strcpy(out, filename);
+strcat(out, "~");
+FILE *fOut = fopen(out, "wb");
+if (!fOut) {
+  perror(out);
+  return;
+}
+FILE *f = fopen(filename, "rb");
+if (f) {
+  int n = 0;
+  while (!feof(f)) {
+    fgets(buf, 1024, f);
+    if (feof(f)) break;
+    char *a = strstr(buf, "/*[ver*/");
+    char *b = strstr(buf, "/*]*/");
+    if (a!=nullptr && b!=nullptr) {
+      char *c = strdup(b);
+      sprintf(a,
+        "/*[ver*/\\"v%d.%d.%d%s\\"%s",
+        atoi(wMajor->value()),
+        atoi(wMinor->value()),
+        atoi(wBuild->value()),
+        wClass->value(),
+        c
+      );
+      free(c);
+      n++;
+    }
+    fputs(buf, fOut);
+  }
+  fclose(f);
+  fclose(fOut);
+  ::remove(filename);
+  ::rename(out, filename);
+  printf("Versioneer: %d replacements in %s\\n", n, filename);
+} else {
+  perror(filename);
+}} {selected
+    }
+  }
   Function {applySettings()} {open return_type void
   } {
     code {applySettingsHtml("html/helpAbout.html");
 applySettingsHtml("html/helpLicenses.html");
 applySettingsHtml("html/index.html");
+applySettingsCpp("src/Iota.cpp");
 ::utime("userinterface/IAGUIMain.fl", nullptr);} {}
   }
   Function {gitTag()} {open return_type void

@@ -85,6 +85,22 @@ void IAPerspectiveCamera::dolly(double dx, double dy)
 }
 
 
+void iaGluLookAt(GLfloat eyeX, GLfloat eyeY, GLfloat eyeZ, GLfloat lookAtX, GLfloat lookAtY, GLfloat lookAtZ, GLfloat upX, GLfloat upY, GLfloat upZ) {
+    IAVector3d fwd, side, up;
+    fwd = IAVector3d(lookAtX-eyeX, lookAtY-eyeY, lookAtZ-eyeZ).normalized();
+    up = IAVector3d(upX, upY, upZ);
+    side = (fwd ^ up).normalized();
+    up = side ^ fwd;
+    GLdouble mat[16] = {
+        side.x(), up.x(), -fwd.x(), 0,
+        side.y(), up.y(), -fwd.y(), 0,
+        side.z(), up.z(), -fwd.z(), 0,
+        0, 0, 0, 1 };
+    glMultMatrixd(mat);
+    glTranslated(-eyeX, -eyeY, -eyeZ);
+}
+
+
 /**
  * Emit OpenGL commands to load the viewing and model matrices.
  */
@@ -104,11 +120,16 @@ void IAPerspectiveCamera::draw()
     double aspect = (double(pView->pixel_w()))/(double(pView->pixel_h()));
     double nearPlane = ia_max(dist-2.0*Iota.pCurrentPrinter->pBuildVolumeRadius, 1.0);
     double farPlane = dist+2.0*Iota.pCurrentPrinter->pBuildVolumeRadius;
-    gluPerspective(50.0, aspect, nearPlane, farPlane);
+
+    //gluPerspective(50.0, aspect, nearPlane, farPlane);
+    GLfloat fieldOfView = 50.0;
+    GLfloat fH = tan( float(fieldOfView / 360.0f * 3.14159f) ) * nearPlane;
+    GLfloat fW = fH * aspect;
+    glFrustum( -fW, fW, -fH, fH, nearPlane, farPlane );
 
     glMatrixMode (GL_MODELVIEW);
     glLoadIdentity();
-    gluLookAt(position.x(), position.z(), -position.y(),
+    iaGluLookAt(position.x(), position.z(), -position.y(),
               pInterest.x(), pInterest.z(), -pInterest.y(),
               0.0, 1.0, 0.0);
     glRotated(-90, 1.0, 0.0, 0.0);

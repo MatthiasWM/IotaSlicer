@@ -150,12 +150,12 @@ static void xor_path(potrace_bitmap_t *bm, path_t *p) {
     return;
   }
 
-  y1 = p->priv->pt[p->priv->len-1].y;
+  y1 = (int)(p->priv->pt[p->priv->len-1].y);
 
   xa = p->priv->pt[0].x & -BM_WORDBITS;
   for (k=0; k<p->priv->len; k++) {
-    x = p->priv->pt[k].x;
-    y = p->priv->pt[k].y;
+    x = (int)(p->priv->pt[k].x);
+    y = (int)(p->priv->pt[k].y);
 
     if (y != y1) {
       /* efficiently invert the rectangle [x,xa] x [y,y1] */
@@ -177,8 +177,8 @@ static void setbbox_path(bbox_t *bbox, path_t *p) {
   bbox->x1 = 0;
 
   for (k=0; k<p->priv->len; k++) {
-    x = p->priv->pt[k].x;
-    y = p->priv->pt[k].y;
+    x = (int)(p->priv->pt[k].x);
+    y = (int)(p->priv->pt[k].y);
 
     if (x < bbox->x0) {
       bbox->x0 = x;
@@ -280,7 +280,7 @@ static path_t *findpath(potrace_bitmap_t *bm, int x0, int y0, int sign, int turn
 
   p->priv->pt = pt;
   p->priv->len = len;
-  p->area = area <= INT_MAX ? area : INT_MAX; /* avoid overflow */
+  p->area = (int)(area <= INT_MAX ? area : INT_MAX); /* avoid overflow */
   p->sign = sign;
 
   return p;

@@ -29,6 +29,9 @@
 
 IAIota Iota;
 
+const char *gVersion = /*[ver*/"v0.0.9a"/*]*/;
+
+
 
 #define HDR "Error in Iota Slicer, %s\n\n"
 
@@ -116,6 +119,7 @@ void IAIota::loadAnyFile(const char *list)
             } else {
                 setError("Load Any File", Error::UnknownFileType_STR, filename);
             }
+            ::free((void*)filename);
             if (hadError()) {
                 showError();
                 break;
@@ -498,9 +502,6 @@ void IAIota::menuOpen()
 }
 
 
-static bool firstTimeSlice = true;
-
-
 /**
  * As for a filename and write the GCode file there.
  */
@@ -642,7 +643,7 @@ void IAIota::loadDemoFiles()
  */
 int main (int argc, char **argv)
 {
-    Fl::scheme("gleam");
+    Fl::scheme("gtk+");
 	Fl::args(argc, argv);
     Fl::set_color(FL_BACKGROUND_COLOR, 0xeeeeee00);
     Fl::use_high_res_GL(1);
@@ -650,6 +651,11 @@ int main (int argc, char **argv)
     Iota.pCurrentPrinter = Iota.pPrinterList.defaultPrinter();
 
     Iota.gMainWindow = createIotaAppWindow();
+    {
+        char buf[80];
+        sprintf(buf, "Iota Voxe Slicer %s", gVersion);
+        Iota.gMainWindow->copy_label(buf);
+    }
     if (Iota.gPreferences.pMainWindowX==-1) {
         Iota.gMainWindow->size(Iota.gPreferences.pMainWindowW,
                                Iota.gPreferences.pMainWindowH);

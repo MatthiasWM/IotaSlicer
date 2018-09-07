@@ -242,15 +242,14 @@ IAVector3d& IAVector3d::operator*=(double n)
 
 
 /**
- Set this vector to the cross product with another vector.
+ * Return the cross product of two vectors.
  */
-IAVector3d& IAVector3d::cross(const IAVector3d &b)
+IAVector3d IAVector3d::operator^(const IAVector3d &b) const
 {
-    IAVector3d a(*this);
-    pV[0] = a.pV[1]*b.pV[2] - a.pV[2]*b.pV[1];
-    pV[1] = a.pV[2]*b.pV[0] - a.pV[0]*b.pV[2];
-    pV[2] = a.pV[0]*b.pV[1] - a.pV[1]*b.pV[0];
-    return *this;
+    const IAVector3d &a = *this;
+    return IAVector3d(a.y()*b.z() - a.z()*b.y(),
+                      a.z()*b.x() - a.x()*b.z(),
+                      a.x()*b.y() - a.y()*b.x());
 }
 
 

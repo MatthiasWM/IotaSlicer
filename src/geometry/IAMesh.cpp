@@ -337,8 +337,7 @@ void IAMesh::calculateTriangleNormals()
         IAVector3d p2(t->vertex(2)->pLocalPosition);
         p1 -= p0;
         p2 -= p0;
-        IAVector3d n = p1.cross(p2);
-        n.normalize();
+        IAVector3d n = (p1 ^ p2).normalized(); // cross product
         t->pNormal = n;
         t->pNNormal = 1;
     }

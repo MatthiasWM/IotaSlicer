@@ -21,6 +21,8 @@ class IAMachineToolpath;
 class IAToolpath;
 
 
+extern const char *gVersion;
+
 // temp kludge
 const int IA_PROJECTION_FRONT       = 0;
 const int IA_PROJECTION_CYLINDRICAL = 1;

@@ -14,9 +14,9 @@
 #include <stdio.h>
 #include <libjpeg/jpeglib.h>
 
-//#ifdef __LINUX__
+#ifdef __LINUX__
 #include <GL/glext.h>
-//#endif
+#endif
 
 #ifdef _WIN32
 #include <GL/glext.h>

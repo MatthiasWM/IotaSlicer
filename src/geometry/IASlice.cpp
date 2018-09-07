@@ -15,6 +15,12 @@
 #include <FL/gl.h>
 #include <FL/glu.h>
 
+#ifdef __APPLE__
+// suppress warnings that GLU tesselation is deprecated
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+#endif
+
 
 GLUtesselator *gGluTess = nullptr;
 
@@ -380,6 +386,9 @@ void IASlice::tesselateLidFromRim()
     if (!gGluTess)
         gGluTess = gluNewTess();
 
+//    gluTessProperty(tess, GLU_TESS_BOUNDARY_ONLY, GL_TRUE);
+//    gluTessProperty(tess, GLU_TESS_WINDING_RULE, GLU_TESS_WINDING_NONZERO);
+
 #ifdef __APPLE__
 	gluTessCallback(gGluTess, GLU_TESS_VERTEX, (GLvoid(*) ()) &tessVertexCallback);
 	gluTessCallback(gGluTess, GLU_TESS_BEGIN, (GLvoid (*) ()) &tessBeginCallback);
@@ -449,4 +458,7 @@ void IASlice::drawShell()
     }
 }
 
+#ifdef __APPLE__
+#pragma clang diagnostic pop
+#endif
 
