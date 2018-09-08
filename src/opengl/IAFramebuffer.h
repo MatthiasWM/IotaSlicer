@@ -61,7 +61,7 @@ public:
     void draw(double z);
     uint8_t *getRawImageRGB();
     int traceOutline(IAToolpath *toolpath, double z);
-    int saveAsJpeg(const char *filename);
+    int saveAsJpeg(const char *filename, GLubyte *imgdata=nullptr);
 
     int pWidth = kFramebufferSize, pHeight = kFramebufferSize; // see Iota.h
 

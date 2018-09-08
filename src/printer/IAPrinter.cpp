@@ -352,10 +352,10 @@ IAPrinterList::IAPrinterList(Fl_Menu_Item *printermenu)
 :   pMenuItem( printermenu )
 {
     Iota.pPrinterList.add(new IAPrinterFDM("Generic FDM Printer"));
-    Iota.pPrinterList.add(new IAPrinterFDMBelt("Generic FDM Belt Printer"));
+//    Iota.pPrinterList.add(new IAPrinterFDMBelt("Generic FDM Belt Printer"));
     Iota.pPrinterList.add(new IAPrinterInkjet("Generic Inkjet Printer"));
     Iota.pPrinterList.add(new IAPrinterLasercutter("Generic Laser Cutter"));
-    Iota.pPrinterList.add(new IAPrinterSLS("Generic SLS Printer"));
+//    Iota.pPrinterList.add(new IAPrinterSLS("Generic SLS Printer"));
 }
 
 

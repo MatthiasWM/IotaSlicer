@@ -7,6 +7,9 @@
 #ifndef IA_PRINTER_INKJET_H
 #define IA_PRINTER_INKJET_H
 
+class Fl_Widget;
+class Fl_Choice;
+class Fl_Input_Choice;
 
 #include "printer/IAPrinter.h"
 
@@ -24,8 +27,25 @@
  */
 class IAPrinterInkjet : public IAPrinter
 {
+    typedef IAPrinter super;
 public:
-    IAPrinterInkjet(const char *name) : IAPrinter(name) { }
+    IAPrinterInkjet(const char *name) : super(name) { }
+
+    virtual void userSliceAs() override;
+    virtual void sliceAndWrite(const char *filename=nullptr) override;
+
+    virtual void buildSessionSettings() override;
+
+    double layerHeight() { return pLayerHeight; }
+
+protected:
+    void userSetLayerHeight(Fl_Input_Choice *w);
+
+private:
+    static void userSetLayerHeightCB(Fl_Widget *w, void *d) {
+        ((IAPrinterInkjet*)d)->userSetLayerHeight((Fl_Input_Choice*)w); }
+
+    double pLayerHeight = 0.2;
 };
 
 

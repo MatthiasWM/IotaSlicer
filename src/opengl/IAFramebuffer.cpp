@@ -173,9 +173,11 @@ int IAFramebuffer::traceOutline(IAToolpath *toolpath, double z)
 /**
  * Write the RGB components of the image buffer into a jpeg file.
  */
-int IAFramebuffer::saveAsJpeg(const char *filename)
+int IAFramebuffer::saveAsJpeg(const char *filename, GLubyte *imgdata)
 {
-    GLubyte *imgdata = getRawImageRGB();
+    if (imgdata==nullptr) {
+        imgdata = getRawImageRGB();
+    }
 
     FILE *ofp;
     struct jpeg_compress_struct cinfo;   /* JPEG compression struct */
