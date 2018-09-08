@@ -24,7 +24,10 @@
  * pattern and extension.
  *
  * \todo jpeg is certainly the wrong file format because we need an alpha channel
- *       and very little compression.
+ *       and very little compression. Currently we create black for infills
+ *       and key green (0x00FF00) for areas that must not be printed.
+ * \todo the texture mapping currently projects only along the xy-normal, and
+ *       not along the point normal as it should be.
  */
 void IAPrinterInkjet::userSliceAs()
 {
