@@ -114,6 +114,8 @@
 		C9554698213C9A530061E60E /* IAPreferences.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IAPreferences.h; sourceTree = "<group>"; };
 		C960ED492143B10C007FC037 /* libIota Developer Docs.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libIota Developer Docs.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		C960ED4F2143B62C007FC037 /* Doxyfile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = Doxyfile; path = ../../Doxyfile; sourceTree = "<group>"; };
+		C960ED522143CE7D007FC037 /* IAGUIMain.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = IAGUIMain.h; sourceTree = "<group>"; };
+		C960ED532143CE7E007FC037 /* IAGUIMain.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = IAGUIMain.cpp; sourceTree = "<group>"; };
 		C96B142D211A3E9E00978AC7 /* Iota.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Iota.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C96B1433211A3E9F00978AC7 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		C96B1438211A3E9F00978AC7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -390,6 +392,8 @@
 				C9554697213C9A520061E60E /* IAPreferences.cpp */,
 				C9554698213C9A530061E60E /* IAPreferences.h */,
 				C97632C6211E2DD000D9D4B5 /* IAGUIMain.fl */,
+				C960ED532143CE7E007FC037 /* IAGUIMain.cpp */,
+				C960ED522143CE7D007FC037 /* IAGUIMain.h */,
 				C9CD015921204C2600713CAF /* IASceneView.cpp */,
 				C9CD015821204C2600713CAF /* IASceneView.h */,
 				C98C66C121208C6300BD3ACE /* IACamera.cpp */,

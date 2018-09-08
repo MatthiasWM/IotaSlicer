@@ -37,13 +37,14 @@ declblock {\#ifdef _WIN32} {public after {\#endif}
   }
 }
 
-data sHelpAbout {selected private local filename {../../html/helpAbout.html}
+data sHelpAbout {private local filename {../../html/helpAbout.html}
 }
 
 data sHelpLicenses {private local filename {../../html/helpLicenses.html}
 }
 
-Function {createIotaAppWindow()} {} {
+Function {createIotaAppWindow()} {open
+} {
   Fl_Window wMainWindow {
     label {Iota Slicer V0.1a} open
     xywh {472 202 850 600} type Double resizable visible
@@ -418,7 +419,7 @@ Function {createIotaAboutWindow()} {} {
 }
 
 declblock {\#if 1} {
-  comment {Versioneer: version control helper} after {\#endif}
+  comment {Versioneer: version control helper} open after {\#endif}
 } {
   Function {loadSettings()} {open return_type void
   } {
@@ -439,7 +440,47 @@ vers.get("build", v, 0);
 sprintf(buf, "%d", v);
 wBuild->value(buf);
 vers.get("class", buf, "-", 8);
-wClass->value(buf);} {}
+wClass->value(buf);
+
+const char *name = "README.md";
+
+char filename[2048];
+sprintf(filename, "%s/%s", wBasePath->value(), name);
+FILE *f = fopen(filename, "rb");
+if (f) {
+  while (!feof(f)) {
+    fgets(buf, 1024, f);
+    if (feof(f)) break;
+    char *a = strstr(buf, "<!--[ver-->");
+    char *b = strstr(buf, "<!--]-->");
+    if (a!=nullptr && b!=nullptr) {
+      *b = 0;
+      int maj, min, bld;
+      char cls[80];
+      int cc = sscanf(a+11, "v%d.%d.%d%s", &maj, &min, &bld, cls);
+      if (cc>0) {
+        sprintf(buf, "%d", maj);
+        wMajor->value(buf);
+      }
+      if (cc>1) {
+        sprintf(buf, "%d", min);
+        wMinor->value(buf);
+      }
+      if (cc>2) {
+        sprintf(buf, "%d", bld);
+        wBuild->value(buf);
+      }
+      if (cc>3) {
+        wClass->value(cls);
+      }
+      break;
+    }
+  }
+  fclose(f);
+  printf("Versioneer: found current version in %s\\n", filename);
+} else {
+  perror(filename);
+}} {}
   }
   Function {saveSettings()} {open return_type void
   } {
@@ -546,18 +587,62 @@ if (f) {
   perror(filename);
 }} {}
   }
+  Function {applySettingsDoxyfile(const char *name)} {open return_type void
+  } {
+    code {char filename[2048];
+char out[2048];
+char buf[2048];
+sprintf(filename, "%s/%s", wBasePath->value(), name);
+strcpy(out, filename);
+strcat(out, "~");
+FILE *fOut = fopen(out, "wb");
+if (!fOut) {
+  perror(out);
+  return;
+}
+FILE *f = fopen(filename, "rb");
+if (f) {
+  int n = 0;
+  while (!feof(f)) {
+    fgets(buf, 1024, f);
+    if (feof(f)) break;
+    if (strncmp(buf, "PROJECT_NUMBER         = ", 25)==0) {
+      sprintf(buf,
+        "PROJECT_NUMBER         = %d.%d.%d%s\\n",
+        atoi(wMajor->value()),
+        atoi(wMinor->value()),
+        atoi(wBuild->value()),
+        wClass->value(),
+      );
+      n++;
+    }
+    fputs(buf, fOut);
+  }
+  fclose(f);
+  fclose(fOut);
+  ::remove(filename);
+  ::rename(out, filename);
+  printf("Versioneer: %d replacements in %s\\n", n, filename);
+} else {
+  perror(filename);
+}} {selected
+    }
+  }
   Function {applySettings()} {open return_type void
   } {
-    code {applySettingsHtml("html/helpAbout.html");
+    code {applySettingsHtml("README.md");
+applySettingsHtml("html/helpAbout.html");
 applySettingsHtml("html/helpLicenses.html");
 applySettingsHtml("html/index.html");
 applySettingsCpp("src/Iota.cpp");
+applySettingsDoxyfile("Doxyfile");
 ::utime("userinterface/IAGUIMain.fl", nullptr);} {}
   }
   Function {gitTag()} {open return_type void
   } {
-    code {char buf[1024];
-sprintf(buf, "cd /Users/matt/dev/IotaSlicer; /usr/bin/git tag v%d.%d.%d%s",
+    code {char buf[2048];
+sprintf(buf, "cd %s; /usr/bin/git tag v%d.%d.%d%s",
+	wBasePath->value(),
         atoi(wMajor->value()),
         atoi(wMinor->value()),
         atoi(wBuild->value()),
