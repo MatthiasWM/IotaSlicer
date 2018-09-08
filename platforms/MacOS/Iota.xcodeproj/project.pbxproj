@@ -17,6 +17,7 @@
 		C938CC20212602F600BAC374 /* IAGeometryReaderBinaryStl.cxx in Sources */ = {isa = PBXBuildFile; fileRef = C938CC1F212602F600BAC374 /* IAGeometryReaderBinaryStl.cxx */; };
 		C938CC232126E67700BAC374 /* IAMath.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C938CC212126E67600BAC374 /* IAMath.cpp */; };
 		C9554699213C9A530061E60E /* IAPreferences.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C9554697213C9A520061E60E /* IAPreferences.cpp */; };
+		C960ED512143B64D007FC037 /* Doxyfile in Sources */ = {isa = PBXBuildFile; fileRef = C960ED4F2143B62C007FC037 /* Doxyfile */; };
 		C96B1434211A3E9F00978AC7 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C96B1433211A3E9F00978AC7 /* Assets.xcassets */; };
 		C97632CA211E2DD000D9D4B5 /* Iota.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C97632C5211E2DD000D9D4B5 /* Iota.cpp */; };
 		C97632CB211E2DD000D9D4B5 /* IAGUIMain.fl in Sources */ = {isa = PBXBuildFile; fileRef = C97632C6211E2DD000D9D4B5 /* IAGUIMain.fl */; };
@@ -53,7 +54,6 @@
 		C9D3872A211A436F009F7580 /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C9D38729211A436F009F7580 /* CoreText.framework */; };
 		C9D3872C211A43D0009F7580 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C9D3872B211A43D0009F7580 /* OpenGL.framework */; };
 		C9D3872E211A43F2009F7580 /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C9D3872D211A43F2009F7580 /* AppKit.framework */; };
-		C9D38737211A4B75009F7580 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = C9D38736211A4B75009F7580 /* README.md */; };
 		C9DC51B9211A7CE000AE069F /* index.html in Resources */ = {isa = PBXBuildFile; fileRef = C9DC51B8211A7CDF00AE069F /* index.html */; };
 		C9E4C31121285AFB004ED18C /* IAFramebuffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C9E4C31021285AFB004ED18C /* IAFramebuffer.cpp */; };
 		C9E4C31521299385004ED18C /* IAToolpath.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C9E4C31321299385004ED18C /* IAToolpath.cpp */; };
@@ -61,6 +61,18 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXBuildRule section */
+		C960ED4D2143B34C007FC037 /* PBXBuildRule */ = {
+			isa = PBXBuildRule;
+			compilerSpec = com.apple.compilers.proxy.script;
+			filePatterns = "*Doxyfile*";
+			fileType = pattern.proxy;
+			isEditable = 1;
+			outputFiles = (
+				"${PROJECT_DIR}/../../docs/html/index.html",
+				"",
+			);
+			script = "cd ${INPUT_FILE_DIR}\npwd\n/Applications/Doxygen.app/Contents/Resources/doxygen ${INPUT_FILE_PATH}\ntouch ${INPUT_FILE_PATH}";
+		};
 		C9D38731211A4565009F7580 /* PBXBuildRule */ = {
 			isa = PBXBuildRule;
 			compilerSpec = com.apple.compilers.proxy.script;
@@ -100,6 +112,8 @@
 		C938CC222126E67700BAC374 /* IAMath.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IAMath.h; sourceTree = "<group>"; };
 		C9554697213C9A520061E60E /* IAPreferences.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = IAPreferences.cpp; sourceTree = "<group>"; };
 		C9554698213C9A530061E60E /* IAPreferences.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IAPreferences.h; sourceTree = "<group>"; };
+		C960ED492143B10C007FC037 /* libIota Developer Docs.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libIota Developer Docs.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		C960ED4F2143B62C007FC037 /* Doxyfile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = Doxyfile; path = ../../Doxyfile; sourceTree = "<group>"; };
 		C96B142D211A3E9E00978AC7 /* Iota.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Iota.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C96B1433211A3E9F00978AC7 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		C96B1438211A3E9F00978AC7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -175,6 +189,13 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		C960ED462143B10C007FC037 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		C96B142A211A3E9E00978AC7 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -201,6 +222,7 @@
 			isa = PBXGroup;
 			children = (
 				C9D38736211A4B75009F7580 /* README.md */,
+				C960ED4F2143B62C007FC037 /* Doxyfile */,
 				C96B1444211A402900978AC7 /* src */,
 				C9DC51B7211A7CDF00AE069F /* html */,
 				C98C66BE212060EE00BD3ACE /* Notes */,
@@ -214,6 +236,7 @@
 			isa = PBXGroup;
 			children = (
 				C96B142D211A3E9E00978AC7 /* Iota.app */,
+				C960ED492143B10C007FC037 /* libIota Developer Docs.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -424,7 +447,35 @@
 		};
 /* End PBXGroup section */
 
+/* Begin PBXHeadersBuildPhase section */
+		C960ED472143B10C007FC037 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
 /* Begin PBXNativeTarget section */
+		C960ED482143B10C007FC037 /* Iota Developer Docs */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C960ED4A2143B10C007FC037 /* Build configuration list for PBXNativeTarget "Iota Developer Docs" */;
+			buildPhases = (
+				C960ED452143B10C007FC037 /* Sources */,
+				C960ED462143B10C007FC037 /* Frameworks */,
+				C960ED472143B10C007FC037 /* Headers */,
+			);
+			buildRules = (
+				C960ED4D2143B34C007FC037 /* PBXBuildRule */,
+			);
+			dependencies = (
+			);
+			name = "Iota Developer Docs";
+			productName = "Iota Develoer Docs";
+			productReference = C960ED492143B10C007FC037 /* libIota Developer Docs.a */;
+			productType = "com.apple.product-type.library.static";
+		};
 		C96B142C211A3E9E00978AC7 /* Iota */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = C96B143E211A3E9F00978AC7 /* Build configuration list for PBXNativeTarget "Iota" */;
@@ -452,6 +503,9 @@
 				LastUpgradeCheck = 0940;
 				ORGANIZATIONNAME = "Matthias Melcher";
 				TargetAttributes = {
+					C960ED482143B10C007FC037 = {
+						CreatedOnToolsVersion = 9.4.1;
+					};
 					C96B142C211A3E9E00978AC7 = {
 						CreatedOnToolsVersion = 9.4.1;
 						SystemCapabilities = {
@@ -476,6 +530,7 @@
 			projectRoot = "";
 			targets = (
 				C96B142C211A3E9E00978AC7 /* Iota */,
+				C960ED482143B10C007FC037 /* Iota Developer Docs */,
 			);
 		};
 /* End PBXProject section */
@@ -488,7 +543,6 @@
 				C9DC51B9211A7CE000AE069F /* index.html in Resources */,
 				C99331E62123068F00629BE1 /* helpAbout.html in Resources */,
 				C99331E821230BDB00629BE1 /* helpLicenses.html in Resources */,
-				C9D38737211A4B75009F7580 /* README.md in Resources */,
 				C96B1434211A3E9F00978AC7 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -496,6 +550,14 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		C960ED452143B10C007FC037 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C960ED512143B64D007FC037 /* Doxyfile in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		C96B1429211A3E9E00978AC7 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -540,6 +602,30 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin XCBuildConfiguration section */
+		C960ED4B2143B10C007FC037 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = BK4ST6N599;
+				EXECUTABLE_PREFIX = lib;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
+		};
+		C960ED4C2143B10C007FC037 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = BK4ST6N599;
+				EXECUTABLE_PREFIX = lib;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+			};
+			name = Release;
+		};
 		C96B143C211A3E9F00978AC7 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -708,6 +794,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		C960ED4A2143B10C007FC037 /* Build configuration list for PBXNativeTarget "Iota Developer Docs" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C960ED4B2143B10C007FC037 /* Debug */,
+				C960ED4C2143B10C007FC037 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		C96B1428211A3E9E00978AC7 /* Build configuration list for PBXProject "Iota" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

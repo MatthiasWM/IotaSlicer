@@ -145,7 +145,7 @@ void IASlice::addRim(IAMesh *m)
  *
  * In a watertight mesh, this should always create a loop.
  *
- * \param starting triangle.
+ * \param t starting triangle.
  *
  * \todo handle cases where a point is exactly on z
  * \todo if addNextRimVertex failed because this is not a watertight model (or

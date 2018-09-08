@@ -476,7 +476,7 @@ void IAMesh::projectTexture(double wMult, double hMult, int type)
  * Find an existing vertex with the given coordinates. If none is found,
  * create a new vertex and add it to list.
  *
- * \param the positin of this vertex in mesh space
+ * \param pos the position of this vertex in mesh space
  * \return the existing or newly created vertex. There is no way of knowing if
  *      the vertex was found or created.
  *

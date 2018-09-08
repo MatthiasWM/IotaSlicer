@@ -1,6 +1,8 @@
 
 # Iota Model Slicer for 3D Color Printing #
 
+## <!--[ver-->v0.0.9a<!--]--> ##
+
 ## Status: compiling, running, first successful prints
 
 ### Overview ###
@@ -10,6 +12,8 @@ generate image slices for inkjet/powder based machines, GCode files for color FD
 printing with multiple extruders and mixing extruders, and DXF files for creating stacked 
 models with laser cutters.
 
+Iota will be an easy-to-use system for the colorful future of 3D printing.
+
 First ever color printout (XYZPrinting DaVinci Duo, dual extruders)
 ![picture alt](html/first_color_print.jpg "First ever color printout")
 
@@ -18,7 +22,7 @@ First ever color printout (XYZPrinting DaVinci Duo, dual extruders)
 Voxels is short for VOlumetrix piXEL, pixels in 3D space. Iota works by converting 3D vector 
 based models into slices of 2D image data. Multiple slices in Z form a complete voxel model.
 
-Current 3D formats only represent the outer shell of 3D objects. Most formats use triangle or a 
+Current 3D formats only represent the outer shell of 3D objects. Most formats use triangles or a 
 superset like polygon meshes or lattices. A common alternative, Constructive Solid Geometry, 
 has other limitations. 
 
@@ -27,12 +31,14 @@ inside a model, colors and transparencies.
 
 ### implementation ###
 
-The current code generates somewhate expreimental Gcode files specifically for DaVinci Duo printers.
+Iota currently generates G-Code files for DaVinci Duo printers with Repetier firmware.
+If will probably run with little or no modifications on other FDM printers as well.
 
 * v0.0.9a
+  * added first session prameters
   * starting 3d printer management
 * v0.0.8a
-  * added some aspects of the future menu system
+  * implemented some aspects of the future menu system
 * v0.0.7a
   * fixed STL importer to better differentiate binary and ASCII STL files
   * rewrote the mesh fixer to reliably create watertight models every time
@@ -55,8 +61,5 @@ The current code generates somewhate expreimental Gcode files specifically for D
   * proof of concept, loading STLs and textures, generating pixel slices
 * V0.0.1a
   * initial check-in of concept for a different slicer, aimed at color powder/binder printers
-
-Iota shall be an easy-to-use system for the colorful future of 3D printing.
-
 
 [MD Markup](https://github.com/tchapi/markdown-cheatsheet/blob/master/README.md)

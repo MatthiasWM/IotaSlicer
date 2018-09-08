@@ -95,11 +95,11 @@ IAIota::~IAIota()
  * This does not return an error code. Query succes by calling hadError()
  * and possibly showError().
  *
+ * \param list one or more filenames, separated by \n
+ *
  * \todo At this point, we only know how to read STL files.
  * \todo Currently, we only support one mesh, which will be replaced by
  *       whatever we read.
- *
- * \param list one or more filenames, separated by \n
  */
 void IAIota::loadAnyFile(const char *list)
 {
@@ -352,7 +352,7 @@ void IAIota::menuSliceMesh()
     double hgt = pMesh->pMax.z() - pMesh->pMin.z();
     // initial height determines stickiness to bed
 
-    double maxHgt = 300;//hgt;
+    double maxHgt = 300; //hgt;
     int layer = 1;
     int nLayer = maxHgt/3.7;
 //    for (double z=1.5; z<maxHgt; z+=3.7, layer++) {

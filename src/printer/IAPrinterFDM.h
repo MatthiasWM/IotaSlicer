@@ -11,6 +11,7 @@
 #include "printer/IAPrinter.h"
 
 class Fl_Widget;
+class Fl_Choice;
 class Fl_Input_Choice;
 
 /**
@@ -31,15 +32,21 @@ public:
     virtual void buildSessionSettings() override;
 
     double layerHeight() { return pLayerHeight; }
+    int colorMode() { return pColorMode; }
 
 protected:
     void userSetLayerHeight(Fl_Input_Choice *w);
+    void userSetColorMode(Fl_Choice *w);
 
 private:
     static void userSetLayerHeightCB(Fl_Widget *w, void *d) {
         ((IAPrinterFDM*)d)->userSetLayerHeight((Fl_Input_Choice*)w); }
+    static void userSetColorModeCB(Fl_Widget *w, void *d) {
+        ((IAPrinterFDM*)d)->userSetColorMode((Fl_Choice*)w); }
 
     double pLayerHeight = 0.2;
+    /** \todo make this an enum */
+    int pColorMode = 0;
 };
 
 

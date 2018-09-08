@@ -95,7 +95,6 @@ y range is 21500...??
 
 /*
 
-Aug 6th 2017
 
 - for every slice, we have a zMin and zMax, and a color depth
 - calculate the outline of the zMin slice

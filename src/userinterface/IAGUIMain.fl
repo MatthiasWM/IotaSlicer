@@ -15,7 +15,7 @@ decl {\#include "IAGLButton.h"} {public global
 decl {\#include <FL/Fl_File_Chooser.H>} {public global
 }
 
-declblock {\#ifdef __APPLE__} {open public after {\#endif}
+declblock {\#ifdef __APPLE__} {public after {\#endif}
 } {
   decl {\#include <unistd.h>} {public global
   }
@@ -23,7 +23,7 @@ declblock {\#ifdef __APPLE__} {open public after {\#endif}
   }
 }
 
-declblock {\#ifdef __LINUX__} {open public after {\#endif}
+declblock {\#ifdef __LINUX__} {public after {\#endif}
 } {
   decl {\#include <unistd.h>} {public global
   }
@@ -31,20 +31,19 @@ declblock {\#ifdef __LINUX__} {open public after {\#endif}
   }
 }
 
-declblock {\#ifdef _WIN32} {open public after {\#endif}
+declblock {\#ifdef _WIN32} {public after {\#endif}
 } {
   decl {\#include <sys/utime.h>} {public global
   }
 }
 
-data sHelpAbout {private local filename {../../html/helpAbout.html}
+data sHelpAbout {selected private local filename {../../html/helpAbout.html}
 }
 
 data sHelpLicenses {private local filename {../../html/helpLicenses.html}
 }
 
-Function {createIotaAppWindow()} {open
-} {
+Function {createIotaAppWindow()} {} {
   Fl_Window wMainWindow {
     label {Iota Slicer V0.1a} open
     xywh {472 202 850 600} type Double resizable visible
@@ -418,10 +417,8 @@ Function {createIotaAboutWindow()} {} {
   }
 }
 
-comment {Versioneer: version control helper} {in_source in_header
-}
-
-declblock {\#if 1} {open after {\#endif}
+declblock {\#if 1} {
+  comment {Versioneer: version control helper} after {\#endif}
 } {
   Function {loadSettings()} {open return_type void
   } {
@@ -547,8 +544,7 @@ if (f) {
   printf("Versioneer: %d replacements in %s\\n", n, filename);
 } else {
   perror(filename);
-}} {selected
-    }
+}} {}
   }
   Function {applySettings()} {open return_type void
   } {
@@ -680,13 +676,11 @@ wVersionWindow->hide();}
   }
 }
 
-comment {Progress bar} {in_source in_header
-}
-
 decl {bool progressDialogCanceled;} {private local
 }
 
-declblock {\#if 1} {after {\#endif}
+declblock {\#if 1} {
+  comment {Progress bar} after {\#endif}
 } {
   Function {createProgressDialog()} {open
   } {
