@@ -31,7 +31,7 @@
  */
 void IAPrinterInkjet::userSliceAs()
 {
-    if (queryOutputFilename("Save toolpath as GCode", "*.jpg", ".jpg")) {
+    if (queryOutputFilename("Save slices as images", "*.jpg", ".jpg")) {
         sliceAndWrite();
     }
 }
