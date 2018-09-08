@@ -46,7 +46,7 @@ void IAPrinterFDM::sliceAndWrite(const char *filename)
     double hgt = Iota.pMesh->pMax.z() - Iota.pMesh->pMin.z();
     // initial height determines stickiness to bed
 
-    double zMin = 0.2;
+    double zMin = layerHeight() * 0.7;
     double zLayerHeight = layerHeight();
 #if 1
     double zMax = hgt;

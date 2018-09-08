@@ -7,8 +7,11 @@
 #ifndef IA_PRINTER_LASERCUTTER_H
 #define IA_PRINTER_LASERCUTTER_H
 
-
 #include "printer/IAPrinter.h"
+
+class Fl_Widget;
+class Fl_Choice;
+class Fl_Input_Choice;
 
 
 /**
@@ -20,8 +23,25 @@
  */
 class IAPrinterLasercutter : public IAPrinter
 {
+    typedef IAPrinter super;
 public:
-    IAPrinterLasercutter(const char *name) : IAPrinter(name) { }
+    IAPrinterLasercutter(const char *name) : super(name) { }
+
+    virtual void userSliceAs() override;
+    virtual void sliceAndWrite(const char *filename=nullptr) override;
+
+    virtual void buildSessionSettings() override;
+
+    double layerHeight() { return pLayerHeight; }
+
+protected:
+    void userSetLayerHeight(Fl_Input_Choice *w);
+
+private:
+    static void userSetLayerHeightCB(Fl_Widget *w, void *d) {
+        ((IAPrinterLasercutter*)d)->userSetLayerHeight((Fl_Input_Choice*)w); }
+
+    double pLayerHeight = 4.0;
 };
 
 
