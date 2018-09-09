@@ -33,6 +33,7 @@ Iota currently generates G-Code files for DaVinci Duo printers with Repetier fir
 If will probably run with little or no modifications on other FDM printers as well.
 
 * v0.0.9a
+  * added indfill for FDM printouts
   * added inkjet printer slices in png image format
   * added laser cutter dxf slices support
   * added first session prameters

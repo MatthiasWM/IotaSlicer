@@ -123,6 +123,50 @@ void IAPrinterFDM::sliceAndWrite(const char *filename)
             \todo look at what is support structure for the layers above
          */
 
+        /*
+         How do we find a lid?
+
+         A single layer lid is the AND NOT operation between this layer and the
+         layer above this one. Everything in this layer that is not the lid is
+         then the infill.
+
+         A multi layer lid is the AND NOT operation between this layer and
+         the AND operation of multiple layers above this one.
+
+         A bottom lid is the same as a top lib, but with the layers below. A
+         general lid is then the current pattern AND NOT the AND operation of
+         all relevant layers below or above.
+
+         Again the remaining part is the infill, or, to put it more
+         mathematically, the infill is the AND operation of all layers
+         involved.
+         */
+
+        /*
+         How do we find the support structure pattern?
+
+         There are two supports needed: triangles that are flatter than 45 deg
+         from z need support, and "icicles", hanging structures need a support
+         with a minimum diameter. Icicles are vertices that are lower than all
+         vertices of all connected triangles.
+
+         Icicles and angled triangles throw a volumetric shadow down. They
+         go all the way down to z=0, unless we find a system to only project
+         them onto geometry below instead.
+
+         Support can be rendered onto a finished slice, but it must not disturb
+         anything that was already rendered, and it must not be rendered above
+         the current z height (*1). Other than that, it is a simple projection
+         along the z axis.
+
+         *1) by slightly modifying the z height, we generate a layer between
+             the support and the model that is less compressed and less sticky.
+             This may help a lot with support removal.
+         *2) support should not touch the model sideways. This can be acheived
+             by redering on bigger circumference and subtracting it befor3
+             tracing and filling.
+         */
+
         // Now whatever is still here will be infill
         Iota.gMeshSlice.pFramebuffer->bindForRendering();
         glDisable(GL_DEPTH_TEST);
