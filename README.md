@@ -1,5 +1,5 @@
 
-# Iota <!--[ver-->v0.0.9a<!--]--> Voxel based Mesh Slicer for Color 3D Printing #
+# Iota <!--[ver-->v0.0.10a<!--]--> Voxel based Mesh Slicer for Color 3D Printing #
 
 ## Status: compiling, running, first successful prints
 
@@ -32,6 +32,8 @@ inside a model, colors and transparencies.
 Iota currently generates G-Code files for DaVinci Duo printers with Repetier firmware.
 If will probably run with little or no modifications on other FDM printers as well.
 
+* v0.0.10a
+  * fresh
 * v0.0.9a
   * added infill for FDM printouts
   * added inkjet printer slices in png image format

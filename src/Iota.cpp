@@ -32,7 +32,7 @@ IAIota Iota;
 /* Do not change the somewhat funky [ver stuff below. It is used for automated
  * version number updates.
  */
-const char *gVersion = /*[ver*/"v0.0.9a"/*]*/;
+const char *gVersion = /*[ver*/"v0.0.10a"/*]*/;
 
 const int kFramebufferSize = 2048;
 
