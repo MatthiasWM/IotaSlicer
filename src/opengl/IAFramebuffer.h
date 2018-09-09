@@ -47,6 +47,8 @@ extern bool initializeOpenGL();
  * By repeatedly vectorizing and shrinking the image in the framebuffer, GCode
  * for the outer shell is generated. The remaining graphics in the image can
  * be used to overlay a vectorized fill pattern.
+ *
+ * \todo allow for framebuffers without z buffer.
  */
 class IAFramebuffer
 {
@@ -65,7 +67,8 @@ public:
     int saveAsJpeg(const char *filename, GLubyte *imgdata=nullptr);
     int saveAsPng(const char *filename, int components, GLubyte *imgdata=nullptr);
 
-    int pWidth = kFramebufferSize, pHeight = kFramebufferSize; // see Iota.h
+    int width() { return pWidth; }
+    int height() { return pHeight; }
 
 protected:
     bool hasFBO();
@@ -73,9 +76,17 @@ protected:
     void createFBO();
     void deleteFBO();
 
+    /** Width of the framebuffer in pixles */
+    int pWidth = kFramebufferSize;
+    /** Height of the framebuffer in pixles */
+    int pHeight = kFramebufferSize; // see Iota.h
+    /** Set this flag if the OpenGL framebuffer object is created */
     bool pFramebufferCreated = false;
-    GLuint pColorbuffer = 0;
+    /** The OpenGL framebuffer object, containing an RGBA and a depth buffer */
     GLuint pFramebuffer = 0;
+    /** OpenGL reference to the RGBA color part of the framebuffer */
+    GLuint pColorbuffer = 0;
+    /** OpenGL reference to the depth buffer part of the framebuffer */
     GLuint pDepthbuffer = 0;
 
 };

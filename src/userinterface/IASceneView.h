@@ -55,7 +55,6 @@ protected:
     int handle(int event) override;
     void draw() override;
     void draw_children();
-    void updateSlice();
     void initializeView();
     void initializeShaders();
     void beginTextures();

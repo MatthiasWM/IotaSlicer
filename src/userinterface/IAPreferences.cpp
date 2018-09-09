@@ -11,11 +11,14 @@
 #include <FL/Fl_Preferences.H>
 
 
+/**
+ * Create the preferences interface an load the last settings.
+ */
 IAPreferences::IAPreferences()
 {
-    pPrefs = new Fl_Preferences(Fl_Preferences::USER, "com.matthiasm.iota", "IotaSlicer");
+    Fl_Preferences pPrefs(Fl_Preferences::USER, "com.matthiasm.iota", "IotaSlicer");
 
-    Fl_Preferences main(*pPrefs, "main");
+    Fl_Preferences main(pPrefs, "main");
 
     Fl_Preferences window(main, "window");
 
@@ -31,16 +34,23 @@ IAPreferences::IAPreferences()
 }
 
 
+/**
+ * Write the current setting to the preferences file.
+ */
 IAPreferences::~IAPreferences()
 {
     flush();
-    delete pPrefs;
 }
 
 
+/**
+ * Write the current setting to the preferences file.
+ */
 void IAPreferences::flush()
 {
-    Fl_Preferences main(*pPrefs, "main");
+    Fl_Preferences pPrefs(Fl_Preferences::USER, "com.matthiasm.iota", "IotaSlicer");
+
+    Fl_Preferences main(pPrefs, "main");
 
     Fl_Preferences window(main, "window");
 
@@ -54,6 +64,6 @@ void IAPreferences::flush()
     filenames.set("lastGCode", pLastGCodeFilename);
     filenames.set("lastLoad", pLastLoadFilename);
 
-    pPrefs->flush();
+    pPrefs.flush();
 }
 

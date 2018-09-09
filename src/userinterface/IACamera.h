@@ -28,6 +28,7 @@ public:
     virtual void setInterest(IAVector3d &v) { }
 
 protected:
+    /** Link back to the scene viewer */
     IASceneView *pView = nullptr;
 };
 
@@ -47,15 +48,13 @@ public:
     virtual void setInterest(IAVector3d &v) override;
 
 private:
-#if 0
-    double pXRotation = -0.55;
-    double pZRotation = 5.81;
-    double pDistance = 216;
-#else
+    /** camera rotation around the vertical axis */
     double pXRotation = -0.3;
+    /** camera height over interest point */
     double pZRotation = 0.3;
+    /** distance from the point of interest */
     double pDistance = 400;
-#endif
+    /** coordinates of target and center of rotation */
     IAVector3d pInterest = { 0.0, 0.0, 0.0 };
 };
 
@@ -75,7 +74,9 @@ public:
     virtual void setInterest(IAVector3d &v) override;
 
 private:
+    /** Scaling of the view. */
     double pZoom = 200;
+    /** coordinates of target and center of zoom */
     IAVector3d pInterest = { 0.0, 0.0, 0.0 };
 };
 

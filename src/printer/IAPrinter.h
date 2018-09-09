@@ -10,9 +10,13 @@
 
 #include "geometry/IAVector3d.h"
 
+#include "geometry/IASlice.h"
+
 #include <vector>
 
+
 class Fl_Menu_Item;
+class IAMachineToolpath;
 
 
 /**
@@ -24,6 +28,8 @@ public:
     IAPrinter(const char *name);
     virtual ~IAPrinter();
     virtual void draw();
+    virtual void drawPreview();
+    virtual void clearHashedData();
 
     void loadSettings();
     void saveSettings();
@@ -43,6 +49,12 @@ public:
     IAVector3d pBuildVolumeMin = { 0.0, 0.0, 0.0 };
     IAVector3d pBuildVolumeMax = { 214.0, 214.0, 230.0 };
     double pBuildVolumeRadius = 200.0; // sphere that contains the entire centered build volume
+
+    /// the toolpath for the entire scene for vector based machines
+    IAMachineToolpath *pMachineToolpath = nullptr;
+
+    /// This is the current slice that contains the entire scene at a give z.
+    IASlice gSlice;
 
 protected:
     bool queryOutputFilename(const char *title,

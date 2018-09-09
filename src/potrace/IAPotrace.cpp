@@ -89,8 +89,8 @@ void bezier(IAToolpath *toolpath,
 {
     const uint8_t *px = framebuffer->getRawImageRGB();
 
-    int width = framebuffer->pWidth;
-    int height = framebuffer->pHeight;
+    int width = framebuffer->width();
+    int height = framebuffer->height();
 
     IAVector3d &printbed = Iota.pCurrentPrinter->pBuildVolume;
     double xScl = printbed.x()/width;

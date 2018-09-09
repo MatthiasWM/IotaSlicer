@@ -14,6 +14,7 @@
 #include "IAPrinterLasercutter.h"
 #include "IAPrinterSLS.h"
 #include "userinterface/IAGUIMain.h"
+#include "toolpath/IAToolpath.h"
 
 #include <math.h>
 
@@ -70,6 +71,17 @@ IAPrinter::~IAPrinter()
         ::free((void*)pName);
     if (pOutputPath)
         ::free((void*)pOutputPath);
+    delete pMachineToolpath;
+}
+
+
+/**
+ * Clear all buffered data and prepare for a modified scene.
+ */
+void IAPrinter::clearHashedData()
+{
+    delete pMachineToolpath; pMachineToolpath = nullptr;
+    gSlice.clear();
 }
 
 
@@ -328,6 +340,17 @@ void IAPrinter::draw()
     glLineWidth(1.0);
     glPopMatrix();
 }
+
+
+/**
+ * Draw a preview of the slicing operation.
+ */
+void IAPrinter::drawPreview()
+{
+    if (pMachineToolpath)
+        pMachineToolpath->draw();
+}
+
 
 
 void IAPrinter::buildSessionSettings()

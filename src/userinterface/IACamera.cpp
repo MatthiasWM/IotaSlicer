@@ -37,6 +37,8 @@ IAPerspectiveCamera::IAPerspectiveCamera(IASceneView *view)
 
 /**
  * User wants to rotate the camera.
+ *
+ * \param dx, dy rotate by these deltas
  */
 void IAPerspectiveCamera::rotate(double dx, double dy)
 {
@@ -53,6 +55,8 @@ void IAPerspectiveCamera::rotate(double dx, double dy)
 
 /**
  * User wants to drag the camera around.
+ *
+ * \param dx, dy drag by these deltas
  */
 void IAPerspectiveCamera::drag(double dx, double dy)
 {
@@ -77,6 +81,8 @@ void IAPerspectiveCamera::drag(double dx, double dy)
 
 /**
  * User wants to get closer to the point of interest.
+ *
+ * \param dx, dy dolly or zoom by these deltas
  */
 void IAPerspectiveCamera::dolly(double dx, double dy)
 {
@@ -85,6 +91,10 @@ void IAPerspectiveCamera::dolly(double dx, double dy)
 }
 
 
+/*
+ * Replacement for the now deprecated gluLookAt function. Does the exact
+ * same thing.
+ */
 void iaGluLookAt(GLfloat eyeX, GLfloat eyeY, GLfloat eyeZ, GLfloat lookAtX, GLfloat lookAtY, GLfloat lookAtZ, GLfloat upX, GLfloat upY, GLfloat upZ) {
     IAVector3d fwd, side, up;
     fwd = IAVector3d(lookAtX-eyeX, lookAtY-eyeY, lookAtZ-eyeZ).normalized();
@@ -147,7 +157,9 @@ void IAPerspectiveCamera::setInterest(IAVector3d &v)
 
 
 /**
- * Create a simple perspective camera.
+ * Create a simple orthographic camera.
+ *
+ * This camera is currently fixed to top view.
  */
 IAOrthoCamera::IAOrthoCamera(IASceneView *view, int direction)
 :   super( view )

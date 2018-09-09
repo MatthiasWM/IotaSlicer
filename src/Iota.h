@@ -21,15 +21,33 @@ class IAMachineToolpath;
 class IAToolpath;
 
 
+/** Version string for this version of Iota: X.Y.XA, where X is the major
+ * relase, Y is the minor release, Z is the build number, and A is an additional
+ * string, 'a' for alpha versions, 'b' for beta releases, or '' for no
+ * further description.
+ */
 extern const char *gVersion;
 
-// temp kludge
+/**
+ * The resolution of all frambuffer objects.
+ * 1024 is pretty much the minimum. 2048 brings ok results. At 4096,
+ * toolpaths are really nice, but rendering time slows down considerably.
+ * At higher resolutions, toolpaths are perfect, but rendering time and
+ * memory usage explode.
+ *
+ * \todo nothing is optimized here yet. There is a great potential for
+ *        accelerating, manly potrace, and reduced memory allocation by
+ *        smart clipping.
+ */
+extern const int kFramebufferSize;
+
+/**
+ * temp kludge
+ * \todo these are currently only for testing textures, but should be removed.
+ */
 const int IA_PROJECTION_FRONT       = 0;
 const int IA_PROJECTION_CYLINDRICAL = 1;
 const int IA_PROJECTION_SPHERICAL   = 2;
-
-const int kFramebufferSize = 2048;
-
 
 /**
  * List of errors that the user may encounter.
@@ -51,12 +69,9 @@ enum class Error {
  *       if they were not run yet
  * \todo create a model class that contains one or more meshes
  * \todo allow multiple meshes in a scene
- * \todo assign color methids to meshes and models
+ * \todo assign color methods to meshes and models
  * \todo add a positional vertex (done) and a normal (still to do) for slicing
  *       in the printer coordinate system
- * \todo create vector infills from slices
- * \todo results get good with a framebuffer size of 4096x4096! But potrace
- *       gets slow!
  */
 class IAIota
 {
@@ -64,10 +79,6 @@ public:
     IAIota();
     ~IAIota();
 
-    void sliceMesh(const char *filename);
-
-    void menuWriteSlice();
-    void menuSliceMesh();
     void menuNewProject();
     void menuOpen();
     void menuQuit();
@@ -98,23 +109,17 @@ public:
     /// the one and only mesh we currently support
     /// \todo move meshes into a model class, and models into a modelList
     IAMesh *pMesh = nullptr;
-    /// the one slice that we generate
-    /// \todo create a current slice and hashed slices for other z-layers
-    IASlice gMeshSlice;
-    /// the current 3d printwer
+    /// the current 3d printer
     IAPrinter *pCurrentPrinter = nullptr;
+    /// a list of available printers
     IAPrinterList pPrinterList;
-    /// the toolpath for the entire scene
-    IAMachineToolpath *pMachineToolpath = nullptr;
-    /// the current toolpath
-    IAToolpath *pCurrentToolpath = nullptr;
     /// show the slice in the 3d view
     /// \todo move to UI class
     bool gShowSlice;
     /// show the texture in the 3d view
     /// \todo move to UI class
     bool gShowTexture;
-
+    /// User settings for this app.
     IAPreferences gPreferences;
 
 private:

@@ -54,10 +54,6 @@ void IAPrinterInkjet::sliceAndWrite(const char *filename)
         strcat(fn, "_%04d");
     }
 
-    if (!Iota.pMachineToolpath)
-        Iota.pMachineToolpath = new IAMachineToolpath();
-    else
-        Iota.pMachineToolpath->clear();
     double hgt = Iota.pMesh->pMax.z() - Iota.pMesh->pMin.z();
     // initial height determines stickiness to bed
 
@@ -85,21 +81,22 @@ void IAPrinterInkjet::sliceAndWrite(const char *filename)
         bool abort = updateProgressDialog();
         if (abort) break;
 
-        Iota.gMeshSlice.changeZ(z);
-        Iota.gMeshSlice.clear();
-        Iota.gMeshSlice.generateRim(Iota.pMesh);
-        Iota.gMeshSlice.tesselateLidFromRim();
-        Iota.gMeshSlice.drawFlat(false, 1, 1, 1);
+        gSlice.changeZ(z);
+        gSlice.clear();
+        gSlice.generateRim(Iota.pMesh);
+        gSlice.tesselateLidFromRim();
+        gSlice.drawFlat(false, 1, 1, 1);
 
-        uint8_t *alpha = Iota.gMeshSlice.pFramebuffer->getRawImageRGB();
-        uint8_t *rgb = Iota.gMeshSlice.pColorbuffer->getRawImageRGBA();
+        uint8_t *alpha = gSlice.pFramebuffer->getRawImageRGB();
+        uint8_t *rgb = gSlice.pColorbuffer->getRawImageRGBA();
 
         /** \todo we can of course do all that in the OpenGL code already
             \todo infill should be white or user selectable
             \todo inkjet should generate support structurs for image based SLA
          */
         {
-            int i = 0, n = Iota.gMeshSlice.pColorbuffer->pWidth * Iota.gMeshSlice.pColorbuffer->pHeight;
+            int i = 0, n = gSlice.pColorbuffer->width()
+                         * gSlice.pColorbuffer->height();
             uint8_t *s = alpha, *d = rgb;
             for (i=0; i<n; ++i) {
                 d[3] = *s;
@@ -109,10 +106,10 @@ void IAPrinterInkjet::sliceAndWrite(const char *filename)
 
         char imgFilename[2048];
         sprintf(imgFilename, fn, i);
-        Iota.gMeshSlice.pColorbuffer->saveAsPng(imgFilename, 4, rgb);
+        gSlice.pColorbuffer->saveAsPng(imgFilename, 4, rgb);
 // for testing, we also can write jpegs or other files.
 //        fl_filename_setext(imgFilename, 2048, ".jpg");
-//        Iota.gMeshSlice.pColorbuffer->saveAsJpeg(imgFilename, rgb);
+//        gSlice.pColorbuffer->saveAsJpeg(imgFilename, rgb);
         i++;
     }
     hideProgressDialog();

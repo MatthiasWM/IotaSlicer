@@ -29,7 +29,12 @@
 
 IAIota Iota;
 
+/* Do not change the somewhat funky [ver stuff below. It is used for automated
+ * version number updates.
+ */
 const char *gVersion = /*[ver*/"v0.0.9a"/*]*/;
+
+const int kFramebufferSize = 2048;
 
 
 
@@ -62,8 +67,7 @@ const char *IAIota::kErrorMessage[] =
  * Creat the Iota Slicer application.
  */
 IAIota::IAIota()
-:   pCurrentToolpath( new IAToolpath(0.0) ),
-    pCurrentPrinter( nullptr ),
+:   pCurrentPrinter( nullptr ),
     pPrinterList( wPrinterSelectionMenu )
 {
 }
@@ -75,8 +79,6 @@ IAIota::IAIota()
  */
 IAIota::~IAIota()
 {
-    delete pMachineToolpath;
-    delete pCurrentToolpath;
     delete pMesh;
     if (pErrorString)
         ::free((void*)pErrorString);
@@ -132,119 +134,6 @@ void IAIota::loadAnyFile(const char *list)
 }
 
 
-/**
- Experimental stuff.
- */
-void IAIota::menuWriteSlice()
-{
-    char buf[FL_PATH_MAX];
-
-#ifdef _WIN32
-    char base[FL_PATH_MAX];
-    SHGetSpecialFolderPathA(HWND_DESKTOP, base, CSIDL_DESKTOPDIRECTORY, FALSE);
-#else
-    const char *base = fl_getenv("HOME");
-#endif
-
-    double z = 70.0;
-    Iota.gMeshSlice.changeZ(z);
-    Iota.gMeshSlice.clear();
-    Iota.gMeshSlice.generateRim(Iota.pMesh);
-    Iota.gMeshSlice.tesselateLidFromRim();
-    Iota.gMeshSlice.drawFlat(false, 1, 1, 1);
-
-    snprintf(buf, FL_PATH_MAX, "%s/slice.jpg", base);
-    Iota.gMeshSlice.pFramebuffer->saveAsJpeg(buf);
-
-    Iota.gMeshSlice.pFramebuffer->traceOutline(Iota.pCurrentToolpath, zSlider1->value());
-    gSceneView->redraw();
-}
-
-#if 1 // save single extruder mixing code
-//#ifdef IA_QUAD
-/**
- Experimental stuff.
- Slice the mesh into single hotend, multiple transport extruder.
-
- M563: Define or remove a tool
- Pnnn Tool number
- Dnnn Extruder drive(s)  for example 0:1:2
- Hnnn Heater(s)
- Fnnn Fan(s)
-
- M563 P0 D0:1:2:3 H0 F0 ; maps the Crane Quad head to tool 0
- G1 X10 Y10 F800 E0.235:0.003:0:0 ; prints by mixing transports 0 and 1 into heater 0
- */
-void IAIota::sliceMesh(const char *filename)
-{
-    if (!pMachineToolpath)
-        pMachineToolpath = new IAMachineToolpath();
-    else
-        pMachineToolpath->clear();
-    double hgt = pMesh->pMax.z() - pMesh->pMin.z();
-    // initial height determines stickiness to bed
-
-    double maxHgt = 25; // in mm, should be hgt
-    for (double z=0.2; z<maxHgt; z+=0.3) {
-        printf("Slicing at z=%g\n", z);
-        // create the slice surfec
-        Iota.gMeshSlice.changeZ(z);
-        Iota.gMeshSlice.clear();
-        Iota.gMeshSlice.generateRim(Iota.pMesh);
-        // draw the sliced mesh surface into a framebuffer
-        // also draw the textured shell into the color buffer
-        Iota.gMeshSlice.tesselateLidFromRim();
-//        Iota.gMeshSlice.drawFlat(false, 1, 1, 1);
-
-        uint8_t *rgb = Iota.gMeshSlice.pColorbuffer->getRawImageRGB();
-
-        IAToolpath *tp1 = new IAToolpath(z);
-        Iota.gMeshSlice.pFramebuffer->traceOutline(tp1, z);
-//        Iota.gMeshSlice.pFramebuffer->saveAsJpeg("/Users/matt/a1.jpg");
-
-        IAToolpath *tp2 = new IAToolpath(z);
-        Iota.gMeshSlice.pFramebuffer->bindForRendering();
-        glDisable(GL_DEPTH_TEST);
-        glColor3f(0.0, 0.0, 0.0);
-        tp1->drawFlat(4);
-//        Iota.gMeshSlice.pFramebuffer->saveAsJpeg("/Users/matt/a2.jpg");
-        Iota.gMeshSlice.pFramebuffer->unbindFromRendering();
-        Iota.gMeshSlice.pFramebuffer->traceOutline(tp2, z);
-
-        IAToolpath *tp3 = new IAToolpath(z);
-        Iota.gMeshSlice.pFramebuffer->bindForRendering();
-        glDisable(GL_DEPTH_TEST);
-        glColor3f(0.0, 0.0, 0.0);
-        tp2->drawFlat(4);
-//        Iota.gMeshSlice.pFramebuffer->saveAsJpeg("/Users/matt/a3.jpg");
-        Iota.gMeshSlice.pFramebuffer->unbindFromRendering();
-        Iota.gMeshSlice.pFramebuffer->traceOutline(tp3, z);
-
-        IAToolpath *tp = pMachineToolpath->createLayer(z);
-
-        //tp1->colorizeSoft(rgb, tp); // add the colorized toolpath to tp
-        tp2->colorizeSoft(rgb, tp); // add the colorized toolpath to tp
-        tp3->colorizeSoft(rgb, tp); // add the colorized toolpath to tp
-        delete tp1;
-        delete tp2;
-        delete tp3;
-        free(rgb);
-    }
-    pMachineToolpath->saveGCode(filename);
-    zSlider1->value(0.0);
-    zSlider1->do_callback();
-    gSceneView->redraw();
-}
-#endif
-
-
-/**
- * Developer shortcut.
- */
-void IAIota::menuSliceMesh()
-{
-    sliceMesh("/Users/matt/aaa.gcode");
-}
 
 
 /**
@@ -303,7 +192,8 @@ bool IAIota::addGeometry(std::shared_ptr<IAGeometryReader> reader)
 {
     bool ret = false;
     delete Iota.pMesh; Iota.pMesh = nullptr;
-    gMeshSlice.clear();
+    if (pCurrentPrinter)
+        pCurrentPrinter->clearHashedData();
     auto geometry = reader->load();
     Iota.pMesh = geometry;
     if (pMesh) {
@@ -321,7 +211,7 @@ bool IAIota::addGeometry(std::shared_ptr<IAGeometryReader> reader)
 void IAIota::menuNewProject()
 {
     delete Iota.pMesh; Iota.pMesh = nullptr;
-    gMeshSlice.clear();
+    if (pCurrentPrinter) pCurrentPrinter->clearHashedData();
     gSceneView->redraw();
 }
 
@@ -361,53 +251,15 @@ void IAIota::menuOpen()
  */
 void IAIota::menuSliceAs()
 {
-#if 1
     if (pCurrentPrinter)
         pCurrentPrinter->userSliceAs();
-#else
-    Fl_Native_File_Chooser fc(Fl_Native_File_Chooser::BROWSE_SAVE_FILE);
-    fc.title("Save toolpath as GCode");
-    fc.filter("*.gcode");
-    fc.directory(gPreferences.pLastGCodeFilename);
-    switch (fc.show()) {
-        case -1: // error
-        case 1: // cancel
-            return;
-        default: // filename choosen
-            break;
-    }
-    const char *filename = fc.filename();
-    if (!filename || !*filename)
-        return;
-//    strcpy(gPreferences.pLastGCodeFilename, filename);
-    fl_filename_absolute(gPreferences.pLastGCodeFilename,
-                         sizeof(gPreferences.pLastGCodeFilename),
-                         filename);
-    const char *ext = fl_filename_ext(gPreferences.pLastGCodeFilename);
-    if (!ext || !*ext) {
-        fl_filename_setext(gPreferences.pLastGCodeFilename,
-                           sizeof(gPreferences.pLastGCodeFilename),
-                           ".gcode");
-    }
-    gPreferences.flush();
-    sliceMesh(gPreferences.pLastGCodeFilename);
-    firstTimeSlice = false;
-#endif
 }
 
 
 void IAIota::menuSliceAgain()
 {
-#if 1
     if (pCurrentPrinter)
         pCurrentPrinter->userSliceAgain();
-#else
-    if (firstTimeSlice) {
-        menuSliceAs();
-    } else {
-        sliceMesh(gPreferences.pLastGCodeFilename);
-    }
-#endif
 }
 
 

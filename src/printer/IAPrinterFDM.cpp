@@ -39,10 +39,10 @@ void IAPrinterFDM::sliceAndWrite(const char *filename)
     if (!filename)
         filename = outputPath();
 
-    if (!Iota.pMachineToolpath)
-        Iota.pMachineToolpath = new IAMachineToolpath();
+    if (!pMachineToolpath)
+        pMachineToolpath = new IAMachineToolpath();
     else
-        Iota.pMachineToolpath->clear();
+        pMachineToolpath->clear();
     double hgt = Iota.pMesh->pMax.z() - Iota.pMesh->pMin.z();
     // initial height determines stickiness to bed
 
@@ -70,52 +70,52 @@ void IAPrinterFDM::sliceAndWrite(const char *filename)
         bool abort = updateProgressDialog();
         if (abort) break;
 
-        Iota.gMeshSlice.changeZ(z);
-        Iota.gMeshSlice.clear();
-        Iota.gMeshSlice.generateRim(Iota.pMesh);
-        Iota.gMeshSlice.tesselateLidFromRim();
-        Iota.gMeshSlice.drawFlat(false, 1, 1, 1);
+        gSlice.changeZ(z);
+        gSlice.clear();
+        gSlice.generateRim(Iota.pMesh);
+        gSlice.tesselateLidFromRim();
+        gSlice.drawFlat(false, 1, 1, 1);
 
-        uint8_t *rgb = Iota.gMeshSlice.pColorbuffer->getRawImageRGB();
+        uint8_t *rgb = gSlice.pColorbuffer->getRawImageRGB();
 
         // create an outline for this slice image
         IAToolpath *tp0 = new IAToolpath(z);
-        Iota.gMeshSlice.pFramebuffer->traceOutline(tp0, z);
+        gSlice.pFramebuffer->traceOutline(tp0, z);
         // reduce the slice image by this toolpath to make the next shell fit
         // the physical model size
-        Iota.gMeshSlice.pFramebuffer->bindForRendering();
+        gSlice.pFramebuffer->bindForRendering();
         glDisable(GL_DEPTH_TEST);
         glColor3f(0.0, 0.0, 0.0);
         tp0->drawFlat(4);
-        Iota.gMeshSlice.pFramebuffer->unbindFromRendering();
+        gSlice.pFramebuffer->unbindFromRendering();
         delete tp0; // we no longer need this toolpath
 
         // draw the first shell for this slice image
         IAToolpath *tp1 = new IAToolpath(z);
-        Iota.gMeshSlice.pFramebuffer->traceOutline(tp1, z);
-        Iota.gMeshSlice.pFramebuffer->bindForRendering();
+        gSlice.pFramebuffer->traceOutline(tp1, z);
+        gSlice.pFramebuffer->bindForRendering();
         glDisable(GL_DEPTH_TEST);
         glColor3f(0.0, 0.0, 0.0);
         tp1->drawFlat(4); /** \todo width depends on nozzle width! */
-        Iota.gMeshSlice.pFramebuffer->unbindFromRendering();
+        gSlice.pFramebuffer->unbindFromRendering();
 
         // draw the second shell for this slice image
         IAToolpath *tp2 = new IAToolpath(z);
-        Iota.gMeshSlice.pFramebuffer->traceOutline(tp2, z);
-        Iota.gMeshSlice.pFramebuffer->bindForRendering();
+        gSlice.pFramebuffer->traceOutline(tp2, z);
+        gSlice.pFramebuffer->bindForRendering();
         glDisable(GL_DEPTH_TEST);
         glColor3f(0.0, 0.0, 0.0);
         tp2->drawFlat(4);
-        Iota.gMeshSlice.pFramebuffer->unbindFromRendering();
+        gSlice.pFramebuffer->unbindFromRendering();
 
         // draw the third shell for this slice image
         IAToolpath *tp3 = new IAToolpath(z);
-        Iota.gMeshSlice.pFramebuffer->traceOutline(tp3, z);
-        Iota.gMeshSlice.pFramebuffer->bindForRendering();
+        gSlice.pFramebuffer->traceOutline(tp3, z);
+        gSlice.pFramebuffer->bindForRendering();
         glDisable(GL_DEPTH_TEST);
         glColor3f(0.0, 0.0, 0.0);
         tp3->drawFlat(4);
-        Iota.gMeshSlice.pFramebuffer->unbindFromRendering();
+        gSlice.pFramebuffer->unbindFromRendering();
 
         // remaining image is either a lid, a floor, or an infill
         /** \todo look at the layers above to find out if this is a lid
@@ -168,7 +168,7 @@ void IAPrinterFDM::sliceAndWrite(const char *filename)
          */
 
         // Now whatever is still here will be infill
-        Iota.gMeshSlice.pFramebuffer->bindForRendering();
+        gSlice.pFramebuffer->bindForRendering();
         glDisable(GL_DEPTH_TEST);
         glColor3f(0.0, 0.0, 0.0);
         // draw spaces so the infill gets spread out nicely
@@ -202,11 +202,11 @@ void IAPrinterFDM::sliceAndWrite(const char *filename)
         }
         glPopMatrix();
 #endif
-        Iota.gMeshSlice.pFramebuffer->unbindFromRendering();
+        gSlice.pFramebuffer->unbindFromRendering();
         IAToolpath *infill = new IAToolpath(z);
-        Iota.gMeshSlice.pFramebuffer->traceOutline(infill, z); // set the parameters so that we get sharp edges
+        gSlice.pFramebuffer->traceOutline(infill, z); // set the parameters so that we get sharp edges
 
-        IAToolpath *tp = Iota.pMachineToolpath->createLayer(z);
+        IAToolpath *tp = pMachineToolpath->createLayer(z);
         if (colorMode()==0) {
             tp->add(*tp3);
             tp->add(*tp2);
@@ -237,7 +237,7 @@ void IAPrinterFDM::sliceAndWrite(const char *filename)
         free(rgb);
         i++;
     }
-    Iota.pMachineToolpath->saveGCode(filename);
+    pMachineToolpath->saveGCode(filename);
     hideProgressDialog();
     zSlider1->value(0.0);
     zSlider1->do_callback();
@@ -247,6 +247,10 @@ void IAPrinterFDM::sliceAndWrite(const char *filename)
 
 /**
  * Create the Treeview items for setting up the printout for this session.
+ *
+ * \todo number of extrusion in the shell
+ * \todo number of layers for lids and bottoms
+ * \todo density for infills
  */
 void IAPrinterFDM::buildSessionSettings()
 {

@@ -311,8 +311,9 @@ void IASlice::drawFramebuffer()
 /*
  Tesselation magic, better leave untouched.
  */
-int tessVertexCount = 0;
-IAVertex *tessV0, *tessV1, *tessV2;
+static int tessVertexCount = 0;
+static IAVertex *tessV0, *tessV1, *tessV2;
+static IASlice *currentSlice = nullptr;
 
 #ifdef __APPLE__
 #define __stdcall
@@ -341,7 +342,7 @@ void __stdcall tessVertexCallback(GLvoid *vertex)
         tessVertexCount = 2;
     } else {
         tessV2 = (IAVertex*)vertex;
-        Iota.gMeshSlice.addNewTriangle(tessV0, tessV1, tessV2);
+        currentSlice->addNewTriangle(tessV0, tessV1, tessV2);
         tessVertexCount = 0;
     }
 }
@@ -353,7 +354,7 @@ void __stdcall tessCombineCallback(GLdouble coords[3],
     IAVertex *v = new IAVertex();
     v->pLocalPosition.read(coords);
     // or used mesh.addVertex()? It would save space, but be a bit slower.
-    Iota.gMeshSlice.vertexList.push_back(v);
+    currentSlice->vertexList.push_back(v);
     *dataOut = v;
 }
 
@@ -383,6 +384,7 @@ void __stdcall tessErrorCallback(GLenum errorCode)
  */
 void IASlice::tesselateLidFromRim()
 {
+    currentSlice = this;
     if (!gGluTess)
         gGluTess = gluNewTess();
 
@@ -422,15 +424,17 @@ void IASlice::tesselateLidFromRim()
     gluTessEndContour(gGluTess);
     gluTessEndPolygon(gGluTess);
 
-    // temporary hack
+    // FIXME: temporary hack
     pFramebuffer->bindForRendering(); // make sure we have a square in the buffer
     drawFlat(false, 1.0, 1.0, 0.0);
     pFramebuffer->unbindFromRendering();
 
-    // temporary hack
+    // FIXME: temporary hack
     pColorbuffer->bindForRendering();
     drawShell();
     pColorbuffer->unbindFromRendering();
+
+    currentSlice = nullptr;
 }
 
 

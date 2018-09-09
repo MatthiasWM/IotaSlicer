@@ -34,6 +34,12 @@ PFNGLDELETERENDERBUFFERSEXTPROC glDeleteRenderbuffersEXT;
 #endif
 
 
+/**
+ * Initialize OpenGL for every supported platform.
+ *
+ * \return false, if OpenGL on this machine does not support the required
+ *      features.
+ */
 bool initializeOpenGL()
 {
 	static bool beenHere = false;
@@ -93,6 +99,8 @@ IAFramebuffer::~IAFramebuffer()
 
 /**
  * Clear the framebuffer object for next use.
+ *
+ * This call does not delete any resources.
  */
 void IAFramebuffer::clear()
 {
@@ -117,7 +125,8 @@ void IAFramebuffer::bindForRendering()
     glLoadIdentity();
     IAPrinter *p = Iota.pCurrentPrinter;
     IAVector3d vol = p->pBuildVolume;
-    /** \todo why is the range below [vol.z(), 0] negative? I tested the slice, and it does draw at the correct (positive) Z. */
+    /** \todo why is the range below [vol.z(), 0] negative? I tested the
+              slice, and it does draw at the correct (positive) Z. */
     glOrtho(0, vol.x(), 0, vol.y(), -vol.z()-1, 1);
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
@@ -145,7 +154,7 @@ void IAFramebuffer::unbindFromRendering()
 
 
 /**
- * Convert the color buffer into a bitmap that potrace will understand.
+ * Convert the color buffer into RGB data that potrace will understand.
  *
  * \return pointer to data, must be free'd by caller!
  */
@@ -178,6 +187,11 @@ uint8_t *IAFramebuffer::getRawImageRGBA()
 
 /**
  * Trace around the image and write an outline to a toolpath.
+ *
+ * \param toolpath add outline segments to this toolpath
+ * \param z give all segments in the toolpath a z position
+ *
+ * \return returns 0 on success
  */
 int IAFramebuffer::traceOutline(IAToolpath *toolpath, double z)
 {
@@ -189,6 +203,14 @@ int IAFramebuffer::traceOutline(IAToolpath *toolpath, double z)
 
 /**
  * Write the RGB components of the image buffer into a jpeg file.
+ *
+ * \param filename the file name of the file that will be created
+ * \param imgdata a pointer to an RGB buffer, or nullptr if this call will
+ *        get and handle the image data.
+ *
+ * \return 0 on success
+ *
+ * \todo no error checking yet
  */
 int IAFramebuffer::saveAsJpeg(const char *filename, GLubyte *imgdata)
 {
@@ -242,6 +264,14 @@ int IAFramebuffer::saveAsJpeg(const char *filename, GLubyte *imgdata)
 /**
  * Write framebuffer as PNG image file.
  *
+ * \param filename the file name of the file that will be created
+ * \param components 3 for RGB, 4 for RGBA
+ * \param imgdata a pointer to an RGB(A) buffer, or nullptr if this call will
+ *        get and handle the image data.
+ *
+ * \return 0 on success
+ *
+ * \todo no error checking yet
  * \todo can we accelerate PNG writing by changing filters and compression?
  *       Size is not really an issue here.
  * \todo if we want to send data directly to a printhead, we may want to
@@ -305,6 +335,8 @@ int IAFramebuffer::saveAsPng(const char *filename, int components, GLubyte *imgd
 
 /**
  * Draw the RGBA buffer into the scene viewer at world coordinates.
+ *
+ * \param z draw the buffer at this z coordinate.
  */
 void IAFramebuffer::draw(double z)
 {
@@ -330,6 +362,8 @@ void IAFramebuffer::draw(double z)
 
 /**
  * Return true if we have previously allocated the FBO.
+ *
+ * \return true if the framebuffer has been created.
  */
 bool IAFramebuffer::hasFBO()
 {
@@ -352,6 +386,8 @@ void IAFramebuffer::activateFBO()
 
 /**
  * Create a framebuffer object.
+ *
+ * \todo return a potential error code and handle it upstream.
  */
 void IAFramebuffer::createFBO()
 {
@@ -366,19 +402,19 @@ void IAFramebuffer::createFBO()
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     //NULL means reserve texture memory, but texels are undefined
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, pWidth, pHeight, 0, GL_BGRA, GL_UNSIGNED_BYTE, nullptr);
-    //-------------------------
+
     glGenFramebuffersEXT(1, &pFramebuffer);
     glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, pFramebuffer);
     //Attach 2D texture to this FBO
     glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT, GL_TEXTURE_2D, pColorbuffer, 0);
-    //-------------------------
+
     glGenRenderbuffersEXT(1, &pDepthbuffer);
     glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, pDepthbuffer);
     glRenderbufferStorageEXT(GL_RENDERBUFFER_EXT, GL_DEPTH_COMPONENT24, pWidth, pHeight);
-    //-------------------------
+
     //Attach depth buffer to FBO
     glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT, GL_DEPTH_ATTACHMENT_EXT, GL_RENDERBUFFER_EXT, pDepthbuffer);
-    //-------------------------
+
     //Does the GPU support current FBO configuration?
     GLenum status;
     status = glCheckFramebufferStatusEXT(GL_FRAMEBUFFER_EXT);

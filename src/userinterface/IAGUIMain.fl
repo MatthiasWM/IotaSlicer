@@ -210,33 +210,18 @@ Function {createIotaAppWindow()} {open
         }
       }
       Submenu {} {
-        label Developer open
-        xywh {12 12 100 20}
-      } {
-        MenuItem {} {
-          label {Write current Slice}
-          callback {Iota.menuWriteSlice();}
-          tooltip {Write to ~/slice.jpg} xywh {24 24 100 20} shortcut 0x400070
-        }
-        MenuItem {} {
-          label {Slice entire mesh}
-          callback {Iota.menuSliceMesh();}
-          tooltip {Write to ~/slice.jpg} xywh {36 36 100 20} shortcut 0x40006d divider
-        }
-        MenuItem {} {
-          label {Versioneer...}
-          callback {if (!wVersionWindow) {
-  createVersionWindow();
-}
-loadSettings();
-wVersionWindow->show();}
-          xywh {4 4 100 20}
-        }
-      }
-      Submenu {} {
         label Help open
         xywh {0 0 100 20}
       } {
+        MenuItem {} {
+          label {Versioneer...}
+          callback {if (!wVersionWindow) {
+createVersionWindow();
+}
+loadSettings();
+wVersionWindow->show();}
+          xywh {4 4 100 20} divider
+        }
         MenuItem {} {
           label {About...}
           callback {static Fl_Window *aboutWindow = nullptr;
@@ -612,7 +597,7 @@ if (f) {
         atoi(wMajor->value()),
         atoi(wMinor->value()),
         atoi(wBuild->value()),
-        wClass->value(),
+        wClass->value()
       );
       n++;
     }
@@ -625,8 +610,7 @@ if (f) {
   printf("Versioneer: %d replacements in %s\\n", n, filename);
 } else {
   perror(filename);
-}} {selected
-    }
+}} {}
   }
   Function {applySettings()} {open return_type void
   } {
@@ -697,7 +681,7 @@ if (path) {
         xywh {283 47 64 20} labelsize 12 textsize 12
       } {
         MenuItem {} {
-          label {-}
+          label {-} selected
           xywh {4 4 100 20} labelsize 12
         }
         MenuItem {} {

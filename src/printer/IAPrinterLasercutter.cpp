@@ -1,15 +1,5 @@
 //
-//  IAPrinter.cpp
-//
-//  Copyright (c) 2013-2018 Matthias Melcher. All rights reserved.
-//
-
-
-#include "IAPrinterLasercutter.h"
-
-
-//
-//  IAPrinter.cpp
+//  IAPrinterLasercutter.cpp
 //
 //  Copyright (c) 2013-2018 Matthias Melcher. All rights reserved.
 //
@@ -58,10 +48,10 @@ void IAPrinterLasercutter::sliceAndWrite(const char *filename)
         strcat(fn, "_%04d");
     }
 
-    if (!Iota.pMachineToolpath)
-        Iota.pMachineToolpath = new IAMachineToolpath();
+    if (!pMachineToolpath)
+        pMachineToolpath = new IAMachineToolpath();
     else
-        Iota.pMachineToolpath->clear();
+        pMachineToolpath->clear();
     double hgt = Iota.pMesh->pMax.z() - Iota.pMesh->pMin.z();
     // initial height determines stickiness to bed
 
@@ -83,15 +73,15 @@ void IAPrinterLasercutter::sliceAndWrite(const char *filename)
         bool abort = updateProgressDialog();
         if (abort) break;
 
-        Iota.gMeshSlice.changeZ(z);
-        Iota.gMeshSlice.clear();
-        Iota.gMeshSlice.generateRim(Iota.pMesh);
-        Iota.gMeshSlice.tesselateLidFromRim();
-        Iota.gMeshSlice.drawFlat(false, 1, 1, 1);
+        gSlice.changeZ(z);
+        gSlice.clear();
+        gSlice.generateRim(Iota.pMesh);
+        gSlice.tesselateLidFromRim();
+        gSlice.drawFlat(false, 1, 1, 1);
 
-        uint8_t *rgb = Iota.gMeshSlice.pColorbuffer->getRawImageRGB();
+        uint8_t *rgb = gSlice.pColorbuffer->getRawImageRGB();
         IAToolpath *tp = new IAToolpath(z);
-        Iota.gMeshSlice.pFramebuffer->traceOutline(tp, z);
+        gSlice.pFramebuffer->traceOutline(tp, z);
         tp->pList.push_back(new IAToolpathExtruder(1));
 
         char dxfFilename[2048];
