@@ -94,7 +94,10 @@ void IAPrinterInkjet::sliceAndWrite(const char *filename)
         uint8_t *alpha = Iota.gMeshSlice.pFramebuffer->getRawImageRGB();
         uint8_t *rgb = Iota.gMeshSlice.pColorbuffer->getRawImageRGBA();
 
-        /** \todo we can of course do all that in the OpenGL code already */
+        /** \todo we can of course do all that in the OpenGL code already
+            \todo infill should be white or user selectable
+            \todo inkjet should generate support structurs for image based SLA
+         */
         {
             int i = 0, n = Iota.gMeshSlice.pColorbuffer->pWidth * Iota.gMeshSlice.pColorbuffer->pHeight;
             uint8_t *s = alpha, *d = rgb;
@@ -107,6 +110,7 @@ void IAPrinterInkjet::sliceAndWrite(const char *filename)
         char imgFilename[2048];
         sprintf(imgFilename, fn, i);
         Iota.gMeshSlice.pColorbuffer->saveAsPng(imgFilename, 4, rgb);
+// for testing, we also can write jpegs or other files.
 //        fl_filename_setext(imgFilename, 2048, ".jpg");
 //        Iota.gMeshSlice.pColorbuffer->saveAsJpeg(imgFilename, rgb);
         i++;

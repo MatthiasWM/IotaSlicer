@@ -48,10 +48,10 @@ void IAPrinterFDM::sliceAndWrite(const char *filename)
 
     double zMin = layerHeight() * 0.7;
     double zLayerHeight = layerHeight();
-#if 1
+#if 0
     double zMax = hgt;
 #else
-    double zMax = 25;
+    double zMax = 2;
 #endif
 
     showProgressDialog();
@@ -78,27 +78,89 @@ void IAPrinterFDM::sliceAndWrite(const char *filename)
 
         uint8_t *rgb = Iota.gMeshSlice.pColorbuffer->getRawImageRGB();
 
-        IAToolpath *tp1 = new IAToolpath(z);
-        Iota.gMeshSlice.pFramebuffer->traceOutline(tp1, z);
-        // debug: Iota.gMeshSlice.pFramebuffer->saveAsJpeg("/Users/matt/a1.jpg");
-
-        IAToolpath *tp2 = new IAToolpath(z);
+        // create an outline for this slice image
+        IAToolpath *tp0 = new IAToolpath(z);
+        Iota.gMeshSlice.pFramebuffer->traceOutline(tp0, z);
+        // reduce the slice image by this toolpath to make the next shell fit
+        // the physical model size
         Iota.gMeshSlice.pFramebuffer->bindForRendering();
         glDisable(GL_DEPTH_TEST);
         glColor3f(0.0, 0.0, 0.0);
-        tp1->drawFlat(4);
-        // debug: Iota.gMeshSlice.pFramebuffer->saveAsJpeg("/Users/matt/a2.jpg");
+        tp0->drawFlat(4);
         Iota.gMeshSlice.pFramebuffer->unbindFromRendering();
-        Iota.gMeshSlice.pFramebuffer->traceOutline(tp2, z);
+        delete tp0; // we no longer need this toolpath
 
-        IAToolpath *tp3 = new IAToolpath(z);
+        // draw the first shell for this slice image
+        IAToolpath *tp1 = new IAToolpath(z);
+        Iota.gMeshSlice.pFramebuffer->traceOutline(tp1, z);
+        Iota.gMeshSlice.pFramebuffer->bindForRendering();
+        glDisable(GL_DEPTH_TEST);
+        glColor3f(0.0, 0.0, 0.0);
+        tp1->drawFlat(4); /** \todo width depends on nozzle width! */
+        Iota.gMeshSlice.pFramebuffer->unbindFromRendering();
+
+        // draw the second shell for this slice image
+        IAToolpath *tp2 = new IAToolpath(z);
+        Iota.gMeshSlice.pFramebuffer->traceOutline(tp2, z);
         Iota.gMeshSlice.pFramebuffer->bindForRendering();
         glDisable(GL_DEPTH_TEST);
         glColor3f(0.0, 0.0, 0.0);
         tp2->drawFlat(4);
-        // debug: Iota.gMeshSlice.pFramebuffer->saveAsJpeg("/Users/matt/a3.jpg");
         Iota.gMeshSlice.pFramebuffer->unbindFromRendering();
+
+        // draw the third shell for this slice image
+        IAToolpath *tp3 = new IAToolpath(z);
         Iota.gMeshSlice.pFramebuffer->traceOutline(tp3, z);
+        Iota.gMeshSlice.pFramebuffer->bindForRendering();
+        glDisable(GL_DEPTH_TEST);
+        glColor3f(0.0, 0.0, 0.0);
+        tp3->drawFlat(4);
+        Iota.gMeshSlice.pFramebuffer->unbindFromRendering();
+
+        // remaining image is either a lid, a floor, or an infill
+        /** \todo look at the layers above to find out if this is a lid
+            \todo look at the layers below to find out if this is a floor
+            \todo look at what is support structure for the layers above
+         */
+
+        // Now whatever is still here will be infill
+        Iota.gMeshSlice.pFramebuffer->bindForRendering();
+        glDisable(GL_DEPTH_TEST);
+        glColor3f(0.0, 0.0, 0.0);
+        // draw spaces so the infill gets spread out nicely
+        double wdt = Iota.pCurrentPrinter->pBuildVolumeMax.x();
+        double hgt = Iota.pCurrentPrinter->pBuildVolumeMax.y();
+#if 0 // generate a lid
+        double infillWdt = 0.3;
+        for (double j=0; j<wdt; j+=infillWdt*2) {
+            glBegin(GL_POLYGON);
+            glVertex2f(j+infillWdt, 0);
+            glVertex2f(j, 0);
+            glVertex2f(j, hgt);
+            glVertex2f(j+infillWdt, hgt);
+            glEnd();
+        }
+#else   // generate a diagonal infill
+        double infillWdt = 3;
+        glPushMatrix();
+        if (i&1)
+            glRotated(45, 0, 0, 1);
+        else
+            glRotated(-45, 0, 0, 1);
+        for (double j=-2*wdt; j<2*wdt; j+=infillWdt*2) {
+            glBegin(GL_POLYGON);
+            /** \todo Draw this large enough so that it renders the entire scene, even if rotated. */
+            glVertex2f(j+infillWdt, -2*hgt);
+            glVertex2f(j, -2*hgt);
+            glVertex2f(j, 2*hgt);
+            glVertex2f(j+infillWdt, 2*hgt);
+            glEnd();
+        }
+        glPopMatrix();
+#endif
+        Iota.gMeshSlice.pFramebuffer->unbindFromRendering();
+        IAToolpath *infill = new IAToolpath(z);
+        Iota.gMeshSlice.pFramebuffer->traceOutline(infill, z); // set the parameters so that we get sharp edges
 
         IAToolpath *tp = Iota.pMachineToolpath->createLayer(z);
         if (colorMode()==0) {
@@ -123,9 +185,11 @@ void IAPrinterFDM::sliceAndWrite(const char *filename)
             delete b2;
             delete w2;
         }
+        tp->add(*infill);
         delete tp1;
         delete tp2;
         delete tp3;
+        delete infill;
         free(rgb);
         i++;
     }

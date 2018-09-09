@@ -239,6 +239,14 @@ int IAFramebuffer::saveAsJpeg(const char *filename, GLubyte *imgdata)
     return 0; /* No fatal errors */
 }
 
+/**
+ * Write framebuffer as PNG image file.
+ *
+ * \todo can we accelerate PNG writing by changing filters and compression?
+ *       Size is not really an issue here.
+ * \todo if we want to send data directly to a printhead, we may want to
+ *       generate dithered files for color blending.
+ */
 int IAFramebuffer::saveAsPng(const char *filename, int components, GLubyte *imgdata)
 {
     bool freeImgData = false;
@@ -270,7 +278,8 @@ int IAFramebuffer::saveAsPng(const char *filename, int components, GLubyte *imgd
         case 3: fmt = PNG_COLOR_TYPE_RGB; break;
         case 4: fmt = PNG_COLOR_TYPE_RGBA; break;
     }
-    // Output is 8bit depth, RGBA format.
+
+    // Output is 8bit depth
     png_set_IHDR(png,
                  info,
                  pWidth, pHeight,
