@@ -6,7 +6,7 @@
 
 #include "IAFmtObj3ds.h"
 
-#include "lib3ds.h"
+#include <lib3ds/lib3ds.h>
 
 // ABANDONED
 

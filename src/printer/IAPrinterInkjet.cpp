@@ -130,7 +130,7 @@ void IAPrinterInkjet::buildSessionSettings()
         { "0.3" }
     };
 
-    /** \todo FIXME: this keeps on adding Choice widgets to the tree class!
+    /** \bug: this keeps on adding Choice widgets to the tree class!
      * We must either delete the widgets when changing printer (which is hard,
      * because the scrollbars are also children of Fl_Tree), or we must
      * store the link to this widget and show and hide it accordingly (which

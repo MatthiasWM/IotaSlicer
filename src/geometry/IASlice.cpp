@@ -424,12 +424,12 @@ void IASlice::tesselateLidFromRim()
     gluTessEndContour(gGluTess);
     gluTessEndPolygon(gGluTess);
 
-    // FIXME: temporary hack
+    /// \bug temporary hack
     pFramebuffer->bindForRendering(); // make sure we have a square in the buffer
     drawFlat(false, 1.0, 1.0, 0.0);
     pFramebuffer->unbindFromRendering();
 
-    // FIXME: temporary hack
+    /// \bug temporary hack
     pColorbuffer->bindForRendering();
     drawShell();
     pColorbuffer->unbindFromRendering();
