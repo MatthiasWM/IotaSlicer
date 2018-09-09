@@ -13,6 +13,7 @@
 
 #include <stdio.h>
 #include <libjpeg/jpeglib.h>
+#include <libpng/png.h>
 
 #ifdef __LINUX__
 #include <GL/glext.h>
@@ -160,6 +161,22 @@ uint8_t *IAFramebuffer::getRawImageRGB()
 
 
 /**
+ * Convert the color buffer into an RGBA bytes array in user memory.
+ *
+ * \return pointer to data, must be free'd by caller!
+ */
+uint8_t *IAFramebuffer::getRawImageRGBA()
+{
+    size_t size = pWidth*pHeight*4;
+    uint8_t *data = (uint8_t*)malloc(size);
+    glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, pFramebuffer);
+    glReadPixels(0, 0, pWidth, pHeight, GL_RGBA, GL_UNSIGNED_BYTE, data);
+    glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
+    return data;
+}
+
+
+/**
  * Trace around the image and write an outline to a toolpath.
  */
 int IAFramebuffer::traceOutline(IAToolpath *toolpath, double z)
@@ -175,8 +192,10 @@ int IAFramebuffer::traceOutline(IAToolpath *toolpath, double z)
  */
 int IAFramebuffer::saveAsJpeg(const char *filename, GLubyte *imgdata)
 {
+    bool freeImgData = false;
     if (imgdata==nullptr) {
         imgdata = getRawImageRGB();
+        freeImgData = true;
     }
 
     FILE *ofp;
@@ -214,9 +233,64 @@ int IAFramebuffer::saveAsJpeg(const char *filename, GLubyte *imgdata)
 
 		fclose(ofp);
 	}
-	free(imgdata);
+    if (freeImgData)
+        free(imgdata);
 
     return 0; /* No fatal errors */
+}
+
+int IAFramebuffer::saveAsPng(const char *filename, int components, GLubyte *imgdata)
+{
+    bool freeImgData = false;
+    if (imgdata==nullptr) {
+        if (components==3)
+            imgdata = getRawImageRGB();
+        else if (components==4)
+            imgdata = getRawImageRGBA();
+        freeImgData = true;
+    }
+
+    FILE *fp = fopen(filename, "wb");
+    if(!fp) abort();
+
+    png_structp png = png_create_write_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
+    if (!png) abort();
+
+    png_infop info = png_create_info_struct(png);
+    if (!info) abort();
+
+    if (setjmp(png_jmpbuf(png))) abort();
+
+    png_init_io(png, fp);
+
+    int fmt = 0;
+    switch (components) {
+        case 1: fmt = PNG_COLOR_TYPE_GRAY; break;
+        case 2: fmt = PNG_COLOR_TYPE_GA; break;
+        case 3: fmt = PNG_COLOR_TYPE_RGB; break;
+        case 4: fmt = PNG_COLOR_TYPE_RGBA; break;
+    }
+    // Output is 8bit depth, RGBA format.
+    png_set_IHDR(png,
+                 info,
+                 pWidth, pHeight,
+                 8,
+                 fmt,
+                 PNG_INTERLACE_NONE,
+                 PNG_COMPRESSION_TYPE_DEFAULT,
+                 PNG_FILTER_TYPE_DEFAULT
+                 );
+    png_write_info(png, info);
+
+    for(int y = 0; y < pHeight; y++) {
+        png_write_row( png, imgdata + y*pWidth*components );
+    }
+    fclose(fp);
+    
+    if (freeImgData)
+        free(imgdata);
+
+    return 0;
 }
 
 

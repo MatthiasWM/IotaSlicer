@@ -31,7 +31,7 @@
  */
 void IAPrinterInkjet::userSliceAs()
 {
-    if (queryOutputFilename("Save slices as images", "*.jpg", ".jpg")) {
+    if (queryOutputFilename("Save slices as images", "*.png", ".png")) {
         sliceAndWrite();
     }
 }
@@ -92,23 +92,23 @@ void IAPrinterInkjet::sliceAndWrite(const char *filename)
         Iota.gMeshSlice.drawFlat(false, 1, 1, 1);
 
         uint8_t *alpha = Iota.gMeshSlice.pFramebuffer->getRawImageRGB();
-        uint8_t *rgb = Iota.gMeshSlice.pColorbuffer->getRawImageRGB();
+        uint8_t *rgb = Iota.gMeshSlice.pColorbuffer->getRawImageRGBA();
 
-        /** \todo crude hack */
+        /** \todo we can of course do all that in the OpenGL code already */
         {
             int i = 0, n = Iota.gMeshSlice.pColorbuffer->pWidth * Iota.gMeshSlice.pColorbuffer->pHeight;
             uint8_t *s = alpha, *d = rgb;
             for (i=0; i<n; ++i) {
-                if (*s < 0x80) {
-                    d[0] = d[2] = 0; d[1] = 255;
-                }
-                s+=3; d+=3;
+                d[3] = *s;
+                s+=3; d+=4;
             }
         }
 
-        char imghFilename[2048];
-        sprintf(imghFilename, fn, i);
-        Iota.gMeshSlice.pColorbuffer->saveAsJpeg(imghFilename, rgb);
+        char imgFilename[2048];
+        sprintf(imgFilename, fn, i);
+        Iota.gMeshSlice.pColorbuffer->saveAsPng(imgFilename, 4, rgb);
+//        fl_filename_setext(imgFilename, 2048, ".jpg");
+//        Iota.gMeshSlice.pColorbuffer->saveAsJpeg(imgFilename, rgb);
         i++;
     }
     hideProgressDialog();
