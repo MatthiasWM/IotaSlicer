@@ -118,6 +118,16 @@
 		<Unit filename="../../../src/potrace/trace.h" />
 		<Unit filename="../../../src/printer/IAPrinter.cpp" />
 		<Unit filename="../../../src/printer/IAPrinter.h" />
+		<Unit filename="../../../src/printer/IAPrinterFDM.cpp" />
+		<Unit filename="../../../src/printer/IAPrinterFDM.h" />
+		<Unit filename="../../../src/printer/IAPrinterFDMBelt.cpp" />
+		<Unit filename="../../../src/printer/IAPrinterFDMBelt.h" />
+		<Unit filename="../../../src/printer/IAPrinterInkjet.cpp" />
+		<Unit filename="../../../src/printer/IAPrinterInkjet.h" />
+		<Unit filename="../../../src/printer/IAPrinterLasercutter.cpp" />
+		<Unit filename="../../../src/printer/IAPrinterLasercutter.h" />
+		<Unit filename="../../../src/printer/IAPrinterSLS.cpp" />
+		<Unit filename="../../../src/printer/IAPrinterSLS.h" />
 		<Unit filename="../../../src/toolpath/IADxfWriter.cpp" />
 		<Unit filename="../../../src/toolpath/IADxfWriter.h" />
 		<Unit filename="../../../src/toolpath/IAGcodeWriter.cpp" />
@@ -135,6 +145,8 @@
 			<Option compiler="gcc" use="1" buildCommand="cd ../../../src/userinterface/ &amp;&amp; ../../platforms/Linux/bin/fluid -c IAGUIMain.fl" />
 		</Unit>
 		<Unit filename="../../../src/userinterface/IAGUIMain.h" />
+		<Unit filename="../../../src/userinterface/IAPreferences.cpp" />
+		<Unit filename="../../../src/userinterface/IAPreferences.h" />
 		<Unit filename="../../../src/userinterface/IASceneView.cpp" />
 		<Unit filename="../../../src/userinterface/IASceneView.h" />
 		<Extensions>

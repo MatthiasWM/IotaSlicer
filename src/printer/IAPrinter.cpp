@@ -214,7 +214,9 @@ bool IAPrinter::queryOutputFilename(const char *title,
                                   const char *extension)
 {
     char buf[FL_PATH_MAX];
-
+#ifdef __LINUX__
+    const char *filename = fl_file_chooser(title, filter, outputPath());
+#else
     Fl_Native_File_Chooser fc(Fl_Native_File_Chooser::BROWSE_SAVE_FILE);
     fc.title(title);
     fc.filter(filter);
@@ -230,6 +232,8 @@ bool IAPrinter::queryOutputFilename(const char *title,
             break;
     }
     const char *filename = fc.filename();
+#endif
+
     if (!filename || !*filename)
         return false;
     //    strcpy(gPreferences.pLastGCodeFilename, filename);
