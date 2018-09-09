@@ -125,6 +125,24 @@
     <ClCompile Include="..\..\..\src\toolpath\IADxfWriter.cpp">
       <Filter>src\toolpath</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\src\userinterface\IAPreferences.cpp">
+      <Filter>src\userInterface</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\printer\IAPrinterFDM.cpp">
+      <Filter>src\printer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\printer\IAPrinterFDMBelt.cpp">
+      <Filter>src\printer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\printer\IAPrinterInkjet.cpp">
+      <Filter>src\printer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\printer\IAPrinterLasercutter.cpp">
+      <Filter>src\printer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\printer\IAPrinterSLS.cpp">
+      <Filter>src\printer</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\src\geometry\IAEdge.h">
@@ -231,6 +249,24 @@
     </ClInclude>
     <ClInclude Include="..\..\..\src\toolpath\IADxfWriter.h">
       <Filter>src\toolpath</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\userinterface\IAPreferences.h">
+      <Filter>src\userInterface</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\printer\IAPrinterFDM.h">
+      <Filter>src\printer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\printer\IAPrinterFDMBelt.h">
+      <Filter>src\printer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\printer\IAPrinterInkjet.h">
+      <Filter>src\printer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\printer\IAPrinterLasercutter.h">
+      <Filter>src\printer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\printer\IAPrinterSLS.h">
+      <Filter>src\printer</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -140,11 +140,17 @@
     <ClCompile Include="..\..\..\src\potrace\IAPotrace.cpp" />
     <ClCompile Include="..\..\..\src\potrace\trace.c" />
     <ClCompile Include="..\..\..\src\printer\IAPrinter.cpp" />
+    <ClCompile Include="..\..\..\src\printer\IAPrinterFDM.cpp" />
+    <ClCompile Include="..\..\..\src\printer\IAPrinterFDMBelt.cpp" />
+    <ClCompile Include="..\..\..\src\printer\IAPrinterInkjet.cpp" />
+    <ClCompile Include="..\..\..\src\printer\IAPrinterLasercutter.cpp" />
+    <ClCompile Include="..\..\..\src\printer\IAPrinterSLS.cpp" />
     <ClCompile Include="..\..\..\src\toolpath\IADxfWriter.cpp" />
     <ClCompile Include="..\..\..\src\toolpath\IAGcodeWriter.cpp" />
     <ClCompile Include="..\..\..\src\toolpath\IAToolpath.cpp" />
     <ClCompile Include="..\..\..\src\userinterface\IACamera.cpp" />
     <ClCompile Include="..\..\..\src\userinterface\IAGLButton.cpp" />
+    <ClCompile Include="..\..\..\src\userinterface\IAPreferences.cpp" />
     <ClCompile Include="..\..\..\src\userinterface\IASceneView.cpp" />
     <ClCompile Include="..\..\..\src\userinterface\IAGUIMain.cpp" />
   </ItemGroup>
@@ -177,11 +183,17 @@
     <ClInclude Include="..\..\..\src\potrace\progress.h" />
     <ClInclude Include="..\..\..\src\potrace\trace.h" />
     <ClInclude Include="..\..\..\src\printer\IAPrinter.h" />
+    <ClInclude Include="..\..\..\src\printer\IAPrinterFDM.h" />
+    <ClInclude Include="..\..\..\src\printer\IAPrinterFDMBelt.h" />
+    <ClInclude Include="..\..\..\src\printer\IAPrinterInkjet.h" />
+    <ClInclude Include="..\..\..\src\printer\IAPrinterLasercutter.h" />
+    <ClInclude Include="..\..\..\src\printer\IAPrinterSLS.h" />
     <ClInclude Include="..\..\..\src\toolpath\IADxfWriter.h" />
     <ClInclude Include="..\..\..\src\toolpath\IAGcodeWriter.h" />
     <ClInclude Include="..\..\..\src\toolpath\IAToolpath.h" />
     <ClInclude Include="..\..\..\src\userinterface\IACamera.h" />
     <ClInclude Include="..\..\..\src\userinterface\IAGLButton.h" />
+    <ClInclude Include="..\..\..\src\userinterface\IAPreferences.h" />
     <ClInclude Include="..\..\..\src\userinterface\IASceneView.h" />
     <ClInclude Include="..\..\..\src\userinterface\IAGUIMain.h" />
   </ItemGroup>

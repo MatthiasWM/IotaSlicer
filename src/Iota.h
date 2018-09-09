@@ -38,6 +38,7 @@ extern const char *gVersion;
  * \todo nothing is optimized here yet. There is a great potential for
  *        accelerating, manly potrace, and reduced memory allocation by
  *        smart clipping.
+ * \todo draw scene viewer with antaliasing!
  */
 extern const int kFramebufferSize;
 
