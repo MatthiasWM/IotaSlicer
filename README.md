@@ -35,6 +35,8 @@ If will probably run with little or no modifications on other FDM printers as we
 * v0.0.10a
   * fresh
 * v0.0.9a
+  * https://github.com/MatthiasWM/IotaSlicer/releases/tag/v0.0.9a
+  * Iota compiles on MacOS (Xcode), MSWindows (VisualC 2017), and Ubuntu Linux (Code::Blocks)
   * added infill for FDM printouts
   * added inkjet printer slices in png image format
   * added laser cutter dxf slices support

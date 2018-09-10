@@ -33,6 +33,43 @@ PFNGLCHECKFRAMEBUFFERSTATUSEXTPROC glCheckFramebufferStatusEXT;
 PFNGLDELETERENDERBUFFERSEXTPROC glDeleteRenderbuffersEXT;
 #endif
 
+/*
+ glColorMask(bool r, bool g, bool b, bool a);
+ glLogicOp(x);
+
+ glDepthMask(bool z);
+ glDepthFunc();
+ glDepthTest();
+
+ glBlendFunc();
+ glBlendColor();
+ glBlendEquation();
+
+ glStencilMask(uint bits);
+ glStencilOp(a, b, c);
+ glStencilFunc(a, b, c);
+
+ Voxels are represented as multiple layers of RGBA image maps. R, G, and B
+ represent the color of the object in 8 bits per component.
+
+ The alpha channel uses bits to represent the property of the voxel.
+ - bit 7: inside of the model
+ - bit 6: infill or shell
+ - bit 5: lid/bottom or shell
+ - bit 4: external support structure
+ - bit 3: contact to build platform
+ ...
+
+ The RGBA buffer usually comes with a depth buffer. We can use D24S8, which
+ generates a 24 bit depth buffer and an 8 bit stencil buffer. We can use
+ the stencil buffer to mark a mesh ID.
+
+ https://www.khronos.org/opengl/wiki/Framebuffer_Object#Feedback_Loops
+ https://www.khronos.org/opengl/wiki/Framebuffer_Object_Extension_Examples#Color_texture.2C_Depth_texture
+ http://www.songho.ca/opengl/gl_fbo.html
+ https://www.opengl.org/archives/resources/features/KilgardTechniques/oglpitfall/
+ */
+
 
 /**
  * Initialize OpenGL for every supported platform.
@@ -82,6 +119,80 @@ bool initializeOpenGL()
 IAFramebuffer::IAFramebuffer()
 {
     // variables are initialized inline
+}
+
+
+/**
+ * Create a framebuffer by copying another framebuffer including contents.
+ */
+IAFramebuffer::IAFramebuffer(IAFramebuffer *src)
+{
+    if (src->hasFBO()) {
+        bindForRendering();
+        glBindFramebuffer(GL_READ_FRAMEBUFFER, src->pFramebuffer);
+        glBindFramebuffer(GL_DRAW_FRAMEBUFFER, pFramebuffer);
+        glBlitFramebuffer(0, 0, pWidth, pHeight,
+                          0, 0, pWidth, pHeight,
+                          GL_COLOR_BUFFER_BIT, GL_NEAREST);
+        GLenum err = glGetError();
+        printf("GL Error %d\n", err);
+        unbindFromRendering();
+    }
+}
+
+
+void IAFramebuffer::logicAndNot(IAFramebuffer *src)
+{
+    if (src->hasFBO()) {
+        bindForRendering();
+        glBindFramebuffer(GL_READ_FRAMEBUFFER, src->pFramebuffer);
+        glBindFramebuffer(GL_DRAW_FRAMEBUFFER, pFramebuffer);
+
+        // FIXME: we can push and pop these
+        // create a point if the destination point is 1 and the src is 0
+        glBlendFunc(GL_SRC_COLOR, GL_DST_COLOR);
+        glBlendEquation(GL_FUNC_REVERSE_SUBTRACT);
+        glEnable(GL_BLEND);
+        GLenum err = glGetError(); printf("1 GL Error %d\n", err);
+
+        glRasterPos2d(0.0, 0.0);
+        glCopyPixels(0, 0, pWidth, pHeight, GL_COLOR);
+
+        glDisable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        glBlendEquation(GL_FUNC_ADD);
+
+        unbindFromRendering();
+    } else {
+        // FIXME!
+    }
+}
+
+
+void IAFramebuffer::logicAnd(IAFramebuffer *src)
+{
+    if (src->hasFBO()) {
+        bindForRendering();
+        glBindFramebuffer(GL_READ_FRAMEBUFFER, src->pFramebuffer);
+        glBindFramebuffer(GL_DRAW_FRAMEBUFFER, pFramebuffer);
+
+        // FIXME: we can push and pop these
+        glBlendFunc(GL_SRC_COLOR, GL_DST_COLOR);
+        glBlendEquation(GL_MIN); // FIXME: not all drivers support this
+        glEnable(GL_BLEND);
+        GLenum err = glGetError(); printf("2 GL Error %d\n", err);
+
+        glRasterPos2d(0.0, 0.0);
+        glCopyPixels(0, 0, pWidth, pHeight, GL_COLOR);
+
+        glDisable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        glBlendEquation(GL_FUNC_ADD);
+
+        unbindFromRendering();
+    } else {
+        // FIXME!
+    }
 }
 
 
@@ -386,6 +497,8 @@ void IAFramebuffer::activateFBO()
 
 /**
  * Create a framebuffer object.
+ *
+ * \see https://www.khronos.org/opengl/wiki/Framebuffer_Object_Extension_Examples#Color_texture.2C_Depth_texture
  *
  * \todo return a potential error code and handle it upstream.
  */

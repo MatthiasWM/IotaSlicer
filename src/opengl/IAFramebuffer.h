@@ -54,6 +54,7 @@ class IAFramebuffer
 {
 public:
     IAFramebuffer();
+    IAFramebuffer(IAFramebuffer*);
     ~IAFramebuffer();
     void clear();
 
@@ -69,6 +70,9 @@ public:
 
     int width() { return pWidth; }
     int height() { return pHeight; }
+
+    void logicAndNot(IAFramebuffer*);
+    void logicAnd(IAFramebuffer*);
 
 protected:
     bool hasFBO();
