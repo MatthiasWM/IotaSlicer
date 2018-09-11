@@ -9,6 +9,7 @@
 
 #include "Iota.h"
 #include "userinterface/IAGUIMain.h"
+#include "userinterface/IAProgressDialog.h"
 #include "toolpath/IAToolpath.h"
 #include "opengl/IAFramebuffer.h"
 
@@ -65,23 +66,14 @@ void IAPrinterInkjet::sliceAndWrite(const char *filename)
     double zMax = 25;
 #endif
 
-    showProgressDialog();
-    char buf[1024];
-    strcpy(buf, "Genrating slices");
-    wProgressText->copy_label(buf);
-    wProgressValue->value(0);
+    IAProgressDialog::show("Genrating slices",
+                           "Slicing layer %d of %d at %.3fmm (%d%%)");
+
     int i = 0, n = (int)((zMax-zMin)/zLayerHeight);
-
     for (double z=zMin; z<zMax; z+=zLayerHeight) {
-        printf("Slicing at z=%g\n", z);
+        if (IAProgressDialog::update(i*100/n, i, n, z, i*100/n)) break;
 
-        sprintf(buf, "Slicing layer %d of %d at %.3fmm (%d%%)", i, n, z, i*100/n);
-        wProgressText->copy_label(buf);
-        wProgressValue->value(i*100/n);
-        bool abort = updateProgressDialog();
-        if (abort) break;
-
-        gSlice.changeZ(z);
+        gSlice.setNewZ(z);
         gSlice.clear();
         gSlice.generateRim(Iota.pMesh);
         gSlice.tesselateLidFromRim();
@@ -112,7 +104,7 @@ void IAPrinterInkjet::sliceAndWrite(const char *filename)
 //        gSlice.pColorbuffer->saveAsJpeg(imgFilename, rgb);
         i++;
     }
-    hideProgressDialog();
+    IAProgressDialog::hide();
     gSceneView->redraw();
 }
 

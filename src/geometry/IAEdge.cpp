@@ -36,23 +36,6 @@ IAHalfEdge::IAHalfEdge(IATriangle *t, IAVertex *v)
 
 
 /**
- Return the vertex, that connects to the given triangle.
- */
-//IAVertex *IAHalfEdge::vertex(int i, IATriangle *f)
-//{
-//    if (triangle()==f) {
-//        return vertex(i);
-//    } else if (twin() && twin()->triangle()==f) {
-//        return vertex(1-i);
-//    } else {
-//        puts("ERROR: vertex() - this edge is not associated with this face!");
-//        assert(0);
-//        return nullptr;
-//    }
-//}
-
-
-/**
  Find the intersection of this edge with a give Z plane.
  \return a vector on this edge with interpolated texture coordinates, or null
  if this edge does not cross the Z plane.

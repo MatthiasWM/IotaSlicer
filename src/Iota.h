@@ -95,6 +95,9 @@ public:
     void clearError();
     void setError(const char *loc, Error err, const char *str=nullptr);
     bool hadError();
+
+    /** Last error, that occured since clearError().
+     \return error code. */
     Error lastError() { return pError; }
     void showError();
 

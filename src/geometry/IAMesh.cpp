@@ -306,17 +306,6 @@ IAHalfEdge *IAMesh::findSingleEdge(IAVertex *v0, IAVertex *v1)
 
 
 /**
- Set all face normal counts to 0.
- */
-void IAMesh::clearTriangleNormals()
-{
-    for (auto t: triangleList) {
-        t->pNNormal = 0;
-    }
-}
-
-
-/**
  Set all vertex normals to 0.
  */
 void IAMesh::clearVertexNormals()
@@ -340,7 +329,6 @@ void IAMesh::calculateTriangleNormals()
         p2 -= p0;
         IAVector3d n = (p1 ^ p2).normalized(); // cross product
         t->pNormal = n;
-        t->pNNormal = 1;
     }
 }
 

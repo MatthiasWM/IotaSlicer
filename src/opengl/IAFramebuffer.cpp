@@ -134,8 +134,8 @@ IAFramebuffer::IAFramebuffer(IAFramebuffer *src)
         glBlitFramebuffer(0, 0, pWidth, pHeight,
                           0, 0, pWidth, pHeight,
                           GL_COLOR_BUFFER_BIT, GL_NEAREST);
-        GLenum err = glGetError();
-        printf("GL Error %d\n", err);
+//        GLenum err = glGetError();
+//        printf("GL Error %d\n", err);
         unbindFromRendering();
     }
 }
@@ -161,7 +161,7 @@ void IAFramebuffer::logicAndNot(IAFramebuffer *src)
         glBlendFunc(GL_SRC_COLOR, GL_DST_COLOR);
         glBlendEquation(GL_FUNC_REVERSE_SUBTRACT);
         glEnable(GL_BLEND);
-        GLenum err = glGetError(); printf("1 GL Error %d\n", err);
+//        GLenum err = glGetError(); printf("1 GL Error %d\n", err);
 
         glRasterPos2d(0.0, 0.0);
         glCopyPixels(0, 0, pWidth, pHeight, GL_COLOR);
@@ -196,7 +196,7 @@ void IAFramebuffer::logicAnd(IAFramebuffer *src)
         glBlendFunc(GL_SRC_COLOR, GL_DST_COLOR);
         glBlendEquation(GL_MIN); // FIXME: not all drivers support this
         glEnable(GL_BLEND);
-        GLenum err = glGetError(); printf("2 GL Error %d\n", err);
+//        GLenum err = glGetError(); printf("2 GL Error %d\n", err);
 
         glRasterPos2d(0.0, 0.0);
         glCopyPixels(0, 0, pWidth, pHeight, GL_COLOR);
@@ -579,5 +579,115 @@ void IAFramebuffer::deleteFBO()
     glDeleteFramebuffersEXT(1, &pFramebuffer);
     pFramebufferCreated = false;
 }
+
+
+/**
+ * Trace the framebuffer and create a toolpath.
+ *
+ * \param z create a toolptah at this layer
+ * \param extrusionDiameter diameter of the extrusion when layed down.
+ *
+ * \return nullptr, if tracing generates an empty toolpath
+ * \return a new toolpath that must be freed by the caller
+ */
+IAToolpathSP IAFramebuffer::toolpathFromLasso(double z,
+                                              double extrusionDiameter)
+{
+    // use a shared pointer, so we don't have to worry about deallocating
+    auto tp0 = std::make_shared<IAToolpath>(z);
+
+    // create an outline for this slice image
+    traceOutline(tp0.get(), z);
+
+    if (tp0->isEmpty())
+        return nullptr;
+    else
+        return tp0;
+}
+
+
+/**
+ * Trace the framebuffer, create a toolpath, and reduce the framebuffer by
+ * the toolpath pattern.
+ *
+ * \param z create a toolptah at this layer
+ * \param extrusionDiameter diameter of the extrusion when layed down.
+ * \param contractFactor outlines contract by factor 1. Laying multiple
+ *      filaments contract by 2.
+ *
+ * \return nullptr, if tracing generates an empty toolpath
+ * \return a new toolpath that must be freed by the caller
+ */
+IAToolpathSP IAFramebuffer::toolpathFromLassoAndContract(double z,
+                                                         double extrusionDiameter,
+                                                         double contractFactor)
+{
+    // use a shared pointer, so we don;t have to worry about deallocating
+    auto tp0 = toolpathFromLasso(z, extrusionDiameter);
+
+    if (tp0) {
+        // draw the outline to contract the image
+        bindForRendering();
+        glDisable(GL_DEPTH_TEST);
+        glColor3f(0.0, 0.0, 0.0);
+        tp0->drawFlat(contractFactor * extrusionDiameter);
+        unbindFromRendering();
+    }
+
+    return tp0;
+}
+
+
+void IAFramebuffer::overlayLidPattern(int i, double infillWdt)
+{
+    bindForRendering();
+    glDisable(GL_DEPTH_TEST);
+    glColor3f(0.0, 0.0, 0.0);
+    // draw spaces so the infill gets spread out nicely
+    /** \todo We should not have to access global variables here. */
+    double wdt = Iota.pCurrentPrinter->pBuildVolumeMax.x();
+    double hgt = Iota.pCurrentPrinter->pBuildVolumeMax.y();
+    // generate a lid
+    for (double j=0; j<wdt; j+=infillWdt*2) {
+        glBegin(GL_POLYGON);
+        glVertex2f(j+infillWdt, 0);
+        glVertex2f(j, 0);
+        glVertex2f(j, hgt);
+        glVertex2f(j+infillWdt, hgt);
+        glEnd();
+    }
+    unbindFromRendering();
+}
+
+
+void IAFramebuffer::overlayInfillPattern(int i, double infillWdt)
+{
+    bindForRendering();
+    glDisable(GL_DEPTH_TEST);
+    glColor3f(0.0, 0.0, 0.0);
+    // draw spaces so the infill gets spread out nicely
+    /** \todo We should not have to access global variables here. */
+    double wdt = Iota.pCurrentPrinter->pBuildVolumeMax.x();
+    double hgt = Iota.pCurrentPrinter->pBuildVolumeMax.y();
+    glPushMatrix();
+    if (i&1)
+        glRotated(45, 0, 0, 1);
+    else
+        glRotated(-45, 0, 0, 1);
+    for (double j=-2*wdt; j<2*wdt; j+=infillWdt*2) {
+        glBegin(GL_POLYGON);
+        /** \todo Draw this large enough so that it renders the entire scene, even if rotated. */
+        glVertex2f(j+infillWdt, -2*hgt);
+        glVertex2f(j, -2*hgt);
+        glVertex2f(j, 2*hgt);
+        glVertex2f(j+infillWdt, 2*hgt);
+        glEnd();
+    }
+    glPopMatrix();
+    unbindFromRendering();
+}
+
+
+
 
 

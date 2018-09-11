@@ -56,8 +56,8 @@ std::shared_ptr<IAGeometryReader> IAGeometryReaderBinaryStl::findReaderFor(const
     // don't care, and feel like putting "solid" at the start of a *binary*
     // STL file is a great idea.
 
-    // since the first 80 bytes are undefined and fille with whatver some
-    // exporter happens to have in the buffer, and the rest of the files is a
+    // since the first 80 bytes are undefined and filled with whatver some
+    // exporter happened to have in the buffer, and the rest of the files is a
     // bunch of vertices that can have pretty much any binary data in them,
     // we use the word that gives the number of triangle, calculate the size
     // of the file, and compare that to the actual size.
@@ -104,25 +104,35 @@ std::shared_ptr<IAGeometryReader> IAGeometryReaderBinaryStl::findReaderFor(const
 /**
  * Create a reader for the indicated memory block.
  *
+ * \param name similar to a filename, the extension of the name will help to
+ *      determine the file type.
+ * \param data verbatim copy of the file in memory
+ * \param size number of bytes in that memory block
+ *
  * \return 0 if the format is not STL
  *
- * \todo handle file reading errors
+ * \todo handle all file reading errors
  */
 std::shared_ptr<IAGeometryReader> IAGeometryReaderBinaryStl::findReaderFor(const char *name, uint8_t *data, size_t size)
 {
-    if (size<80)
+    if (size<83) {
+        Iota.setError("STL Geometry reader", Error::UnknownFileType_STR, name);
         return nullptr;
-
-    int i;
-    for (i=0; i<80; i++) {
-        if (data[i]>126) break;
     }
-    if (i<80)
-        return nullptr;
 
-    if (strncmp((char*)data, "solid", 5)==0)
+    size_t nTri =  (size_t(data[80]))
+                + ((size_t(data[81]))<<8)
+                + ((size_t(data[82]))<<16)
+                + ((size_t(data[83]))<<24);
+
+    size_t expectedFileSize = nTri * (3*4 + 9*4 + 2) + 80 + 4;         // uint32_t containing the number of triangles in the file
+
+    if ( expectedFileSize!=size ) {
+        Iota.setError("STL Geometry reader", Error::UnknownFileType_STR, name);
         return nullptr;
-    
+    }
+
+    Iota.clearError();
     return std::make_shared<IAGeometryReaderBinaryStl>(name, data, size);
 }
 
@@ -130,6 +140,11 @@ std::shared_ptr<IAGeometryReader> IAGeometryReaderBinaryStl::findReaderFor(const
 
 /**
  * Create a file reader for reading from memory.
+ *
+ * \param name similar to a filename, the extension of the name will help to
+ *      determine the file type.
+ * \param data verbatim copy of the file in memory
+ * \param size number of bytes in that memory block
  */
 IAGeometryReaderBinaryStl::IAGeometryReaderBinaryStl(const char *name, uint8_t *data, size_t size)
 :   IAGeometryReader(name, data, size)
@@ -139,6 +154,8 @@ IAGeometryReaderBinaryStl::IAGeometryReaderBinaryStl(const char *name, uint8_t *
 
 /**
  * Create a file reader for reading from a file.
+ *
+ * \param filename read from this file.
  */
 IAGeometryReaderBinaryStl::IAGeometryReaderBinaryStl(const char *filename)
 :   IAGeometryReader(filename)
@@ -156,6 +173,8 @@ IAGeometryReaderBinaryStl::~IAGeometryReaderBinaryStl()
 
 /**
  * Interprete the geometry data and create a mesh list.
+ *
+ * \return nullptr, if the mesh could not be generated
  *
  * \todo fix seams
  * \todo fix zero size holes
@@ -202,7 +221,7 @@ IAMesh *IAGeometryReaderBinaryStl::load()
     msh->fixHoles();
     msh->validate();
 
-    msh->clearNormals();
+    msh->clearVertexNormals();
     msh->calculateNormals();
 
     return msh;

@@ -19,6 +19,8 @@
 
 /**
  * Create a camera superclass.
+ *
+ * \param view Attach to this view. Should not be null.
  */
 IACamera::IACamera(IASceneView *view)
 :   pView( view )
@@ -28,6 +30,8 @@ IACamera::IACamera(IASceneView *view)
 
 /**
  * Set the point that we are looking at.
+ *
+ * \param v point in global space, copied.
  */
 void IACamera::setInterest(IAVector3d &v)
 {
@@ -38,6 +42,8 @@ void IACamera::setInterest(IAVector3d &v)
 
 /**
  * Create a simple perspective camera.
+ *
+ * \param view Attach to this view. Should not be null.
  */
 IAPerspectiveCamera::IAPerspectiveCamera(IASceneView *view)
 :   super( view )
@@ -101,9 +107,11 @@ void IAPerspectiveCamera::dolly(double dx, double dy)
 }
 
 
-/*
+/**
  * Replacement for the now deprecated gluLookAt function. Does the exact
  * same thing.
+ *
+ * \param eyeX, eyeY, eyeZ, lookAtX, lookAtY, lookAtZ, upX, upY, upZ see gluLookAt
  */
 void iaGluLookAt(GLfloat eyeX, GLfloat eyeY, GLfloat eyeZ, GLfloat lookAtX, GLfloat lookAtY, GLfloat lookAtZ, GLfloat upX, GLfloat upY, GLfloat upZ) {
     IAVector3d fwd, side, up;
@@ -162,6 +170,9 @@ void IAPerspectiveCamera::draw()
  * Create a simple orthographic camera.
  *
  * This camera is currently fixed to top view.
+ *
+ * \param view Attach to this view. Should not be null.
+ * \param direction not used yet
  */
 IAOrthoCamera::IAOrthoCamera(IASceneView *view, int direction)
 :   super( view )
@@ -171,6 +182,8 @@ IAOrthoCamera::IAOrthoCamera(IASceneView *view, int direction)
 
 /**
  * User wants to rotate the camera.
+ *
+ * \param dx, dy rotate by these deltas
  */
 void IAOrthoCamera::rotate(double dx, double dy)
 {
@@ -180,6 +193,8 @@ void IAOrthoCamera::rotate(double dx, double dy)
 
 /**
  * User wants to drag the camera around.
+ *
+ * \param dx, dy drag by these deltas
  */
 void IAOrthoCamera::drag(double dx, double dy)
 {
@@ -191,6 +206,8 @@ void IAOrthoCamera::drag(double dx, double dy)
 
 /**
  * User wants to get closer to the point of interest.
+ *
+ * \param dx, dy dolly by these deltas
  */
 void IAOrthoCamera::dolly(double dx, double dy)
 {

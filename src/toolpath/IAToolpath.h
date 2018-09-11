@@ -21,7 +21,7 @@ class IAToolpathElement;
 
 typedef std::map<int, IAToolpath*> IAToolpathMap;
 typedef std::vector<IAToolpathElement*> IAToolpathElementList;
-
+typedef std::shared_ptr<IAToolpath> IAToolpathSP;
 
 
 /**
@@ -69,7 +69,10 @@ public:
     void clear(double z);
     void draw();
     void drawFlat(double w);
-    void add(IAToolpath &tp);
+    void add(IAToolpath *tp);
+
+    bool isEmpty() { return pList.empty(); }
+
 
     void startPath(double x, double y, double z);
     void continuePath(double x, double y, double z);

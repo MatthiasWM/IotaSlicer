@@ -8,6 +8,7 @@
 #define IA_FRAMEBUFFER_H
 
 #include "Iota.h"
+#include "toolpath/IAToolpath.h"
 
 #include <FL/gl.h>
 #include <FL/glu.h>
@@ -78,6 +79,12 @@ public:
 
     void logicAndNot(IAFramebuffer*);
     void logicAnd(IAFramebuffer*);
+    
+    IAToolpathSP toolpathFromLassoAndContract(double z, double extrusionDiameter, double contractFactor=1.0);
+    IAToolpathSP toolpathFromLasso(double z, double extrusionDiameter);
+
+    void overlayLidPattern(int i, double w);
+    void overlayInfillPattern(int i, double w);
 
 protected:
     bool hasFBO();

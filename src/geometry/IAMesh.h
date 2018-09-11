@@ -46,9 +46,7 @@ public:
 //    void drawShrunk(unsigned int, double);
     void drawEdges();
     void drawSliced(double z);
-    void clearTriangleNormals();
     void clearVertexNormals();
-    void clearNormals() { clearTriangleNormals(); clearVertexNormals(); }
     void calculateTriangleNormals();
     void calculateVertexNormals();
     void calculateNormals() { calculateTriangleNormals(); calculateVertexNormals(); }

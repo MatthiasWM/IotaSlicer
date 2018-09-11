@@ -279,7 +279,7 @@ bool IAMachineToolpath::saveGCode(const char *filename /*, printer */)
 
 
 
-
+int tpCount = 0;
 
 /**
  * Manage a single toolpath.
@@ -288,6 +288,7 @@ IAToolpath::IAToolpath(double z)
 :   tFirst( 0.0, 0.0, z ),
     tPrev( 0.0, 0.0, z )
 {
+//    printf("Allocating toolpath (%d)\n", ++tpCount);
 }
 
 
@@ -296,6 +297,7 @@ IAToolpath::IAToolpath(double z)
  */
 IAToolpath::~IAToolpath()
 {
+//    printf("Freeing toolpath (%d)\n", --tpCount);
     clear(0.0);
 }
 
@@ -315,9 +317,9 @@ void IAToolpath::clear(double z)
 }
 
 
-void IAToolpath::add(IAToolpath &tp)
+void IAToolpath::add(IAToolpath *tp)
 {
-    for (auto e: tp.pList) {
+    for (auto e: tp->pList) {
         pList.push_back(e->clone());
     }
 }

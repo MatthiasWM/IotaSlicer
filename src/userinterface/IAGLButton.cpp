@@ -110,17 +110,29 @@ static void flgl_box(Fl_Boxtype b, int x, int y, int w, int h, Fl_Color c)
 }
 
 
+/**
+ * Create a button, just like FLTK.
+ *
+ * \param x, y, w, h position and size
+ * \param label the text inside the box (will not be copied!)
+ */
 IAGLButton::IAGLButton(int x, int y, int w, int h, const char *label)
 : Fl_Button(x, y, w, h, label)
 {
 }
 
 
+/**
+ * Delete button.
+ */
 IAGLButton::~IAGLButton()
 {
 }
 
 
+/**
+ * Draw the button in its current state.
+ */
 void IAGLButton::draw()
 {
     if (type() == FL_HIDDEN_BUTTON) return;
@@ -133,16 +145,35 @@ void IAGLButton::draw()
     if (Fl::focus() == this) draw_focus();
 }
 
+
+/**
+ * Draw a widget box.
+ */
 void IAGLButton::draw_box() const {
     int t = box();
     if (!t) return;
     draw_box((Fl_Boxtype)t, x(), y(), w(), h(), color());
 }
 
+
+/**
+ * Draw a widget box.
+ *
+ * \param b boxtype must be FL_UP_BOX
+ * \param c color in FLTK packed format
+ */
 void IAGLButton::draw_box(Fl_Boxtype b, Fl_Color c) const {
     draw_box(b, x(), y(), w(), h(), c);
 }
 
+
+/**
+ * Draw a widget box.
+ *
+ * \param b boxtype must be FL_UP_BOX
+ * \param X, Y, W, H position and size
+ * \param c color in FLTK packed format
+ */
 void IAGLButton::draw_box(Fl_Boxtype b, int X, int Y, int W, int H, Fl_Color c)
 const {
     draw_it_active = active_r();
@@ -150,10 +181,21 @@ const {
     draw_it_active = 1;
 }
 
+
+/**
+ * Draw the focus box.
+ */
 void IAGLButton::draw_focus() const {
     draw_focus(box(), x(), y(), w(), h());
 }
 
+
+/**
+ * Draw the focus box.
+ *
+ * \param B boxtype must be FL_UP_BOX
+ * \param X, Y, W, H position and size
+ */
 void IAGLButton::draw_focus(Fl_Boxtype B, int X, int Y, int W, int H) const {
     if (!Fl::visible_focus()) return;
     switch (B) {

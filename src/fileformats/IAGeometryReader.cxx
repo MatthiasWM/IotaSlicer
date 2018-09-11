@@ -29,7 +29,11 @@
 
 /**
  * Create a file reader for the indicated file.
+ *
+ * \param filename read from this file
+ *
  * \return 0 if the format is not supported
+ *
  * \todo first look at the filename extension and prefer that file format
  * \todo set error to Unsupported File Format
  */
@@ -46,7 +50,14 @@ std::shared_ptr<IAGeometryReader> IAGeometryReader::findReaderFor(const char *fi
 
 /**
  * Create a reader for the indicated memory block.
+ *
+ * \param name similar to a filename, the extension of the name will help to
+ *      determine the file type.
+ * \param data verbatim copy of the file in memory
+ * \param size number of bytes in that memory block
+ *
  * \return 0 if the format is not supported
+ *
  * \todo first look at the filename extension and prefer that file format
  * \todo set error to Unsupported File Format
  */
@@ -63,6 +74,12 @@ std::shared_ptr<IAGeometryReader> IAGeometryReader::findReaderFor(const char *na
 
 /**
  * Create a universal reader by mapping the file to memory.
+ *
+ * If the file can't be opened or read, the Iota error system will be used
+ * to produce an error message.
+ *
+ * \param filename read this file
+ *
  * \todo Use memory mapped files on MSWindows as well.
  */
 IAGeometryReader::IAGeometryReader(const char *filename)
@@ -101,6 +118,11 @@ IAGeometryReader::IAGeometryReader(const char *filename)
 
 /**
  * Create a reader.
+ *
+ * \param name similar to a filename, the extension of the name will help to
+ *      determine the file type.
+ * \param data verbatim copy of the file in memory
+ * \param size number of bytes in that memory block
  */
 IAGeometryReader::IAGeometryReader(const char *name, uint8_t *data, size_t size)
 :   pData( data ),
@@ -132,7 +154,9 @@ IAGeometryReader::~IAGeometryReader()
 
 
 /**
- Get a LSB first 32-bit word from memory.
+ * Get a LSB first 32-bit word from memory.
+ *
+ * \return the next word in the stream.
  */
 uint32_t IAGeometryReader::getUInt32LSB() {
     uint32_t ret = 0;
@@ -146,6 +170,8 @@ uint32_t IAGeometryReader::getUInt32LSB() {
 
 /**
  Get a LSB first 16-bit word from memory.
+ *
+ * \return the next word in the stream.
  */
 uint16_t IAGeometryReader::getUInt16LSB() {
     uint16_t ret = 0;
@@ -157,6 +183,8 @@ uint16_t IAGeometryReader::getUInt16LSB() {
 
 /**
  * Get a 32bit float from memory
+ *
+ * \return the next float in the stream.
  */
 float IAGeometryReader::getFloatLSB()
 {
@@ -168,6 +196,8 @@ float IAGeometryReader::getFloatLSB()
 
 /**
  * Skip the next n bytes when reading.
+ *
+ * \param n number of bytes to skip.
  */
 void IAGeometryReader::skip(size_t n)
 {
@@ -178,7 +208,10 @@ void IAGeometryReader::skip(size_t n)
 /**
  * Find the next keyword in a text file.
  *
+ * \return false, if we reached beyond the end of the file.
+ *
  * \todo test for end of buffer and other errors!
+ * \bug the function returns false, when reading the last word in the file!
  */
 bool IAGeometryReader::getWord()
 {
@@ -235,6 +268,8 @@ bool IAGeometryReader::getWord()
 
 /**
  * Find the next keyword in a text file.
+ *
+ * \return the next floating point number in the stream.
  */
 double IAGeometryReader::getDouble()
 {
@@ -246,6 +281,10 @@ double IAGeometryReader::getDouble()
 
 /**
  * Get the rest of this line
+ *
+ * \return false, if we reached the end of the file
+ *
+ * \bug the function returns false too early, when reading the last line.
  */
 bool IAGeometryReader::getLine()
 {
@@ -267,6 +306,10 @@ bool IAGeometryReader::getLine()
 
 /**
  * Check if the result of getWord() is the specified string.
+ *
+ * \param key check for this string, case sensitive
+ *
+ * \return true, if this was the last word read
  */
 bool IAGeometryReader::wordIs(const char *key)
 {

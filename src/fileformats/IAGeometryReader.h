@@ -27,6 +27,9 @@ public:
     IAGeometryReader(const char *filename);
     IAGeometryReader(const char *name, uint8_t *data, size_t size);
     virtual ~IAGeometryReader();
+
+    /** Read some geometry form a file and generate a mesh.
+     \return null, if we were not able to load a mesh. */
     virtual IAMesh *load() = 0;
 
 protected:
@@ -39,6 +42,9 @@ protected:
     bool getLine();
     bool wordIs(const char *);
     void printWord();
+
+    /** Filename for this reader.
+     \return a ponter to the filename, don't free(). */
     const char *getName() const { return pName; }
 
 private:

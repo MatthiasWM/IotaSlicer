@@ -10,7 +10,6 @@
 
 #include "IAMesh.h"
 
-
 class IATriangle;
 class IAFramebuffer;
 
@@ -31,8 +30,8 @@ public:
     IASlice();
     virtual ~IASlice() override;
     virtual void clear() override;
+    bool setNewZ(double z);
 
-    bool changeZ(double z);
     void generateRim(IAMesh*);
     void addRim(IAMesh*);
     void addFirstRimVertex(IATriangle *IATriangle);
@@ -41,7 +40,6 @@ public:
     void drawShell();
     void drawFramebuffer();
     void tesselateLidFromRim();
-
 
 private:
     /// edge list describing the outlines of a slice

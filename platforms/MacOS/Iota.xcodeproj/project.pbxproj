@@ -41,6 +41,7 @@
 		C993323B21238A5900629BE1 /* decompose.c in Sources */ = {isa = PBXBuildFile; fileRef = C993320D2123881800629BE1 /* decompose.c */; };
 		C993323C21238A7200629BE1 /* potracelib.c in Sources */ = {isa = PBXBuildFile; fileRef = C993321A2123881800629BE1 /* potracelib.c */; };
 		C993323D21238A9700629BE1 /* IAPotrace.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C99332052123881800629BE1 /* IAPotrace.cpp */; };
+		C9A67731214862D800B3031E /* IAProgressDialog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C9A6772F214862D800B3031E /* IAProgressDialog.cpp */; };
 		C9BC92442138692F00991240 /* IADxfWriter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C9BC92432138692F00991240 /* IADxfWriter.cpp */; };
 		C9CD015A21204C2700713CAF /* IASceneView.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C9CD015921204C2600713CAF /* IASceneView.cpp */; };
 		C9D3871E211A425E009F7580 /* libfltk_images.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C9D38718211A425E009F7580 /* libfltk_images.a */; };
@@ -133,7 +134,6 @@
 		C97632D9211E348E00D9D4B5 /* IATriangle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IATriangle.h; sourceTree = "<group>"; };
 		C97632DB211E357500D9D4B5 /* IASlice.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IASlice.h; sourceTree = "<group>"; };
 		C97632DC211E357500D9D4B5 /* IASlice.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = IASlice.cpp; sourceTree = "<group>"; };
-		C97632DE211E394000D9D4B5 /* lib3ds.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = lib3ds.h; sourceTree = "<group>"; };
 		C97632DF211E395200D9D4B5 /* lib3ds.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = lib3ds.a; path = lib/lib3ds.a; sourceTree = "<group>"; };
 		C97632E6211E41F700D9D4B5 /* defaultTexture.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = defaultTexture.jpg; sourceTree = "<group>"; };
 		C97632E7211F67F200D9D4B5 /* defaultModel.stl */ = {isa = PBXFileReference; lastKnownFileType = file; path = defaultModel.stl; sourceTree = "<group>"; };
@@ -164,6 +164,8 @@
 		C993321A2123881800629BE1 /* potracelib.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = potracelib.c; sourceTree = "<group>"; };
 		C993321C2123881800629BE1 /* platform.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = platform.h; sourceTree = "<group>"; };
 		C9A6772E2147F2D000B3031E /* IotaMacros.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IotaMacros.h; sourceTree = "<group>"; };
+		C9A6772F214862D800B3031E /* IAProgressDialog.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = IAProgressDialog.cpp; sourceTree = "<group>"; };
+		C9A67730214862D800B3031E /* IAProgressDialog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IAProgressDialog.h; sourceTree = "<group>"; };
 		C9BC92422138692E00991240 /* IADxfWriter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IADxfWriter.h; sourceTree = "<group>"; };
 		C9BC92432138692F00991240 /* IADxfWriter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = IADxfWriter.cpp; sourceTree = "<group>"; };
 		C9CD015821204C2600713CAF /* IASceneView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IASceneView.h; sourceTree = "<group>"; };
@@ -350,7 +352,6 @@
 				C98C66BB21205D3C00BD3ACE /* IAFmtObj3ds.h */,
 				C98C66B621205D1D00BD3ACE /* IAFmtTexJpeg.cxx */,
 				C98C66B521205D1D00BD3ACE /* IAFmtTexJpeg.h */,
-				C97632DE211E394000D9D4B5 /* lib3ds.h */,
 			);
 			path = fileformats;
 			sourceTree = "<group>";
@@ -402,6 +403,8 @@
 				C98C66C221208C6300BD3ACE /* IACamera.h */,
 				C938CC142124D51200BAC374 /* IAGLButton.cpp */,
 				C938CC132124D51200BAC374 /* IAGLButton.h */,
+				C9A6772F214862D800B3031E /* IAProgressDialog.cpp */,
+				C9A67730214862D800B3031E /* IAProgressDialog.h */,
 			);
 			path = userinterface;
 			sourceTree = "<group>";
@@ -569,6 +572,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				C993323C21238A7200629BE1 /* potracelib.c in Sources */,
+				C9A67731214862D800B3031E /* IAProgressDialog.cpp in Sources */,
 				C97632D1211E317F00D9D4B5 /* IAVertex.cpp in Sources */,
 				C97632CB211E2DD000D9D4B5 /* IAGUIMain.fl in Sources */,
 				C938CC20212602F600BAC374 /* IAGeometryReaderBinaryStl.cxx in Sources */,

@@ -40,7 +40,10 @@ IASlice::IASlice()
  */
 IASlice::~IASlice()
 {
-    clear();
+    for (auto e: pRim) { // pLid is an edge list
+        delete e;
+    }
+    pRim.clear();
     delete pFramebuffer;
     delete pColorbuffer;
 }
@@ -68,7 +71,7 @@ void IASlice::clear()
  *
  * \return true, if the layer actually changed
  */
-bool IASlice::changeZ(double z)
+bool IASlice::setNewZ(double z)
 {
     if (pCurrentZ==z) {
         // nothing changed, keep the data
@@ -461,6 +464,7 @@ void IASlice::drawShell()
         glEnd();
     }
 }
+
 
 #ifdef __APPLE__
 #pragma clang diagnostic pop

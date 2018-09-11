@@ -22,6 +22,9 @@
 
 /**
  * Create a file reader for the indicated file.
+ *
+ * \param filename read from this file.
+ *
  * \return 0 if the format is not STL
  */
 std::shared_ptr<IAGeometryReader> IAGeometryReaderTextStl::findReaderFor(const char *filename)
@@ -63,7 +66,14 @@ std::shared_ptr<IAGeometryReader> IAGeometryReaderTextStl::findReaderFor(const c
 
 /**
  * Create a reader for the indicated memory block.
+ *
+ * \param name similar to a filename, the extension of the name will help to
+ *      determine the file type.
+ * \param data verbatim copy of the file in memory
+ * \param size number of bytes in that memory block
+ *
  * \return 0 if the format is not STL
+ *
  * \todo handle file reading errors
  */
 std::shared_ptr<IAGeometryReader> IAGeometryReaderTextStl::findReaderFor(const char *name, uint8_t *data, size_t size)
@@ -80,6 +90,11 @@ std::shared_ptr<IAGeometryReader> IAGeometryReaderTextStl::findReaderFor(const c
 
 /**
  * Create a file reader for reading from memory.
+ *
+ * \param name similar to a filename, the extension of the name will help to
+ *      determine the file type.
+ * \param data verbatim copy of the file in memory
+ * \param size number of bytes in that memory block
  */
 IAGeometryReaderTextStl::IAGeometryReaderTextStl(const char *name, uint8_t *data, size_t size)
 :   IAGeometryReader(name, data, size)
@@ -89,6 +104,8 @@ IAGeometryReaderTextStl::IAGeometryReaderTextStl(const char *name, uint8_t *data
 
 /**
  * Create a file reader for reading from a file.
+ *
+ * \param filename read from this file
  */
 IAGeometryReaderTextStl::IAGeometryReaderTextStl(const char *filename)
 :   IAGeometryReader(filename)
@@ -106,6 +123,8 @@ IAGeometryReaderTextStl::~IAGeometryReaderTextStl()
 
 /**
  * Interprete the geometry data and create a mesh list.
+ *
+ * \return nullptr, if the mesh could not be read or created.
  *
  * \todo gracefully handle outer loops with more than three vertices
  * \todo fix seams
@@ -210,7 +229,7 @@ IAMesh *IAGeometryReaderTextStl::load()
     msh->fixHoles();
     msh->validate();
     
-    msh->clearNormals();
+    msh->clearVertexNormals();
     msh->calculateNormals();
     
     return msh;
