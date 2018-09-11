@@ -8,6 +8,8 @@
 #define IA_EDGE_H
 
 
+#include "IotaMacros.h"
+
 #include <vector>
 #include <assert.h>
 
@@ -18,92 +20,95 @@ class IAMesh;
 
 
 /**
- Represent the boundary where two triangles meet.
-
- In a perfectly watertight mesh, every triangle has three connected triangles,
- three edges, and every edge connects to this and one other triangle.
-
- This class helps walking the mesh. It does not manage any faces or vertices.
+ * A very minimal edge class that simply holds two vertices.
+ *
+ * This is used by IASlice to store teh mesh outline.
  */
 class IAEdge
 {
 public:
     IAEdge();
-    IAVertex *findZGlobal(double);
-    IAVertex *vertex(int i, IATriangle *f);
-    IATriangle *otherTriangle(IATriangle *);
-    IAVertex *otherVertex(IAVertex*);
-    int indexIn(IATriangle *);
-    int nTriangle();
 
-    IATriangle *pTriangle[2] = { nullptr, nullptr };
+    /** The two vertices that describe this edge */
     IAVertex *pVertex[2] = { nullptr, nullptr };
 };
 
 typedef std::vector<IAEdge*> IAEdgeList;
 
 
+/**
+ * Half-edges are used with triangles and vertices to describe meshes.
+ *
+ * Tow half-edges, twins, make up one full edge.
+ */
 class IAHalfEdge
 {
     friend IAMesh;
+
 public:
-    // new stuff
     IAHalfEdge(IATriangle *t, IAVertex *v);
 
+    /** Two twins make up a full edge.
+     \return the other half-edge that makes up this edge. */
     IAHalfEdge *twin() { return pTwin; }
+
+    /** A triangle is a doubly linked list of half-edges.
+     \return the previous edge in this triangle.
+     The end of the previous half-edge is the start of this half-edge. */
     IAHalfEdge *prev() { return pPrev; }
+
+    /** A triangle is a doubly linked list of half-edges.
+     \return the next edge in this triangle.
+     The end of this half-edge is the start of the next half-edge. */
     IAHalfEdge *next() { return pNext; }
 
+    /** Triangles own and manage edges.
+     \return the triangle that owns this half-edge. */
     IATriangle *triangle() { return pTriangle; }
+
+    /** The vertex is the start position in space.
+     \return the vertex that is the start of this half-edge.
+     \todo half-edges must manage texture coordinates.*/
     IAVertex *vertex() { return pVertex; }
 
     IAHalfEdge *findNextSingleEdgeInFan();
     IAHalfEdge *findPrevSingleEdgeInFan();
 
-    // old stuff
     IAVertex *findZGlobal(double);
-    IAVertex *vertex(int i, IATriangle *f);
-    IATriangle *otherTriangle(IATriangle *);
-    IAVertex *otherVertex(IAVertex*);
-    int indexIn(IATriangle *);
-    int nTriangle();
-
-    IATriangle *triangle(int i) {
-        if (i==0) return pTriangle;
-        if (i==1) {
-            assert(pTwin);
-            return twin()->triangle();
-        }
-        assert(0);
-        return nullptr;
-    }
-    IAVertex *vertex(int i) {
-        if (i==0) return vertex();
-        if (i==1) {
-            assert(pNext);
-            return next()->vertex();
-        }
-        assert(0);
-        return nullptr;
-    }
 
 protected:
-    // new stuff
+    /** Set the other half-edge that makes up this edge.
+     \param he make this the twin */
     void setTwin(IAHalfEdge *he) { pTwin = he; }
+
+    /** Set the previous half-edge for this triangle.
+     \param he make this half-edge the previous half edge. */
     void setPrev(IAHalfEdge *he) { pPrev = he; }
+
+    /** Set the next half-edge for this triangle.
+     \param he make this half-edge the next half edge. */
     void setNext(IAHalfEdge *he) { pNext = he; }
 
 private:
+    /** Other half-edge, connecting two triangles. */
     IAHalfEdge *pTwin = nullptr;
+
+    /** Previous half-edge in the triangle. */
     IAHalfEdge *pPrev = nullptr;
+
+    /** Next half-edge in the triangle. */
     IAHalfEdge *pNext = nullptr;
 
-    // old stuff
+    /** The owner of this half-edge. */
     IATriangle *pTriangle = nullptr;
+
+    /** The starting point of this half-edge. */
     IAVertex *pVertex = nullptr;
 };
 
+
 typedef std::vector<IAHalfEdge*> IAHalfEdgeList;
+
 
 typedef IAHalfEdge *IAHalfEdgePtr;
 

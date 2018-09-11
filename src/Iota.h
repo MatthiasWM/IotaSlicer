@@ -19,6 +19,9 @@
 class IAGeometryReader;
 class IAMachineToolpath;
 class IAToolpath;
+class IAMesh;
+class IAPrinter;
+
 
 
 /** Version string for this version of Iota: X.Y.XA, where X is the major

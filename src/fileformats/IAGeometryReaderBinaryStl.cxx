@@ -13,6 +13,8 @@
 #include <FL/fl_utf8.h>
 #include <sys/stat.h>
 #include <fcntl.h>
+#include <errno.h>
+
 #ifdef _WIN32
 # include <io.h>
 #else
@@ -29,9 +31,10 @@
  * af triangles, calculate the expected file size, and compare it to the
  * actual size of the file.
  *
+ * \param filename path and name of the file that we want to read.
+ *
  * \return 0 if the format is not STL
  */
-#include <errno.h>
 std::shared_ptr<IAGeometryReader> IAGeometryReaderBinaryStl::findReaderFor(const char *filename)
 {
     struct stat fileStats;
@@ -100,7 +103,9 @@ std::shared_ptr<IAGeometryReader> IAGeometryReaderBinaryStl::findReaderFor(const
 
 /**
  * Create a reader for the indicated memory block.
+ *
  * \return 0 if the format is not STL
+ *
  * \todo handle file reading errors
  */
 std::shared_ptr<IAGeometryReader> IAGeometryReaderBinaryStl::findReaderFor(const char *name, uint8_t *data, size_t size)

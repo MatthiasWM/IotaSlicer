@@ -15,7 +15,7 @@
 
 
 /**
- * Helps the toolpath classes to write DXF files
+ * Helps the toolpath classes to write DXF files.
  */
 class IADxfWriter
 {
@@ -23,7 +23,7 @@ public:
     IADxfWriter();
     ~IADxfWriter();
 
-    bool open(const char *filename, int nEntities);
+    bool open(const char *filename);
     void close();
 
     void cmdLine(IAVector3d &a, IAVector3d &b);

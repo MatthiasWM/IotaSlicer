@@ -13,45 +13,33 @@
 #include <stdio.h>
 
 
-/*
-  0
-LINE
-  5
-3C
-330
-5D
-100
-AcDbEntity
-  8
-0
-100
-AcDbLine
- 10
- 0.0
- 20
- 0.0
- 30
- 0.0
- 11
- 0.0
- 21
- 13.0
- 31
- 0.0
-*/
-
+/**
+ * Create a DXF file writer.
+ */
 IADxfWriter::IADxfWriter()
 {
 }
 
 
+/**
+ * Release all resources and close file.
+ */
 IADxfWriter::~IADxfWriter()
 {
     if (pFile!=nullptr) close();
 }
 
 
-bool IADxfWriter::open(const char *filename, int handseed)
+/**
+ * Create a minimal DXF file for writing.
+ *
+ * \param filename path and name for the file we want to create.
+ *
+ * \return true, if the file was created, false, if there was any kind of error.
+ *
+ * \todo add user friendly error handling.
+ */
+bool IADxfWriter::open(const char *filename)
 {
     pFile = fopen(filename, "wb");
     if (!pFile) {
@@ -59,42 +47,39 @@ bool IADxfWriter::open(const char *filename, int handseed)
         printf("Can't open file %s\n", filename);
         return false;
     }
-#if 0
-    fprintf(pFile, dxf_prolog, handseed+200);
-#else
     fputs( // Header
-    "999\r\n"
-    "DXF created from Iota\r\n"
-    "0\r\n"
-    "SECTION\r\n"
-    "2\r\n"
-    "HEADER\r\n"
-    "9\r\n"
-    "$ACADVER\r\n"
-    "1\r\n"
-    "AC1006\r\n"
-    "9\r\n"
-    "$INSBASE\r\n"
-    "10\r\n"
-    "0.0\r\n"
-    "20\r\n"
-    "0.0\r\n"
-    "30\r\n"
-    "0.0\r\n"
-    "9\r\n"
-    "$EXTMIN\r\n"
-    "10\r\n"
-    "0.0\r\n"
-    "20\r\n"
-    "0.0\r\n"
-    "9\r\n"
-    "$EXTMAX\r\n"
-    "10\r\n"
-    "1000.0\r\n"
-    "20\r\n"
-    "1000.0\r\n"
-    "0\r\n"
-    "ENDSEC\r\n", pFile);
+          "999\r\n"
+          "DXF created from Iota\r\n"
+          "0\r\n"
+          "SECTION\r\n"
+          "2\r\n"
+          "HEADER\r\n"
+          "9\r\n"
+          "$ACADVER\r\n"
+          "1\r\n"
+          "AC1006\r\n"
+          "9\r\n"
+          "$INSBASE\r\n"
+          "10\r\n"
+          "0.0\r\n"
+          "20\r\n"
+          "0.0\r\n"
+          "30\r\n"
+          "0.0\r\n"
+          "9\r\n"
+          "$EXTMIN\r\n"
+          "10\r\n"
+          "0.0\r\n"
+          "20\r\n"
+          "0.0\r\n"
+          "9\r\n"
+          "$EXTMAX\r\n"
+          "10\r\n"
+          "1000.0\r\n"
+          "20\r\n"
+          "1000.0\r\n"
+          "0\r\n"
+          "ENDSEC\r\n", pFile);
     fputs(
           "0\r\n"
           "SECTION\r\n"
@@ -172,32 +157,17 @@ bool IADxfWriter::open(const char *filename, int handseed)
           "SECTION\r\n"
           "2\r\n"
           "ENTITIES\r\n", pFile);
-#endif
     return true;
 }
 
 
+/**
+ * Write the command to create a line into a DXF file.
+ *
+ * \param a, b start and end coordinte of the line.
+ */
 void IADxfWriter::cmdLine(IAVector3d &a, IAVector3d &b)
 {
-#if 0
-    fprintf(pFile,
-            "  0\r\nLINE\r\n"
-            "  5\r\n%X\r\n"
-            "330\r\n5D\r\n"
-            "100\r\nAcDbEntity\r\n"
-            "  8\r\n0\r\n"
-            "100\r\nAcDbLine\r\n"
-            " 10\r\n%f\r\n"
-            " 20\r\n%f\r\n"
-            " 30\r\n%f\r\n"
-            " 11\r\n%f\r\n"
-            " 21\r\n%f\r\n"
-            " 31\r\n%f\r\n",
-            pHandle++,
-            a.x(), a.y(), 0.0,
-            b.x(), b.y(), 0.0
-            );
-#else
     fprintf(pFile,
             "0\r\n"
             "LINE\r\n"
@@ -220,23 +190,23 @@ void IADxfWriter::cmdLine(IAVector3d &a, IAVector3d &b)
             a.x(), a.y(), 0.0,
             b.x(), b.y(), 0.0
             );
-#endif
 }
 
 
+/**
+ * Close the DXF file.
+ *
+ * Safe to call if no file was opened, or opening a file failed.
+ */
 void IADxfWriter::close()
 {
     if (pFile!=nullptr) {
-#if 0
-        fputs(dxf_epilog, pFile);
-#else
         fputs(
               "0\r\n"
               "ENDSEC\r\n"
               "0\r\n"
               "EOF\r\n", pFile);
 
-#endif
         fclose(pFile);
         pFile = nullptr;
     }

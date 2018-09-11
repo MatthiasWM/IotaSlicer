@@ -163,6 +163,7 @@
 		C993320E2123881800629BE1 /* trace.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = trace.h; sourceTree = "<group>"; };
 		C993321A2123881800629BE1 /* potracelib.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = potracelib.c; sourceTree = "<group>"; };
 		C993321C2123881800629BE1 /* platform.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = platform.h; sourceTree = "<group>"; };
+		C9A6772E2147F2D000B3031E /* IotaMacros.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IotaMacros.h; sourceTree = "<group>"; };
 		C9BC92422138692E00991240 /* IADxfWriter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IADxfWriter.h; sourceTree = "<group>"; };
 		C9BC92432138692F00991240 /* IADxfWriter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = IADxfWriter.cpp; sourceTree = "<group>"; };
 		C9CD015821204C2600713CAF /* IASceneView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IASceneView.h; sourceTree = "<group>"; };
@@ -258,6 +259,7 @@
 			children = (
 				C97632C5211E2DD000D9D4B5 /* Iota.cpp */,
 				C9CD015B21204D0700713CAF /* Iota.h */,
+				C9A6772E2147F2D000B3031E /* IotaMacros.h */,
 				C9E4C30E21285AFB004ED18C /* opengl */,
 				C9CD015721204C2600713CAF /* userinterface */,
 				C97632EC211FA7CC00D9D4B5 /* printer */,

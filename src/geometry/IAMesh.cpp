@@ -70,7 +70,7 @@ bool IAMesh::validate()
                 printf("ERROR: edge %d [%p] is not linked to a triangle!\n", i, he);
                 assert(0);
             } else {
-                if (t->pEdge[0]!=he && t->pEdge[1]!=he && t->pEdge[2]!=he) {
+                if (t->edge(0)!=he && t->edge(1)!=he && t->edge(2)!=he) {
                     printf("ERROR: face [%p] is not pointing back at edge %d [%p]!\n", t, i, he);
                     assert(0);
                 }
@@ -108,19 +108,19 @@ bool IAMesh::validate()
     i = 0;
     for (auto t: triangleList) {
         if (t) {
-            if (t->pEdge[0]==0L || t->pEdge[1]==0L || t->pEdge[1]==0L) {
+            if (t->edge(0)==0L || t->edge(1)==0L || t->edge(2)==0L) {
                 printf("ERROR: face %d has an empty edge field.\n", i);
                 assert(0);
             } else {
-                if (t->pEdge[0]->triangle()!=t) {
+                if (t->edge(0)->triangle()!=t) {
                     printf("ERROR: face %d edge0 does not point back at face.\n", i);
                     assert(0);
                 }
-                if (t->pEdge[1]->triangle()!=t) {
+                if (t->edge(1)->triangle()!=t) {
                     printf("ERROR: face %d edge1 does not point back at face.\n", i);
                     assert(0);
                 }
-                if (t->pEdge[2]->triangle()!=t) {
+                if (t->edge(2)->triangle()!=t) {
                     printf("ERROR: face %d edge2 does not point back at face.\n", i);
                     assert(0);
                 }
@@ -186,7 +186,7 @@ void IAMesh::fixHole(IAHalfEdge *e)
         // case 3: just add the same triange flipped to create a single
         // manifold triangle
         IATriangle *t = e->triangle();
-        addNewTriangle(t->vertex(2), e->vertex(1), e->vertex(0));
+        addNewTriangle(t->vertex(2), e->next()->vertex(), e->vertex());
     } else if (e->next()->twin()==nullptr) {
         // case 2: our vertex is a good fan candidate
         IAHalfEdge *e2 = e->findPrevSingleEdgeInFan();
@@ -218,9 +218,10 @@ IATriangle *IAMesh::addNewTriangle(IAVertex *v0, IAVertex *v1, IAVertex *v2)
 {
     IATriangle *t = new IATriangle( this );
 
-    IAHalfEdge *e0 = t->pEdge[0] = new IAHalfEdge(t, v0);
-    IAHalfEdge *e1 = t->pEdge[1] = new IAHalfEdge(t, v1);
-    IAHalfEdge *e2 = t->pEdge[2] = new IAHalfEdge(t, v2);
+    IAHalfEdge *e0 = new IAHalfEdge(t, v0);
+    IAHalfEdge *e1 = new IAHalfEdge(t, v1);
+    IAHalfEdge *e2 = new IAHalfEdge(t, v2);
+    t->setEdges(e0, e1, e2);
 
     e0->setNext(e1);
     e0->setPrev(e2);
@@ -276,8 +277,8 @@ IAHalfEdge *IAMesh::findEdge(IAVertex *v0, IAVertex *v1)
     auto itup = edgeMap.upper_bound(key+0.0001);
     for (auto it=itlow; it!=itup; ++it) {
         IAHalfEdge *e = (*it).second;
-        IAVertex *ev0 = e->vertex(0);
-        IAVertex *ev1 = e->vertex(1);
+        IAVertex *ev0 = e->vertex();
+        IAVertex *ev1 = e->next()->vertex();
         if (ev0==v0 && ev1==v1)
             return e;
     }
@@ -295,8 +296,8 @@ IAHalfEdge *IAMesh::findSingleEdge(IAVertex *v0, IAVertex *v1)
     auto itup = edgeMap.upper_bound(key+0.0001);
     for (auto it=itlow; it!=itup; ++it) {
         IAHalfEdge *e = (*it).second;
-        IAVertex *ev0 = e->vertex(0);
-        IAVertex *ev1 = e->vertex(1);
+        IAVertex *ev0 = e->vertex();
+        IAVertex *ev1 = e->next()->vertex();
         if (ev0==v0 && ev1==v1 && !e->twin())
             return e;
     }
@@ -425,15 +426,15 @@ void IAMesh::drawEdges() {
             glColor3f(0.8f, 1.0f, 1.0f);
             glLineWidth(2.0);
             glBegin(GL_LINES);
-            glVertex3dv(e->vertex(0)->pLocalPosition.dataPointer());
-            glVertex3dv(e->vertex(1)->pLocalPosition.dataPointer());
+            glVertex3dv(e->vertex()->pLocalPosition.dataPointer());
+            glVertex3dv(e->next()->vertex()->pLocalPosition.dataPointer());
             glEnd();
         } else {
             glColor3f(1.0f, 0.5f, 0.5f);
             glLineWidth(4.0);
             glBegin(GL_LINES);
-            glVertex3dv(e->vertex(0)->pLocalPosition.dataPointer());
-            glVertex3dv(e->vertex(1)->pLocalPosition.dataPointer());
+            glVertex3dv(e->vertex()->pLocalPosition.dataPointer());
+            glVertex3dv(e->next()->vertex()->pLocalPosition.dataPointer());
             glEnd();
         }
     }

@@ -68,7 +68,12 @@ public:
     int saveAsJpeg(const char *filename, GLubyte *imgdata=nullptr);
     int saveAsPng(const char *filename, int components, GLubyte *imgdata=nullptr);
 
+    /** Width in pixels.
+     \return the width of the buffer. */
     int width() { return pWidth; }
+
+    /** Height in pixels.
+     \return the height of the buffer. */
     int height() { return pHeight; }
 
     void logicAndNot(IAFramebuffer*);
@@ -82,14 +87,19 @@ protected:
 
     /** Width of the framebuffer in pixles */
     int pWidth = kFramebufferSize;
+
     /** Height of the framebuffer in pixles */
-    int pHeight = kFramebufferSize; // see Iota.h
+    int pHeight = kFramebufferSize; // see Iota.cpp
+
     /** Set this flag if the OpenGL framebuffer object is created */
     bool pFramebufferCreated = false;
+
     /** The OpenGL framebuffer object, containing an RGBA and a depth buffer */
     GLuint pFramebuffer = 0;
+
     /** OpenGL reference to the RGBA color part of the framebuffer */
     GLuint pColorbuffer = 0;
+
     /** OpenGL reference to the depth buffer part of the framebuffer */
     GLuint pDepthbuffer = 0;
 

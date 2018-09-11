@@ -31,22 +31,21 @@ class IATriangle
 {
 public:
     IATriangle(IAMesh *m);
-    bool validNormal() { return pNNormal==1; }
-    void rotateVertices();
-    void print();
     bool crossesZGlobal(double z);
     int pointsBelowZGlobal(double z);
 
-    IAVertex *vertex(int i) { return pEdge[i]->vertex(); }
+    IAVertex *vertex(int i) const { return pEdge[i]->vertex(); }
+    IAHalfEdge *edge(int i) const { return pEdge[i]; }
+    void setEdges(IAHalfEdge *e0, IAHalfEdge *e1, IAHalfEdge *e2) {
+        pEdge[0] = e0; pEdge[1] = e1; pEdge[2] = e2; }
 
-    IAHalfEdge *pEdge[3] = { nullptr, nullptr, nullptr };
     IAVector3d pNormal;
     int pNNormal = 0;
     bool pUsed = false;
     bool pPatched = false;
 
 private:
-    //IAVertex *pVertex[3] = { nullptr, nullptr, nullptr };
+    IAHalfEdge *pEdge[3] = { nullptr, nullptr, nullptr };
     IAMesh *pMesh = nullptr;
 };
 

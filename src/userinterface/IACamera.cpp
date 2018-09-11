@@ -27,6 +27,16 @@ IACamera::IACamera(IASceneView *view)
 
 
 /**
+ * Set the point that we are looking at.
+ */
+void IACamera::setInterest(IAVector3d &v)
+{
+    pInterest = v;
+}
+
+
+
+/**
  * Create a simple perspective camera.
  */
 IAPerspectiveCamera::IAPerspectiveCamera(IASceneView *view)
@@ -146,14 +156,6 @@ void IAPerspectiveCamera::draw()
 }
 
 
-/**
- * Set the point that we are looking at.
- */
-void IAPerspectiveCamera::setInterest(IAVector3d &v)
-{
-    pInterest = v;
-}
-
 
 
 /**
@@ -210,15 +212,6 @@ void IAOrthoCamera::draw()
     glMatrixMode (GL_MODELVIEW);
     glLoadIdentity();
     glTranslated(-pInterest.x(), -pInterest.y(), -pInterest.z());
-}
-
-
-/**
- * Set the point that we are looking at.
- */
-void IAOrthoCamera::setInterest(IAVector3d &v)
-{
-    pInterest = v;
 }
 
 

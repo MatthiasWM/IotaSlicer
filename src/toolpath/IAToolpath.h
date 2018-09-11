@@ -99,7 +99,7 @@ public:
     IAToolpathElement();
     virtual ~IAToolpathElement();
     virtual void draw();
-    virtual void drawFlat() { }
+    virtual void drawFlat(double w) { }
     virtual void saveGCode(IAGcodeWriter &g) { }
     virtual void saveDXF(IADxfWriter &g) { }
     virtual IAToolpathElement *clone();
@@ -115,7 +115,7 @@ public:
     IAToolpathExtruder(int i);
     virtual ~IAToolpathExtruder() override;
     virtual void draw() override { }
-    virtual void drawFlat() override { }
+    virtual void drawFlat(double w) override { }
     virtual void saveGCode(IAGcodeWriter &g) override;
     virtual IAToolpathElement *clone() override;
 
@@ -131,7 +131,7 @@ class IAToolpathMotion : public IAToolpathElement
 public:
     IAToolpathMotion(IAVector3d &a, IAVector3d &b, bool rapid=false);
     virtual void draw() override;
-    virtual void drawFlat() override;
+    virtual void drawFlat(double w) override;
     virtual void saveGCode(IAGcodeWriter &g) override;
     virtual void saveDXF(IADxfWriter &g) override;
     virtual IAToolpathElement *clone() override;

@@ -141,6 +141,14 @@ IAFramebuffer::IAFramebuffer(IAFramebuffer *src)
 }
 
 
+/**
+ * Compose the src buffer onto this buffer in RGBA, assuming only 0 and 1
+ * values for components.
+ *
+ * \param src a source frame buffer
+ *
+ * \todo src could be empty or null
+ */
 void IAFramebuffer::logicAndNot(IAFramebuffer *src)
 {
     if (src->hasFBO()) {
@@ -169,6 +177,14 @@ void IAFramebuffer::logicAndNot(IAFramebuffer *src)
 }
 
 
+/**
+ * Compose the src buffer onto this buffer in RGBA, assuming only 0 and 1
+ * values for components.
+ *
+ * \param src a source frame buffer
+ *
+ * \todo src could be empty or null
+ */
 void IAFramebuffer::logicAnd(IAFramebuffer *src)
 {
     if (src->hasFBO()) {

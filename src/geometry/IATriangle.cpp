@@ -22,30 +22,6 @@ IATriangle::IATriangle(IAMesh *m)
 
 
 /**
- Change the numbering of vertices and edges in this triangle.
- */
-void IATriangle::rotateVertices()
-{
-    IAHalfEdge *e = pEdge[0];
-    pEdge[0] = pEdge[1];
-    pEdge[1] = pEdge[2];
-    pEdge[2] = e;
-}
-
-
-/**
- Print basic information about this triangle.
- */
-void IATriangle::print()
-{
-    printf("Face: \n");
-    vertex(0)->print();
-    vertex(1)->print();
-    vertex(2)->print();
-}
-
-
-/**
  * Check if a triangle in global spaces intersects with the z plane.
  *
  * \param z given height

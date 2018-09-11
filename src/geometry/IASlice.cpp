@@ -167,19 +167,19 @@ void IASlice::addFirstRimVertex(IATriangle *t)
     double z = pCurrentZ;
     IATriangle *firstTriangle = t;
 
-    IAVector3d &v0 = t->pEdge[0]->vertex()->pGlobalPosition;
-    IAVector3d &v1 = t->pEdge[1]->vertex()->pGlobalPosition;
-    IAVector3d &v2 = t->pEdge[2]->vertex()->pGlobalPosition;
+    IAVector3d &v0 = t->vertex(0)->pGlobalPosition;
+    IAVector3d &v1 = t->vertex(1)->pGlobalPosition;
+    IAVector3d &v2 = t->vertex(2)->pGlobalPosition;
 
     if (v0.z()==z && v1.z()==z && v2.z()==z) return; // case 4, defensive
 
     IAHalfEdge *e = nullptr;
     if ( (v0.z()<z) && (v1.z()>z) ) {
-        e = t->pEdge[0]; // case 1
+        e = t->edge(0); // case 1
     } else if ( (v1.z()<z) && (v2.z()>z) ) {
-        e = t->pEdge[1]; // case 1
+        e = t->edge(1); // case 1
     } else if ( (v2.z()<z) && (v0.z()>z) ) {
-        e = t->pEdge[2]; // case 1
+        e = t->edge(2); // case 1
     } else {
         // boundary condition
         puts("ERROR: addFirstRimVertex boundary condition not implemented!");

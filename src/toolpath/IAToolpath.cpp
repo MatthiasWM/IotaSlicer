@@ -352,15 +352,19 @@ void IAToolpath::draw()
 
 void IAToolpath::drawFlat(double w)
 {
-    // Hack!
-    double scale = kFramebufferSize/Iota.pCurrentPrinter->pBuildVolume.x();
-    glLineWidth(w*scale);
-    glDisable(GL_TEXTURE_2D);
-    glDisable(GL_LIGHTING);
+//    // Hack!
+//    double scale = kFramebufferSize/Iota.pCurrentPrinter->pBuildVolume.x();
+//    glLineWidth(w*scale);
+//    glDisable(GL_TEXTURE_2D);
+//    glDisable(GL_LIGHTING);
+    /**
+     \todo draw using polygons.
+     \todo draw connection between lines.
+     */
     for (auto e: pList) {
-        e->drawFlat();
+        e->drawFlat(w);
     }
-    glLineWidth(1.0);
+//    glLineWidth(1.0);
 }
 
 /**
@@ -415,7 +419,7 @@ void IAToolpath::saveGCode(IAGcodeWriter &w)
 void IAToolpath::saveDXF(const char *filename)
 {
     IADxfWriter w;
-    if (w.open(filename, (int)pList.size())) {
+    if (w.open(filename)) {
         for (auto p: pList) {
             p->saveDXF(w);
         }
@@ -630,13 +634,38 @@ void IAToolpathMotion::draw()
 /**
  * Draw the toolpath motion into the scene viewer.
  */
-void IAToolpathMotion::drawFlat()
+void IAToolpathMotion::drawFlat(double w)
 {
     if (!pIsRapid) {
+#if 1
+        /**
+         \todo this should draw a cap depending on the previous line.
+         \todo this is the brute force approach which could be made so much
+            faster. This approach just draws an octagon, extende by a line.
+         */
+        IAVector3d d = pEnd - pStart;
+        IAVector3d u = d.normalized();
+        double xo = u.x() * w * 0.5, x7 = xo * 0.7;
+        double yo = u.y() * w * 0.5, y7 = yo * 0.7;;
+        glBegin(GL_POLYGON);
+        glVertex3d(pStart.x()-xo, pStart.y()-yo, pStart.z());
+        glVertex3d(pStart.x()-x7-y7, pStart.y()-y7+x7, pStart.z());
+        glVertex3d(pStart.x()-yo, pStart.y()+xo, pStart.z());
+        glVertex3d(pEnd.x()-yo, pEnd.y()+xo, pEnd.z());
+        glVertex3d(pEnd.x()+x7-y7, pEnd.y()+y7+x7, pEnd.z());
+        glVertex3d(pEnd.x()+xo, pEnd.y()+yo, pEnd.z());
+        glVertex3d(pEnd.x()+x7+y7, pEnd.y()+y7-x7, pEnd.z());
+        glVertex3d(pEnd.x()+yo, pEnd.y()-xo, pEnd.z());
+        glVertex3d(pStart.x()+yo, pStart.y()-xo, pStart.z());
+        glVertex3d(pStart.x()-x7+y7, pStart.y()-y7-x7, pStart.z());
+        glEnd();
+#else
+        // FIXME: line width!
         glBegin(GL_LINES);
         glVertex3dv(pStart.dataPointer());
         glVertex3dv(pEnd.dataPointer());
         glEnd();
+#endif
     }
 }
 

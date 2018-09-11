@@ -121,17 +121,6 @@ void IAVector3d::read(double *v)
 
 
 /**
- Write vector coordinates to memory.
- */
-void IAVector3d::write(double *v) const
-{
-    v[0] = pV[0];
-    v[1] = pV[1];
-    v[2] = pV[2];
-}
-
-
-/**
  Calculate the length of a vector.
  */
 double IAVector3d::length() const
@@ -254,9 +243,9 @@ IAVector3d IAVector3d::operator^(const IAVector3d &b) const
 
 
 /**
- Set this vector to zero.
+ * Set this vector to zero.
  */
-void IAVector3d::zero()
+void IAVector3d::setZero()
 {
     pV[0] = 0.0;
     pV[1] = 0.0;
