@@ -97,7 +97,7 @@ void IAPrinterFDM::sliceAndWrite(const char *filename)
 #if 0
     double zMax = hgt;
 #else
-    zLayerHeight = 1.0;
+    zLayerHeight = 2.0;
     double zMax = hgt + zLayerHeight;
 #endif
 
@@ -118,10 +118,10 @@ void IAPrinterFDM::sliceAndWrite(const char *filename)
         slc->tesselateLidFromRim();
         slc->drawFlat(false, 1, 1, 1);
 
-        auto tp0 = slc->pFramebuffer->toolpathFromLassoAndContract(z, pNozzleDiameter);
-        auto tp1 = tp0 ? slc->pFramebuffer->toolpathFromLassoAndContract(z, pNozzleDiameter, 2.0) : nullptr;
-        auto tp2 = tp1 ? slc->pFramebuffer->toolpathFromLassoAndContract(z, pNozzleDiameter, 2.0) : nullptr;
-        auto tp3 = tp2 ? slc->pFramebuffer->toolpathFromLassoAndContract(z, pNozzleDiameter, 2.0) : nullptr;
+        auto tp0 = slc->pFramebuffer->toolpathFromLassoAndContract(z, 0.5 * pNozzleDiameter);
+        auto tp1 = tp0 ? slc->pFramebuffer->toolpathFromLassoAndContract(z, pNozzleDiameter) : nullptr;
+        auto tp2 = tp1 ? slc->pFramebuffer->toolpathFromLassoAndContract(z, pNozzleDiameter) : nullptr;
+        auto tp3 = tp2 ? slc->pFramebuffer->toolpathFromLassoAndContract(z, pNozzleDiameter) : nullptr;
 
         IAToolpath *tp = pMachineToolpath->createLayer(z);
         if (tp3) tp->add(tp3.get());
@@ -139,25 +139,22 @@ void IAPrinterFDM::sliceAndWrite(const char *filename)
 
         IAToolpath *tp = pMachineToolpath->findLayer(z);
         IASlice *slc = sliceList[i];
-        {
-            IAFramebuffer fb(slc->pFramebuffer);
-            fb.logicAndNot(sliceList[i+1]->pFramebuffer);
-            // Now whatever is still here is the lid
-            fb.overlayLidPattern(i, pNozzleDiameter);
-            auto infill = fb.toolpathFromLassoAndContract(z, pNozzleDiameter);
-            fb.clear();
-            if (infill) tp->add(infill.get());
-        }
 
-        {
-            // generate a diagonal infill
-            IAFramebuffer fb(slc->pFramebuffer);
-            fb.logicAnd(sliceList[i+1]->pFramebuffer);
-            fb.overlayInfillPattern(i, 3.0);
-            auto infill = fb.toolpathFromLassoAndContract(z, pNozzleDiameter);
-            if (infill) tp->add(infill.get());
-        }
-        // add to this toolpath
+        IAFramebuffer mask(sliceList[i+1]->pFramebuffer);
+        mask.logicAnd((i>0) ? sliceList[i-1]->pFramebuffer : nullptr);
+
+        IAFramebuffer lid(slc->pFramebuffer);
+        lid.logicAndNot(&mask);
+        lid.overlayLidPattern(i, pNozzleDiameter);
+        auto lidPath = lid.toolpathFromLasso(z);
+        if (lidPath) tp->add(lidPath.get());
+
+        IAFramebuffer infill(slc->pFramebuffer);
+        infill.logicAnd(&mask);
+        infill.overlayInfillPattern(i, 3.0);
+        auto infillPath = infill.toolpathFromLasso(z);
+        if (infillPath) tp->add(infillPath.get());
+
         i++;
     }
 

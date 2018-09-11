@@ -80,8 +80,8 @@ public:
     void logicAndNot(IAFramebuffer*);
     void logicAnd(IAFramebuffer*);
     
-    IAToolpathSP toolpathFromLassoAndContract(double z, double extrusionDiameter, double contractFactor=1.0);
-    IAToolpathSP toolpathFromLasso(double z, double extrusionDiameter);
+    IAToolpathSP toolpathFromLassoAndContract(double z, double r);
+    IAToolpathSP toolpathFromLasso(double z);
 
     void overlayLidPattern(int i, double w);
     void overlayInfillPattern(int i, double w);

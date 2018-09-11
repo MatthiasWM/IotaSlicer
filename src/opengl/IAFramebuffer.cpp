@@ -146,12 +146,10 @@ IAFramebuffer::IAFramebuffer(IAFramebuffer *src)
  * values for components.
  *
  * \param src a source frame buffer
- *
- * \todo src could be empty or null
  */
 void IAFramebuffer::logicAndNot(IAFramebuffer *src)
 {
-    if (src->hasFBO()) {
+    if (src && src->hasFBO()) {
         bindForRendering();
         glBindFramebuffer(GL_READ_FRAMEBUFFER, src->pFramebuffer);
         glBindFramebuffer(GL_DRAW_FRAMEBUFFER, pFramebuffer);
@@ -172,7 +170,7 @@ void IAFramebuffer::logicAndNot(IAFramebuffer *src)
 
         unbindFromRendering();
     } else {
-        // FIXME!
+        // if src has no FBO, it is all 0, so AND NOT will not change this buffer
     }
 }
 
@@ -182,12 +180,10 @@ void IAFramebuffer::logicAndNot(IAFramebuffer *src)
  * values for components.
  *
  * \param src a source frame buffer
- *
- * \todo src could be empty or null
  */
 void IAFramebuffer::logicAnd(IAFramebuffer *src)
 {
-    if (src->hasFBO()) {
+    if (src && src->hasFBO()) {
         bindForRendering();
         glBindFramebuffer(GL_READ_FRAMEBUFFER, src->pFramebuffer);
         glBindFramebuffer(GL_DRAW_FRAMEBUFFER, pFramebuffer);
@@ -207,7 +203,8 @@ void IAFramebuffer::logicAnd(IAFramebuffer *src)
 
         unbindFromRendering();
     } else {
-        // FIXME!
+        // if src has no FBO, it is all 0, so AND will make the result all 0
+        clear();
     }
 }
 
@@ -590,8 +587,7 @@ void IAFramebuffer::deleteFBO()
  * \return nullptr, if tracing generates an empty toolpath
  * \return a new toolpath that must be freed by the caller
  */
-IAToolpathSP IAFramebuffer::toolpathFromLasso(double z,
-                                              double extrusionDiameter)
+IAToolpathSP IAFramebuffer::toolpathFromLasso(double z)
 {
     // use a shared pointer, so we don't have to worry about deallocating
     auto tp0 = std::make_shared<IAToolpath>(z);
@@ -618,19 +614,17 @@ IAToolpathSP IAFramebuffer::toolpathFromLasso(double z,
  * \return nullptr, if tracing generates an empty toolpath
  * \return a new toolpath that must be freed by the caller
  */
-IAToolpathSP IAFramebuffer::toolpathFromLassoAndContract(double z,
-                                                         double extrusionDiameter,
-                                                         double contractFactor)
+IAToolpathSP IAFramebuffer::toolpathFromLassoAndContract(double z, double r)
 {
     // use a shared pointer, so we don;t have to worry about deallocating
-    auto tp0 = toolpathFromLasso(z, extrusionDiameter);
+    auto tp0 = toolpathFromLasso(z);
 
     if (tp0) {
         // draw the outline to contract the image
         bindForRendering();
         glDisable(GL_DEPTH_TEST);
         glColor3f(0.0, 0.0, 0.0);
-        tp0->drawFlat(contractFactor * extrusionDiameter);
+        tp0->drawFlat(r*2.0);
         unbindFromRendering();
     }
 
