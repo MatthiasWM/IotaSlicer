@@ -26,6 +26,8 @@ public:
     bool open(const char *filename);
     void close();
 
+    /** Position of the extruder head.
+     \return the position of the current extruder's tip. */
     IAVector3d &position() { return pPosition; }
 
     void sendMoveTo(IAVector3d &v);

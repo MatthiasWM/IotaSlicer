@@ -303,6 +303,11 @@ void IAVector3d::zRotate(double a)
 
 /**
  * Check if two vectors are equal with 1e-7 range.
+ *
+ * \param rhs compare to this to that vector
+ *
+ * \return true, if bot vectors are pretty much the same.
+ *
  * \todo this should actually look at the IEEE representation and ignore the
  *       last two bit of the mantissa
  */

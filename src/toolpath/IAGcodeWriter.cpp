@@ -15,17 +15,32 @@
 #include <stdarg.h>
 
 
+/**
+ * Create a new GCode writer.
+ */
 IAGcodeWriter::IAGcodeWriter()
 {
 }
 
 
+/**
+ * Release all resources.
+ */
 IAGcodeWriter::~IAGcodeWriter()
 {
     if (pFile!=nullptr) close();
 }
 
 
+/**
+ * Open a file for wrinting GCode commands.
+ *
+ * \param filename destination file
+ *
+ * \return true, if we were able to create that file.
+ *
+ * \todo add user-friendly error messages.
+ */
 bool IAGcodeWriter::open(const char *filename)
 {
     pFile = fopen(filename, "wb");
@@ -38,6 +53,11 @@ bool IAGcodeWriter::open(const char *filename)
 }
 
 
+/**
+ * Send the end-of-line character.
+ *
+ * \param comment an optional commant that is added to the line.
+ */
 void IAGcodeWriter::sendNewLine(const char *comment)
 {
     if (comment)
@@ -46,6 +66,9 @@ void IAGcodeWriter::sendNewLine(const char *comment)
 }
 
 
+/**
+ * Send the command to home the printer on all axes.
+ */
 void IAGcodeWriter::cmdHome()
 {
     fprintf(pFile, "G28 ; home all axes\n");
@@ -53,6 +76,13 @@ void IAGcodeWriter::cmdHome()
 }
 
 
+/**
+ * Send the command to retract the filament in the current extruder.
+ *
+ * \param d optional retraction length
+ *
+ * \todo the parameter d does not do much.
+ */
 void IAGcodeWriter::cmdRetract(double d)
 {
 #if 1
@@ -69,6 +99,15 @@ void IAGcodeWriter::cmdRetract(double d)
 }
 
 
+/**
+ * Send the command to unretract the filament in the current extruder.
+ *
+ * \param d optional retraction length
+ *
+ * \todo the parameter d does not do much.
+ * \todo d should be the same d that was used when retracting. We could
+ *      remember that ourselves.
+ */
 void IAGcodeWriter::cmdUnretract(double d)
 {
 #if 1
@@ -85,6 +124,14 @@ void IAGcodeWriter::cmdUnretract(double d)
 }
 
 
+/**
+ * Send the command to select another (virtual) extruder.
+ *
+ * \param n index of the new extruder
+ *
+ * \todo we need to save some parameters on a per-extruder base and update
+ *      them to whichever extruder we choose.
+ */
 void IAGcodeWriter::cmdSelectExtruder(int n)
 {
     fprintf(pFile, "T%d ; select extruder\n", n);
@@ -92,7 +139,10 @@ void IAGcodeWriter::cmdSelectExtruder(int n)
 
 
 /**
- * Send the cmd for a controlled move while extruding.
+ * Send the command to extrude some material, but don't move the head.
+ *
+ * \param distance length of filamant in mm
+ * \param feedrate speed of extrusion in mm/minute
  *
  * \todo no need to send feedrate if it did not change
  * \todo we need a different pE for each extruder
@@ -106,6 +156,17 @@ void IAGcodeWriter::cmdExtrude(double distance, double feedrate)
 }
 
 
+/**
+ * Send the command to extrude some material, but don't move the head.
+ *
+ * \note This is for mixing extruders on Duet controllers only!
+ *
+ * \param distance length of filamant in mm
+ * \param feedrate speed of extrusion in mm/minute
+ *
+ * \todo no need to send feedrate if it did not change
+ * \todo we need to verify that the extrude is in relative mode
+ */
 void IAGcodeWriter::cmdExtrudeRel(double distance, double feedrate)
 {
     if (feedrate<0.0) feedrate = pPrintingF;
@@ -114,6 +175,11 @@ void IAGcodeWriter::cmdExtrudeRel(double distance, double feedrate)
 }
 
 
+/**
+ * Move the printhead to a new position in current z without extruding.
+ *
+ * \param x, y new position in mm from origin.
+ */
 void IAGcodeWriter::cmdRapidMove(double x, double y)
 {
     IAVector3d p(x, y, pPosition.z());
@@ -121,6 +187,11 @@ void IAGcodeWriter::cmdRapidMove(double x, double y)
 }
 
 
+/**
+ * Move the printhead to a new position without extruding.
+ *
+ * \param v new position in mm from origin in x, y, and z.
+ */
 void IAGcodeWriter::cmdRapidMove(IAVector3d &v)
 {
     sendRapidMoveTo(v);
@@ -129,6 +200,15 @@ void IAGcodeWriter::cmdRapidMove(IAVector3d &v)
 }
 
 
+/**
+ * Move the printhead to a new position in current z while extruding.
+ *
+ * \param x, y new position in mm from origin.
+ * \param feedrate this is actually the extrusion lentgh divided by the length
+ *      of the vector
+ *
+ * \todo What exactly is the feedrate parameter now, and could we simplify that?
+ */
 void IAGcodeWriter::cmdMove(double x, double y, double feedrate)
 {
     IAVector3d p(x, y, pPosition.z());
@@ -136,6 +216,15 @@ void IAGcodeWriter::cmdMove(double x, double y, double feedrate)
 }
 
 
+/**
+ * Move the printhead to a new position while extruding.
+ *
+ * \param v new position in mm from origin in x, y, and z.
+ * \param feedrate this is actually the extrusion lentgh divided by the length
+ *      of the vector
+ *
+ * \todo What exactly is the feedrate parameter now, and could we simplify that?
+ */
 void IAGcodeWriter::cmdMove(IAVector3d &v, double feedrate)
 {
     if (feedrate<0.0) feedrate = pF;
@@ -147,6 +236,16 @@ void IAGcodeWriter::cmdMove(IAVector3d &v, double feedrate)
 }
 
 
+/**
+ * Move the printhead to a new position while extruding.
+ *
+ * \param v new position in mm from origin in x, y, and z.
+ * \param color packed color, assuming mixing extruder
+ * \param feedrate this is actually the extrusion lentgh divided by the length
+ *      of the vector
+ *
+ * \todo What do color and feedrate do?
+ */
 void IAGcodeWriter::cmdMove(IAVector3d &v, uint32_t color, double feedrate)
 {
     if (feedrate<0.0) feedrate = pF;
@@ -158,6 +257,11 @@ void IAGcodeWriter::cmdMove(IAVector3d &v, uint32_t color, double feedrate)
 }
 
 
+/**
+ * Send all commands to initialize a specific machine.
+ *
+ * \todo This should be more general, plus some commands for specific machines.
+ */
 void IAGcodeWriter::macroInit()
 {
 #ifdef IA_QUAD
@@ -235,6 +339,12 @@ void IAGcodeWriter::macroInit()
 #endif
 }
 
+
+/**
+ * Send the commands needed to end printing.
+ *
+ * \todo This should be more general, plus some commands for specific machines.
+ */
 void IAGcodeWriter::macroShutdown()
 {
     cmdComment("");
@@ -260,6 +370,13 @@ void IAGcodeWriter::macroShutdown()
 }
 
 
+/**
+ * Send the commands to purge some extruder and make it ready for printing.
+ *
+ * \param t tool number for the extruder that we want to purge.
+ *
+ * \todo This should be more general, plus some commands for specific machines.
+ */
 void IAGcodeWriter::macroPurgeExtruder(int t)
 {
     cmdComment("");
@@ -333,6 +450,9 @@ void IAGcodeWriter::macroPurgeExtruder(int t)
 }
 
 
+/**
+ * Send the 'move' component of a GCode command.
+ */
 void IAGcodeWriter::sendMoveTo(IAVector3d &v)
 {
     fprintf(pFile, "G1 ");
@@ -340,6 +460,9 @@ void IAGcodeWriter::sendMoveTo(IAVector3d &v)
 }
 
 
+/**
+ * Send the 'rapid move' component of a GCode command.
+ */
 void IAGcodeWriter::sendRapidMoveTo(IAVector3d &v)
 {
     fprintf(pFile, "G0 ");
@@ -347,6 +470,9 @@ void IAGcodeWriter::sendRapidMoveTo(IAVector3d &v)
 }
 
 
+/**
+ * Send the x, y, and z component of a GCode command.
+ */
 void IAGcodeWriter::sendPosition(IAVector3d &v)
 {
     if (v.x()!=pPosition.x())
@@ -359,12 +485,22 @@ void IAGcodeWriter::sendPosition(IAVector3d &v)
 }
 
 
+/**
+ * Send the feedrate component of a GCode command.
+ */
 void IAGcodeWriter::sendFeedrate(double f)
 {
     if (f!=pF) { fprintf(pFile, "F%.1f ", f); pF = f; }
 }
 
 
+/**
+ * Send the extrusion component of a GCode command.
+ *
+ * \param e relative extrusion in mm, will be added to the total extrusion in absolute mode.
+ *
+ * \todo how do we know if we are in absolute or relative mode?
+ */
 void IAGcodeWriter::sendExtrusionAdd(double e)
 {
     double newE = pE + e;
@@ -372,6 +508,12 @@ void IAGcodeWriter::sendExtrusionAdd(double e)
 }
 
 
+/**
+ * Send the relative extrusion component of a GCode command for a mixing extruder.
+ *
+ * \param color packed format: 0x00RRGGBB.
+ * \param e total extrusion rate of transport r, g, b, and key.
+ */
 void IAGcodeWriter::sendExtrusionRel(uint32_t color, double e)
 {
     double r = (double((color>>16)&255))/255.0/4.0;
@@ -382,6 +524,9 @@ void IAGcodeWriter::sendExtrusionRel(uint32_t color, double e)
 }
 
 
+/**
+ * Reset the current total extrusion counter.
+ */
 void IAGcodeWriter::cmdResetExtruder()
 {
     fprintf(pFile, "G92 E0 ; reset extruder\n");
@@ -389,6 +534,10 @@ void IAGcodeWriter::cmdResetExtruder()
 }
 
 
+
+/**
+ * Send a single line with a comment in printf() formatting.
+ */
 void IAGcodeWriter::cmdComment(const char *format, ...)
 {
     fprintf(pFile, "; ");
@@ -400,6 +549,9 @@ void IAGcodeWriter::cmdComment(const char *format, ...)
 }
 
 
+/**
+ * Close the GCode writer.
+ */
 void IAGcodeWriter::close()
 {
     if (pFile!=nullptr) {

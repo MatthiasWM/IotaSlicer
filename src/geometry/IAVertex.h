@@ -20,7 +20,6 @@ class IAVertex
 public:
     IAVertex();
     IAVertex(const IAVertex*);
-    bool validNormal() { return pNNormal==1; }
     void addNormal(const IAVector3d&);
     void averageNormal();
     void print();
@@ -33,6 +32,7 @@ public:
     /// Inner shell point position in scene space
     // IAVector3d pShrunkPosition;
     IAVector3d pTex;
+    /// Point normal in mesh space
     IAVector3d pNormal = { 1.0, 0.0, 0.0 };
     /// Point normal in object space
     // IAVector3d pLocalNormal;
