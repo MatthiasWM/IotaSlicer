@@ -89,7 +89,7 @@ void IAPrinterFDM::sliceAndWrite(const char *filename)
         slc->pFramebuffer->bindForRendering();
         glDisable(GL_DEPTH_TEST);
         glColor3f(0.0, 0.0, 0.0);
-        tp0->drawFlat(4);
+        tp0->drawFlat(pNozzleDiameter);
         slc->pFramebuffer->unbindFromRendering();
         delete tp0; // we no longer need this toolpath
 
@@ -99,7 +99,7 @@ void IAPrinterFDM::sliceAndWrite(const char *filename)
         slc->pFramebuffer->bindForRendering();
         glDisable(GL_DEPTH_TEST);
         glColor3f(0.0, 0.0, 0.0);
-        tp1->drawFlat(4); /** \todo width depends on nozzle width! */
+        tp1->drawFlat(2.0*pNozzleDiameter);
         slc->pFramebuffer->unbindFromRendering();
 
         // draw the second shell for this slice image
@@ -108,7 +108,7 @@ void IAPrinterFDM::sliceAndWrite(const char *filename)
         slc->pFramebuffer->bindForRendering();
         glDisable(GL_DEPTH_TEST);
         glColor3f(0.0, 0.0, 0.0);
-        tp2->drawFlat(4);
+        tp2->drawFlat(2.0*pNozzleDiameter);
         slc->pFramebuffer->unbindFromRendering();
 
         // draw the third shell for this slice image
@@ -117,7 +117,7 @@ void IAPrinterFDM::sliceAndWrite(const char *filename)
         slc->pFramebuffer->bindForRendering();
         glDisable(GL_DEPTH_TEST);
         glColor3f(0.0, 0.0, 0.0);
-        tp3->drawFlat(4);
+        tp3->drawFlat(2.0*pNozzleDiameter);
         slc->pFramebuffer->unbindFromRendering();
 
         IAToolpath *tp = pMachineToolpath->createLayer(z);
@@ -218,7 +218,8 @@ void IAPrinterFDM::sliceAndWrite(const char *filename)
     free((void*)sliceList);
 #if 0
         // remaining image is either a lid, a floor, or an infill
-        /** \todo look at the layers above to find out if this is a lid
+        /**
+         \todo look at the layers above to find out if this is a lid
          \todo look at the layers below to find out if this is a floor
          \todo look at what is support structure for the layers above
          */
@@ -363,7 +364,7 @@ void IAPrinterFDM::sliceAndWrite(const char *filename)
         gSlice.pFramebuffer->bindForRendering();
         glDisable(GL_DEPTH_TEST);
         glColor3f(0.0, 0.0, 0.0);
-        tp0->drawFlat(4);
+        tp0->drawFlat(pNozzleDiameter);
         gSlice.pFramebuffer->unbindFromRendering();
         delete tp0; // we no longer need this toolpath
 
@@ -373,7 +374,7 @@ void IAPrinterFDM::sliceAndWrite(const char *filename)
         gSlice.pFramebuffer->bindForRendering();
         glDisable(GL_DEPTH_TEST);
         glColor3f(0.0, 0.0, 0.0);
-        tp1->drawFlat(4); /** \todo width depends on nozzle width! */
+        tp1->drawFlat(2.0*pNozzleDiameter); /** \todo width depends on nozzle width! */
         gSlice.pFramebuffer->unbindFromRendering();
 
         // draw the second shell for this slice image
@@ -382,7 +383,7 @@ void IAPrinterFDM::sliceAndWrite(const char *filename)
         gSlice.pFramebuffer->bindForRendering();
         glDisable(GL_DEPTH_TEST);
         glColor3f(0.0, 0.0, 0.0);
-        tp2->drawFlat(4);
+        tp2->drawFlat(2.0*pNozzleDiameter);
         gSlice.pFramebuffer->unbindFromRendering();
 
         // draw the third shell for this slice image
@@ -391,7 +392,7 @@ void IAPrinterFDM::sliceAndWrite(const char *filename)
         gSlice.pFramebuffer->bindForRendering();
         glDisable(GL_DEPTH_TEST);
         glColor3f(0.0, 0.0, 0.0);
-        tp3->drawFlat(4);
+        tp3->drawFlat(2.0*pNozzleDiameter);
         gSlice.pFramebuffer->unbindFromRendering();
 
         // remaining image is either a lid, a floor, or an infill

@@ -47,6 +47,8 @@ private:
     double pLayerHeight = 0.2;
     /** \todo make this an enum */
     int pColorMode = 0;
+
+    double pNozzleDiameter = 0.4;
 };
 
 

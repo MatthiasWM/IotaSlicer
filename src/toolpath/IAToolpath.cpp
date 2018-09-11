@@ -352,7 +352,9 @@ void IAToolpath::draw()
 
 void IAToolpath::drawFlat(double w)
 {
-    glLineWidth(w);
+    // Hack!
+    double scale = kFramebufferSize/Iota.pCurrentPrinter->pBuildVolume.x();
+    glLineWidth(w*scale);
     glDisable(GL_TEXTURE_2D);
     glDisable(GL_LIGHTING);
     for (auto e: pList) {
@@ -553,7 +555,7 @@ void IAToolpathMotion::draw()
         glColor3f(1.0, 1.0, 0.0);
         glEnable(GL_LIGHTING);
     } else {
-        double r=0.15;
+        double r=0.2;
         IAVector3d d = (pEnd - pStart).normalized();
         IAVector3d n0 = { d.y(), -d.x(), 0.0 };
         IAVector3d n1 = { 0.0, 0.0, 1.0 };

@@ -33,7 +33,7 @@ Iota currently generates G-Code files for DaVinci Duo printers with Repetier fir
 If will probably run with little or no modifications on other FDM printers as well.
 
 * v0.0.10a
-  * fresh
+  * rough implmentation of lids and bottoms
 * v0.0.9a
   * https://github.com/MatthiasWM/IotaSlicer/releases/tag/v0.0.9a
   * Iota compiles on MacOS (Xcode), MSWindows (VisualC 2017), and Ubuntu Linux (Code::Blocks)

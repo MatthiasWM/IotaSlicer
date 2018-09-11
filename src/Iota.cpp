@@ -34,8 +34,8 @@ IAIota Iota;
  */
 const char *gVersion = /*[ver*/"v0.0.10a"/*]*/;
 
-//const int kFramebufferSize = 2048;
-const int kFramebufferSize = 4096;
+const int kFramebufferSize = 2048;
+//const int kFramebufferSize = 4096;
 
 
 
