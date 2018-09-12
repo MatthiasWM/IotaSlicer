@@ -64,6 +64,20 @@
  tracing and filling.
  */
 
+typedef Fl_Menu_Item Fl_Menu_Item_List[];
+
+IAPrinterFDM::IAPrinterFDM(const char *name)
+:   super(name),
+    pSettingList{
+        new IASettingChoice("Color:", pColorMode, [this]{userChangedColorMode();},
+                      (Fl_Menu_Item[]) {
+                          { "monochrome", 0, nullptr, (void*)0 },
+                          { "dual color", 0, nullptr, (void*)1 },
+                          { nullptr } } )
+    }
+{
+}
+
 
 /**
  * Virtual, implement this to open a file chooser with the require file
@@ -183,6 +197,8 @@ void IAPrinterFDM::sliceAndWrite(const char *filename)
  */
 void IAPrinterFDM::buildSessionSettings()
 {
+    wSessionSettings->begin();
+    
     char buf[80];
 
     static Fl_Menu_Item lHgtMenu[] = {
@@ -208,24 +224,7 @@ void IAPrinterFDM::buildSessionSettings()
     Fl_Tree_Item *it = wSessionSettings->add("Layer Height: ");
     it->widget(lHgt);
 
-    /**
-     \todo The color settings should be determined by the number of extruders,
-     extruder types (mixing, mono), and by the number of filemanets (color,
-     fill, support)
-     */
-    static Fl_Menu_Item colorModeMenu[] = {
-        { "monochrome", 0, nullptr, (void*)0 },
-        { "dual color", 0, nullptr, (void*)1 }
-    };
-
-    Fl_Choice *colorMode = new Fl_Choice(1, 1, 120, 1);
-    colorMode->textsize(12);
-    colorMode->menu(colorModeMenu);
-    colorMode->value(0);
-    colorMode->callback(userSetColorModeCB, this);
-    it = wSessionSettings->add("Color: ");
-    it->widget(colorMode);
-
+    pSettingList[0]->build();
 }
 
 
@@ -250,6 +249,11 @@ void IAPrinterFDM::userSetColorMode(Fl_Choice *w)
     if (mi) {
         pColorMode = (int)(fl_intptr_t)(mi->user_data());
     }
+}
+
+void IAPrinterFDM::userChangedColorMode()
+{
+    printf("Colormode is now %d\n", pColorMode);
 }
 
 

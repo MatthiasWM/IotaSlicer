@@ -24,7 +24,7 @@ class IAPrinterFDM : public IAPrinter
 {
     typedef IAPrinter super;
 public:
-    IAPrinterFDM(const char *name) : super(name) { }
+    IAPrinterFDM(const char *name);
 
     virtual void userSliceAs() override;
     virtual void sliceAndWrite(const char *filename=nullptr) override;
@@ -37,6 +37,7 @@ public:
 protected:
     void userSetLayerHeight(Fl_Input_Choice *w);
     void userSetColorMode(Fl_Choice *w);
+    void userChangedColorMode();
 
 private:
     static void userSetLayerHeightCB(Fl_Widget *w, void *d) {
@@ -45,10 +46,13 @@ private:
         ((IAPrinterFDM*)d)->userSetColorMode((Fl_Choice*)w); }
 
     double pLayerHeight = 0.2;
-    /** \todo make this an enum */
-    int pColorMode = 0;
 
     double pNozzleDiameter = 0.4;
+
+    IASettingList pSettingList;
+    /** \todo make this an enum */
+    int pColorMode = 0;
+//    IASettingChoice pSettingColorMode;
 };
 
 

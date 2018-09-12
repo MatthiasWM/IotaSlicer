@@ -222,8 +222,6 @@ IAMesh *IAGeometryReaderBinaryStl::load()
         msh->validate();
         /** \todo warn the user that the mesh could not be fixed! */
     }
-
-    msh->clearVertexNormals();
     msh->calculateNormals();
 
     return msh;

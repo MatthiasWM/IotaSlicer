@@ -493,5 +493,73 @@ void IAPrinterList::userSelectsPrinterCB(Fl_Menu_Item*, void *p)
 }
 
 
+//===========================================================================//
+
+
+IASetting::IASetting()
+{
+}
+
+
+IASetting::~IASetting()
+{
+}
+
+
+Fl_Menu_Item *IASetting::dup(Fl_Menu_Item const *src)
+{
+    Fl_Menu_Item const *s = src;
+    int n = 1;
+    while (s->label()!=nullptr) {
+        s++; n++;
+        // we assum that there are no submenus
+    }
+    Fl_Menu_Item *ret = (Fl_Menu_Item*)malloc(n*sizeof(Fl_Menu_Item));
+    memmove(ret, src, n*sizeof(Fl_Menu_Item));
+    return ret;
+}
+
+
+
+IASettingChoice::IASettingChoice(const char *path, int &value, std::function<void()>&& cb, Fl_Menu_Item *menu)
+:   pPath(strdup(path)),
+    pValue(value),
+    pCallback(cb),
+    pMenu(dup(menu))
+{
+}
+
+
+IASettingChoice::~IASettingChoice()
+{
+    ::free((void*)pPath);
+    ::free((void*)pMenu);
+}
+
+void IASettingChoice::wCallback(Fl_Choice *w, IASettingChoice *d)
+{
+    d->pValue = (int)(fl_intptr_t)(w->mvalue()->user_data());
+    if (d->pCallback) d->pCallback();
+}
+
+
+void IASettingChoice::build()
+{
+    /**
+     \todo The color settings should be determined by the number of extruders,
+     extruder types (mixing, mono), and by the number of filemanets (color,
+     fill, support)
+     */
+    Fl_Choice *colorMode = new Fl_Choice(1, 1, 120, 1);
+    colorMode->textsize(12);
+    colorMode->menu(pMenu);
+    colorMode->value(pValue);
+    colorMode->callback((Fl_Callback*)wCallback, this);
+    pTreeItem = wSessionSettings->add("Color: ");
+    pTreeItem->widget(colorMode);
+}
+
+
+
 
 

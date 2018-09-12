@@ -16,6 +16,8 @@
 
 
 class Fl_Menu_Item;
+class Fl_Choice;
+class Fl_Tree_Item;
 class IAMachineToolpath;
 
 
@@ -122,6 +124,38 @@ private:
 //    IAFramebuffer *pPropsBuffer; // properties: model shell, model infill, support, etc.
 //    IAToolpath *pToolpath; // only for certain printers...
 //};
+
+class IASetting
+{
+public:
+    IASetting();
+    virtual ~IASetting();
+    virtual void build() { }
+
+    Fl_Menu_Item *dup(Fl_Menu_Item const*);
+};
+
+/**
+ * Manage a setting that appears in a tree view.
+ */
+class IASettingChoice : public IASetting
+{
+public:
+    IASettingChoice(const char *path, int &value, std::function<void()>&& cb, Fl_Menu_Item *menu);
+    virtual ~IASettingChoice() override;
+    virtual void build() override;
+
+    static void wCallback(Fl_Choice *w, IASettingChoice *d);
+
+    char *pPath;
+    int &pValue;
+    Fl_Menu_Item *pMenu;
+    std::function<void()> pCallback;
+    void *pUserData;
+    Fl_Tree_Item *pTreeItem;
+};
+
+typedef std::vector<IASetting*> IASettingList;
 
 #endif /* IA_PRINTER_H */
 
