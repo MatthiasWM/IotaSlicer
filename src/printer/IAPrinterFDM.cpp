@@ -76,6 +76,7 @@ IAPrinterFDM::IAPrinterFDM(const char *name)
                           { nullptr } } )
     }
 {
+    /** \bug pSettingList must free all members */
 }
 
 
