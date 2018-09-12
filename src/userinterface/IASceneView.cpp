@@ -265,9 +265,9 @@ void IASceneView::draw()
         if (Iota.gShowSlice) {
             Iota.pMesh->drawSliced(zSlider1->value());
         } else {
-            Iota.pMesh->drawEdges();
+//            Iota.pMesh->drawEdges();
             Iota.pMesh->drawFlat(Iota.gShowTexture);
-            Iota.pMesh->drawEdges();
+//            Iota.pMesh->drawEdges();
         }
         glPopMatrix();
     }

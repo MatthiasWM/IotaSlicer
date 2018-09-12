@@ -1,7 +1,7 @@
 
 # Iota <!--[ver-->v0.0.10a<!--]--> Voxel based Mesh Slicer for Color 3D Printing #
 
-## Status: compiling, running, first successful prints
+## Status: compiling and running on all three platforms, first successful prints ##
 
 ### Overview ###
 
@@ -12,8 +12,8 @@ models with laser cutters.
 
 Iota will be an easy-to-use system for the colorful future of 3D printing.
 
-First ever color printout (XYZPrinting DaVinci Duo, dual extruders)
-![picture alt](html/first_color_print.jpg "First ever color printout")
+First ever Iota generated color printout (XYZPrinting DaVinci Duo, dual extruders)
+![picture alt](html/first_color_print.jpg "First ever Iota color printout")
 
 ### Why Voxels ###
 

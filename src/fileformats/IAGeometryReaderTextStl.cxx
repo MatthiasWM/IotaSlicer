@@ -225,10 +225,12 @@ IAMesh *IAGeometryReaderTextStl::load()
             msh->addNewTriangle(p1, p2, p3);
         }
     }
-    msh->validate();
-    msh->fixHoles();
-    msh->validate();
-    
+    if (!msh->validate()) {
+        msh->fixHoles();
+        msh->validate();
+        /** \todo warn the user that the mesh could not be fixed! */
+    }
+
     msh->clearVertexNormals();
     msh->calculateNormals();
     

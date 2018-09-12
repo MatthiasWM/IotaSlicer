@@ -16,7 +16,7 @@
 
 
 /**
- Create an empty mesh.
+ * Create an empty mesh.
  */
 IAMesh::IAMesh()
 {
@@ -24,7 +24,7 @@ IAMesh::IAMesh()
 
 
 /**
- Clear all resources used by the mesh.
+ * Clear all resources used by the mesh.
  */
 void IAMesh::clear()
 {
@@ -48,8 +48,9 @@ void IAMesh::clear()
 
 
 /**
- Various test that validate a watertight triangle mesh.
- \todo This was written a long time ago and must be verified.
+ * Various test that validate a watertight triangle mesh.
+ *
+ * \return true, if the mesh is valid and watertight.
  */
 bool IAMesh::validate()
 {
@@ -165,7 +166,7 @@ void IAMesh::fixHoles()
 /**
  * Add a triangle in an attempt to fill a hole in the mesh.
  *
- * \todo: verify that this is robust
+ * \param e start fixing at this half-edge if it has no twin.
  */
 void IAMesh::fixHole(IAHalfEdge *e)
 {
@@ -209,7 +210,9 @@ void IAMesh::fixHole(IAHalfEdge *e)
 /**
  * Create a new triangles and corresponding edges and add it to the mesh.
  *
- * \todo we should probably check if this triangle already exists
+ * It is possible (but not useful) to create two identical triangles. This
+ * may confuse the mesh fixer.
+ *
  * \param v0, v1, v2 Points that make up the triangle. Make sure that these
  *      points were already checked for duplicats.
  * \return the newly created triangle
@@ -249,6 +252,10 @@ IATriangle *IAMesh::addNewTriangle(IAVertex *v0, IAVertex *v1, IAVertex *v2)
  * If there is a twin that already found another twin, we may have a damaged
  * mesh that needs to be repaired later. Just add this edge to the list
  * without linking, so maybe another twin will be added later.
+ *
+ * \param e add this edge to the mesh
+ *
+ * \return the twin for this edge, or a nullptr if the twin was not found
  */
 IAHalfEdge *IAMesh::addHalfEdge(IAHalfEdge *e)
 {
@@ -268,7 +275,14 @@ IAHalfEdge *IAMesh::addHalfEdge(IAHalfEdge *e)
 
 
 /**
- Find an edge that connects two vertices.
+ * Find an edge that connects two vertices.
+ *
+ * This finds the first edge that connects two vertices, whether it has a twin
+ * or not.
+ *
+ * \param v0, v1 vertices that make up the half-edge, in the desired order
+ *
+ * \return a pointer to the edge found, or nullptr if there was none.
  */
 IAHalfEdge *IAMesh::findEdge(IAVertex *v0, IAVertex *v1)
 {
@@ -287,7 +301,11 @@ IAHalfEdge *IAMesh::findEdge(IAVertex *v0, IAVertex *v1)
 
 
 /**
- Find an edge that connects two vertices, and that has no twin.
+ * Find an edge that connects two vertices, and that has no twin.
+ *
+ * \param v0, v1 vertices that make up the half-edge, in the desired order
+ *
+ * \return a pointer to the edge found, or nullptr if there was none.
  */
 IAHalfEdge *IAMesh::findSingleEdge(IAVertex *v0, IAVertex *v1)
 {
@@ -306,7 +324,8 @@ IAHalfEdge *IAMesh::findSingleEdge(IAVertex *v0, IAVertex *v1)
 
 
 /**
- Set all vertex normals to 0.
+ * Set all vertex normals to (0, 0, 0) in prepartion for calculating the
+ * point normals.
  */
 void IAMesh::clearVertexNormals()
 {
@@ -317,7 +336,8 @@ void IAMesh::clearVertexNormals()
 
 
 /**
- Calculate all face normals using the cross product of the vectors making up the triangle.
+ * Calculate all face normals using the cross product of the vectors making
+ * up the triangle.
  */
 void IAMesh::calculateTriangleNormals()
 {
@@ -334,10 +354,12 @@ void IAMesh::calculateTriangleNormals()
 
 
 /**
- Calculate all vertex normals by averaging the face normals of all connected triangles.
+ * Calculate all vertex normals by averaging the face normals of all
+ * connected triangles.
  */
 void IAMesh::calculateVertexNormals()
 {
+    clearVertexNormals();
     for (auto t: triangleList) {
         IAVector3d n(t->pNormal);
         t->vertex(0)->addNormal(n);
@@ -351,7 +373,10 @@ void IAMesh::calculateVertexNormals()
 
 
 /**
- Draw the mesh using the vertex normals to create Gouraud shading.
+ * Draw the mesh using the vertex normals to create Gouraud shading.
+ *
+ * If textures are diabled, the drawing is white. If textures are enabled,
+ * the model will be dran textured.
  */
 void IAMesh::drawGouraud()
 {
@@ -370,9 +395,11 @@ void IAMesh::drawGouraud()
 
 
 /**
- Draw the mesh using the face normals to create flat shading.
- \param textured if true, activate OpenGL texture rendering
- \param r, g, b, a the base color of the meshes, or white if the textures are enabled
+ * Draw the mesh using the face normals to create flat shading.
+ *
+ * \param textured if true, activate OpenGL texture rendering
+ * \param r, g, b, a the base color of the meshes, or white if the textures
+ *      are enabled
  */
 void IAMesh::drawFlat(bool textured, float r, float g, float b, float a)
 {
@@ -402,7 +429,7 @@ void IAMesh::drawFlat(bool textured, float r, float g, float b, float a)
 
 
 /**
- Draw all the edges in the mesh.
+ * Draw all the edges in the mesh.
  */
 void IAMesh::drawEdges() {
     glDisable(GL_TEXTURE_2D);
@@ -432,7 +459,12 @@ void IAMesh::drawEdges() {
 
 
 /**
- Calculate new texture coordinates for all vertices.
+ * Calculate new texture coordinates for all vertices.
+ *
+ * \param wMult, hMult size mutiplicators for the projection types
+ * \param type how to project the texture onto the mesh
+ *
+ * \todo this does not take texture wrapping into account.
  */
 void IAMesh::projectTexture(double wMult, double hMult, int type)
 {
@@ -466,6 +498,7 @@ void IAMesh::projectTexture(double wMult, double hMult, int type)
  * create a new vertex and add it to list.
  *
  * \param pos the position of this vertex in mesh space
+ *
  * \return the existing or newly created vertex. There is no way of knowing if
  *      the vertex was found or created.
  *
@@ -496,6 +529,8 @@ IAVertex *IAMesh::findOrAddNewVertex(IAVector3d const& pos)
 
 /**
  * Expand the bounding bo to include the given vector.
+ *
+ * \param v have the bounding box contain this vextor
  */
 void IAMesh::updateBoundingBox(IAVector3d const& v)
 {
@@ -506,6 +541,10 @@ void IAMesh::updateBoundingBox(IAVector3d const& v)
 
 /**
  * Draw a sliced version of this mesh.
+ *
+ * \param zPlane the clipping plane in z
+ *
+ * \todo we need to rethink most of the mesh and toolpath drawing.
  */
 void IAMesh::drawSliced(double zPlane)
 {
@@ -561,6 +600,8 @@ void IAMesh::drawSliced(double zPlane)
  * This method uses the size of the mesh to determine the center on the printbed
  * in X and Y. Z position is set, so that no point of the mesh is below the
  * printbed.
+ *
+ * \param printer use this printer
  */
 void IAMesh::centerOnPrintbed(IAPrinter *printer)
 {
@@ -577,6 +618,10 @@ void IAMesh::centerOnPrintbed(IAPrinter *printer)
  *
  * Changing position directly would invalidate buffered coordinates.
  * The position must only be changed by calling IAMesh::position(v).
+ *
+ * \return the position in world space
+ *
+ * \todo this should return an entire transformation.
  */
 IAVector3d IAMesh::position() const
 {
@@ -588,6 +633,8 @@ IAVector3d IAMesh::position() const
  * Set a new object position.
  *
  * Never set the pMeshPosition member directly!
+ *
+ * \param p the new position in global space
  */
 void IAMesh::position(const IAVector3d &p)
 {

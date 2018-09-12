@@ -248,7 +248,7 @@ void IAIota::menuOpen()
 
 
 /**
- * As for a filename and write the GCode file there.
+ * Ask for a filename and write the slice data there.
  */
 void IAIota::menuSliceAs()
 {
@@ -257,6 +257,13 @@ void IAIota::menuSliceAs()
 }
 
 
+/**
+ * User wants to repeat the same slicing operation.
+ *
+ * The first time in a session, menuSliceAgain() verifies the destination
+ * filename by calling menuSliceAs(). For further calls, this will repeat
+ * the previous operation for a given printer.
+ */
 void IAIota::menuSliceAgain()
 {
     if (pCurrentPrinter)

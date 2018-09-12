@@ -40,6 +40,19 @@ void IAProgressDialog::createProgressDialog()
 }
 
 
+/**
+ * Show the progress dialog box.
+ *
+ * The dialog has a title text in the window decoration, a descriptive text,
+ * a progress bar, and a "cancel" button for the user.
+ *
+ * The descriptive text will not be shown until IAProgressDialog::update
+ * is called.
+ *
+ * \param title a static dialog title, no need to retain or manage
+ * \param text a descriptive text, formatted in the style of \e printf, no
+ *      need to retain or manage.
+ */
 void IAProgressDialog::show(const char *title, const char *text) {
     if (!wDialog) {
         createProgressDialog();
@@ -56,6 +69,15 @@ void IAProgressDialog::show(const char *title, const char *text) {
 }
 
 
+/**
+ * Change the descriptive text.
+ *
+ * The descriptive text change will not be shown until IAProgressDialog::update
+ * is called.
+ *
+ * \param text a descriptive text, formatted in the style of \e printf, no
+ *      need to retain or manage.
+ */
 void IAProgressDialog::setText(const char *text)
 {
     if (pText)
@@ -67,6 +89,17 @@ void IAProgressDialog::setText(const char *text)
 }
 
 
+/**
+ * Update the progress in this dialog.
+ *
+ * \param percent update the pogress indicator, [0..100]
+ * \param ... add varaibles that correspond to the formatting in the descriptive
+ *      text. For example, if the text is "Processing line %d in file %s...",
+ *      this call should be IAProgressDialog::update(10.0, 513, "test.txt").
+ *
+ * \return true, if the user clicked \e cancel any time while the progress
+ *      dialog was up.
+ */
 bool IAProgressDialog::update(double percent, ...)
 {
     char buf[2048];
@@ -86,6 +119,9 @@ bool IAProgressDialog::update(double percent, ...)
 }
 
 
+/**
+ * Hide the progress dialog.
+ */
 void IAProgressDialog::hide()
 {
     if (wDialog)

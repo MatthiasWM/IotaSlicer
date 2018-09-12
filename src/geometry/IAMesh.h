@@ -46,10 +46,10 @@ public:
 //    void drawShrunk(unsigned int, double);
     void drawEdges();
     void drawSliced(double z);
-    void clearVertexNormals();
-    void calculateTriangleNormals();
-    void calculateVertexNormals();
+
+    /** Calculate all face normals and all point normals. */
     void calculateNormals() { calculateTriangleNormals(); calculateVertexNormals(); }
+    
     void fixHoles();
     void fixHole(IAHalfEdge*);
 //    void shrinkBy(double s);
@@ -70,16 +70,33 @@ public:
 
     void updateGlobalSpace();
 
+    /** List of vertices for fast access through indexing. */
     IAVertexList vertexList;
+
+    /** Map of vertices for fast access through the vertex position. */
     IAVertexMap vertexMap;
+
+    /** List of all half-edges in the mesh. */
     IAHalfEdgeList edgeList;
+
+    /** Mpa of all half-edges for finding twins and duplicates quickly. */
     IAHalfEdgeMap edgeMap;
+
+    /** List of all triangles in this mesh */
     IATriangleList triangleList;
+
+    /** Smallest coordinte of all vertices in the mesh in mesh space. */
     IAVector3d pMin = { FLT_MAX, FLT_MAX, FLT_MAX};
+
+    /** Largest coordinte of all vertices in the mesh in mesh space. */
     IAVector3d pMax = { FLT_MIN, FLT_MIN, FLT_MIN };
 
 private:
-    /// This is true whenever pGlobalPosition and pGlobalNormal need to be recalculated
+    void clearVertexNormals();
+    void calculateTriangleNormals();
+    void calculateVertexNormals();
+
+    /** This is true whenever pGlobalPosition and pGlobalNormal need to be recalculated */
     bool pGlobalPositionNeedsUpdate = true;
 
     /// Position of this object in scene space

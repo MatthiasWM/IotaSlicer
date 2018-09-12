@@ -582,10 +582,9 @@ void IAFramebuffer::deleteFBO()
  * Trace the framebuffer and create a toolpath.
  *
  * \param z create a toolptah at this layer
- * \param extrusionDiameter diameter of the extrusion when layed down.
  *
  * \return nullptr, if tracing generates an empty toolpath
- * \return a new toolpath that must be freed by the caller
+ * \return a new smart_pointer to a toolpath
  */
 IAToolpathSP IAFramebuffer::toolpathFromLasso(double z)
 {
@@ -607,12 +606,10 @@ IAToolpathSP IAFramebuffer::toolpathFromLasso(double z)
  * the toolpath pattern.
  *
  * \param z create a toolptah at this layer
- * \param extrusionDiameter diameter of the extrusion when layed down.
- * \param contractFactor outlines contract by factor 1. Laying multiple
- *      filaments contract by 2.
+ * \param r the pattern will be reduced by the amount in r
  *
  * \return nullptr, if tracing generates an empty toolpath
- * \return a new toolpath that must be freed by the caller
+ * \return a new smart_pointer to a toolpath
  */
 IAToolpathSP IAFramebuffer::toolpathFromLassoAndContract(double z, double r)
 {
@@ -632,6 +629,13 @@ IAToolpathSP IAFramebuffer::toolpathFromLassoAndContract(double z, double r)
 }
 
 
+/**
+ * Overlay the image with stripes across or lengthwise.
+ *
+ * \param i determines if the stripes are across or lengthwise.
+ * \param infillWdt distance between lines. If this is the same es the extrusion
+ *      width, the pattern will fill 100%.
+ */
 void IAFramebuffer::overlayLidPattern(int i, double infillWdt)
 {
     bindForRendering();
@@ -642,6 +646,11 @@ void IAFramebuffer::overlayLidPattern(int i, double infillWdt)
     double wdt = Iota.pCurrentPrinter->pBuildVolumeMax.x();
     double hgt = Iota.pCurrentPrinter->pBuildVolumeMax.y();
     // generate a lid
+    glPushMatrix();
+    if (i&1) {
+        glRotated(90, 0, 0, 1);
+        glTranslated(0.0, hgt, 0.0);
+    }
     for (double j=0; j<wdt; j+=infillWdt*2) {
         glBegin(GL_POLYGON);
         glVertex2f(j+infillWdt, 0);
@@ -650,10 +659,18 @@ void IAFramebuffer::overlayLidPattern(int i, double infillWdt)
         glVertex2f(j+infillWdt, hgt);
         glEnd();
     }
+    glPopMatrix();
     unbindFromRendering();
 }
 
 
+/**
+ * Overlay the image with diagonal alternating stripes.
+ *
+ * \param i determines if the stripes are ascending or descending
+ * \param infillWdt distance between lines. If this is the same es the extrusion
+ *      width, the pattern will fill 100%.
+ */
 void IAFramebuffer::overlayInfillPattern(int i, double infillWdt)
 {
     bindForRendering();

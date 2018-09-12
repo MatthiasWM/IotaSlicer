@@ -217,9 +217,11 @@ IAMesh *IAGeometryReaderBinaryStl::load()
         getUInt16LSB(); // color information, if there was a standard
     }
 
-    msh->validate();
-    msh->fixHoles();
-    msh->validate();
+    if (!msh->validate()) {
+        msh->fixHoles();
+        msh->validate();
+        /** \todo warn the user that the mesh could not be fixed! */
+    }
 
     msh->clearVertexNormals();
     msh->calculateNormals();

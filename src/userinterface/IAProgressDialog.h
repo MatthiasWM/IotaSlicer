@@ -16,9 +16,12 @@
 #include <FL/Fl_Progress.H>
 
 
+/**
+ * Create and manage a progress dialog in three easy calls.
+ */
 class IAProgressDialog
 {
-public:
+public:    
     static void show(const char *title, const char *text = nullptr);
     static void setText(const char *text);
     static bool update(double percent, ...);
