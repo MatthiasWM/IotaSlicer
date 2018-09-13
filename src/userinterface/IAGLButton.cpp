@@ -134,6 +134,39 @@ void gl_draw_box(Fl_Widget const *w) {
 }
 
 
+void gl_draw_focus(Fl_Widget const *w, Fl_Boxtype B, int X, int Y, int W, int H)
+{
+    if (!Fl::visible_focus()) return;
+    switch (B) {
+        case FL_DOWN_BOX:
+        case FL_DOWN_FRAME:
+        case FL_THIN_DOWN_BOX:
+        case FL_THIN_DOWN_FRAME:
+            X ++;
+            Y ++;
+        default:
+            break;
+    }
+    int rx = X + Fl::box_dx(B);
+    int ry = Y + Fl::box_dy(B);
+    int rr = X + W - Fl::box_dw(B);
+    int rb = Y + H - Fl::box_dh(B);
+
+    gl_color(fl_contrast(FL_BLACK, w->color()));
+    glLineStipple(1, 0x3333);
+    glEnable(GL_LINE_STIPPLE);
+    glBegin(GL_LINE_LOOP);
+    glVertex2f(rx+0.5, ry+0.5);
+    glVertex2f(rr+0.5, ry+0.5);
+    glVertex2f(rr+0.5, rb+0.5);
+    glVertex2f(rx+0.5, rb+0.5);
+    glEnd();
+    glLineStipple(1, 0xffff);
+    glDisable(GL_LINE_STIPPLE);
+}
+
+
+
 /**
  * Create a button, just like FLTK.
  *
@@ -221,33 +254,7 @@ void IAGLButton::draw_focus() const {
  * \param X, Y, W, H position and size
  */
 void IAGLButton::draw_focus(Fl_Boxtype B, int X, int Y, int W, int H) const {
-    if (!Fl::visible_focus()) return;
-    switch (B) {
-        case FL_DOWN_BOX:
-        case FL_DOWN_FRAME:
-        case FL_THIN_DOWN_BOX:
-        case FL_THIN_DOWN_FRAME:
-            X ++;
-            Y ++;
-        default:
-            break;
-    }
-    int rx = X + Fl::box_dx(B);
-    int ry = Y + Fl::box_dy(B);
-    int rr = X + W - Fl::box_dw(B);
-    int rb = Y + H - Fl::box_dh(B);
-
-    gl_color(fl_contrast(FL_BLACK, color()));
-    glLineStipple(1, 0x3333);
-    glEnable(GL_LINE_STIPPLE);
-    glBegin(GL_LINE_LOOP);
-    glVertex2f(rx+0.5, ry+0.5);
-    glVertex2f(rr+0.5, ry+0.5);
-    glVertex2f(rr+0.5, rb+0.5);
-    glVertex2f(rx+0.5, rb+0.5);
-    glEnd();
-    glLineStipple(1, 0xffff);
-    glDisable(GL_LINE_STIPPLE);
+    gl_draw_focus(this, B, X, Y, W, H);
 }
 
 

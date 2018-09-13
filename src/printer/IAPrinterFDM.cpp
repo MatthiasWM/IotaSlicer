@@ -71,8 +71,8 @@ IAPrinterFDM::IAPrinterFDM(const char *name)
     pSettingList{
         new IASettingChoice("Color:", pColorMode, [this]{userChangedColorMode();},
                       (Fl_Menu_Item[]) {
-                          { "monochrome", 0, nullptr, (void*)0 },
-                          { "dual color", 0, nullptr, (void*)1 },
+                          { "monochrome", 0, nullptr, (void*)0, 0, 0, 0, 11 },
+                          { "dual color", 0, nullptr, (void*)1, 0, 0, 0, 11 },
                           { nullptr } } )
     }
 {
@@ -203,9 +203,9 @@ void IAPrinterFDM::buildSessionSettings()
     char buf[80];
 
     static Fl_Menu_Item lHgtMenu[] = {
-        { "0.1" },
-        { "0.2" },
-        { "0.3" },
+        { "0.1", 0, nullptr, nullptr, 0, 0, 0, 11 },
+        { "0.2", 0, nullptr, nullptr, 0, 0, 0, 11 },
+        { "0.3", 0, nullptr, nullptr, 0, 0, 0, 11 },
         { }
     };
 
@@ -218,8 +218,8 @@ void IAPrinterFDM::buildSessionSettings()
      */
     Fl_Input_Choice *lHgt = new Fl_Input_Choice(1, 1, 60, 1, "mm");
     lHgt->align(FL_ALIGN_RIGHT);
-    lHgt->labelsize(12);
-    lHgt->textsize(12);
+    lHgt->labelsize(11);
+    lHgt->textsize(11);
     lHgt->menu(lHgtMenu);
     sprintf(buf, "%.2f", layerHeight()); lHgt->value(buf);
     lHgt->callback(userSetLayerHeightCB, this);

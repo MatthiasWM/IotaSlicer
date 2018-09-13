@@ -481,7 +481,8 @@ void IAPrinterList::userSelectsPrinter(IAPrinter *p)
 void IAPrinterList::buildSessionSettings(IAPrinter *p)
 {
     wSessionSettings->showroot(0);
-    wSessionSettings->item_labelsize(12);
+    wSessionSettings->item_labelsize(11);
+    wSessionSettings->linespacing(5);
     wSessionSettings->item_draw_mode(FL_TREE_ITEM_DRAW_LABEL_AND_WIDGET);
     wSessionSettings->clear();
     wSessionSettings->begin();

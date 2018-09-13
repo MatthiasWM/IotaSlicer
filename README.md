@@ -34,6 +34,7 @@ If will probably run with little or no modifications on other FDM printers as we
 
 * v0.0.10a
   * generating lids and bottoms
+  * range slider to better inspect extruder preview
 * v0.0.9a
   * https://github.com/MatthiasWM/IotaSlicer/releases/tag/v0.0.9a
   * Iota compiles on MacOS (Xcode), MSWindows (VisualC 2017), and Ubuntu Linux (Code::Blocks)

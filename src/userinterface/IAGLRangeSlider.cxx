@@ -37,6 +37,10 @@ void IAGLRangeSlider::draw()
     gl_draw_box(this, btn==1 ? FL_DOWN_BOX : FL_UP_BOX, sx, sy, sw, sh, color());
     gl_draw_box(this, btn==2 ? FL_DOWN_BOX : FL_UP_BOX, sx+5, sy+baseHeight, sw-10, ty-sy-baseHeight, color());
     gl_draw_box(this, btn==3 ? FL_DOWN_BOX : FL_UP_BOX, tx, ty, tw, th, color());
+    if (Fl::focus() == this) {
+        gl_draw_focus(this, FL_NO_BOX, sx+2, sy+2, sw-6, sh-6);
+    }
+
 }
 
 
@@ -94,6 +98,21 @@ int IAGLRangeSlider::handle(int event, int X, int Y, int W, int H)
             btn = 0;
             redraw();
             return 1;
+        case FL_KEYBOARD:
+        { Fl_Widget_Tracker wp(this);
+            switch (Fl::event_key()) {
+                case FL_Up:
+                    if (pLowValue>minimum()) { pLowValue -= 1.0; pHighValue -= 1.0; }
+                    redraw();
+                    return 1;
+                case FL_Down:
+                    if (pHighValue<maximum()) { pLowValue += 1.0; pHighValue += 1.0; }
+                    redraw();
+                    return 1;
+                default:
+                    return 0;
+            }
+        }
         case FL_FOCUS :
         case FL_UNFOCUS :
             if (Fl::visible_focus()) {

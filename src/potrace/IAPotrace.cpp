@@ -77,7 +77,7 @@ void bezier(IAToolpath *toolpath,
 
 
 /**
- * Trace the give framebuffer and store the result as a toolpath at layer z.
+ * Trace the given framebuffer and store the result as a toolpath at layer z.
  *
  * \todo It may be useful to choose a component, r, g, b, or a, and a threshold
  * \todo Conversion to bitmap is expensive. Can't we rewrite that to use bytes?
@@ -85,7 +85,7 @@ void bezier(IAToolpath *toolpath,
  * \todo don't render noise specs
  *       http://potrace.sourceforge.net/potracelib.pdf
  */
- int potrace(IAFramebuffer *framebuffer, IAToolpath *toolpath, double z)
+int potrace(IAFramebuffer *framebuffer, IAToolpath *toolpath, double z)
 {
     const uint8_t *px = framebuffer->getRawImageRGB();
 
@@ -127,7 +127,24 @@ void bezier(IAToolpath *toolpath,
         fprintf(stderr, "Error allocating parameters: %s\n", strerror(errno));
         return 1;
     }
-    param->turdsize = 0;
+
+    /* area of largest path to be ignored */
+    param->turdsize = 20;
+    /* resolves ambiguous turns in path decomposition */
+    param->turnpolicy = POTRACE_TURNPOLICY_MINORITY;
+//#define POTRACE_TURNPOLICY_BLACK 0
+//#define POTRACE_TURNPOLICY_WHITE 1
+//#define POTRACE_TURNPOLICY_LEFT 2
+//#define POTRACE_TURNPOLICY_RIGHT 3
+//#define POTRACE_TURNPOLICY_MINORITY 4
+//#define POTRACE_TURNPOLICY_MAJORITY 5
+//#define POTRACE_TURNPOLICY_RANDOM 6
+    /* corner threshold */
+    param->alphamax = 1.0;
+    /* use curve optimization? */
+    param->opticurve = 1;
+    /* curve optimization tolerance */
+    param->opttolerance = 0.2;
 
     /* trace the bitmap */
     st = potrace_trace(param, bm);

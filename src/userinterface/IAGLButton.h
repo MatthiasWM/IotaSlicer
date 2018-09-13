@@ -38,6 +38,8 @@ protected:
 
 void gl_draw_box(Fl_Widget const*, Fl_Boxtype b, int X, int Y, int W, int H, Fl_Color c);
 void gl_draw_box(Fl_Widget const*);
+void gl_draw_focus(Fl_Widget const *w, Fl_Boxtype B, int X, int Y, int W, int H);
+
 
 
 #endif

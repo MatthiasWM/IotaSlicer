@@ -314,10 +314,10 @@ gSceneView->redraw();}
             comment {Session settings container} open
             xywh {605 33 240 562} labelsize 12 align 16 resizable
           } {
-            Fl_Box wPrinterName {selected
+            Fl_Box wPrinterName {
               xywh {605 33 240 28} box THIN_UP_BOX color 47 labelsize 12
             }
-            Fl_Tree wSessionSettings {
+            Fl_Tree wSessionSettings {selected
               xywh {605 62 240 475} resizable
             }
           }
