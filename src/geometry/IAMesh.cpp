@@ -28,18 +28,18 @@ IAMesh::IAMesh()
  */
 void IAMesh::clear()
 {
-    for (auto e: edgeList) {
+    for (auto &e: edgeList) {
         delete e;
     }
     edgeList.clear();
     edgeMap.clear();
 
-    for (auto f: triangleList) {
+    for (auto &f: triangleList) {
         delete f;
     }
     triangleList.clear();
 
-    for (auto v: vertexList) {
+    for (auto &v: vertexList) {
         delete v;
     }
     vertexList.clear();
@@ -64,7 +64,7 @@ bool IAMesh::validate()
         puts("WARNING: invalid edge list size!");
     }
     int i = 0;
-    for (auto he: edgeList) {
+    for (auto &he: edgeList) {
         if (he) {
             IATriangle *t = he->triangle();
             if (t==nullptr) {
@@ -107,7 +107,7 @@ bool IAMesh::validate()
         i++;
     }
     i = 0;
-    for (auto t: triangleList) {
+    for (auto &t: triangleList) {
         if (t) {
             if (t->edge(0)==0L || t->edge(1)==0L || t->edge(2)==0L) {
                 printf("ERROR: face %d has an empty edge field.\n", i);
@@ -289,7 +289,7 @@ IAHalfEdge *IAMesh::findEdge(IAVertex *v0, IAVertex *v1)
     double key = v0->pLocalPosition.length()+v1->pLocalPosition.length();
     auto itlow = edgeMap.lower_bound(key-0.0001);
     auto itup = edgeMap.upper_bound(key+0.0001);
-    for (auto it=itlow; it!=itup; ++it) {
+    for (auto &it=itlow; it!=itup; ++it) {
         IAHalfEdge *e = (*it).second;
         IAVertex *ev0 = e->vertex();
         IAVertex *ev1 = e->next()->vertex();
@@ -312,7 +312,7 @@ IAHalfEdge *IAMesh::findSingleEdge(IAVertex *v0, IAVertex *v1)
     double key = v0->pLocalPosition.length()+v1->pLocalPosition.length();
     auto itlow = edgeMap.lower_bound(key-0.0001);
     auto itup = edgeMap.upper_bound(key+0.0001);
-    for (auto it=itlow; it!=itup; ++it) {
+    for (auto &it=itlow; it!=itup; ++it) {
         IAHalfEdge *e = (*it).second;
         IAVertex *ev0 = e->vertex();
         IAVertex *ev1 = e->next()->vertex();
@@ -329,7 +329,7 @@ IAHalfEdge *IAMesh::findSingleEdge(IAVertex *v0, IAVertex *v1)
  */
 void IAMesh::clearVertexNormals()
 {
-    for (auto v: vertexList) {
+    for (auto &v: vertexList) {
         v->pNNormal = 0;
     }
 }
@@ -341,7 +341,7 @@ void IAMesh::clearVertexNormals()
  */
 void IAMesh::calculateTriangleNormals()
 {
-    for (auto t: triangleList) {
+    for (auto &t: triangleList) {
         IAVector3d p0(t->vertex(0)->pLocalPosition);
         IAVector3d p1(t->vertex(1)->pLocalPosition);
         IAVector3d p2(t->vertex(2)->pLocalPosition);
@@ -360,13 +360,13 @@ void IAMesh::calculateTriangleNormals()
 void IAMesh::calculateVertexNormals()
 {
     clearVertexNormals();
-    for (auto t: triangleList) {
+    for (auto &t: triangleList) {
         IAVector3d n(t->pNormal);
         t->vertex(0)->addNormal(n);
         t->vertex(1)->addNormal(n);
         t->vertex(2)->addNormal(n);
     }
-    for (auto v: vertexList) {
+    for (auto &v: vertexList) {
         v->averageNormal();
     }
 }
@@ -382,7 +382,7 @@ void IAMesh::drawGouraud()
 {
     glColor3f(1.0f, 1.0f, 1.0f);
     glBegin(GL_TRIANGLES);
-    for (auto t: triangleList) {
+    for (auto &t: triangleList) {
         for (int j = 0; j < 3; ++j) {
             IAVertex *v = t->vertex(j);
             glNormal3dv(v->pNormal.dataPointer());
@@ -412,7 +412,7 @@ void IAMesh::drawFlat(bool textured, float r, float g, float b, float a)
 
     glColor4f(r, g, b, a);
     glBegin(GL_TRIANGLES);
-    for (auto t: triangleList) {
+    for (auto &t: triangleList) {
         glNormal3dv(t->pNormal.dataPointer());
         for (int j = 0; j < 3; ++j) {
             IAVertex *v = t->vertex(j);
@@ -436,7 +436,7 @@ void IAMesh::drawEdges() {
     glDisable(GL_LIGHTING);
 //    glPolygonOffset( -1.0, -1.0 );
 //    glEnable( GL_POLYGON_OFFSET_LINE );
-    for (auto e: edgeList) {
+    for (auto &e: edgeList) {
         if (e->twin()) {
             glColor3f(0.8f, 1.0f, 1.0f);
             glLineWidth(2.0);
@@ -474,14 +474,14 @@ void IAMesh::projectTexture(double wMult, double hMult, int type)
         case IA_PROJECTION_FRONT:
             x = pMin.x(); w = 1.0 / (pMax.x() - pMin.x()) * wMult;
             y = pMin.z(); h = 1.0 / (pMax.z() - pMin.z()) * hMult;
-            for (auto v: vertexList) {
+            for (auto &v: vertexList) {
                 v->projectTexture(x, y, w, h, type);
             }
             break;
         case IA_PROJECTION_CYLINDRICAL:
             x = 0.0; w = wMult;
             y = pMin.z(); h = 1.0 / (pMax.z() - pMin.z()) * hMult;
-            for (auto v: vertexList) {
+            for (auto &v: vertexList) {
                 v->projectTexture(x, y, w, h, type);
             }
             break;
@@ -511,7 +511,7 @@ IAVertex *IAMesh::findOrAddNewVertex(IAVector3d const& pos)
     auto itlow = vertexMap.lower_bound(length-0.0001);
     auto itup = vertexMap.upper_bound(length+0.0001);
 
-    for (auto it=itlow; it!=itup; ++it) {
+    for (auto &it=itlow; it!=itup; ++it) {
         IAVertex *v = (*it).second;
         if (v->pLocalPosition==pos) {
             return v;
@@ -650,7 +650,7 @@ void IAMesh::updateGlobalSpace()
 {
     if (pGlobalPositionNeedsUpdate) {
         IAVector3d dp = position();
-        for (auto v: vertexList) {
+        for (auto &v: vertexList) {
             v->pGlobalPosition = v->pLocalPosition + dp;
             // \todo apply full mesh transformation
         }

@@ -4,6 +4,20 @@
 //  Copyright (c) 2013-2018 Matthias Melcher. All rights reserved.
 //
 
+/*
+ FIXME: extrusion must be connected to layer height
+ TODO: layer inspector!
+ TODO: where does all the fill-dirt come from?
+ TODO: oprimize travel and loop start
+ TODO: optimize travel to not cross already built outsides and leave extrusion dirt
+ TODO: optimize retract to when it is really needed
+ TODO: optimize memory and speed use by clipping the framebuffer
+ TODO: calculate total filament used and total time.
+ TODO: Maybe expand leyers first to merge small errors together and then start creating extrusion?
+ TODO: serial port writer and monitor (see Repetier)
+ TODO: can we use 8-bit colormaps instead of 32-bits?
+ */
+
 
 #include "Iota.h"
 

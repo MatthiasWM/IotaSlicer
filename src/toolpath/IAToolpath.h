@@ -42,7 +42,7 @@ public:
     ~IAMachineToolpath();
 
     void clear();
-    void draw();
+    void draw(double lo, double hi);
     void drawLayer(double);
     IAToolpath *findLayer(double);
     IAToolpath *createLayer(double);

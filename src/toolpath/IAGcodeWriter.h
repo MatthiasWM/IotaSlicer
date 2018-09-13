@@ -24,7 +24,12 @@ public:
     ~IAGcodeWriter();
 
     bool open(const char *filename);
+    
     void close();
+    /** \todo save and update pEFactor */
+    void setFilamentDiameter(double d);
+    /** \todo save and update pEFactor */
+    void setLayerHeight(double d);
 
     /** Position of the extruder head.
      \return the position of the current extruder's tip. */
@@ -62,8 +67,8 @@ private:
     int pT = 0;
     double pE = 0.0;
     double pF = 0.0;
-    double pRapidF = 5400.0;
-    double pPrintingF = 1800.0;
+    double pRapidF = 5000.0;
+    double pPrintingF = 1400.0;
     double pLayerHeight = 0.3;
 
     /*

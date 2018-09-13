@@ -35,7 +35,7 @@ bool isBlack(uint8_t *rgb, IAVector3d v)
  */
 void IAToolpath::colorize(uint8_t *rgb, IAToolpath *black, IAToolpath *white)
 {
-    for (auto e: pList) {
+    for (auto &e: pList) {
         IAToolpathMotion *m = dynamic_cast<IAToolpathMotion*>(e);
         if (m) {
             if (!m->pIsRapid) {
@@ -102,7 +102,7 @@ bool differ(uint32_t c1, uint32_t c2)
 
 void IAToolpath::colorizeSoft(uint8_t *rgb, IAToolpath *dst)
 {
-    for (auto e: pList) {
+    for (auto &e: pList) {
         IAToolpathMotion *m = dynamic_cast<IAToolpathMotion*>(e);
         if (m) {
             if (!m->pIsRapid) {
@@ -165,7 +165,7 @@ void IAMachineToolpath::clear()
 {
     delete pStartupPath;
     pStartupPath = nullptr;
-    for (auto p: pLayerMap) {
+    for (auto &p: pLayerMap) {
         delete p.second;
     }
     pLayerMap.clear();
@@ -177,11 +177,14 @@ void IAMachineToolpath::clear()
 /**
  * Draw the toolpath into the scene at world coordinates.
  */
-void IAMachineToolpath::draw()
+void IAMachineToolpath::draw(double lo, double hi)
 {
     if (pStartupPath) pStartupPath->draw();
-    for (auto p: pLayerMap) {
-        p.second->draw();
+    int i = 0;
+    for (auto &p: pLayerMap) {
+        if (i>=lo && i<=hi)
+            p.second->draw();
+        i++;
     }
     if (pShutdownPath) pShutdownPath->draw();
 }
@@ -260,7 +263,7 @@ bool IAMachineToolpath::saveGCode(const char *filename /*, printer */)
         w.macroInit();
         if (pStartupPath)
             pStartupPath->saveGCode(w);
-        for (auto p: pLayerMap) {
+        for (auto &p: pLayerMap) {
             w.cmdComment("");
             w.cmdComment("==== layer at z=%g", p.first / 1000.0);
             w.cmdComment("");
@@ -308,7 +311,7 @@ IAToolpath::~IAToolpath()
 void IAToolpath::clear(double z)
 {
     pZ = z;
-    for (auto e: pList) {
+    for (auto &e: pList) {
         delete e;
     }
     pList.clear();
@@ -319,7 +322,7 @@ void IAToolpath::clear(double z)
 
 void IAToolpath::add(IAToolpath *tp)
 {
-    for (auto e: tp->pList) {
+    for (auto &e: tp->pList) {
         pList.push_back(e->clone());
     }
 }
@@ -335,7 +338,7 @@ void IAToolpath::draw()
     glDisable(GL_TEXTURE_2D);
     glEnable(GL_LIGHTING);
     glColor3f(0, 1, 0);
-    for (auto e: pList) {
+    for (auto &e: pList) {
         e->draw();
     }
     glLineWidth(1.0);
@@ -344,7 +347,7 @@ void IAToolpath::draw()
     glDisable(GL_TEXTURE_2D);
     glDisable(GL_LIGHTING);
     glColor3f(0, 1, 0);
-    for (auto e: pList) {
+    for (auto &e: pList) {
         e->draw();
     }
     glLineWidth(1.0);
@@ -363,7 +366,7 @@ void IAToolpath::drawFlat(double w)
      \todo draw using polygons.
      \todo draw connection between lines.
      */
-    for (auto e: pList) {
+    for (auto &e: pList) {
         e->drawFlat(w);
     }
 //    glLineWidth(1.0);
@@ -409,7 +412,7 @@ void IAToolpath::closePath()
 void IAToolpath::saveGCode(IAGcodeWriter &w)
 {
     w.cmdComment("Send generated toolpath...");
-    for (auto p: pList) {
+    for (auto &p: pList) {
         p->saveGCode(w);
     }
 }
@@ -422,7 +425,7 @@ void IAToolpath::saveDXF(const char *filename)
 {
     IADxfWriter w;
     if (w.open(filename)) {
-        for (auto p: pList) {
+        for (auto &p: pList) {
             p->saveDXF(w);
         }
         w.close();
@@ -679,27 +682,27 @@ void IAToolpathMotion::saveGCode(IAGcodeWriter &w)
 {
 #ifdef IA_QUAD
     if (pIsRapid) {
-        w.cmdRetract();
+//        w.cmdRetract();
         w.cmdRapidMove(pEnd);
-        w.cmdUnretract();
+//        w.cmdUnretract();
     } else {
         if (w.position()!=pStart) {
-            w.cmdRetract();
+//            w.cmdRetract();
             w.cmdRapidMove(pStart);
-            w.cmdUnretract();
+//            w.cmdUnretract();
         }
         w.cmdMove(pEnd, pColor);
     }
 #else
     if (pIsRapid) {
-        w.cmdRetract();
+//        w.cmdRetract();
         w.cmdRapidMove(pEnd);
-        w.cmdUnretract();
+//        w.cmdUnretract();
     } else {
         if (w.position()!=pStart) {
-            w.cmdRetract();
+//            w.cmdRetract();
             w.cmdRapidMove(pStart);
-            w.cmdUnretract();
+//            w.cmdUnretract();
         }
         w.cmdMove(pEnd);
     }

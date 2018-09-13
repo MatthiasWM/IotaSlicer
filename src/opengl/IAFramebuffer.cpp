@@ -649,12 +649,11 @@ void IAFramebuffer::overlayLidPattern(int i, double infillWdt)
     glPushMatrix();
     if (i&1) {
         glRotated(90, 0, 0, 1);
-        glTranslated(0.0, hgt, 0.0);
     }
-    for (double j=0; j<wdt; j+=infillWdt*2) {
+    for (double j=-wdt; j<wdt; j+=infillWdt*2) {
         glBegin(GL_POLYGON);
-        glVertex2f(j+infillWdt, 0);
-        glVertex2f(j, 0);
+        glVertex2f(j+infillWdt, -hgt);
+        glVertex2f(j, -hgt);
         glVertex2f(j, hgt);
         glVertex2f(j+infillWdt, hgt);
         glEnd();

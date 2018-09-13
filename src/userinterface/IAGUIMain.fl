@@ -12,6 +12,9 @@ decl {\#include "IASceneView.h"} {public global
 decl {\#include "IAGLButton.h"} {public global
 }
 
+decl {\#include "IAGLRangeSlider.h"} {public global
+}
+
 decl {\#include <FL/Fl_File_Chooser.H>} {public global
 }
 
@@ -262,7 +265,7 @@ gSceneView->redraw();}
             Fl_Button {} {
               label slc
               callback {Iota.gShowSlice = !Iota.gShowSlice;
-gSceneView->redraw();} selected
+gSceneView->redraw();}
               xywh {10 73 35 25} selection_color 236
               class IAGLButton
             }
@@ -290,8 +293,11 @@ gSceneView->redraw();}
               xywh {555 73 35 25} selection_color 236
               class IAGLButton
             }
-            Fl_Box {} {
-              xywh {555 104 35 452} resizable
+            Fl_Slider zRangeSlider {
+              callback {Iota.gShowSlice = true;
+    gSceneView->redraw();}
+              xywh {555 104 35 452} maximum 250 resizable
+              class IAGLRangeSlider
             }
           }
         }
@@ -305,46 +311,14 @@ gSceneView->redraw();}
           xywh {605 33 240 562} box FLAT_BOX resizable
         } {
           Fl_Group {} {
-            comment {3D View Cotrol (TODO: move left)} open
-            xywh {605 33 40 562}
-          } {
-            Fl_Group {} {
-              comment {Slider container} open
-              xywh {605 33 40 502} resizable
-            } {
-              Fl_Slider zSlider1 {
-                callback {Iota.gShowSlice = true;
-    gSceneView->redraw();}
-                tooltip {Slice layer at Z mm} xywh {605 33 20 502} minimum 200 maximum 0 step 1
-              }
-              Fl_Slider zSlider2 {
-                callback {Iota.gShowSlice = true;
-    gSceneView->redraw();}
-                tooltip {Thickness of slice in mm} xywh {625 33 20 502} minimum 10 maximum -10 step 1 hide deactivate
-              }
-            }
-            Fl_Button {} {
-              label TXT
-              callback {Iota.gShowTexture = !Iota.gShowTexture;
-gSceneView->redraw();}
-              tooltip {Toggle Rendering Texture} xywh {605 535 40 30} type Toggle hide
-            }
-            Fl_Button {} {
-              label SLC
-              callback {Iota.gShowSlice = !Iota.gShowSlice;
-    gSceneView->redraw();}
-              tooltip {Stop slicing the model} xywh {605 565 40 30} hide
-            }
-          }
-          Fl_Group {} {
             comment {Session settings container} open
-            xywh {645 33 200 562} labelsize 12 align 16 resizable
+            xywh {605 33 240 562} labelsize 12 align 16 resizable
           } {
-            Fl_Box wPrinterName {
-              xywh {645 33 200 28} box THIN_UP_BOX color 46 labelsize 12
+            Fl_Box wPrinterName {selected
+              xywh {605 33 240 28} box THIN_UP_BOX color 47 labelsize 12
             }
             Fl_Tree wSessionSettings {
-              xywh {645 62 200 475} resizable
+              xywh {605 62 240 475} resizable
             }
           }
         }

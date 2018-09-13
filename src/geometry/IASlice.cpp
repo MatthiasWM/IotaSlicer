@@ -40,7 +40,7 @@ IASlice::IASlice()
  */
 IASlice::~IASlice()
 {
-    for (auto e: pRim) { // pLid is an edge list
+    for (auto &e: pRim) { // pLid is an edge list
         delete e;
     }
     pRim.clear();
@@ -54,7 +54,7 @@ IASlice::~IASlice()
  */
 void IASlice::clear()
 {
-    for (auto e: pRim) { // pLid is an edge list
+    for (auto &e: pRim) { // pLid is an edge list
         delete e;
     }
     pRim.clear();
@@ -112,7 +112,7 @@ void IASlice::addRim(IAMesh *m)
     bool done = true;
     do {
         done = true;
-        for (auto v: m->vertexList) {
+        for (auto &v: m->vertexList) {
             if (v->pGlobalPosition.z()==pCurrentZ) {
                 pCurrentZ += 1e-7;
                 done = false;
@@ -122,12 +122,12 @@ void IASlice::addRim(IAMesh *m)
     } while (!done);
 
     // run through all faces and mark them as unused
-    for (auto t: m->triangleList) {
+    for (auto &t: m->triangleList) {
         t->pUsed = false;
     }
 
     // run through all faces again and add all faces to the first lid that intersect with zMin
-    for (auto t: m->triangleList) {
+    for (auto &t: m->triangleList) {
         if (t->pUsed) continue;
         t->pUsed = true;
         if (t->crossesZGlobal(pCurrentZ))
@@ -278,7 +278,7 @@ void IASlice::drawRim()
     glColor3f(0.8f, 1.0f, 1.0f);
     glLineWidth(12.0);
     glBegin(GL_LINES);
-    for (auto e: pRim) {
+    for (auto &e: pRim) {
         if (e) {
             for (int j = 0; j < 2; ++j) {
                 IAVertex *v = e->pVertex[j];
@@ -450,7 +450,7 @@ void IASlice::drawShell()
     glDisable(GL_LIGHTING);
     glBindTexture(GL_TEXTURE_2D, gSceneView->tex);
     glEnable(GL_TEXTURE_2D);
-    for (auto e: pRim) {
+    for (auto &e: pRim) {
         if (!e) continue;
         IAVertex *v0 = e->pVertex[0];
         IAVertex *v1 = e->pVertex[1];

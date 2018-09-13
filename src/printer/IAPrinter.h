@@ -44,7 +44,8 @@ public:
     IAPrinter(const char *name);
     virtual ~IAPrinter();
     virtual void draw();
-    virtual void drawPreview();
+//    virtual void drawPreview();
+    virtual void drawPreview(double lo, double hi);
     virtual void clearHashedData();
 
     void loadSettings();
@@ -71,6 +72,8 @@ public:
 
     /// This is the current slice that contains the entire scene at a give z.
     IASlice gSlice;
+    
+    double pLayerHeight = 0.3;
 
 protected:
     bool queryOutputFilename(const char *title,
@@ -131,6 +134,10 @@ public:
     IASetting();
     virtual ~IASetting();
     virtual void build() { }
+
+    // write to preferences
+    // read from preferences
+    // FIXME: what actually happens whe the tree is cleared? Tree-Items deletd? Widget stay in Group? ???
 
     Fl_Menu_Item *dup(Fl_Menu_Item const*);
 };

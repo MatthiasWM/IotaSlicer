@@ -36,5 +36,9 @@ protected:
 };
 
 
+void gl_draw_box(Fl_Widget const*, Fl_Boxtype b, int X, int Y, int W, int H, Fl_Color c);
+void gl_draw_box(Fl_Widget const*);
+
+
 #endif
 

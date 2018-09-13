@@ -40,8 +40,6 @@ protected:
 private:
     static void userSetLayerHeightCB(Fl_Widget *w, void *d) {
         ((IAPrinterLasercutter*)d)->userSetLayerHeight((Fl_Input_Choice*)w); }
-
-    double pLayerHeight = 4.0;
 };
 
 

@@ -104,12 +104,12 @@ void IAPrinterFDM::sliceAndWrite(const char *filename)
         pMachineToolpath = new IAMachineToolpath();
     else
         pMachineToolpath->clear();
-    double hgt = Iota.pMesh->pMax.z() - Iota.pMesh->pMin.z();
+    double hgt = Iota.pMesh->pMax.z() - Iota.pMesh->pMin.z() + 2.0*layerHeight();
     // initial height determines stickiness to bed
 
     double zMin = layerHeight() * 0.7;
     double zLayerHeight = layerHeight();
-#if 0
+#if 1
     double zMax = hgt;
 #else
     zLayerHeight = 2.0;
@@ -183,8 +183,8 @@ void IAPrinterFDM::sliceAndWrite(const char *filename)
 
     pMachineToolpath->saveGCode(filename);
     IAProgressDialog::hide();
-    zSlider1->value(0.0);
-    zSlider1->do_callback();
+    zRangeSlider->lowValue(0.0);
+    zRangeSlider->do_callback();
     gSceneView->redraw();
 }
 
@@ -205,7 +205,8 @@ void IAPrinterFDM::buildSessionSettings()
     static Fl_Menu_Item lHgtMenu[] = {
         { "0.1" },
         { "0.2" },
-        { "0.3" }
+        { "0.3" },
+        { }
     };
 
     /** \bug this keeps on adding Choice widgets to the tree class!
@@ -225,7 +226,9 @@ void IAPrinterFDM::buildSessionSettings()
     Fl_Tree_Item *it = wSessionSettings->add("Layer Height: ");
     it->widget(lHgt);
 
-    pSettingList[0]->build();
+    for (auto &s: pSettingList) {
+        s->build();
+    }
 }
 
 

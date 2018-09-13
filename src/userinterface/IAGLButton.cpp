@@ -30,33 +30,41 @@ static int draw_it_active = 1;
 
 static uchar *flgl_gray_ramp() {return (draw_it_active?active_ramp:inactive_ramp)-'A';}
 
-void flgl_xyline(int x, int y, int x1) {
-    glBegin(GL_LINE_STRIP);
-    glVertex2i(x, y);
-    glVertex2i(x1+1, y);
+void flgl_xyline(int x, int y, int x1)
+{
+    if (x>x1) { int tmp = x; x = x1; x1 = tmp; }
+    glBegin(GL_POLYGON);
+    glVertex2f(x-0.5, y-0.5);
+    glVertex2f(x1+0.5, y-0.5);
+    glVertex2f(x1+0.5, y+0.5);
+    glVertex2f(x-0.5, y+0.5);
     glEnd();
 }
 
-void flgl_yxline(int x, int y, int y1) {
-    if (y1 < y) y1--;
-    else y1++;
-    glBegin(GL_LINE_STRIP);
-    glVertex2i(x, y);
-    glVertex2i(x, y1);
+void flgl_yxline(int x, int y, int y1)
+{
+    if (y>y1) { int tmp = y; y = y1; y1 = tmp; }
+    glBegin(GL_POLYGON);
+    glVertex2f(x-0.5, y-0.5);
+    glVertex2f(x+0.5, y-0.5);
+    glVertex2f(x+0.5, y1+0.5);
+    glVertex2f(x-0.5, y1+0.5);
     glEnd();
 }
 
-void flgl_rectf(int x, int y, int w, int h) {
+void flgl_rectf(int x, int y, int w, int h)
+{
     if (w<=0 || h<=0) return;
     glBegin(GL_POLYGON);
-    glVertex2i(x, y-1);
-    glVertex2i(x+w, y-1);
-    glVertex2i(x+w, y+h-1);
-    glVertex2i(x, y+h-1);
+    glVertex2f(x-0.5, y-0.5);
+    glVertex2f(x+w-0.5, y-0.5);
+    glVertex2f(x+w-0.5, y+h-0.5);
+    glVertex2f(x-0.5, y+h-0.5);
     glEnd();
 }
 
-static void flgl_frame2(const char* s, int x, int y, int w, int h) {
+static void flgl_frame2(const char* s, int x, int y, int w, int h)
+{
     uchar *g = flgl_gray_ramp();
     if (h > 0 && w > 0) for (;*s;) {
         // draw bottom line:
@@ -78,11 +86,13 @@ static void flgl_frame2(const char* s, int x, int y, int w, int h) {
     }
 }
 
-static void flgl_up_frame(int x, int y, int w, int h, Fl_Color) {
+static void flgl_up_frame(int x, int y, int w, int h, Fl_Color)
+{
     flgl_frame2("AAWWMMTT",x,y,w,h);
 }
 
-void flgl_down_frame(int x, int y, int w, int h, Fl_Color) {
+void flgl_down_frame(int x, int y, int w, int h, Fl_Color)
+{
     flgl_frame2("WWMMPPAA",x,y,w,h);
 }
 
@@ -107,6 +117,20 @@ static void flgl_box(Fl_Boxtype b, int x, int y, int w, int h, Fl_Color c)
         default:
             break;
     }
+}
+
+
+void gl_draw_box(Fl_Widget const *w, Fl_Boxtype b, int X, int Y, int W, int H, Fl_Color c) {
+    draw_it_active = w->active_r();
+    flgl_box(b, X, Y, W, H, c);
+    draw_it_active = 1;
+}
+
+
+void gl_draw_box(Fl_Widget const *w) {
+    int t = w->box();
+    if (!t) return;
+    gl_draw_box(w, (Fl_Boxtype)t, w->x(), w->y(), w->w(), w->h(), w->color());
 }
 
 
@@ -141,7 +165,7 @@ void IAGLButton::draw()
     //draw_label();
     gl_font(labelfont(), labelsize());
     gl_color(labelcolor());
-    fl_draw(label(), x(), y()-1, w(), h(), align(), gl_draw);
+    fl_draw(label(), x(), y(), w(), h(), align(), gl_draw);
     if (Fl::focus() == this) draw_focus();
 }
 
@@ -214,13 +238,13 @@ void IAGLButton::draw_focus(Fl_Boxtype B, int X, int Y, int W, int H) const {
     int rb = Y + H - Fl::box_dh(B);
 
     gl_color(fl_contrast(FL_BLACK, color()));
-    glLineStipple(1, 0x5555);
+    glLineStipple(1, 0x3333);
     glEnable(GL_LINE_STIPPLE);
     glBegin(GL_LINE_LOOP);
-    glVertex2i(rx, ry);
-    glVertex2i(rr, ry);
-    glVertex2i(rr, rb);
-    glVertex2i(rx, rb);
+    glVertex2f(rx+0.5, ry+0.5);
+    glVertex2f(rr+0.5, ry+0.5);
+    glVertex2f(rr+0.5, rb+0.5);
+    glVertex2f(rx+0.5, rb+0.5);
     glEnd();
     glLineStipple(1, 0xffff);
     glDisable(GL_LINE_STIPPLE);

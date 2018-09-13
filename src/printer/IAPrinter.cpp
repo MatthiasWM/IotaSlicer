@@ -220,7 +220,13 @@ bool IAPrinter::queryOutputFilename(const char *title,
     Fl_Native_File_Chooser fc(Fl_Native_File_Chooser::BROWSE_SAVE_FILE);
     fc.title(title);
     fc.filter(filter);
-    fc.directory(outputPath());
+
+    char *path = strdup(outputPath());
+    char *s = (char*)fl_filename_name(path);
+    if (s) *s = 0;
+    fc.directory(path);
+    free(path);
+
     fc.preset_file(fl_filename_name(outputPath()));
     fc.options(Fl_Native_File_Chooser::NEW_FOLDER |
                Fl_Native_File_Chooser::PREVIEW);
@@ -349,10 +355,10 @@ void IAPrinter::draw()
 /**
  * Draw a preview of the slicing operation.
  */
-void IAPrinter::drawPreview()
+void IAPrinter::drawPreview(double lo, double hi)
 {
     if (pMachineToolpath)
-        pMachineToolpath->draw();
+        pMachineToolpath->draw(lo, hi);
 }
 
 
@@ -445,7 +451,7 @@ void IAPrinterList::buildMenuArray()
     pMenuArray = (Fl_Menu_Item*)::calloc( sizeof(Fl_Menu_Item),
                                          pPrinterList.size()+1);
     Fl_Menu_Item *m = pMenuArray;
-    for (auto p: pPrinterList) {
+    for (auto &p: pPrinterList) {
         m->label(p->name());
         m->callback((Fl_Callback*)userSelectsPrinterCB, p);
         m++;

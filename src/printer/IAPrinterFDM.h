@@ -45,8 +45,6 @@ private:
     static void userSetColorModeCB(Fl_Widget *w, void *d) {
         ((IAPrinterFDM*)d)->userSetColorMode((Fl_Choice*)w); }
 
-    double pLayerHeight = 0.2;
-
     double pNozzleDiameter = 0.4;
 
     IASettingList pSettingList;

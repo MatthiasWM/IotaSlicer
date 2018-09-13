@@ -42,6 +42,7 @@
 		C993323C21238A7200629BE1 /* potracelib.c in Sources */ = {isa = PBXBuildFile; fileRef = C993321A2123881800629BE1 /* potracelib.c */; };
 		C993323D21238A9700629BE1 /* IAPotrace.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C99332052123881800629BE1 /* IAPotrace.cpp */; };
 		C9A67731214862D800B3031E /* IAProgressDialog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C9A6772F214862D800B3031E /* IAProgressDialog.cpp */; };
+		C9A67734214AA16900B3031E /* IAGLRangeSlider.cxx in Sources */ = {isa = PBXBuildFile; fileRef = C9A67732214AA16800B3031E /* IAGLRangeSlider.cxx */; };
 		C9BC92442138692F00991240 /* IADxfWriter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C9BC92432138692F00991240 /* IADxfWriter.cpp */; };
 		C9CD015A21204C2700713CAF /* IASceneView.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C9CD015921204C2600713CAF /* IASceneView.cpp */; };
 		C9D3871E211A425E009F7580 /* libfltk_images.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C9D38718211A425E009F7580 /* libfltk_images.a */; };
@@ -166,6 +167,8 @@
 		C9A6772E2147F2D000B3031E /* IotaMacros.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IotaMacros.h; sourceTree = "<group>"; };
 		C9A6772F214862D800B3031E /* IAProgressDialog.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = IAProgressDialog.cpp; sourceTree = "<group>"; };
 		C9A67730214862D800B3031E /* IAProgressDialog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IAProgressDialog.h; sourceTree = "<group>"; };
+		C9A67732214AA16800B3031E /* IAGLRangeSlider.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = IAGLRangeSlider.cxx; sourceTree = "<group>"; };
+		C9A67733214AA16900B3031E /* IAGLRangeSlider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IAGLRangeSlider.h; sourceTree = "<group>"; };
 		C9BC92422138692E00991240 /* IADxfWriter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IADxfWriter.h; sourceTree = "<group>"; };
 		C9BC92432138692F00991240 /* IADxfWriter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = IADxfWriter.cpp; sourceTree = "<group>"; };
 		C9CD015821204C2600713CAF /* IASceneView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IASceneView.h; sourceTree = "<group>"; };
@@ -401,10 +404,12 @@
 				C9CD015821204C2600713CAF /* IASceneView.h */,
 				C98C66C121208C6300BD3ACE /* IACamera.cpp */,
 				C98C66C221208C6300BD3ACE /* IACamera.h */,
-				C938CC142124D51200BAC374 /* IAGLButton.cpp */,
-				C938CC132124D51200BAC374 /* IAGLButton.h */,
 				C9A6772F214862D800B3031E /* IAProgressDialog.cpp */,
 				C9A67730214862D800B3031E /* IAProgressDialog.h */,
+				C938CC142124D51200BAC374 /* IAGLButton.cpp */,
+				C938CC132124D51200BAC374 /* IAGLButton.h */,
+				C9A67732214AA16800B3031E /* IAGLRangeSlider.cxx */,
+				C9A67733214AA16900B3031E /* IAGLRangeSlider.h */,
 			);
 			path = userinterface;
 			sourceTree = "<group>";
@@ -595,6 +600,7 @@
 				C938CC152124D51200BAC374 /* IAGLButton.cpp in Sources */,
 				C938CC182125CFB100BAC374 /* IAGeometryReader.cxx in Sources */,
 				C97632DD211E357500D9D4B5 /* IASlice.cpp in Sources */,
+				C9A67734214AA16900B3031E /* IAGLRangeSlider.cxx in Sources */,
 				C97632D7211E33B000D9D4B5 /* IAMesh.cpp in Sources */,
 				C9163EBC213EA6A700876F17 /* IAPrinterInkjet.cpp in Sources */,
 				C9554699213C9A530061E60E /* IAPreferences.cpp in Sources */,

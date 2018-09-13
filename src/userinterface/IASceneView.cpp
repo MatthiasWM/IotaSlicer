@@ -10,6 +10,7 @@
 #include "Iota.h"
 #include "userinterface/IAGUIMain.h"
 #include "userinterface/IACamera.h"
+#include "userinterface/IAGLRangeSlider.h"
 #include "geometry/IAMesh.h"
 #include "geometry/IASlice.h"
 #include "printer/IAPrinter.h"
@@ -263,7 +264,7 @@ void IASceneView::draw()
         glPushMatrix();
         glTranslated(Iota.pMesh->position().x(), Iota.pMesh->position().y(), Iota.pMesh->position().z());
         if (Iota.gShowSlice) {
-            Iota.pMesh->drawSliced(zSlider1->value());
+            Iota.pMesh->drawSliced(zRangeSlider->lowValue() * Iota.pCurrentPrinter->pLayerHeight);
         } else {
 //            Iota.pMesh->drawEdges();
             Iota.pMesh->drawFlat(Iota.gShowTexture);
@@ -282,7 +283,8 @@ void IASceneView::draw()
 
     // draw the machine toolpath (or whatever kind of preview the printer has)
     if (Iota.pCurrentPrinter)
-        Iota.pCurrentPrinter->drawPreview();
+        Iota.pCurrentPrinter->drawPreview(zRangeSlider->lowValue(),
+                                          zRangeSlider->highValue());
 
     // draw FLTK user interface
     draw_children();
@@ -319,6 +321,7 @@ void IASceneView::draw_children()
     glDisable(GL_CULL_FACE);
 
     Fl_Window::make_current();
+//    glLineWidth(pixel_w()/w());
     fl_push_no_clip();
     make_current();
     Fl_Widget*const* a = array();
@@ -336,6 +339,7 @@ void IASceneView::draw_children()
         gl_draw("Drag and drop STL files here", 0, 0, w(), h(), FL_ALIGN_CENTER|FL_ALIGN_INSIDE);
     }
     fl_pop_clip();
+//    glLineWidth(1);
 }
 
 
