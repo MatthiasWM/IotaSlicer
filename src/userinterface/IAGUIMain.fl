@@ -173,31 +173,32 @@ Function {createIotaAppWindow()} {open
         xywh {0 0 100 20}
       } {
         MenuItem {} {
-          label {Slice...}
-          callback {Iota.userMenuSliceSliceAs();}
-          xywh {0 0 100 20} shortcut 0x410062
+          label {Run 3D Print...}
+          xywh {36 36 100 20} shortcut 0x400072 deactivate
+        }
+        MenuItem {} {
+          label {Save Slices}
+          callback {Iota.userMenuSliceSave();}
+          xywh {36 36 100 20} shortcut 0x40006f
+        }
+        MenuItem {} {
+          label {Save Slices As...}
+          callback {Iota.userMenuSliceSaveAs();}
+          xywh {24 24 100 20} shortcut 0x41006f
+        }
+        MenuItem {} {
+          label Clean
+          callback {Iota.userMenuSliceClean();} selected
+          tooltip {Clean all slices and all cached information.} xywh {48 48 100 20} shortcut 0x41006b divider
         }
         MenuItem {} {
           label {Slice All}
-          callback {Iota.userMenuSliceSliceAgain();}
+          callback {Iota.userMenuSliceSliceAll();}
           xywh {12 12 100 20} shortcut 0x400062
         }
         MenuItem {} {
           label {Slice Selected}
           xywh {24 24 100 20} shortcut 0x480062 deactivate
-        }
-        MenuItem {} {
-          label {Save Slice Data...}
-          xywh {24 24 100 20} shortcut 0x40006f deactivate
-        }
-        MenuItem {} {
-          label {Run 3D Print...}
-          xywh {36 36 100 20} shortcut 0x400072 deactivate
-        }
-        MenuItem {} {
-          label Clean
-          callback {Iota.userMenuSliceClean();}
-          tooltip {Clean all slices and all cached information.} xywh {48 48 100 20} shortcut 0x41006b
         }
       }
       Submenu {} {
@@ -223,7 +224,7 @@ Function {createIotaAppWindow()} {open
       } {
         MenuItem {} {
           label {Versioneer...}
-          callback {Iota.userMenuHelpVersioneer();} selected
+          callback {Iota.userMenuHelpVersioneer();}
           xywh {4 4 100 20} divider
         }
         MenuItem {} {

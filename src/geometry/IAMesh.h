@@ -46,6 +46,7 @@ public:
 //    void drawShrunk(unsigned int, double);
     void drawEdges();
     void drawSliced(double z);
+    void drawSlicedGhost(double z);
 
     /** Calculate all face normals and all point normals. */
     void calculateNormals() { calculateTriangleNormals(); calculateVertexNormals(); }

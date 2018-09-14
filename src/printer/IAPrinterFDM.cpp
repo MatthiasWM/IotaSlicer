@@ -81,29 +81,54 @@ IAPrinterFDM::IAPrinterFDM(const char *name)
 
 
 /**
- * Virtual, implement this to open a file chooser with the require file
- * pattern and extension.
+ * Save the current slice data to a prepared filename.
+ *
+ * Verify a given filename when this is the first call in a session. Request
+ * a new filename if none was set yet.
  */
-void IAPrinterFDM::userSliceAs()
+void IAPrinterFDM::userSliceSave()
 {
-    if (queryOutputFilename("Save toolpath as GCode", "*.gcode", ".gcode")) {
-        sliceAndWrite();
+    if (pFirstWrite) {
+        userSliceSaveAs();
+    } else {
+        // FIXME: if not yet sliced, so it
+        //sliceAll();
+        // FIXME: save to disk
+        saveToolpath();
     }
 }
 
 
 /**
- * Virtual, implement the slicer for the given machine here.
+ * Implement this to open a file chooser with the require file
+ * pattern and extension.
  */
-void IAPrinterFDM::sliceAndWrite(const char *filename)
+void IAPrinterFDM::userSliceSaveAs()
 {
-    if (!filename)
-        filename = outputPath();
+    if (queryOutputFilename("Save toolpath as GCode", "*.gcode", ".gcode")) {
+        pFirstWrite = false;
+        userSliceSave();
+    }
+}
 
-    if (!pMachineToolpath)
-        pMachineToolpath = new IAMachineToolpath();
-    else
-        pMachineToolpath->clear();
+
+/**
+ * Generate all slice data and cache it for a fast preview or save operation.
+ */
+void IAPrinterFDM::userSliceGenerateAll()
+{
+    purgeSlicesAndCaches();
+    sliceAll();
+}
+
+
+/**
+ * Slice all meshes and models in the scenen.
+ */
+void IAPrinterFDM::sliceAll()
+{
+    pMachineToolpath.clear();
+
     double hgt = Iota.pMesh->pMax.z() - Iota.pMesh->pMin.z() + 2.0*layerHeight();
     // initial height determines stickiness to bed
 
@@ -138,7 +163,7 @@ void IAPrinterFDM::sliceAndWrite(const char *filename)
         auto tp2 = tp1 ? slc->pFramebuffer->toolpathFromLassoAndContract(z, pNozzleDiameter) : nullptr;
         auto tp3 = tp2 ? slc->pFramebuffer->toolpathFromLassoAndContract(z, pNozzleDiameter) : nullptr;
 
-        IAToolpath *tp = pMachineToolpath->createLayer(z);
+        IAToolpath *tp = pMachineToolpath.createLayer(z);
         if (tp3) tp->add(tp3.get());
         if (tp1) tp->add(tp2.get());
         if (tp1) tp->add(tp1.get());
@@ -152,7 +177,7 @@ void IAPrinterFDM::sliceAndWrite(const char *filename)
     {
         if (IAProgressDialog::update(i*50/n+50, i, n, i*50/n+50)) break;
 
-        IAToolpath *tp = pMachineToolpath->findLayer(z);
+        IAToolpath *tp = pMachineToolpath.findLayer(z);
         IASlice *slc = sliceList[i];
 
         IAFramebuffer mask(sliceList[i+1]->pFramebuffer);
@@ -181,11 +206,24 @@ void IAPrinterFDM::sliceAndWrite(const char *filename)
     }
     free((void*)sliceList);
 
-    pMachineToolpath->saveGCode(filename);
     IAProgressDialog::hide();
-    zRangeSlider->lowValue(0.0);
+    if (zRangeSlider->lowValue()>n-1) {
+        int nn = n-2; if (nn<0) nn = 0;
+        double d = zRangeSlider->highValue()-zRangeSlider->lowValue();
+        zRangeSlider->lowValue(nn);
+        zRangeSlider->highValue(nn+d);
+    }
     zRangeSlider->do_callback();
     gSceneView->redraw();
+}
+
+
+void IAPrinterFDM::saveToolpath(const char *filename)
+{
+    if (!filename)
+        filename = outputPath();
+    // generate Toolpath if it is not complete
+    pMachineToolpath.saveGCode(filename);
 }
 
 

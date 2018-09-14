@@ -148,26 +148,26 @@ void IAIota::userMenuFileQuit()
 
 
 /**
- * Ask for a filename and write the slice data there.
+ * Sve the sliced object (GCode, DXF, images) to disk or SDCard
+ *
+ * The first time in a session, the printer driver verifies the destination
+ * filename by calling userSaveAs(). For further calls, this will repeat
+ * the previous operation for a given printer.
  */
-void IAIota::userMenuSliceSliceAs()
+void IAIota::userMenuSliceSave()
 {
     if (pCurrentPrinter)
-        pCurrentPrinter->userSliceAs();
+        pCurrentPrinter->userSliceSave();
 }
 
 
 /**
- * User wants to repeat the same slicing operation.
- *
- * The first time in a session, menuSliceAgain() verifies the destination
- * filename by calling menuSliceAs(). For further calls, this will repeat
- * the previous operation for a given printer.
+ * Ask for a filename and write the slice data there.
  */
-void IAIota::userMenuSliceSliceAgain()
+void IAIota::userMenuSliceSaveAs()
 {
     if (pCurrentPrinter)
-        pCurrentPrinter->userSliceAgain();
+        pCurrentPrinter->userSliceSaveAs();
 }
 
 
@@ -182,7 +182,20 @@ void IAIota::userMenuSliceClean()
 {
     if (pCurrentPrinter)
         pCurrentPrinter->purgeSlicesAndCaches();
+    zRangeSlider->lowValue( zRangeSlider->highValue() );
+    gSceneView->redraw();
 }
+
+
+/**
+ * User wants to slice the entire scene.
+ */
+void IAIota::userMenuSliceSliceAll()
+{
+    if (pCurrentPrinter)
+        pCurrentPrinter->userSliceGenerateAll();
+}
+
 
 // ---- menu Settings ----------------------------------------------------------
 

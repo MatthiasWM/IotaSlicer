@@ -113,14 +113,24 @@ public:
     // ---- menu File
     void userMenuFileNewProject();
     void userMenuFileOpen();
+    // - open recent
+    // - save project
+    // - save project as
+    // - print 2d
     void userMenuFileQuit();
     // ---- menu Edit
+    // - ..
     // ---- menu View
+    // - ..
     // ---- menu Slice
-    void userMenuSliceSliceAs();
-    void userMenuSliceSliceAgain();
+    // - run
+    void userMenuSliceSave();
+    void userMenuSliceSaveAs();
     void userMenuSliceClean();
+    void userMenuSliceSliceAll();
+    // - slice selected
     // ---- menuSettings
+    // - ..
     // ---- menu Help
     void userMenuHelpVersioneer();
     void userMenuHelpAbout();

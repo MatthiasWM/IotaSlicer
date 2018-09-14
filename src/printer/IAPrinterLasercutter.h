@@ -27,8 +27,15 @@ class IAPrinterLasercutter : public IAPrinter
 public:
     IAPrinterLasercutter(const char *name) : super(name) { }
 
-    virtual void userSliceAs() override;
-    virtual void sliceAndWrite(const char *filename=nullptr) override;
+    // ---- direct user interaction
+    virtual void userSliceSave() override;
+    virtual void userSliceSaveAs() override;
+    virtual void userSliceGenerateAll() override;
+
+    // ----
+    void sliceAll();
+    void saveToolpaths(const char *filename = nullptr);
+
 
     virtual void buildSessionSettings() override;
 

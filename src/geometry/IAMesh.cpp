@@ -595,6 +595,46 @@ void IAMesh::drawSliced(double zPlane)
 
 
 /**
+ * Draw upper half of a sliced version of this mesh as a ghost.
+ *
+ * \param zPlane the clipping plane in z
+ *
+ * \todo we need to rethink most of the mesh and toolpath drawing.
+ */
+void IAMesh::drawSlicedGhost(double zPlane)
+{
+    GLdouble equationLowerHalf[4] = { 0.0, 0.0, -1.0, zPlane-0.05 };
+    GLdouble equationUpperHalf[4] = { 0.0, 0.0, 1.0, -zPlane+0.05 };
+
+    // --- draw the opaque lower half of the model
+    // save the current model matrix
+    glPushMatrix();
+    // undo the mesh transformation
+    glTranslated(-Iota.pMesh->position().x(), -Iota.pMesh->position().y(), -Iota.pMesh->position().z());
+    // set the clipping plane in world coordinates
+    // TOD0: we should instead simply sve the world coordinates with the view.
+    glClipPlane(GL_CLIP_PLANE0, equationLowerHalf);
+    glClipPlane(GL_CLIP_PLANE1, equationUpperHalf);
+
+    // draw a ghoste upper half of the model
+    // This may or may not hel orientation. It's currently disabled because
+    // it messes up the depth buffer for later slice drawing operations.
+    // To fix that, we'd have to add functions drawSlicedLower and
+    // drawSlicedUpper, which we call late.
+    glEnable(GL_CLIP_PLANE1);
+    glPopMatrix();
+
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glEnable(GL_CULL_FACE);
+    Iota.pMesh->drawFlat(false, 0.6, 0.6, 0.6, 0.1);
+    glDisable(GL_CLIP_PLANE1);
+
+    glDisable(GL_CULL_FACE);
+}
+
+
+/**
  * Position the mesh on the center point of the printer bed.
  *
  * This method uses the size of the mesh to determine the center on the printbed

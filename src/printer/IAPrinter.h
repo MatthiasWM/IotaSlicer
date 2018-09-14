@@ -11,6 +11,7 @@
 #include "geometry/IAVector3d.h"
 
 #include "geometry/IASlice.h"
+#include "toolpath/IAToolpath.h"
 
 #include <vector>
 
@@ -18,7 +19,6 @@
 class Fl_Menu_Item;
 class Fl_Choice;
 class Fl_Tree_Item;
-class IAMachineToolpath;
 
 
 /**
@@ -41,8 +41,17 @@ class IAMachineToolpath;
 class IAPrinter
 {
 public:
+    // ---- constructor, destructor
     IAPrinter(const char *name);
     virtual ~IAPrinter();
+
+    // ---- direct user interaction
+    virtual void userSliceSave() = 0;
+    virtual void userSliceSaveAs() = 0;
+    virtual void userSliceGenerateAll() = 0;
+
+
+    // ----
     virtual void draw();
 //    virtual void drawPreview();
     virtual void drawPreview(double lo, double hi);
@@ -56,9 +65,6 @@ public:
     void setOutputPath(const char *name);
     const char *outputPath();
 
-    virtual void userSliceAs();
-    virtual void userSliceAgain();
-    virtual void sliceAndWrite(const char *filename=nullptr);
 
     virtual void buildSessionSettings();
 
@@ -68,7 +74,7 @@ public:
     double pBuildVolumeRadius = 200.0; // sphere that contains the entire centered build volume
 
     /// the toolpath for the entire scene for vector based machines
-    IAMachineToolpath *pMachineToolpath = nullptr;
+    IAMachineToolpath pMachineToolpath;
 
     /// This is the current slice that contains the entire scene at a give z.
     IASlice gSlice;

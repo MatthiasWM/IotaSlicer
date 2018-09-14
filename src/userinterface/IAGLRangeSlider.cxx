@@ -25,17 +25,19 @@ IAGLRangeSlider::IAGLRangeSlider(int X, int Y, int W, int H, const char* L)
 
 void IAGLRangeSlider::draw()
 {
-    int xx = x()+w()/2, ww = 8;
-    gl_draw_box(this, FL_DOWN_BOX, xx, y(), ww, h(), color());
-
     int X = x()+Fl::box_dx(box()), Y = y()+Fl::box_dy(box()),
-    W = w()-Fl::box_dw(box()), H = h()-Fl::box_dh(box())-3*baseHeight;
+    W = w()-Fl::box_dw(box()), HH = h()-Fl::box_dh(box()), H = HH-3*baseHeight;
 
     double rng = maximum() - minimum();
     int sx = X, sy = Y + (pLowValue-minimum())*(H/rng), sw = W, sh = baseHeight;
     int tx = X, ty = Y + (pHighValue-minimum())*(H/rng)+baseHeight*2, tw = W, th = baseHeight;
+
+    int xx = X+2*W/3, ww = 8;
+    gl_draw_box(this, FL_DOWN_BOX, xx, Y, ww, sy-Y, color());
+    gl_draw_box(this, FL_DOWN_BOX, xx, ty+th, ww, (HH+Y)-(ty+th), color());
+
     gl_draw_box(this, btn==1 ? FL_DOWN_BOX : FL_UP_BOX, sx, sy, sw, sh, color());
-    gl_draw_box(this, btn==2 ? FL_DOWN_BOX : FL_UP_BOX, sx+5, sy+baseHeight, sw-10, ty-sy-baseHeight, color());
+    gl_draw_box(this, btn==2 ? FL_DOWN_BOX : FL_UP_BOX, sx+5, sy+baseHeight, sw-5, ty-sy-baseHeight, color());
     gl_draw_box(this, btn==3 ? FL_DOWN_BOX : FL_UP_BOX, tx, ty, tw, th, color());
     if (Fl::focus() == this) {
         gl_draw_focus(this, FL_NO_BOX, sx+2, sy+2, sw-6, sh-6);

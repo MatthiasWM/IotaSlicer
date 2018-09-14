@@ -71,7 +71,6 @@ IAPrinter::~IAPrinter()
         ::free((void*)pName);
     if (pOutputPath)
         ::free((void*)pOutputPath);
-    delete pMachineToolpath;
 }
 
 
@@ -80,8 +79,9 @@ IAPrinter::~IAPrinter()
  */
 void IAPrinter::purgeSlicesAndCaches()
 {
-    delete pMachineToolpath; pMachineToolpath = nullptr;
+    pMachineToolpath.clear();
     gSlice.clear();
+    gSceneView->redraw();
 }
 
 
@@ -162,41 +162,6 @@ void IAPrinter::setOutputPath(const char *name)
 const char *IAPrinter::outputPath()
 {
     return pOutputPath;
-}
-
-
-/**
- * User asked us to select a file or directory, slice all layers in the scene,
- * and save the result.
- */
-void IAPrinter::userSliceAs()
-{
-    fl_message("The printer\n\"%s\"\ndoes not support slicing yet.", name());
-}
-
-
-/**
- * User asks us to slice and save to the previously used output file.
- *
- * If this is the first request in this session, make sure that the user
- * still agrees with the previous filename.
- */
-void IAPrinter::userSliceAgain()
-{
-    if (pFirstWrite) {
-        userSliceAs();
-    } else {
-        sliceAndWrite();
-    }
-}
-
-
-/**
- * Slice the entire scene and write the result to disk.
- */
-void IAPrinter::sliceAndWrite(const char *filename)
-{
-    fl_message("The printer\n\"%s\"\ndoes not support slicing yet.", name());
 }
 
 
@@ -357,8 +322,7 @@ void IAPrinter::draw()
  */
 void IAPrinter::drawPreview(double lo, double hi)
 {
-    if (pMachineToolpath)
-        pMachineToolpath->draw(lo, hi);
+    pMachineToolpath.draw(lo, hi);
 }
 
 
@@ -418,7 +382,7 @@ IAPrinter *IAPrinterList::defaultPrinter()
     if (pPrinterList.size()) {
         return pPrinterList[0];
     } else {
-        IAPrinter *ret = new IAPrinter("default printer");
+        IAPrinter *ret = new IAPrinterFDM("default printer");
         // automatically adds this printer to the list
         return ret;
     }

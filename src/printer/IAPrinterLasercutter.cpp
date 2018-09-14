@@ -20,22 +20,87 @@
 #include <FL/filename.H>
 
 
+
 /**
- * Virtual, implement this to open a file chooser with the require file
+ * Save the current slice data to a prepared filename.
+ *
+ * Verify a given filename when this is the first call in a session. Request
+ * a new filename if none was set yet.
+ */
+void IAPrinterLasercutter::userSliceSave()
+{
+    if (pFirstWrite) {
+        userSliceSaveAs();
+    } else {
+        // FIXME: if not yet sliced, so it
+        //sliceAll();
+        // FIXME: save to disk
+        saveToolpaths();
+    }
+}
+
+
+/**
+ * Implement this to open a file chooser with the require file
  * pattern and extension.
  */
-void IAPrinterLasercutter::userSliceAs()
+void IAPrinterLasercutter::userSliceSaveAs()
 {
-    if (queryOutputFilename("Save slices as numbered DXF files", "*.dxf", ".dxf")) {
-        sliceAndWrite();
+    if (queryOutputFilename("Save toolpath as GCode", "*.gcode", ".gcode")) {
+        pFirstWrite = false;
+        userSliceSave();
     }
+}
+
+
+/**
+ * Generate all slice data and cache it for a fast preview or save operation.
+ */
+void IAPrinterLasercutter::userSliceGenerateAll()
+{
+    purgeSlicesAndCaches();
+    sliceAll();
+}
+
+
+/**
+ * Create and cache all slices.
+ */
+void IAPrinterLasercutter::sliceAll()
+{
+    double hgt = Iota.pMesh->pMax.z() - Iota.pMesh->pMin.z();
+    // initial height determines stickiness to bed
+
+    double zMin = layerHeight() * 0.7;
+    double zLayerHeight = layerHeight();
+    double zMax = hgt;
+
+    // show a dialog to give the user a feedback for the Build choice
+    IAProgressDialog::show("Genrating slices",
+                           "Slicing layer %d of %d at %.3fmm (%d%%)");
+    Fl::wait(0.1);
+
+    int i = 0, n = (int)((zMax-zMin)/zLayerHeight);
+    for (double z=zMin; z<zMax; z+=zLayerHeight) {
+        if (IAProgressDialog::update(i*100/n, i, n, z, i*100/n)) break;
+#if 0 // we do not cache these types of slices yet
+        gSlice.setNewZ(z);
+        gSlice.clear();
+        gSlice.generateRim(Iota.pMesh);
+        gSlice.tesselateLidFromRim();
+        gSlice.drawFlat(false, 1, 1, 1);
+#endif
+        i++;
+    }
+    IAProgressDialog::hide();
+    gSceneView->redraw();
 }
 
 
 /**
  * Virtual, implement the slicer for the given machine here.
  */
-void IAPrinterLasercutter::sliceAndWrite(const char *filename)
+void IAPrinterLasercutter::saveToolpaths(const char *filename)
 {
     if (!filename)
         filename = outputPath();
@@ -49,10 +114,8 @@ void IAPrinterLasercutter::sliceAndWrite(const char *filename)
         strcat(fn, "_%04d");
     }
 
-    if (!pMachineToolpath)
-        pMachineToolpath = new IAMachineToolpath();
-    else
-        pMachineToolpath->clear();
+    pMachineToolpath.clear();
+    
     double hgt = Iota.pMesh->pMax.z() - Iota.pMesh->pMin.z();
     // initial height determines stickiness to bed
 
@@ -60,8 +123,8 @@ void IAPrinterLasercutter::sliceAndWrite(const char *filename)
     double zLayerHeight = layerHeight();
     double zMax = hgt;
 
-    IAProgressDialog::show("Genrating slices",
-                           "Slicing layer %d of %d at %.3fmm (%d%%)");
+    IAProgressDialog::show("Saving slices",
+                           "Writing layer %d of %d at %.3fmm (%d%%)");
     int i = 0, n = (int)((zMax-zMin)/zLayerHeight);
     for (double z=zMin; z<zMax; z+=zLayerHeight) {
         if (IAProgressDialog::update(i*100/n, i, n, z, i*100/n)) break;

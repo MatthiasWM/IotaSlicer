@@ -262,6 +262,7 @@ void IASceneView::draw()
 
     beginModels();
     if (Iota.pMesh) {
+#if 0
         glPushMatrix();
         glTranslated(Iota.pMesh->position().x(), Iota.pMesh->position().y(), Iota.pMesh->position().z());
         if (Iota.gShowSlice) {
@@ -272,6 +273,21 @@ void IASceneView::draw()
 //            Iota.pMesh->drawEdges();
         }
         glPopMatrix();
+#else
+        glPushMatrix();
+        glTranslated(Iota.pMesh->position().x(), Iota.pMesh->position().y(), Iota.pMesh->position().z());
+        Iota.pMesh->drawSliced(zRangeSlider->lowValue() * Iota.pCurrentPrinter->pLayerHeight);
+        glPopMatrix();
+
+        if (Iota.pCurrentPrinter)
+            Iota.pCurrentPrinter->drawPreview(zRangeSlider->lowValue(),
+                                              zRangeSlider->highValue());
+        glPushMatrix();
+        glTranslated(Iota.pMesh->position().x(), Iota.pMesh->position().y(), Iota.pMesh->position().z());
+        Iota.pMesh->drawSlicedGhost(zRangeSlider->lowValue() * Iota.pCurrentPrinter->pLayerHeight);
+        glPopMatrix();
+#endif
+
     }
     endModels();
 
@@ -283,9 +299,9 @@ void IASceneView::draw()
     // Iota.pCurrentPrinter->gSlice.drawFramebuffer();
 
     // draw the machine toolpath (or whatever kind of preview the printer has)
-    if (Iota.pCurrentPrinter)
-        Iota.pCurrentPrinter->drawPreview(zRangeSlider->lowValue(),
-                                          zRangeSlider->highValue());
+//    if (Iota.pCurrentPrinter)
+//        Iota.pCurrentPrinter->drawPreview(zRangeSlider->lowValue(),
+//                                          zRangeSlider->highValue());
 
     // draw FLTK user interface
     draw_children();
@@ -318,11 +334,12 @@ void IASceneView::draw_children()
     glDisable(GL_LIGHTING);
     glDisable(GL_TEXTURE_2D);
     glDisable(GL_DEPTH_TEST);
-    glDisable(GL_BLEND);
     glDisable(GL_CULL_FACE);
 
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
     Fl_Window::make_current();
-//    glLineWidth(pixel_w()/w());
     fl_push_no_clip();
     make_current();
     Fl_Widget*const* a = array();
@@ -340,7 +357,6 @@ void IASceneView::draw_children()
         gl_draw("Drag and drop STL files here", 0, 0, w(), h(), FL_ALIGN_CENTER|FL_ALIGN_INSIDE);
     }
     fl_pop_clip();
-//    glLineWidth(1);
 }
 
 

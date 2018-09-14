@@ -23,6 +23,12 @@ class IAPrinterSLS : public IAPrinter
 {
 public:
     IAPrinterSLS(const char *name) : IAPrinter(name) { }
+
+    // ---- direct user interaction
+    virtual void userSliceSave() override;
+    virtual void userSliceSaveAs() override;
+    virtual void userSliceGenerateAll() override;
+
 };
 
 
