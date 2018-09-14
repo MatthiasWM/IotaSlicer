@@ -46,7 +46,7 @@ public:
     virtual void draw();
 //    virtual void drawPreview();
     virtual void drawPreview(double lo, double hi);
-    virtual void clearHashedData();
+    virtual void purgeSlicesAndCaches();
 
     void loadSettings();
     void saveSettings();

@@ -87,7 +87,7 @@ IAGeometryReader::IAGeometryReader(const char *filename)
 {
     int fd = fl_open(filename, O_RDONLY, 0);
     if (fd==-1) {
-		Iota.setError("Geometry reader", Error::CantOpenFile_STR_BSD, filename);
+		Iota.Error.set("Geometry reader", IAError::CantOpenFile_STR_BSD, filename);
 		pData = nullptr;
 		pSize = 0;
 		return;

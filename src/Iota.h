@@ -53,15 +53,41 @@ const int IA_PROJECTION_FRONT       = 0;
 const int IA_PROJECTION_CYLINDRICAL = 1;
 const int IA_PROJECTION_SPHERICAL   = 2;
 
-/**
- * List of errors that the user may encounter.
- */
-enum class Error {
-    NoError = 0,
-    CantOpenFile_STR_BSD,
-    UnknownFileType_STR,
-    FileContentCorrupt_STR,
-	OpenGLFeatureNotSupported_STR,
+
+class IAError
+{
+public:
+    /**
+     * List of errors that the user may encounter.
+     */
+    typedef enum {
+        NoError = 0,
+        CantOpenFile_STR_BSD,
+        UnknownFileType_STR,
+        FileContentCorrupt_STR,
+        OpenGLFeatureNotSupported_STR,
+    } Error;
+
+    static void clear();
+    static void set(const char *loc, Error err, const char *str=nullptr);
+    static bool hadError();
+
+    /** Last error, that occured since clearError().
+     \return error code. */
+    static Error error() { return pError; }
+    static void showDialog();
+
+private:
+    /// user definable string explaining the details of an error
+    static const char *pErrorString;
+    /// user definable string explaining the function that caused an error
+    static const char *pErrorLocation;
+    /// current error condition
+    static Error pError;
+    /// system specific error number of the call that was markes by an error
+    static int pErrorBSD;
+    /// list of error messages
+    static const char *kErrorMessage[];
 };
 
 
@@ -83,23 +109,29 @@ public:
     IAIota();
     ~IAIota();
 
-    void menuNewProject();
-    void menuOpen();
-    void menuQuit();
-    void menuSliceAs();
-    void menuSliceAgain();
+    // -------- main menu callbacks
+    // ---- menu File
+    void userMenuFileNewProject();
+    void userMenuFileOpen();
+    void userMenuFileQuit();
+    // ---- menu Edit
+    // ---- menu View
+    // ---- menu Slice
+    void userMenuSliceSliceAs();
+    void userMenuSliceSliceAgain();
+    void userMenuSliceClean();
+    // ---- menuSettings
+    // ---- menu Help
+    void userMenuHelpVersioneer();
+    void userMenuHelpAbout();
 
+    // --------
     void loadDemoFiles();
     void loadAnyFile(const char *list);
 
-    void clearError();
-    void setError(const char *loc, Error err, const char *str=nullptr);
-    bool hadError();
+    /** Set, clear, and show error messages. */
+    IAError Error;
 
-    /** Last error, that occured since clearError().
-     \return error code. */
-    Error lastError() { return pError; }
-    void showError();
 
 private:
     bool addGeometry(const char *name, uint8_t *data, size_t size);
@@ -129,17 +161,6 @@ public:
     /// User settings for this app.
     IAPreferences gPreferences;
 
-private:
-    /// user definable string explaining the details of an error
-    const char *pErrorString = nullptr;
-    /// user definable string explaining the function that caused an error
-    const char *pErrorLocation = nullptr;
-    /// current error condition
-    Error pError = Error::NoError;
-    /// system specific error number of the call that was markes by an error
-    int pErrorBSD = 0;
-    /// list of error messages
-    static const char *kErrorMessage[];
 };
 
 

@@ -78,7 +78,7 @@ IAPrinter::~IAPrinter()
 /**
  * Clear all buffered data and prepare for a modified scene.
  */
-void IAPrinter::clearHashedData()
+void IAPrinter::purgeSlicesAndCaches()
 {
     delete pMachineToolpath; pMachineToolpath = nullptr;
     gSlice.clear();

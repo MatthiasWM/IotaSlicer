@@ -40,13 +40,13 @@ std::shared_ptr<IAGeometryReader> IAGeometryReaderBinaryStl::findReaderFor(const
     struct stat fileStats;
     int ret = ::fl_stat(filename, &fileStats);
     if (ret!=0) {
-        Iota.setError("STL Geometry reader", Error::CantOpenFile_STR_BSD, filename);
+        Iota.Error.set("STL Geometry reader", IAError::CantOpenFile_STR_BSD, filename);
         return nullptr;
     }
 
     int f = fl_open(filename, O_RDONLY);
     if (f==-1) {
-        Iota.setError("STL Geometry reader", Error::CantOpenFile_STR_BSD, filename);
+        Iota.Error.set("STL Geometry reader", IAError::CantOpenFile_STR_BSD, filename);
         return nullptr;
     }
 
@@ -74,7 +74,7 @@ std::shared_ptr<IAGeometryReader> IAGeometryReaderBinaryStl::findReaderFor(const
     ::close(f);
 
     if (n<4) {
-        Iota.setError("STL Geometry reader", Error::CantOpenFile_STR_BSD, filename);
+        Iota.Error.set("STL Geometry reader", IAError::CantOpenFile_STR_BSD, filename);
         return nullptr;
     }
 
@@ -92,11 +92,11 @@ std::shared_ptr<IAGeometryReader> IAGeometryReaderBinaryStl::findReaderFor(const
         +4;         // uint32_t containing the number of triangles in the file
 
     if ( expectedFileSize!=fileStats.st_size ) {
-        Iota.setError("STL Geometry reader", Error::UnknownFileType_STR, filename);
+        Iota.Error.set("STL Geometry reader", IAError::UnknownFileType_STR, filename);
         return nullptr;
     }
 
-    Iota.clearError();
+    Iota.Error.clear();
     return std::make_shared<IAGeometryReaderBinaryStl>(filename);
 }
 
@@ -116,7 +116,7 @@ std::shared_ptr<IAGeometryReader> IAGeometryReaderBinaryStl::findReaderFor(const
 std::shared_ptr<IAGeometryReader> IAGeometryReaderBinaryStl::findReaderFor(const char *name, uint8_t *data, size_t size)
 {
     if (size<83) {
-        Iota.setError("STL Geometry reader", Error::UnknownFileType_STR, name);
+        Iota.Error.set("STL Geometry reader", IAError::UnknownFileType_STR, name);
         return nullptr;
     }
 
@@ -128,11 +128,11 @@ std::shared_ptr<IAGeometryReader> IAGeometryReaderBinaryStl::findReaderFor(const
     size_t expectedFileSize = nTri * (3*4 + 9*4 + 2) + 80 + 4;         // uint32_t containing the number of triangles in the file
 
     if ( expectedFileSize!=size ) {
-        Iota.setError("STL Geometry reader", Error::UnknownFileType_STR, name);
+        Iota.Error.set("STL Geometry reader", IAError::UnknownFileType_STR, name);
         return nullptr;
     }
 
-    Iota.clearError();
+    Iota.Error.clear();
     return std::make_shared<IAGeometryReaderBinaryStl>(name, data, size);
 }
 

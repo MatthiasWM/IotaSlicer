@@ -31,7 +31,7 @@ std::shared_ptr<IAGeometryReader> IAGeometryReaderTextStl::findReaderFor(const c
 {
     int f = fl_open(filename, O_RDONLY);
     if (f==-1) {
-        Iota.setError("STL Geometry reader", Error::CantOpenFile_STR_BSD, filename);
+        Iota.Error.set("STL Geometry reader", IAError::CantOpenFile_STR_BSD, filename);
         return nullptr;
     }
     
@@ -40,7 +40,7 @@ std::shared_ptr<IAGeometryReader> IAGeometryReaderTextStl::findReaderFor(const c
     ::close(f);
 
     if (n<80) {
-        Iota.setError("STL Geometry reader", Error::UnknownFileType_STR, filename);
+        Iota.Error.set("STL Geometry reader", IAError::UnknownFileType_STR, filename);
         return nullptr;
     }
 
@@ -55,11 +55,11 @@ std::shared_ptr<IAGeometryReader> IAGeometryReaderTextStl::findReaderFor(const c
     }
 
     if (strncmp(src, "solid", 5)!=0) {
-        Iota.setError("STL Geometry reader", Error::UnknownFileType_STR, filename);
+        Iota.Error.set("STL Geometry reader", IAError::UnknownFileType_STR, filename);
         return nullptr;
     }
     
-    Iota.clearError();
+    Iota.Error.clear();
     return std::make_shared<IAGeometryReaderTextStl>(filename);
 }
 
@@ -235,7 +235,7 @@ IAMesh *IAGeometryReaderTextStl::load()
     return msh;
     
 fileFormatErr:
-    Iota.setError("Read Text based STL File", Error::FileContentCorrupt_STR, getName());
+    Iota.Error.set("Read Text based STL File", IAError::FileContentCorrupt_STR, getName());
     delete msh;
     return nullptr;
 }

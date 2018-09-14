@@ -130,9 +130,10 @@ void IASceneView::initializeShaders()
  */
 void IASceneView::initializeView()
 {
-	Iota.clearError();
+	Iota.Error.clear();
+    /** \todo The code below should really only be called once in the entire runtime of the app. */
 	if (initializeOpenGL() == false) {
-		Iota.showError();
+		Iota.Error.showDialog();
 		return;
 	}
 

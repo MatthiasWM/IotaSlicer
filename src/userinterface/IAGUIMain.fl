@@ -52,7 +52,7 @@ Function {createIotaAppWindow()} {open
     label {Iota Slicer V0.1a} open
     xywh {472 202 850 600} type Double resizable visible
   } {
-    Fl_Menu_Bar {} {
+    Fl_Menu_Bar {} {open
       xywh {0 0 850 28}
     } {
       Submenu {} {
@@ -61,12 +61,12 @@ Function {createIotaAppWindow()} {open
       } {
         MenuItem {} {
           label {New Project}
-          callback {Iota.menuNewProject();}
+          callback {Iota.userMenuFileNewProject();}
           xywh {0 0 100 20} shortcut 0x40006e
         }
         MenuItem {} {
           label {Open...}
-          callback {Iota.menuOpen();}
+          callback {Iota.userMenuFileOpen();}
           xywh {12 12 100 20} shortcut 0x40006f
         }
         Submenu {} {
@@ -122,7 +122,7 @@ Function {createIotaAppWindow()} {open
         }
         MenuItem {} {
           label Quit
-          callback {Iota.menuQuit();}
+          callback {Iota.userMenuFileQuit();}
           xywh {12 12 100 20} shortcut 0x400071
         }
       }
@@ -169,30 +169,35 @@ Function {createIotaAppWindow()} {open
         }
       }
       Submenu {} {
-        label Build open
+        label Slice open
         xywh {0 0 100 20}
       } {
         MenuItem {} {
           label {Slice...}
-          callback {Iota.menuSliceAs();}
+          callback {Iota.userMenuSliceSliceAs();}
           xywh {0 0 100 20} shortcut 0x410062
         }
         MenuItem {} {
-          label {Slice again}
-          callback {Iota.menuSliceAgain();}
+          label {Slice All}
+          callback {Iota.userMenuSliceSliceAgain();}
           xywh {12 12 100 20} shortcut 0x400062
         }
         MenuItem {} {
-          label {Analyse...}
-          xywh {12 12 100 20} deactivate
+          label {Slice Selected}
+          xywh {24 24 100 20} shortcut 0x480062 deactivate
         }
         MenuItem {} {
-          label {Save GCode...}
-          xywh {24 24 100 20} deactivate
+          label {Save Slice Data...}
+          xywh {24 24 100 20} shortcut 0x40006f deactivate
         }
         MenuItem {} {
-          label {Run GCode...}
-          xywh {36 36 100 20} deactivate
+          label {Run 3D Print...}
+          xywh {36 36 100 20} shortcut 0x400072 deactivate
+        }
+        MenuItem {} {
+          label Clean
+          callback {Iota.userMenuSliceClean();}
+          tooltip {Clean all slices and all cached information.} xywh {48 48 100 20} shortcut 0x41006b
         }
       }
       Submenu {} {
@@ -218,19 +223,12 @@ Function {createIotaAppWindow()} {open
       } {
         MenuItem {} {
           label {Versioneer...}
-          callback {if (!wVersionWindow) {
-createVersionWindow();
-}
-loadSettings();
-wVersionWindow->show();}
+          callback {Iota.userMenuHelpVersioneer();} selected
           xywh {4 4 100 20} divider
         }
         MenuItem {} {
           label {About...}
-          callback {static Fl_Window *aboutWindow = nullptr;
-if (!aboutWindow)
-  aboutWindow = createIotaAboutWindow();
-aboutWindow->show();}
+          callback {Iota.userMenuHelpAbout();}
           xywh {12 12 100 20}
         }
       }
@@ -317,7 +315,7 @@ gSceneView->redraw();}
             Fl_Box wPrinterName {
               xywh {605 33 240 28} box THIN_UP_BOX color 47 labelsize 12
             }
-            Fl_Tree wSessionSettings {selected
+            Fl_Tree wSessionSettings {
               xywh {605 62 240 475} resizable
             }
           }

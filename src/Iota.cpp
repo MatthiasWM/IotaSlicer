@@ -51,30 +51,8 @@ const int kFramebufferSize = 2048;
 //const int kFramebufferSize = 4096;
 
 
-
-#define HDR "Error in Iota Slicer, %s\n\n"
-
-/**
- * Error messages for error code from the Error enum class.
- *
- * These strings are called with the varargs
- *  1) function: a human readable location where this error occured.
- *  2) a caller provided string, often a file name
- *  3) the cause of an error as a text returned by the operating system
- */
-const char *IAIota::kErrorMessage[] =
-{
-    // NoError
-        HDR"No error.",
-    // CantOpenFile_STR_BSD
-        HDR"Can't open file \"%s\":\n%s",
-    // UnknownFileType_STR
-        HDR"Unknown and unsupported file type:\n\"%s\"",
-    // FileContentCorrupt_STR
-        HDR"There seems to be an error inside this file:\n\"%s\"",
-	// OpenGLFeatureNotSupported_STR
-		HDR"Required OpenGL graphics feature not suported:\n\"%s\"",
-};
+#pragma mark -
+// ==== Iota ===================================================================
 
 
 /**
@@ -94,9 +72,153 @@ IAIota::IAIota()
 IAIota::~IAIota()
 {
     delete pMesh;
-    if (pErrorString)
-        ::free((void*)pErrorString);
 }
+
+
+#pragma mark -
+// ==== handle the main menu ===================================================
+
+
+// ---- menu File --------------------------------------------------------------
+
+
+/**
+ * Clear the build playform and start a new build.
+ */
+void IAIota::userMenuFileNewProject()
+{
+    delete Iota.pMesh; Iota.pMesh = nullptr;
+    if (pCurrentPrinter)
+        pCurrentPrinter->purgeSlicesAndCaches();
+    gSceneView->redraw();
+}
+
+
+/**
+ * Load any kind of file from disk.
+ *
+ * Currently that would be STL files
+ */
+void IAIota::userMenuFileOpen()
+{
+    Fl_Native_File_Chooser fc(Fl_Native_File_Chooser::BROWSE_FILE);
+    fc.title("Open mesh file");
+    fc.filter("*.{stl,STL}");
+    fc.directory(gPreferences.pLastLoadFilename);
+    switch (fc.show()) {
+        case -1: // error
+        case 1: // cancel
+            return;
+        default: // filename choosen
+            break;
+    }
+    const char *filename = fc.filename();
+    if (!filename || !*filename)
+        return;
+    fl_filename_absolute(gPreferences.pLastLoadFilename,
+                         sizeof(gPreferences.pLastLoadFilename),
+                         filename);
+    gPreferences.flush();
+    userMenuFileNewProject();
+    addGeometry(gPreferences.pLastLoadFilename);
+}
+
+
+/**
+ * Just quit the app.
+ * \todo At some point, we should probably ask if the user has unsaved changes.
+ */
+void IAIota::userMenuFileQuit()
+{
+    Iota.gMainWindow->hide();
+    Fl::flush();
+    exit(0);
+}
+
+
+// ---- menu Edit --------------------------------------------------------------
+
+// nothing yet
+
+// ---- menu View --------------------------------------------------------------
+
+// nothing yet
+
+// ---- menu Slice -------------------------------------------------------------
+
+
+/**
+ * Ask for a filename and write the slice data there.
+ */
+void IAIota::userMenuSliceSliceAs()
+{
+    if (pCurrentPrinter)
+        pCurrentPrinter->userSliceAs();
+}
+
+
+/**
+ * User wants to repeat the same slicing operation.
+ *
+ * The first time in a session, menuSliceAgain() verifies the destination
+ * filename by calling menuSliceAs(). For further calls, this will repeat
+ * the previous operation for a given printer.
+ */
+void IAIota::userMenuSliceSliceAgain()
+{
+    if (pCurrentPrinter)
+        pCurrentPrinter->userSliceAgain();
+}
+
+
+/**
+ * Clean all preprocessed and cached slice data.
+ *
+ * Iota should be smart about cleaning caches whenever the user changes relevant
+ * settings. This menu item is somewhat of a reassurance and also a helper
+ * during development.
+ */
+void IAIota::userMenuSliceClean()
+{
+    if (pCurrentPrinter)
+        pCurrentPrinter->purgeSlicesAndCaches();
+}
+
+// ---- menu Settings ----------------------------------------------------------
+
+// nothing yet
+
+// ---- menu Help --------------------------------------------------------------
+
+
+/**
+ * Open the version managment tool (not for the user mode release!).
+ */
+void IAIota::userMenuHelpVersioneer()
+{
+    if (!wVersionWindow) {
+        createVersionWindow();
+    }
+    loadSettings();
+    wVersionWindow->show();
+}
+
+
+/**
+ * Open the "About..." Iota window.
+ */
+void IAIota::userMenuHelpAbout()
+{
+    static Fl_Window *aboutWindow = nullptr;
+    if (!aboutWindow)
+        aboutWindow = createIotaAboutWindow();
+    aboutWindow->show();
+}
+
+
+#pragma mark -
+// =============================================================================
+
 
 
 /**
@@ -126,18 +248,18 @@ void IAIota::loadAnyFile(const char *list)
         if (!fnEnd) fnEnd = fnStart+strlen(fnStart);
         if (fnEnd!=fnStart) {
             // We found a filename; now go and read that file.
-            clearError();
+            Error.clear();
             char *filename = (char*)calloc(1, fnEnd-fnStart+1);
             memmove(filename, fnStart, fnEnd-fnStart);
             const char *ext = fl_filename_ext(filename);
             if (fl_utf_strcasecmp(ext, ".stl")==0) {
                 Iota.addGeometry(filename);
             } else {
-                setError("Load Any File", Error::UnknownFileType_STR, filename);
+                Error.set("Load Any File", IAError::UnknownFileType_STR, filename);
             }
             ::free((void*)filename);
-            if (hadError()) {
-                showError();
+            if (Error.hadError()) {
+                Error.showDialog();
                 break;
             }
         }
@@ -145,20 +267,6 @@ void IAIota::loadAnyFile(const char *list)
         fnStart = fnEnd+1;
     }
     gSceneView->redraw();
-}
-
-
-
-
-/**
- * Just quit the app.
- * \todo At some point, we should probably ask if the user has unsaved changes.
- */
-void IAIota::menuQuit()
-{
-    Iota.gMainWindow->hide();
-    Fl::flush();
-    exit(0);
 }
 
 
@@ -207,7 +315,7 @@ bool IAIota::addGeometry(std::shared_ptr<IAGeometryReader> reader)
     bool ret = false;
     delete Iota.pMesh; Iota.pMesh = nullptr;
     if (pCurrentPrinter)
-        pCurrentPrinter->clearHashedData();
+        pCurrentPrinter->purgeSlicesAndCaches();
     auto geometry = reader->load();
     Iota.pMesh = geometry;
     if (pMesh) {
@@ -220,68 +328,56 @@ bool IAIota::addGeometry(std::shared_ptr<IAGeometryReader> reader)
 
 
 /**
- * Clear the build playform and start a new build.
- */
-void IAIota::menuNewProject()
-{
-    delete Iota.pMesh; Iota.pMesh = nullptr;
-    if (pCurrentPrinter) pCurrentPrinter->clearHashedData();
-    gSceneView->redraw();
-}
-
-
-/**
- * Load any kind of file from disk.
+ * Load a model and a texture that come with the app for an easy example.
  *
- * Currently that would be STL files
+ * These are binary assets compiled into the code. There is no need for
+ * external files.
  */
-void IAIota::menuOpen()
+void IAIota::loadDemoFiles()
 {
-    Fl_Native_File_Chooser fc(Fl_Native_File_Chooser::BROWSE_FILE);
-    fc.title("Open mesh file");
-    fc.filter("*.{stl,STL}");
-    fc.directory(gPreferences.pLastLoadFilename);
-    switch (fc.show()) {
-        case -1: // error
-        case 1: // cancel
-            return;
-        default: // filename choosen
-            break;
-    }
-    const char *filename = fc.filename();
-    if (!filename || !*filename)
-        return;
-    fl_filename_absolute(gPreferences.pLastLoadFilename,
-                         sizeof(gPreferences.pLastLoadFilename),
-                         filename);
-    gPreferences.flush();
-    menuNewProject();
-    addGeometry(gPreferences.pLastLoadFilename);
+    loadTexture("testcard1024.jpg", defaultTexture);
+    Iota.addGeometry("default.stl", defaultModel, sizeof(defaultModel));
 }
 
+#pragma mark -
+// ==== error handling =========================================================
+
+#define HDR "Error in Iota Slicer, %s\n\n"
+
+
+/// user definable string explaining the details of an error
+const char *IAError::pErrorString = nullptr;
+
+/// user definable string explaining the function that caused an error
+const char *IAError::pErrorLocation = nullptr;
+
+/// current error condition
+IAError::Error IAError::pError = IAError::NoError;
+
+/// system specific error number of the call that was markes by an error
+int IAError::pErrorBSD = 0;
 
 /**
- * Ask for a filename and write the slice data there.
- */
-void IAIota::menuSliceAs()
-{
-    if (pCurrentPrinter)
-        pCurrentPrinter->userSliceAs();
-}
-
-
-/**
- * User wants to repeat the same slicing operation.
+ * Error messages for error code from the Error enum class.
  *
- * The first time in a session, menuSliceAgain() verifies the destination
- * filename by calling menuSliceAs(). For further calls, this will repeat
- * the previous operation for a given printer.
+ * These strings are called with the varargs
+ *  1) function: a human readable location where this error occured.
+ *  2) a caller provided string, often a file name
+ *  3) the cause of an error as a text returned by the operating system
  */
-void IAIota::menuSliceAgain()
+const char *IAError::kErrorMessage[] =
 {
-    if (pCurrentPrinter)
-        pCurrentPrinter->userSliceAgain();
-}
+    // NoError
+    HDR"No error.",
+    // CantOpenFile_STR_BSD
+    HDR"Can't open file \"%s\":\n%s",
+    // UnknownFileType_STR
+    HDR"Unknown and unsupported file type:\n\"%s\"",
+    // FileContentCorrupt_STR
+    HDR"There seems to be an error inside this file:\n\"%s\"",
+    // OpenGLFeatureNotSupported_STR
+    HDR"Required OpenGL graphics feature not suported:\n\"%s\"",
+};
 
 
 /**
@@ -297,7 +393,7 @@ void IAIota::menuSliceAgain()
  *
  * \see IAIota::showLastError(), IAIota::hadError()
  */
-void IAIota::clearError()
+void IAError::clear()
 {
     pError = Error::NoError;
     pErrorBSD = 0;
@@ -317,7 +413,7 @@ void IAIota::clearError()
  * \param str error messages ending in _STR require additonal text to print the
  *        error message, usually a file name
  */
-void IAIota::setError(const char *loc, Error err, const char *str)
+void IAError::set(const char *loc, Error err, const char *str)
 {
     pErrorLocation = loc;
     pError = err;
@@ -333,7 +429,7 @@ void IAIota::setError(const char *loc, Error err, const char *str)
  *
  * \return true if there was an error since the last call to clearError()
  */
-bool IAIota::hadError()
+bool IAError::hadError()
 {
     return (pError!=Error::NoError);
 }
@@ -342,7 +438,7 @@ bool IAIota::hadError()
 /**
  * Show an alert box with the text of the last error, registered by setError().
  */
-void IAIota::showError()
+void IAError::showDialog()
 {
     if (hadError()) {
         fl_alert(kErrorMessage[(size_t)pError], pErrorLocation, pErrorString, strerror(pErrorBSD));
@@ -350,19 +446,12 @@ void IAIota::showError()
 }
 
 
-/**
- * Load a model and a texture that come with the app for an easy example.
- *
- * These are binary assets compiled into the code. There is no need for
- * external files.
- */
-void IAIota::loadDemoFiles()
-{
-    loadTexture("testcard1024.jpg", defaultTexture);
-    Iota.addGeometry("default.stl", defaultModel, sizeof(defaultModel));
-}
 
 
+
+
+#pragma mark -
+// ==== main() =================================================================
 /**
  * Launch our app.
  *
