@@ -193,14 +193,14 @@ void IAPrinterFDM::sliceAll()
 #else
         IAFramebuffer mask(sliceList[i+1]->pFramebuffer);
 //        if (i==ly) mask.saveAsJpeg("/Users/matt/aaa_01.jpg");
-//        if (sliceList[i+2] && sliceList[i+2]->pFramebuffer)
-//            mask.logicAnd(sliceList[i+2]->pFramebuffer);
+        if (sliceList[i+2] && sliceList[i+2]->pFramebuffer)
+            mask.logicAnd(sliceList[i+2]->pFramebuffer);
 //        if (i==ly) sliceList[i+2]->pFramebuffer->saveAsJpeg("/Users/matt/aaa_02.jpg");
 //        if (i==ly) mask.saveAsJpeg("/Users/matt/aaa_03.jpg");
         mask.logicAnd((i>0) ? sliceList[i-1]->pFramebuffer : nullptr);
 //        if (i==ly) sliceList[i-1]->pFramebuffer->saveAsJpeg("/Users/matt/aaa_04.jpg");
 //        if (i==ly) mask.saveAsJpeg("/Users/matt/aaa_05.jpg");
-//        mask.logicAnd((i>1) ? sliceList[i-2]->pFramebuffer : nullptr);
+        mask.logicAnd((i>1) ? sliceList[i-2]->pFramebuffer : nullptr);
 //        if (i==ly) sliceList[i-2]->pFramebuffer->saveAsJpeg("/Users/matt/aaa_06.jpg");
 //        if (i==ly) mask.saveAsJpeg("/Users/matt/aaa_07.jpg");
 #endif

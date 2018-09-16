@@ -155,6 +155,7 @@ void IAFramebuffer::logicAndNot(IAFramebuffer *src)
         glBindFramebuffer(GL_DRAW_FRAMEBUFFER, pFramebuffer);
 
         // FIXME: we can push and pop these
+        glDisable(GL_DEPTH_TEST);
         // create a point if the destination point is 1 and the src is 0
         glBlendFunc(GL_ONE, GL_ONE);
         glBlendEquation(GL_FUNC_REVERSE_SUBTRACT);
@@ -189,13 +190,9 @@ void IAFramebuffer::logicAnd(IAFramebuffer *src)
         glBindFramebuffer(GL_DRAW_FRAMEBUFFER, pFramebuffer);
 
         // FIXME: we can push and pop these
-#if 0
+        glDisable(GL_DEPTH_TEST);
         glBlendFunc(GL_ONE, GL_ONE);
         glBlendEquation(GL_MIN); // FIXME: not all drivers support this
-#else
-        glBlendFunc(GL_DST_COLOR, GL_ZERO);
-        glBlendEquation(GL_ADD);
-#endif
         glEnable(GL_BLEND);
 //        GLenum err = glGetError(); printf("2 GL Error %d\n", err);
 
