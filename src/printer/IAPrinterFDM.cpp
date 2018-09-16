@@ -165,7 +165,7 @@ void IAPrinterFDM::sliceAll()
 
         IAToolpath *tp = pMachineToolpath.createLayer(z);
         if (tp3) tp->add(tp3.get());
-        if (tp1) tp->add(tp2.get());
+        if (tp2) tp->add(tp2.get());
         if (tp1) tp->add(tp1.get());
 
         i++;
@@ -180,17 +180,59 @@ void IAPrinterFDM::sliceAll()
         IAToolpath *tp = pMachineToolpath.findLayer(z);
         IASlice *slc = sliceList[i];
 
+#if 0
+        IAFramebuffer lid_mask(sliceList[i+1]->pFramebuffer);
+        if (sliceList[i+2] && sliceList[i+2]->pFramebuffer)
+            lid_mask.logicAnd(sliceList[i+2]->pFramebuffer);
+        IAFramebuffer mask(lid_mask);
+        if (i>0) {
+            IAFramebuffer bot_mask(sliceList[i-1]->pFramebuffer);
+            bot_mask.logicAnd((i>1) ? sliceList[i-2]->pFramebuffer : nullptr);
+            mask.logicAnd(&bot_mask);
+        }
+#else
         IAFramebuffer mask(sliceList[i+1]->pFramebuffer);
+//        if (i==ly) mask.saveAsJpeg("/Users/matt/aaa_01.jpg");
+//        if (sliceList[i+2] && sliceList[i+2]->pFramebuffer)
+//            mask.logicAnd(sliceList[i+2]->pFramebuffer);
+//        if (i==ly) sliceList[i+2]->pFramebuffer->saveAsJpeg("/Users/matt/aaa_02.jpg");
+//        if (i==ly) mask.saveAsJpeg("/Users/matt/aaa_03.jpg");
         mask.logicAnd((i>0) ? sliceList[i-1]->pFramebuffer : nullptr);
+//        if (i==ly) sliceList[i-1]->pFramebuffer->saveAsJpeg("/Users/matt/aaa_04.jpg");
+//        if (i==ly) mask.saveAsJpeg("/Users/matt/aaa_05.jpg");
+//        mask.logicAnd((i>1) ? sliceList[i-2]->pFramebuffer : nullptr);
+//        if (i==ly) sliceList[i-2]->pFramebuffer->saveAsJpeg("/Users/matt/aaa_06.jpg");
+//        if (i==ly) mask.saveAsJpeg("/Users/matt/aaa_07.jpg");
+#endif
 
+        // build lids and bottoms
         IAFramebuffer lid(slc->pFramebuffer);
+//        if (i==ly) lid.saveAsJpeg("/Users/matt/aaa_00.jpg");
         lid.logicAndNot(&mask);
+//        if (i==ly) lid.saveAsJpeg("/Users/matt/aaa_08.jpg");
+        IAFramebuffer infill(slc->pFramebuffer);
+#if 0
+        //   build the lid with horizontal and vertical close lines
         lid.overlayLidPattern(i, pNozzleDiameter);
         auto lidPath = lid.toolpathFromLasso(z);
         if (lidPath) tp->add(lidPath.get());
+#else
+        //   build the lid with concentric outlines
+        for (;;) {
+            auto tp1 = lid.toolpathFromLassoAndContract(z, pNozzleDiameter);
+            if (!tp1) break;
+            infill.subtract(tp1, pNozzleDiameter);
+            tp->add(tp1.get());
+        }
+#endif
 
-        IAFramebuffer infill(slc->pFramebuffer);
+        // build infills
+        /** \todo We are actually filling the areas where the lids and the infill touch twice! */
+        /** \todo remove material that we generated in the lid already */
         infill.logicAnd(&mask);
+
+//        if (i==ly) infill.saveAsJpeg("/Users/matt/aaa_09.jpg");
+
         infill.overlayInfillPattern(i, 3.0);
         auto infillPath = infill.toolpathFromLasso(z);
         if (infillPath) tp->add(infillPath.get());

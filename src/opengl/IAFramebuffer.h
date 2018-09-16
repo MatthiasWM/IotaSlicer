@@ -79,7 +79,8 @@ public:
 
     void logicAndNot(IAFramebuffer*);
     void logicAnd(IAFramebuffer*);
-    
+
+    void subtract(IAToolpathSP, double r);
     IAToolpathSP toolpathFromLassoAndContract(double z, double r);
     IAToolpathSP toolpathFromLasso(double z);
 

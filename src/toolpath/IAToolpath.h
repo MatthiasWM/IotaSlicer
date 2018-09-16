@@ -25,7 +25,7 @@ typedef std::shared_ptr<IAToolpath> IAToolpathSP;
 
 
 /**
- * Represents a list commands (settings, motions) for a 3d printer.
+ * Represents a list of commands (settings, motions) for a 3d printer.
  *
  * This is an internal storage format for commands that need to be sent
  * to a machine to create the desired 3D printout.

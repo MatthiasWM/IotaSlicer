@@ -156,7 +156,7 @@ void IAFramebuffer::logicAndNot(IAFramebuffer *src)
 
         // FIXME: we can push and pop these
         // create a point if the destination point is 1 and the src is 0
-        glBlendFunc(GL_SRC_COLOR, GL_DST_COLOR);
+        glBlendFunc(GL_ONE, GL_ONE);
         glBlendEquation(GL_FUNC_REVERSE_SUBTRACT);
         glEnable(GL_BLEND);
 //        GLenum err = glGetError(); printf("1 GL Error %d\n", err);
@@ -189,8 +189,13 @@ void IAFramebuffer::logicAnd(IAFramebuffer *src)
         glBindFramebuffer(GL_DRAW_FRAMEBUFFER, pFramebuffer);
 
         // FIXME: we can push and pop these
-        glBlendFunc(GL_SRC_COLOR, GL_DST_COLOR);
+#if 0
+        glBlendFunc(GL_ONE, GL_ONE);
         glBlendEquation(GL_MIN); // FIXME: not all drivers support this
+#else
+        glBlendFunc(GL_DST_COLOR, GL_ZERO);
+        glBlendEquation(GL_ADD);
+#endif
         glEnable(GL_BLEND);
 //        GLenum err = glGetError(); printf("2 GL Error %d\n", err);
 
@@ -605,7 +610,7 @@ IAToolpathSP IAFramebuffer::toolpathFromLasso(double z)
  * Trace the framebuffer, create a toolpath, and reduce the framebuffer by
  * the toolpath pattern.
  *
- * \param z create a toolptah at this layer
+ * \param z create a toolpath at this layer
  * \param r the pattern will be reduced by the amount in r
  *
  * \return nullptr, if tracing generates an empty toolpath
@@ -615,17 +620,27 @@ IAToolpathSP IAFramebuffer::toolpathFromLassoAndContract(double z, double r)
 {
     // use a shared pointer, so we don;t have to worry about deallocating
     auto tp0 = toolpathFromLasso(z);
+    subtract(tp0, r);
+    return tp0;
+}
 
-    if (tp0) {
+
+/**
+ * Subtract a toolpath from this pattern.
+ *
+ * \param tp subtract this toolpath form the pattern
+ * \param r the pattern will be reduced by the amount in r
+ */
+void IAFramebuffer::subtract(IAToolpathSP tp, double r)
+{
+    if (tp) {
         // draw the outline to contract the image
         bindForRendering();
         glDisable(GL_DEPTH_TEST);
         glColor3f(0.0, 0.0, 0.0);
-        tp0->drawFlat(r*2.0);
+        tp->drawFlat(r*2.0);
         unbindFromRendering();
     }
-
-    return tp0;
 }
 
 

@@ -41,8 +41,16 @@ void IAGLRangeSlider::draw()
     gl_draw_box(this, btn==3 ? FL_DOWN_BOX : FL_UP_BOX, tx, ty, tw, th, color());
     if (Fl::focus() == this) {
         gl_draw_focus(this, FL_NO_BOX, sx+2, sy+2, sw-6, sh-6);
+        gl_draw_focus(this, FL_NO_BOX, tx+2, ty+2, tw-6, th-6);
     }
 
+    gl_font(FL_HELVETICA, 10);
+    gl_color(0x33333300);
+    char buf[32];
+    sprintf(buf, "%d", (int)highValue());
+    gl_draw(buf, X-152, sy+6, 150, sh, FL_ALIGN_RIGHT);
+    sprintf(buf, "%d", (int)lowValue());
+    gl_draw(buf, X-152, ty+6, 150, th, FL_ALIGN_RIGHT);
 }
 
 
