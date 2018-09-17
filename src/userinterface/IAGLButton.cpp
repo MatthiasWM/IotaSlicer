@@ -34,10 +34,10 @@ void flgl_xyline(int x, int y, int x1)
 {
     if (x>x1) { int tmp = x; x = x1; x1 = tmp; }
     glBegin(GL_POLYGON);
-    glVertex2f(x-0.5, y-0.5);
-    glVertex2f(x1+0.5, y-0.5);
-    glVertex2f(x1+0.5, y+0.5);
-    glVertex2f(x-0.5, y+0.5);
+    glVertex2f(x-0.5f, y-0.5f);
+    glVertex2f(x1+0.5f, y-0.5f);
+    glVertex2f(x1+0.5f, y+0.5f);
+    glVertex2f(x-0.5f, y+0.5f);
     glEnd();
 }
 
@@ -45,10 +45,10 @@ void flgl_yxline(int x, int y, int y1)
 {
     if (y>y1) { int tmp = y; y = y1; y1 = tmp; }
     glBegin(GL_POLYGON);
-    glVertex2f(x-0.5, y-0.5);
-    glVertex2f(x+0.5, y-0.5);
-    glVertex2f(x+0.5, y1+0.5);
-    glVertex2f(x-0.5, y1+0.5);
+    glVertex2f(x-0.5f, y-0.5f);
+    glVertex2f(x+0.5f, y-0.5f);
+    glVertex2f(x+0.5f, y1+0.5f);
+    glVertex2f(x-0.5f, y1+0.5f);
     glEnd();
 }
 
@@ -56,10 +56,10 @@ void flgl_rectf(int x, int y, int w, int h)
 {
     if (w<=0 || h<=0) return;
     glBegin(GL_POLYGON);
-    glVertex2f(x-0.5, y-0.5);
-    glVertex2f(x+w-0.5, y-0.5);
-    glVertex2f(x+w-0.5, y+h-0.5);
-    glVertex2f(x-0.5, y+h-0.5);
+    glVertex2f(x-0.5f, y-0.5f);
+    glVertex2f(x+w-0.5f, y-0.5f);
+    glVertex2f(x+w-0.5f, y+h-0.5f);
+    glVertex2f(x-0.5f, y+h-0.5f);
     glEnd();
 }
 
@@ -156,10 +156,10 @@ void gl_draw_focus(Fl_Widget const *w, Fl_Boxtype B, int X, int Y, int W, int H)
     glLineStipple(1, 0x3333);
     glEnable(GL_LINE_STIPPLE);
     glBegin(GL_LINE_LOOP);
-    glVertex2f(rx+0.5, ry+0.5);
-    glVertex2f(rr+0.5, ry+0.5);
-    glVertex2f(rr+0.5, rb+0.5);
-    glVertex2f(rx+0.5, rb+0.5);
+    glVertex2f(rx+0.5f, ry+0.5f);
+    glVertex2f(rr+0.5f, ry+0.5f);
+    glVertex2f(rr+0.5f, rb+0.5f);
+    glVertex2f(rx+0.5f, rb+0.5f);
     glEnd();
     glLineStipple(1, 0xffff);
     glDisable(GL_LINE_STIPPLE);

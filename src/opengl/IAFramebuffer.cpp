@@ -31,8 +31,9 @@ PFNGLRENDERBUFFERSTORAGEEXTPROC glRenderbufferStorageEXT;
 PFNGLFRAMEBUFFERRENDERBUFFEREXTPROC glFramebufferRenderbufferEXT;
 PFNGLCHECKFRAMEBUFFERSTATUSEXTPROC glCheckFramebufferStatusEXT;
 PFNGLDELETERENDERBUFFERSEXTPROC glDeleteRenderbuffersEXT;
+PFNGLBLENDEQUATIONEXTPROC glBlendEquationEXT;
+PFNGLBLITFRAMEBUFFEREXTPROC glBlitFramebufferEXT;
 #endif
-
 /*
  glColorMask(bool r, bool g, bool b, bool a);
  glLogicOp(x);
@@ -91,7 +92,7 @@ bool initializeOpenGL()
 	a##EXT=(b)wglGetProcAddress(#a); \
 	if (!a##EXT) a##EXT=(b)wglGetProcAddress(#a"EXT"); \
 	if (!a##EXT) a##EXT=(b)wglGetProcAddress(#a"ARB"); \
-	if (!a##EXT) { Iota.setError("Initializing OpenGL", Error::OpenGLFeatureNotSupported_STR, #a); return false; }
+	if (!a##EXT) { Iota.Error.set("Initializing OpenGL", IAError::OpenGLFeatureNotSupported_STR, #a); return false; }
 
 	FINDGL(glGenFramebuffers, PFNGLGENFRAMEBUFFERSEXTPROC);
 	FINDGL(glDeleteFramebuffers, PFNGLDELETEFRAMEBUFFERSEXTPROC);
@@ -103,6 +104,8 @@ bool initializeOpenGL()
 	FINDGL(glFramebufferRenderbuffer, PFNGLFRAMEBUFFERRENDERBUFFEREXTPROC);
 	FINDGL(glCheckFramebufferStatus, PFNGLCHECKFRAMEBUFFERSTATUSEXTPROC);
 	FINDGL(glDeleteRenderbuffers, PFNGLDELETERENDERBUFFERSEXTPROC);
+	FINDGL(glBlendEquation, PFNGLBLENDEQUATIONEXTPROC);
+	FINDGL(glBlitFramebuffer, PFNGLBLITFRAMEBUFFEREXTPROC);
 #endif
 	return true;
 }
@@ -133,9 +136,9 @@ IAFramebuffer::IAFramebuffer(IAFramebuffer *src)
 {
     if (src->hasFBO()) {
         bindForRendering();
-        glBindFramebuffer(GL_READ_FRAMEBUFFER, src->pFramebuffer);
-        glBindFramebuffer(GL_DRAW_FRAMEBUFFER, pFramebuffer);
-        glBlitFramebuffer(0, 0, pWidth, pHeight,
+        glBindFramebufferEXT(GL_READ_FRAMEBUFFER, src->pFramebuffer);
+        glBindFramebufferEXT(GL_DRAW_FRAMEBUFFER, pFramebuffer);
+        glBlitFramebufferEXT(0, 0, pWidth, pHeight,
                           0, 0, pWidth, pHeight,
                           GL_COLOR_BUFFER_BIT, GL_NEAREST);
 //        GLenum err = glGetError();
@@ -155,14 +158,14 @@ void IAFramebuffer::logicAndNot(IAFramebuffer *src)
 {
     if (src && src->hasFBO()) {
         bindForRendering();
-        glBindFramebuffer(GL_READ_FRAMEBUFFER, src->pFramebuffer);
-        glBindFramebuffer(GL_DRAW_FRAMEBUFFER, pFramebuffer);
+        glBindFramebufferEXT(GL_READ_FRAMEBUFFER, src->pFramebuffer);
+        glBindFramebufferEXT(GL_DRAW_FRAMEBUFFER, pFramebuffer);
 
         // FIXME: we can push and pop these
         glDisable(GL_DEPTH_TEST);
         // create a point if the destination point is 1 and the src is 0
         glBlendFunc(GL_ONE, GL_ONE);
-        glBlendEquation(GL_FUNC_REVERSE_SUBTRACT);
+        glBlendEquationEXT(GL_FUNC_REVERSE_SUBTRACT);
         glEnable(GL_BLEND);
 //        GLenum err = glGetError(); printf("1 GL Error %d\n", err);
 
@@ -171,7 +174,7 @@ void IAFramebuffer::logicAndNot(IAFramebuffer *src)
 
         glDisable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        glBlendEquation(GL_FUNC_ADD);
+        glBlendEquationEXT(GL_FUNC_ADD);
 
         unbindFromRendering();
     } else {
@@ -190,13 +193,13 @@ void IAFramebuffer::logicAnd(IAFramebuffer *src)
 {
     if (src && src->hasFBO()) {
         bindForRendering();
-        glBindFramebuffer(GL_READ_FRAMEBUFFER, src->pFramebuffer);
-        glBindFramebuffer(GL_DRAW_FRAMEBUFFER, pFramebuffer);
+        glBindFramebufferEXT(GL_READ_FRAMEBUFFER, src->pFramebuffer);
+        glBindFramebufferEXT(GL_DRAW_FRAMEBUFFER, pFramebuffer);
 
         // FIXME: we can push and pop these
         glDisable(GL_DEPTH_TEST);
         glBlendFunc(GL_ONE, GL_ONE);
-        glBlendEquation(GL_MIN); // FIXME: not all drivers support this
+        glBlendEquationEXT(GL_MIN); // FIXME: not all drivers support this
         glEnable(GL_BLEND);
 //        GLenum err = glGetError(); printf("2 GL Error %d\n", err);
 
@@ -205,7 +208,7 @@ void IAFramebuffer::logicAnd(IAFramebuffer *src)
 
         glDisable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        glBlendEquation(GL_FUNC_ADD);
+        glBlendEquationEXT(GL_FUNC_ADD);
 
         unbindFromRendering();
     } else {
@@ -489,13 +492,13 @@ void IAFramebuffer::draw(double z)
     glColor3f(1.0, 1.0, 1.0);
     glBegin(GL_POLYGON);
     glTexCoord2f(0.0, 0.0);
-    glVertex3f(pPrinter->pBuildVolumeMin.x(), pPrinter->pBuildVolumeMin.y(), z);
+    glVertex3d(pPrinter->pBuildVolumeMin.x(), pPrinter->pBuildVolumeMin.y(), z);
     glTexCoord2f(0.0, 1.0);
-    glVertex3f(pPrinter->pBuildVolumeMin.x(), pPrinter->pBuildVolumeMax.y(), z);
+    glVertex3d(pPrinter->pBuildVolumeMin.x(), pPrinter->pBuildVolumeMax.y(), z);
     glTexCoord2f(1.0, 1.0);
-    glVertex3f(pPrinter->pBuildVolumeMax.x(), pPrinter->pBuildVolumeMax.y(), z);
+    glVertex3d(pPrinter->pBuildVolumeMax.x(), pPrinter->pBuildVolumeMax.y(), z);
     glTexCoord2f(1.0, 0.0);
-    glVertex3f(pPrinter->pBuildVolumeMax.x(), pPrinter->pBuildVolumeMin.y(), z);
+    glVertex3d(pPrinter->pBuildVolumeMax.x(), pPrinter->pBuildVolumeMin.y(), z);
     glEnd();
     glDisable(GL_TEXTURE_2D);
 }
@@ -676,10 +679,10 @@ void IAFramebuffer::overlayLidPattern(int i, double infillWdt)
     }
     for (double j=-wdt; j<wdt; j+=infillWdt*2) {
         glBegin(GL_POLYGON);
-        glVertex2f(j+infillWdt, -hgt);
-        glVertex2f(j, -hgt);
-        glVertex2f(j, hgt);
-        glVertex2f(j+infillWdt, hgt);
+        glVertex2d(j+infillWdt, -hgt);
+        glVertex2d(j, -hgt);
+        glVertex2d(j, hgt);
+        glVertex2d(j+infillWdt, hgt);
         glEnd();
     }
     glPopMatrix();
@@ -711,10 +714,10 @@ void IAFramebuffer::overlayInfillPattern(int i, double infillWdt)
     for (double j=-2*wdt; j<2*wdt; j+=infillWdt*2) {
         glBegin(GL_POLYGON);
         /** \todo Draw this large enough so that it renders the entire scene, even if rotated. */
-        glVertex2f(j+infillWdt, -2*hgt);
-        glVertex2f(j, -2*hgt);
-        glVertex2f(j, 2*hgt);
-        glVertex2f(j+infillWdt, 2*hgt);
+        glVertex2d(j+infillWdt, -2*hgt);
+        glVertex2d(j, -2*hgt);
+        glVertex2d(j, 2*hgt);
+        glVertex2d(j+infillWdt, 2*hgt);
         glEnd();
     }
     glPopMatrix();

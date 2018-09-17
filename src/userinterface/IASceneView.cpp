@@ -145,8 +145,8 @@ void IASceneView::initializeView()
         static GLfloat light_ambient[] = { 0.1f, 0.1f, 0.1f, 1.0f};
         static GLfloat light_diffuse[] = { 1.0f, 1.0f, 1.0f, 1.0f};
 
-        glClearColor (0.9, 0.9, 0.9, 0.0);
-        glShadeModel (GL_SMOOTH);
+        glClearColor(0.9f, 0.9f, 0.9f, 0.0f);
+        glShadeModel(GL_SMOOTH);
 
         glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
         glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);

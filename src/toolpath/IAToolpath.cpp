@@ -15,6 +15,7 @@
 #include <FL/gl.h>
 
 #include <math.h>
+#include <algorithm>
 
 
 bool isBlack(uint8_t *rgb, IAVector3d v)
@@ -282,7 +283,9 @@ bool IAMachineToolpath::saveGCode(const char *filename /*, printer */)
 }
 
 
+#ifdef __APPLE__
 #pragma mark -
+#endif
 // =============================================================================
 
 
@@ -444,7 +447,9 @@ void IAToolpathList::optimize()
 
 
 
+#ifdef __APPLE__
 #pragma mark -
+#endif
 // =============================================================================
 
 
@@ -585,7 +590,9 @@ void IAToolpath::saveDXF(IADxfWriter &w)
 }
 
 
+#ifdef __APPLE__
 #pragma mark -
+#endif
 // =============================================================================
 
 
@@ -608,7 +615,9 @@ IAToolpath *IAToolpathLoop::clone(IAToolpath *t)
 }
 
 
+#ifdef __APPLE__
 #pragma mark -
+#endif
 // =============================================================================
 
 
@@ -643,7 +652,9 @@ void IAToolpathElement::draw()
 }
 
 
+#ifdef __APPLE__
 #pragma mark -
+#endif
 // =============================================================================
 
 
@@ -706,7 +717,9 @@ void IAToolpathExtruder::saveGCode(IAGcodeWriter &w)
 }
 
 
+#ifdef __APPLE__
 #pragma mark -
+#endif
 // =============================================================================
 
 

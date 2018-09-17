@@ -143,6 +143,12 @@
     <ClCompile Include="..\..\..\src\printer\IAPrinterSLS.cpp">
       <Filter>src\printer</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\src\userinterface\IAProgressDialog.cpp">
+      <Filter>src\userInterface</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\userinterface\IAGLRangeSlider.cxx">
+      <Filter>src\userInterface</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\src\geometry\IAEdge.h">
@@ -267,6 +273,12 @@
     </ClInclude>
     <ClInclude Include="..\..\..\src\printer\IAPrinterSLS.h">
       <Filter>src\printer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\userinterface\IAProgressDialog.h">
+      <Filter>src\userInterface</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\userinterface\IAGLRangeSlider.h">
+      <Filter>src\userInterface</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

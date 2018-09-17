@@ -151,15 +151,15 @@ void IAPerspectiveCamera::draw()
 
     //gluPerspective(50.0, aspect, nearPlane, farPlane);
     GLfloat fieldOfView = 50.0;
-    GLfloat fH = tan( float(fieldOfView / 360.0f * 3.14159f) ) * nearPlane;
-    GLfloat fW = fH * aspect;
+    GLfloat fH = tanf( float(fieldOfView / 360.0f * 3.14159f) ) * nearPlane;
+    GLfloat fW = (GLfloat)(fH * aspect);
     glFrustum( -fW, fW, -fH, fH, nearPlane, farPlane );
 
     glMatrixMode (GL_MODELVIEW);
     glLoadIdentity();
-    iaGluLookAt(position.x(), position.z(), -position.y(),
-              pInterest.x(), pInterest.z(), -pInterest.y(),
-              0.0, 1.0, 0.0);
+    iaGluLookAt((GLfloat)position.x(), (GLfloat)position.z(), -(GLfloat)position.y(),
+		(GLfloat)pInterest.x(), (GLfloat)pInterest.z(), -(GLfloat)pInterest.y(),
+              0.0f, 1.0f, 0.0f);
     glRotated(-90, 1.0, 0.0, 0.0);
 }
 

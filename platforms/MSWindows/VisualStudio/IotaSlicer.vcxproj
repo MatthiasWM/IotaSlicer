@@ -58,6 +58,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_USE_MATH_DEFINES;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(ProjectDir)\..\..\..\src\;$(ProjectDir)\..\..\..\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <DisableSpecificWarnings>4996</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -92,6 +93,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;_USE_MATH_DEFINES;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(ProjectDir)\..\..\..\src\;$(ProjectDir)\..\..\..\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <DisableSpecificWarnings>4996</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -150,7 +152,9 @@
     <ClCompile Include="..\..\..\src\toolpath\IAToolpath.cpp" />
     <ClCompile Include="..\..\..\src\userinterface\IACamera.cpp" />
     <ClCompile Include="..\..\..\src\userinterface\IAGLButton.cpp" />
+    <ClCompile Include="..\..\..\src\userinterface\IAGLRangeSlider.cxx" />
     <ClCompile Include="..\..\..\src\userinterface\IAPreferences.cpp" />
+    <ClCompile Include="..\..\..\src\userinterface\IAProgressDialog.cpp" />
     <ClCompile Include="..\..\..\src\userinterface\IASceneView.cpp" />
     <ClCompile Include="..\..\..\src\userinterface\IAGUIMain.cpp" />
   </ItemGroup>
@@ -193,7 +197,9 @@
     <ClInclude Include="..\..\..\src\toolpath\IAToolpath.h" />
     <ClInclude Include="..\..\..\src\userinterface\IACamera.h" />
     <ClInclude Include="..\..\..\src\userinterface\IAGLButton.h" />
+    <ClInclude Include="..\..\..\src\userinterface\IAGLRangeSlider.h" />
     <ClInclude Include="..\..\..\src\userinterface\IAPreferences.h" />
+    <ClInclude Include="..\..\..\src\userinterface\IAProgressDialog.h" />
     <ClInclude Include="..\..\..\src\userinterface\IASceneView.h" />
     <ClInclude Include="..\..\..\src\userinterface\IAGUIMain.h" />
   </ItemGroup>

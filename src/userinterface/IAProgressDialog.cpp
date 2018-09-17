@@ -110,7 +110,7 @@ bool IAProgressDialog::update(double percent, ...)
     va_end(va);
 
     wText->copy_label(buf);
-    wProgress->value(percent);
+    wProgress->value((float)percent);
 
     Fl::check();
     Fl::check();

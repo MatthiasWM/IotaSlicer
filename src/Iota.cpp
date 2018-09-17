@@ -38,7 +38,9 @@ const int kFramebufferSize = 2048;
 //const int kFramebufferSize = 4096;
 
 
+#ifdef __APPLE__
 #pragma mark -
+#endif
 // ==== Iota ===================================================================
 
 
@@ -62,7 +64,9 @@ IAIota::~IAIota()
 }
 
 
+#ifdef __APPLE__
 #pragma mark -
+#endif
 // ==== handle the main menu ===================================================
 
 
@@ -216,7 +220,9 @@ void IAIota::userMenuHelpAbout()
 }
 
 
+#ifdef __APPLE__
 #pragma mark -
+#endif
 // =============================================================================
 
 
@@ -339,8 +345,12 @@ void IAIota::loadDemoFiles()
     Iota.addGeometry("default.stl", defaultModel, sizeof(defaultModel));
 }
 
+
+#ifdef __APPLE__
 #pragma mark -
+#endif
 // ==== error handling =========================================================
+
 
 #define HDR "Error in Iota Slicer, %s\n\n"
 
@@ -447,11 +457,12 @@ void IAError::showDialog()
 
 
 
-
-
-
+#ifdef __APPLE__
 #pragma mark -
+#endif
 // ==== main() =================================================================
+
+
 /**
  * Launch our app.
  *

@@ -67,16 +67,16 @@
 typedef Fl_Menu_Item Fl_Menu_Item_List[];
 
 IAPrinterFDM::IAPrinterFDM(const char *name)
-:   super(name),
-    pSettingList{
-        new IASettingChoice("Color:", pColorMode, [this]{userChangedColorMode();},
-                      (Fl_Menu_Item[]) {
-                          { "monochrome", 0, nullptr, (void*)0, 0, 0, 0, 11 },
-                          { "dual color", 0, nullptr, (void*)1, 0, 0, 0, 11 },
-                          { nullptr } } )
-    }
+:   super(name)
 {
-    /** \bug pSettingList must free all members */
+	static Fl_Menu_Item colorMenu[] = {
+		{ "monochrome", 0, nullptr, (void*)0, 0, 0, 0, 11 },
+		{ "dual color", 0, nullptr, (void*)1, 0, 0, 0, 11 },
+		{ nullptr } };
+
+	/** \bug pSettingList must free all members */
+	pSettingList.push_back(
+		new IASettingChoice("Color:", pColorMode, [this]{userChangedColorMode(); }, colorMenu));
 }
 
 

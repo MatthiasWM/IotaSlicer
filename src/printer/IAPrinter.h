@@ -14,9 +14,10 @@
 #include "toolpath/IAToolpath.h"
 
 #include <vector>
+#include <functional>
 
 
-class Fl_Menu_Item;
+struct Fl_Menu_Item;
 class Fl_Choice;
 class Fl_Tree_Item;
 
