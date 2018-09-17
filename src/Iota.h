@@ -17,7 +17,6 @@
 
 
 class IAGeometryReader;
-class IAMachineToolpath;
 class IAToolpath;
 class IAMesh;
 class IAPrinter;

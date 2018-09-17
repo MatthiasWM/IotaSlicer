@@ -34,6 +34,9 @@ typedef std::shared_ptr<IAToolpath> IAToolpathSP;
  * the source for generating GCode commands. All coordinates in this class
  * must be kept in world space. The GCode writer must flip or offset
  * coordinates to math the printer space. Scaling should not be needed.
+ *
+ * \todo We don't want that anymore. Toolpaths should be part of the layer
+ *      list inside each printer.
  */
 class IAMachineToolpath
 {
@@ -52,10 +55,19 @@ public:
     bool saveGCode(const char *filename);
 
 private:
-    IAToolpath *pStartupPath = nullptr;
-    IAToolpathMap pLayerMap;
-    IAToolpath *pShutdownPath = nullptr;
+    IAToolpathMap pToolpathMap;
 };
+
+
+/*
+ Add the class IAToolpathList and use IAToolpath as a superclass for
+ IAToolpathLoop and IAToolpathLine. IAToolpathList can then sort and optimize
+ its Loops and Lines by priority and grouping.
+ */
+
+//class IAToolpathList
+//{
+//};
 
 
 /**
@@ -73,7 +85,6 @@ public:
 
     bool isEmpty() { return pList.empty(); }
 
-
     void startPath(double x, double y, double z);
     void continuePath(double x, double y, double z);
     void closePath(void);
@@ -89,8 +100,23 @@ public:
 
     IAVector3d tFirst, tPrev;
     double pZ;
-
 };
+
+
+//class IAToolpathType
+//{
+//};
+//
+//
+//class IAToolpathLoop
+//{
+//};
+//
+//
+//class IAToolpathLine
+//{
+//};
+
 
 
 /**
@@ -149,7 +175,7 @@ public:
 /*
  further elements could be
   - tool change
-  - tool cleanin
+  - tool cleaning
   - machine setup, bed heating, extruder heating, etc.
  */
 

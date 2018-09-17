@@ -163,14 +163,10 @@ IAMachineToolpath::~IAMachineToolpath()
  */
 void IAMachineToolpath::clear()
 {
-    delete pStartupPath;
-    pStartupPath = nullptr;
-    for (auto &p: pLayerMap) {
+    for (auto &p: pToolpathMap) {
         delete p.second;
     }
-    pLayerMap.clear();
-    delete pShutdownPath;
-    pShutdownPath = nullptr;
+    pToolpathMap.clear();
 }
 
 
@@ -179,14 +175,12 @@ void IAMachineToolpath::clear()
  */
 void IAMachineToolpath::draw(double lo, double hi)
 {
-    if (pStartupPath) pStartupPath->draw();
     int i = 0;
-    for (auto &p: pLayerMap) {
+    for (auto &p: pToolpathMap) {
         if (i>=lo && i<=hi)
             p.second->draw();
         i++;
     }
-    if (pShutdownPath) pShutdownPath->draw();
 }
 
 
@@ -207,8 +201,8 @@ void IAMachineToolpath::drawLayer(double z)
 IAToolpath *IAMachineToolpath::findLayer(double z)
 {
     int layer = roundLayerNumber(z);
-    auto p = pLayerMap.find(layer);
-    if (p==pLayerMap.end())
+    auto p = pToolpathMap.find(layer);
+    if (p==pToolpathMap.end())
         return nullptr;
     else
         return p->second;
@@ -221,10 +215,10 @@ IAToolpath *IAMachineToolpath::findLayer(double z)
 IAToolpath *IAMachineToolpath::createLayer(double z)
 {
     int layer = roundLayerNumber(z);
-    auto p = pLayerMap.find(layer);
-    if (p==pLayerMap.end()) {
+    auto p = pToolpathMap.find(layer);
+    if (p==pToolpathMap.end()) {
         IAToolpath *tp = new IAToolpath(z);
-        pLayerMap.insert(std::make_pair(layer, tp));
+        pToolpathMap.insert(std::make_pair(layer, tp));
         return tp;
     } else {
         return p->second;
@@ -238,7 +232,7 @@ IAToolpath *IAMachineToolpath::createLayer(double z)
 void IAMachineToolpath::deleteLayer(double z)
 {
     int layer = roundLayerNumber(z);
-    pLayerMap.erase(layer);
+    pToolpathMap.erase(layer);
 }
 
 
@@ -261,9 +255,7 @@ bool IAMachineToolpath::saveGCode(const char *filename /*, printer */)
     IAGcodeWriter w;
     if (w.open(filename)) {
         w.macroInit();
-        if (pStartupPath)
-            pStartupPath->saveGCode(w);
-        for (auto &p: pLayerMap) {
+        for (auto &p: pToolpathMap) {
             w.cmdComment("");
             w.cmdComment("==== layer at z=%g", p.first / 1000.0);
             w.cmdComment("");
@@ -271,8 +263,6 @@ bool IAMachineToolpath::saveGCode(const char *filename /*, printer */)
             // send all motion commands
             p.second->saveGCode(w);
         }
-        if (pShutdownPath)
-            pShutdownPath->saveGCode(w);
         w.macroShutdown();
         w.close();
         ret = true;
