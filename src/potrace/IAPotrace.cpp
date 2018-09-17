@@ -198,7 +198,7 @@ int potrace(IAFramebuffer *framebuffer, IAToolpathList *toolpath, double z)
             // NULL-> close path and quit layer?
             // + -> rapid move to next shape
             toolpathLoop->closePath();
-            toolpath->add(toolpathLoop);
+            toolpath->add(toolpathLoop, 0, 0);
             toolpathLoop = nullptr;
         //}
         p = p->next;

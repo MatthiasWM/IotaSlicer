@@ -54,6 +54,7 @@ public:
     IAToolpathList *createLayer(double);
     void deleteLayer(double);
     int roundLayerNumber(double);
+    void optimize();
 
     bool saveGCode(const char *filename);
 
@@ -77,10 +78,12 @@ public:
     void draw();
     void drawFlat(double w);
 
-    void add(IAToolpathList *tl);
-    void add(IAToolpath *tt);
+    void add(IAToolpathList *tl, int group, int priority);
+    void add(IAToolpath *tt, int group, int priority);
 
     bool isEmpty();
+
+    void optimize();
 
 //    void colorize(uint8_t *rgb, IAToolpath *black, IAToolpath *white);
 //    void colorizeSoft(uint8_t *rgb, IAToolpath *dst);
@@ -88,7 +91,7 @@ public:
     void saveGCode(IAGcodeWriter &g);
     void saveDXF(const char *filename);
 
-    IAToolpathTypeList pToolpathTypeList;
+    IAToolpathTypeList pToolpathList;
 
     double pZ;
 };
@@ -99,6 +102,8 @@ class IAToolpath
 protected:
     IAToolpath(double z);
 public:
+    static bool comparePriorityAscending(const IAToolpath *a, const IAToolpath *b);
+
     virtual ~IAToolpath();
     virtual IAToolpath *clone(IAToolpath *t=nullptr);
 
@@ -122,7 +127,9 @@ public:
     // list of elements
 
     IAVector3d tFirst, tPrev;
-    double pZ;
+    double pZ = 0.0;
+    int pGroup = 0;
+    int pPriority = 0;
 };
 
 

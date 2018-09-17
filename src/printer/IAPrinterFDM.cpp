@@ -164,9 +164,9 @@ void IAPrinterFDM::sliceAll()
         auto tp3 = tp2 ? slc->pFramebuffer->toolpathFromLassoAndContract(z, pNozzleDiameter) : nullptr;
 
         IAToolpathList *tp = pMachineToolpath.createLayer(z);
-        if (tp3) tp->add(tp3.get());
-        if (tp2) tp->add(tp2.get());
-        if (tp1) tp->add(tp1.get());
+        if (tp3) tp->add(tp3.get(), 1, 0);
+        if (tp2) tp->add(tp2.get(), 1, 1);
+        if (tp1) tp->add(tp1.get(), 1, 2);
 
         i++;
     }
@@ -192,24 +192,15 @@ void IAPrinterFDM::sliceAll()
         }
 #else
         IAFramebuffer mask(sliceList[i+1]->pFramebuffer);
-//        if (i==ly) mask.saveAsJpeg("/Users/matt/aaa_01.jpg");
         if (sliceList[i+2] && sliceList[i+2]->pFramebuffer)
             mask.logicAnd(sliceList[i+2]->pFramebuffer);
-//        if (i==ly) sliceList[i+2]->pFramebuffer->saveAsJpeg("/Users/matt/aaa_02.jpg");
-//        if (i==ly) mask.saveAsJpeg("/Users/matt/aaa_03.jpg");
         mask.logicAnd((i>0) ? sliceList[i-1]->pFramebuffer : nullptr);
-//        if (i==ly) sliceList[i-1]->pFramebuffer->saveAsJpeg("/Users/matt/aaa_04.jpg");
-//        if (i==ly) mask.saveAsJpeg("/Users/matt/aaa_05.jpg");
         mask.logicAnd((i>1) ? sliceList[i-2]->pFramebuffer : nullptr);
-//        if (i==ly) sliceList[i-2]->pFramebuffer->saveAsJpeg("/Users/matt/aaa_06.jpg");
-//        if (i==ly) mask.saveAsJpeg("/Users/matt/aaa_07.jpg");
 #endif
 
         // build lids and bottoms
         IAFramebuffer lid(slc->pFramebuffer);
-//        if (i==ly) lid.saveAsJpeg("/Users/matt/aaa_00.jpg");
         lid.logicAndNot(&mask);
-//        if (i==ly) lid.saveAsJpeg("/Users/matt/aaa_08.jpg");
         IAFramebuffer infill(slc->pFramebuffer);
 #if 0
         //   build the lid with horizontal and vertical close lines
@@ -220,16 +211,16 @@ void IAPrinterFDM::sliceAll()
 #else
         //   build the lid with concentric outlines
         // CONCENTRIC (nicer for lids)
-        // FIXME: hack
+        /** \bug limit this to the widtha and hight of the build platform divided by the extrsuion width */
         int k;
-        for (k=0;k<100;k++) {
+        for (k=0;k<500;k++) {
             auto tp1 = lid.toolpathFromLassoAndContract(z, pNozzleDiameter);
             if (!tp1) break;
             infill.subtract(tp1, pNozzleDiameter);
-            tp->add(tp1.get());
+            tp->add(tp1.get(), 2, k);
         }
-        if (k==100) {
-            int x = 3;
+        if (k==500) {
+            assert(0);
         }
 #endif
 
@@ -238,11 +229,9 @@ void IAPrinterFDM::sliceAll()
         /** \todo remove material that we generated in the lid already */
         infill.logicAnd(&mask);
 
-//        if (i==ly) infill.saveAsJpeg("/Users/matt/aaa_09.jpg");
-
         infill.overlayInfillPattern(i, 3.0);
         auto infillPath = infill.toolpathFromLasso(z);
-        if (infillPath) tp->add(infillPath.get());
+        if (infillPath) tp->add(infillPath.get(), 3, 0);
 
         i++;
     }
@@ -271,6 +260,7 @@ void IAPrinterFDM::saveToolpath(const char *filename)
 {
     if (!filename)
         filename = outputPath();
+    pMachineToolpath.optimize();
     // generate Toolpath if it is not complete
     pMachineToolpath.saveGCode(filename);
 }

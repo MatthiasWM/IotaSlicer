@@ -198,6 +198,14 @@ void IAMachineToolpath::drawLayer(double z)
 }
 
 
+void IAMachineToolpath::optimize()
+{
+    for (auto &p: pToolpathListMap) {
+        p.second->optimize();
+    }
+}
+
+
 /**
  * Return a layer at the give z height, or nullptr if none found.
  */
@@ -291,9 +299,9 @@ IAToolpathList::IAToolpathList(double z)
  */
 IAToolpathList::~IAToolpathList()
 {
-    for (auto &tt: pToolpathTypeList)
+    for (auto &tt: pToolpathList)
         delete tt;
-    pToolpathTypeList.clear();
+    pToolpathList.clear();
 }
 
 
@@ -303,9 +311,9 @@ IAToolpathList::~IAToolpathList()
 void IAToolpathList::clear(double z)
 {
     pZ = z;
-    for (auto &tt: pToolpathTypeList)
+    for (auto &tt: pToolpathList)
         delete tt;
-    pToolpathTypeList.clear();
+    pToolpathList.clear();
 }
 
 
@@ -316,9 +324,9 @@ void IAToolpathList::clear(double z)
  */
 bool IAToolpathList::isEmpty()
 {
-    if (pToolpathTypeList.size()==0)
+    if (pToolpathList.size()==0)
         return true;
-    for (auto &tt: pToolpathTypeList)
+    for (auto &tt: pToolpathList)
         if (!tt->isEmpty())
             return false;
     return true;
@@ -328,19 +336,21 @@ bool IAToolpathList::isEmpty()
 /**
  * Add another toolpath type to the list.
  */
-void IAToolpathList::add(IAToolpath *tt)
+void IAToolpathList::add(IAToolpath *tt, int group, int priority)
 {
-    pToolpathTypeList.push_back(tt);
+    tt->pGroup = group;
+    tt->pPriority = priority;
+    pToolpathList.push_back(tt);
 }
 
 
 /**
  * Add another toolpath list to the list.
  */
-void IAToolpathList::add(IAToolpathList *tl)
+void IAToolpathList::add(IAToolpathList *tl, int group, int priority)
 {
-    for (auto &tt: tl->pToolpathTypeList) {
-        add(tt->clone());
+    for (auto &tt: tl->pToolpathList) {
+        add(tt->clone(), group, priority);
     }
 }
 
@@ -353,7 +363,7 @@ void IAToolpathList::draw()
     glDisable(GL_TEXTURE_2D);
     glEnable(GL_LIGHTING);
     glColor3f(0, 1, 0);
-    for (auto &tt: pToolpathTypeList) {
+    for (auto &tt: pToolpathList) {
         tt->draw();
     }
 }
@@ -364,7 +374,7 @@ void IAToolpathList::drawFlat(double w)
     /**
      \todo draw connection between lines.
      */
-    for (auto &tt: pToolpathTypeList) {
+    for (auto &tt: pToolpathList) {
         tt->drawFlat(w);
     }
 }
@@ -376,7 +386,7 @@ void IAToolpathList::drawFlat(double w)
 void IAToolpathList::saveGCode(IAGcodeWriter &w)
 {
     w.cmdComment("Send generated toolpath...");
-    for (auto &tt: pToolpathTypeList) {
+    for (auto &tt: pToolpathList) {
         tt->saveGCode(w);
     }
 }
@@ -389,10 +399,46 @@ void IAToolpathList::saveDXF(const char *filename)
 {
     IADxfWriter w;
     if (w.open(filename)) {
-        for (auto &tt: pToolpathTypeList) {
+        for (auto &tt: pToolpathList) {
             tt->saveDXF(w);
         }
         w.close();
+    }
+}
+
+
+void IAToolpathList::optimize()
+{
+    std::sort(pToolpathList.begin(), pToolpathList.end(), IAToolpath::comparePriorityAscending);
+    // -- optimize my travel distance: if Toolpaths are in the same group
+    // and with the same priority, sort them so that trips between toolpaths
+    // is short
+    size_t i, j, n = pToolpathList.size();
+    for (i=0; i<n-1; i++) {
+        IAToolpath *ta = pToolpathList[i];
+        IAToolpath *tx = pToolpathList[i+1];
+        size_t x = i+1;
+        if (ta->pGroup==tx->pGroup && ta->pPriority==tx->pPriority) {
+            double dist = (ta->tFirst-tx->tFirst).length();
+            for (j=i+2; j<n; j++) {
+                IAToolpath *tb = pToolpathList[j];
+                if (ta->pGroup==tb->pGroup && ta->pPriority==tb->pPriority) {
+                    double dist2 = (ta->tFirst-tb->tFirst).length();
+                    if (dist2<dist) {
+                        dist = dist2;
+                        tx = tb;
+                        x = j;
+                    }
+                } else {
+                    break;
+                }
+            }
+            if (x!=i+1) {
+                IAToolpath *tmp = pToolpathList[x];
+                pToolpathList[x] = pToolpathList[i+1];
+                pToolpathList[i+1] = tmp;
+            }
+        }
     }
 }
 
@@ -446,6 +492,19 @@ void IAToolpath::clear(double z)
     tFirst = { 0.0, 0.0, z };
     tPrev = { 0.0, 0.0, z };
 }
+
+
+bool IAToolpath::comparePriorityAscending(const IAToolpath *a, const IAToolpath *b)
+{
+    if ( a->pGroup < b->pGroup )
+        return true;
+    if ( a->pGroup == b->pGroup ) {
+        if ( a->pPriority < b->pPriority )
+            return true;
+    }
+    return false;
+}
+
 
 
 /**

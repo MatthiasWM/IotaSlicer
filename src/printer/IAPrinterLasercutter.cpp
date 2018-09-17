@@ -138,7 +138,7 @@ void IAPrinterLasercutter::saveToolpaths(const char *filename)
         uint8_t *rgb = gSlice.pColorbuffer->getRawImageRGB();
         IAToolpathList *tp = new IAToolpathList(z);
         gSlice.pFramebuffer->traceOutline(tp, z);
-//        tp->pToolpathTypeList.push_back(new IAToolpathExtruder(1));
+//        tp->pToolpathList.push_back(new IAToolpathExtruder(1));
         //        FIXME: what does the call above do?
 
         char dxfFilename[2048];
