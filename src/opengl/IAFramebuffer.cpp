@@ -116,8 +116,9 @@ bool initializeOpenGL()
  *
  * Creating the buffers is deferred until they are actually needed.
  */
-IAFramebuffer::IAFramebuffer(Buffers buffers)
-:   pBuffers(buffers)
+IAFramebuffer::IAFramebuffer(IAPrinter *printer, Buffers buffers)
+:   pBuffers( buffers ),
+    pPrinter( printer )
 {
     // variables are initialized inline
 }
@@ -127,7 +128,8 @@ IAFramebuffer::IAFramebuffer(Buffers buffers)
  * Create a framebuffer by copying another framebuffer including contents.
  */
 IAFramebuffer::IAFramebuffer(IAFramebuffer *src)
-:   pBuffers(src->pBuffers)
+:   pBuffers( src->pBuffers ),
+    pPrinter( src->pPrinter )
 {
     if (src->hasFBO()) {
         bindForRendering();
@@ -258,11 +260,14 @@ void IAFramebuffer::bindForRendering()
     glViewport(0, 0, pWidth, pHeight);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    IAPrinter *p = Iota.pCurrentPrinter;
-    IAVector3d vol = p->pBuildVolume;
+    IAVector3d vol = pPrinter->pBuildVolume;
     /** \todo why is the range below [vol.z(), 0] negative? I tested the
-              slice, and it does draw at the correct (positive) Z. */
-    glOrtho(0, vol.x(), 0, vol.y(), -vol.z()-1, 1);
+     slice, and it does draw at the correct (positive) Z. Maybe related: we set
+     the z depth to 1.0 when clearing the buffers. Is the depth test flipped?
+     Lastly, make sure that 0 is always within the z range. */
+    glOrtho(pPrinter->pBuildVolumeMin.x(), pPrinter->pBuildVolumeMax.x(),
+            pPrinter->pBuildVolumeMin.y(), pPrinter->pBuildVolumeMax.y(),
+            -vol.z()-1, 1);
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 
@@ -473,8 +478,6 @@ int IAFramebuffer::saveAsPng(const char *filename, int components, GLubyte *imgd
  * Draw the RGBA buffer into the scene viewer at world coordinates.
  *
  * \param z draw the buffer at this z coordinate.
- *
- * \todo use the current printer coordinates, not fixed numbers!
  */
 void IAFramebuffer::draw(double z)
 {
@@ -486,13 +489,13 @@ void IAFramebuffer::draw(double z)
     glColor3f(1.0, 1.0, 1.0);
     glBegin(GL_POLYGON);
     glTexCoord2f(0.0, 0.0);
-    glVertex3f(0.0, 0.0, z);
+    glVertex3f(pPrinter->pBuildVolumeMin.x(), pPrinter->pBuildVolumeMin.y(), z);
     glTexCoord2f(0.0, 1.0);
-    glVertex3f(0.0, 214.0, z);
+    glVertex3f(pPrinter->pBuildVolumeMin.x(), pPrinter->pBuildVolumeMax.y(), z);
     glTexCoord2f(1.0, 1.0);
-    glVertex3f(214.0, 214.0, z);
+    glVertex3f(pPrinter->pBuildVolumeMax.x(), pPrinter->pBuildVolumeMax.y(), z);
     glTexCoord2f(1.0, 0.0);
-    glVertex3f(214.0, 0.0, z);
+    glVertex3f(pPrinter->pBuildVolumeMax.x(), pPrinter->pBuildVolumeMin.y(), z);
     glEnd();
     glDisable(GL_TEXTURE_2D);
 }
@@ -663,9 +666,9 @@ void IAFramebuffer::overlayLidPattern(int i, double infillWdt)
     glDisable(GL_DEPTH_TEST);
     glColor3f(0.0, 0.0, 0.0);
     // draw spaces so the infill gets spread out nicely
-    /** \todo We should not have to access global variables here. */
-    double wdt = Iota.pCurrentPrinter->pBuildVolumeMax.x();
-    double hgt = Iota.pCurrentPrinter->pBuildVolumeMax.y();
+    /** \todo What if the printer has negative coordintes as well? */
+    double wdt = pPrinter->pBuildVolumeMax.x();
+    double hgt = pPrinter->pBuildVolumeMax.y();
     // generate a lid
     glPushMatrix();
     if (i&1) {
@@ -697,9 +700,9 @@ void IAFramebuffer::overlayInfillPattern(int i, double infillWdt)
     glDisable(GL_DEPTH_TEST);
     glColor3f(0.0, 0.0, 0.0);
     // draw spaces so the infill gets spread out nicely
-    /** \todo We should not have to access global variables here. */
-    double wdt = Iota.pCurrentPrinter->pBuildVolumeMax.x();
-    double hgt = Iota.pCurrentPrinter->pBuildVolumeMax.y();
+    /** \todo What if the printer has negative coordinates as well? */
+    double wdt = pPrinter->pBuildVolumeMax.x();
+    double hgt = pPrinter->pBuildVolumeMax.y();
     glPushMatrix();
     if (i&1)
         glRotated(45, 0, 0, 1);

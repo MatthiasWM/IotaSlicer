@@ -152,7 +152,7 @@ void IAPrinterFDM::sliceAll()
     {
         if (IAProgressDialog::update(i*50/n, i, n, i*50/n)) break;
 
-        IASlice *slc = sliceList[i] = new IASlice();
+        IASlice *slc = sliceList[i] = new IASlice( this );
         slc->setNewZ(z);
         slc->generateRim(Iota.pMesh);
         slc->tesselateLidFromRim();

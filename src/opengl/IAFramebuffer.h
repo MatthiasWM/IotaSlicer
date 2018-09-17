@@ -17,6 +17,7 @@
 
 
 class IAToolpath;
+class IAPrinter;
 
 
 /**
@@ -60,7 +61,7 @@ public:
         RGBAZ = 2
     } Buffers;
 
-    IAFramebuffer(Buffers type);
+    IAFramebuffer(IAPrinter*, Buffers type);
     IAFramebuffer(IAFramebuffer*);
     ~IAFramebuffer();
     void clear();
@@ -119,6 +120,9 @@ protected:
 
     /** An enum that lists the buffers used in this framebuffer */
     Buffers pBuffers = NONE;
+
+    /** Use this to retrieve the build volume when rendering. */
+    IAPrinter *pPrinter = nullptr;
 };
 
 

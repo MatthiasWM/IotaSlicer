@@ -10,6 +10,7 @@
 
 #include "IAMesh.h"
 
+class IAPrinter;
 class IATriangle;
 class IAFramebuffer;
 
@@ -27,7 +28,7 @@ class IAFramebuffer;
 class IASlice : public IAMesh
 {
 public:
-    IASlice();
+    IASlice(IAPrinter*);
     virtual ~IASlice() override;
     virtual void clear() override;
     bool setNewZ(double z);
@@ -46,6 +47,8 @@ private:
     IAEdgeList pRim;
     /// current Z layer of the entire slice
     double pCurrentZ = -1e9;
+    /// link back to the printer that created the slice, so we can retreive the build volume
+    IAPrinter *pPrinter = nullptr;
 
 public:
     IAFramebuffer *pFramebuffer = nullptr;

@@ -56,6 +56,7 @@
  Extrusion Width = 0.6 mm = 1.2 0.5 Flow Rate = 4.5 mm^3/s = 0.6 0.25 * 30
  */
 IAPrinter::IAPrinter(const char *newName)
+:   gSlice( this )
 {
     setName(newName);
     loadSettings();
