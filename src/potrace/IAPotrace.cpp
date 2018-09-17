@@ -73,7 +73,7 @@ void bezier(IAToolpath *toolpath,
             double x1, double y1,
             double x2, double y2,
             double x3, double y3,
-            double x4, double y4, double z);
+            double x4, double y4);
 
 
 /**
@@ -85,7 +85,7 @@ void bezier(IAToolpath *toolpath,
  * \todo don't render noise specs
  *       http://potrace.sourceforge.net/potracelib.pdf
  */
-int potrace(IAFramebuffer *framebuffer, IAToolpath *toolpath, double z)
+int potrace(IAFramebuffer *framebuffer, IAToolpathList *toolpath, double z)
 {
     const uint8_t *px = framebuffer->getRawImageRGB();
 
@@ -154,38 +154,38 @@ int potrace(IAFramebuffer *framebuffer, IAToolpath *toolpath, double z)
     }
     bm_free(bm);
 
-    char start = 1;
+    IAToolpathLoop *toolpathLoop = nullptr;
     /* draw each curve */
     p = st->plist;
     while (p != NULL) {
         n = p->curve.n;
         tag = p->curve.tag;
         c = p->curve.c;
-        if (start) {
-            toolpath->startPath(c[n-1][2].x*xScl, c[n-1][2].y*yScl, z);
-            start = 0;
+        if (!toolpathLoop) {
+            toolpathLoop = new IAToolpathLoop(z);
+            toolpathLoop->startPath(c[n-1][2].x*xScl, c[n-1][2].y*yScl);
         } else {
-            toolpath->continuePath(c[n-1][2].x*xScl, c[n-1][2].y*yScl, z);
+            toolpathLoop->continuePath(c[n-1][2].x*xScl, c[n-1][2].y*yScl);
         }
         for (i=0; i<n; i++) {
             int j;
             switch (tag[i]) {
                 case POTRACE_CORNER:
-                    toolpath->continuePath(c[i][1].x*xScl, c[i][1].y*yScl, z);
-                    toolpath->continuePath(c[i][2].x*xScl, c[i][2].y*yScl, z);
+                    toolpathLoop->continuePath(c[i][1].x*xScl, c[i][1].y*yScl);
+                    toolpathLoop->continuePath(c[i][2].x*xScl, c[i][2].y*yScl);
                     break;
                 case POTRACE_CURVETO:
 #if 0
-                    toolpath->continuePath(c[i][0].x*xScl, c[i][0].y*yScl, z);
-                    toolpath->continuePath(c[i][1].x*xScl, c[i][1].y*yScl, z);
-                    toolpath->continuePath(c[i][2].x*xScl, c[i][2].y*yScl, z);
+                    toolpathLoop->continuePath(c[i][0].x*xScl, c[i][0].y*yScl);
+                    toolpathLoop->continuePath(c[i][1].x*xScl, c[i][1].y*yScl);
+                    toolpathLoop->continuePath(c[i][2].x*xScl, c[i][2].y*yScl);
 #else
                     j = i ? i-1 : n-1;
-                    bezier(toolpath,
+                    bezier(toolpathLoop,
                            c[j][2].x*xScl, c[j][2].y*yScl,
                            c[i][0].x*xScl, c[i][0].y*yScl,
                            c[i][1].x*xScl, c[i][1].y*yScl,
-                           c[i][2].x*xScl, c[i][2].y*yScl, z);
+                           c[i][2].x*xScl, c[i][2].y*yScl);
 #endif
                     break;
                 default:
@@ -197,8 +197,9 @@ int potrace(IAFramebuffer *framebuffer, IAToolpath *toolpath, double z)
         //if (p->next == NULL || p->next->sign == '+') {
             // NULL-> close path and quit layer?
             // + -> rapid move to next shape
-            toolpath->closePath();
-            start = 1;
+            toolpathLoop->closePath();
+            toolpath->add(toolpathLoop);
+            toolpathLoop = nullptr;
         //}
         p = p->next;
     }
@@ -217,7 +218,7 @@ void recursive_bezier(IAToolpath *tp,
                       double x1, double y1,
                       double x2, double y2,
                       double x3, double y3,
-                      double x4, double y4, double z)
+                      double x4, double y4)
 {
     // Calculate all the mid-points of the line segments
     //----------------------
@@ -244,14 +245,14 @@ void recursive_bezier(IAToolpath *tp,
 
     if((d2 + d3)*(d2 + d3) < m_distance_tolerance * (dx*dx + dy*dy))
     {
-        tp->continuePath(x1234, y1234, z);
+        tp->continuePath(x1234, y1234);
         return;
     }
 
     // Continue subdivision
     //----------------------
-    recursive_bezier(tp, x1, y1, x12, y12, x123, y123, x1234, y1234, z);
-    recursive_bezier(tp, x1234, y1234, x234, y234, x34, y34, x4, y4, z);
+    recursive_bezier(tp, x1, y1, x12, y12, x123, y123, x1234, y1234);
+    recursive_bezier(tp, x1234, y1234, x234, y234, x34, y34, x4, y4);
 }
 
 
@@ -259,9 +260,9 @@ void bezier(IAToolpath *tp,
             double x1, double y1,
             double x2, double y2,
             double x3, double y3,
-            double x4, double y4, double z)
+            double x4, double y4)
 {
     //add_point(x1, y1);
-    recursive_bezier(tp, x1, y1, x2, y2, x3, y3, x4, y4, z);
-    tp->continuePath(x4, y4, z);
+    recursive_bezier(tp, x1, y1, x2, y2, x3, y3, x4, y4);
+    tp->continuePath(x4, y4);
 }

@@ -1,5 +1,5 @@
 //
-//  IASceneView.cpp
+//  IAPotrace.h
 //
 //  Copyright (c) 2013-2018 Matthias Melcher. All rights reserved.
 //
@@ -9,10 +9,10 @@
 
 
 class IAFramebuffer;
-class IAToolpath;
+class IAToolpathList;
 
 
-int potrace(IAFramebuffer *framebuffer, IAToolpath *toolpath, double z);
+int potrace(IAFramebuffer *framebuffer, IAToolpathList *toolpath, double z);
 
 
 #endif /* IA_POTRACE_H */

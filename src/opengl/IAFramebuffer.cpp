@@ -333,10 +333,10 @@ uint8_t *IAFramebuffer::getRawImageRGBA()
  *
  * \return returns 0 on success
  */
-int IAFramebuffer::traceOutline(IAToolpath *toolpath, double z)
+int IAFramebuffer::traceOutline(IAToolpathList *toolpathList, double z)
 {
-    toolpath->clear(z);
-    potrace(this, toolpath, z);
+    toolpathList->clear(z);
+    potrace(this, toolpathList, z);
     return 0;
 }
 
@@ -600,10 +600,10 @@ void IAFramebuffer::deleteFBO()
  * \return nullptr, if tracing generates an empty toolpath
  * \return a new smart_pointer to a toolpath
  */
-IAToolpathSP IAFramebuffer::toolpathFromLasso(double z)
+IAToolpathListSP IAFramebuffer::toolpathFromLasso(double z)
 {
     // use a shared pointer, so we don't have to worry about deallocating
-    auto tp0 = std::make_shared<IAToolpath>(z);
+    auto tp0 = std::make_shared<IAToolpathList>(z);
 
     // create an outline for this slice image
     traceOutline(tp0.get(), z);
@@ -625,7 +625,7 @@ IAToolpathSP IAFramebuffer::toolpathFromLasso(double z)
  * \return nullptr, if tracing generates an empty toolpath
  * \return a new smart_pointer to a toolpath
  */
-IAToolpathSP IAFramebuffer::toolpathFromLassoAndContract(double z, double r)
+IAToolpathListSP IAFramebuffer::toolpathFromLassoAndContract(double z, double r)
 {
     // use a shared pointer, so we don;t have to worry about deallocating
     auto tp0 = toolpathFromLasso(z);
@@ -640,7 +640,7 @@ IAToolpathSP IAFramebuffer::toolpathFromLassoAndContract(double z, double r)
  * \param tp subtract this toolpath form the pattern
  * \param r the pattern will be reduced by the amount in r
  */
-void IAFramebuffer::subtract(IAToolpathSP tp, double r)
+void IAFramebuffer::subtract(IAToolpathListSP tp, double r)
 {
     if (tp) {
         // draw the outline to contract the image

@@ -16,12 +16,15 @@
 #include <map>
 
 
+class IAToolpathList;
 class IAToolpath;
 class IAToolpathElement;
 
-typedef std::map<int, IAToolpath*> IAToolpathMap;
+typedef std::map<int, IAToolpathList*> IAToolpathListMap;
+typedef std::vector<IAToolpath*> IAToolpathTypeList;
 typedef std::vector<IAToolpathElement*> IAToolpathElementList;
-typedef std::shared_ptr<IAToolpath> IAToolpathSP;
+typedef std::shared_ptr<IAToolpathList> IAToolpathListSP;
+typedef std::shared_ptr<IAToolpath> IAToolpathTypeSP;
 
 
 /**
@@ -47,15 +50,15 @@ public:
     void clear();
     void draw(double lo, double hi);
     void drawLayer(double);
-    IAToolpath *findLayer(double);
-    IAToolpath *createLayer(double);
+    IAToolpathList *findLayer(double);
+    IAToolpathList *createLayer(double);
     void deleteLayer(double);
     int roundLayerNumber(double);
 
     bool saveGCode(const char *filename);
 
 private:
-    IAToolpathMap pToolpathMap;
+    IAToolpathListMap pToolpathListMap;
 };
 
 
@@ -65,37 +68,57 @@ private:
  its Loops and Lines by priority and grouping.
  */
 
-//class IAToolpathList
-//{
-//};
-
-
-/**
- * A toolpath, usually for a single slice, for startup, or for shutdown.
- */
-class IAToolpath
+class IAToolpathList
 {
 public:
-    IAToolpath(double z);
-    ~IAToolpath();
+    IAToolpathList(double z);
+    ~IAToolpathList();
     void clear(double z);
     void draw();
     void drawFlat(double w);
-    void add(IAToolpath *tp);
 
-    bool isEmpty() { return pList.empty(); }
+    void add(IAToolpathList *tl);
+    void add(IAToolpath *tt);
 
-    void startPath(double x, double y, double z);
-    void continuePath(double x, double y, double z);
-    void closePath(void);
+    bool isEmpty();
 
-    void colorize(uint8_t *rgb, IAToolpath *black, IAToolpath *white);
-    void colorizeSoft(uint8_t *rgb, IAToolpath *dst);
+//    void colorize(uint8_t *rgb, IAToolpath *black, IAToolpath *white);
+//    void colorizeSoft(uint8_t *rgb, IAToolpath *dst);
 
     void saveGCode(IAGcodeWriter &g);
     void saveDXF(const char *filename);
 
-    IAToolpathElementList pList;
+    IAToolpathTypeList pToolpathTypeList;
+
+    double pZ;
+};
+
+
+class IAToolpath
+{
+protected:
+    IAToolpath(double z);
+public:
+    virtual ~IAToolpath();
+    virtual IAToolpath *clone(IAToolpath *t=nullptr);
+
+    void clear(double z);
+    void draw();
+    void drawFlat(double w);
+
+    bool isEmpty() { return pElementList.empty(); }
+
+    void startPath(double x, double y);
+    void continuePath(double x, double y);
+    void closePath(void);
+
+//    void colorize(uint8_t *rgb, IAToolpath *black, IAToolpath *white);
+//    void colorizeSoft(uint8_t *rgb, IAToolpath *dst);
+
+    void saveGCode(IAGcodeWriter &g);
+    void saveDXF(IADxfWriter &w);
+
+    IAToolpathElementList pElementList;
     // list of elements
 
     IAVector3d tFirst, tPrev;
@@ -103,19 +126,24 @@ public:
 };
 
 
-//class IAToolpathType
-//{
-//};
-//
-//
-//class IAToolpathLoop
-//{
-//};
-//
-//
-//class IAToolpathLine
-//{
-//};
+class IAToolpathLoop : public IAToolpath
+{
+    typedef IAToolpath super;
+public:
+    IAToolpathLoop(double z);
+    virtual ~IAToolpathLoop() override;
+    virtual IAToolpath *clone(IAToolpath *t=nullptr) override;
+};
+
+
+class IAToolpathLine : public IAToolpath
+{
+    typedef IAToolpath super;
+public:
+    IAToolpathLine(double z);
+    virtual ~IAToolpathLine() override;
+    virtual IAToolpath *clone(IAToolpath *t=nullptr) override;
+};
 
 
 
