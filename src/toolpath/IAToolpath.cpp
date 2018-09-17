@@ -680,33 +680,20 @@ void IAToolpathMotion::drawFlat(double w)
  */
 void IAToolpathMotion::saveGCode(IAGcodeWriter &w)
 {
-#ifdef IA_QUAD
     if (pIsRapid) {
-//        w.cmdRetract();
+        bool retract = ((pEnd-pStart).length() > 5.0);
+        if (retract) w.cmdRetract();
         w.cmdRapidMove(pEnd);
-//        w.cmdUnretract();
+        if (retract) w.cmdUnretract();
     } else {
         if (w.position()!=pStart) {
-//            w.cmdRetract();
+            bool retract = ((w.position()-pStart).length() > 5.0);
+            if (retract) w.cmdRetract();
             w.cmdRapidMove(pStart);
-//            w.cmdUnretract();
-        }
-        w.cmdMove(pEnd, pColor);
-    }
-#else
-    if (pIsRapid) {
-//        w.cmdRetract();
-        w.cmdRapidMove(pEnd);
-//        w.cmdUnretract();
-    } else {
-        if (w.position()!=pStart) {
-//            w.cmdRetract();
-            w.cmdRapidMove(pStart);
-//            w.cmdUnretract();
+            if (retract) w.cmdUnretract();
         }
         w.cmdMove(pEnd);
     }
-#endif
 }
 
 

@@ -116,7 +116,8 @@ bool initializeOpenGL()
  *
  * Creating the buffers is deferred until they are actually needed.
  */
-IAFramebuffer::IAFramebuffer()
+IAFramebuffer::IAFramebuffer(Buffers buffers)
+:   pBuffers(buffers)
 {
     // variables are initialized inline
 }
@@ -126,6 +127,7 @@ IAFramebuffer::IAFramebuffer()
  * Create a framebuffer by copying another framebuffer including contents.
  */
 IAFramebuffer::IAFramebuffer(IAFramebuffer *src)
+:   pBuffers(src->pBuffers)
 {
     if (src->hasFBO()) {
         bindForRendering();
@@ -232,7 +234,14 @@ void IAFramebuffer::clear()
 {
     if (hasFBO()) {
         bindForRendering();
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        if (pBuffers==RGBA) {
+            glClearColor(0.0, 0.0, 0.0, 0.0);
+            glClear(GL_COLOR_BUFFER_BIT);
+        } else if (pBuffers==RGBAZ) {
+            glClearColor(0.0, 0.0, 0.0, 0.0);
+            glClearDepth(1.0f);
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        }
         unbindFromRendering();
     }
 }
@@ -387,6 +396,7 @@ int IAFramebuffer::saveAsJpeg(const char *filename, GLubyte *imgdata)
     return 0; /* No fatal errors */
 }
 
+
 /**
  * Write framebuffer as PNG image file.
  *
@@ -463,6 +473,8 @@ int IAFramebuffer::saveAsPng(const char *filename, int components, GLubyte *imgd
  * Draw the RGBA buffer into the scene viewer at world coordinates.
  *
  * \param z draw the buffer at this z coordinate.
+ *
+ * \todo use the current printer coordinates, not fixed numbers!
  */
 void IAFramebuffer::draw(double z)
 {
@@ -536,12 +548,14 @@ void IAFramebuffer::createFBO()
     //Attach 2D texture to this FBO
     glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT, GL_TEXTURE_2D, pColorbuffer, 0);
 
-    glGenRenderbuffersEXT(1, &pDepthbuffer);
-    glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, pDepthbuffer);
-    glRenderbufferStorageEXT(GL_RENDERBUFFER_EXT, GL_DEPTH_COMPONENT24, pWidth, pHeight);
-
-    //Attach depth buffer to FBO
-    glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT, GL_DEPTH_ATTACHMENT_EXT, GL_RENDERBUFFER_EXT, pDepthbuffer);
+    if (pBuffers==RGBAZ) {
+        glGenRenderbuffersEXT(1, &pDepthbuffer);
+        glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, pDepthbuffer);
+        glRenderbufferStorageEXT(GL_RENDERBUFFER_EXT, GL_DEPTH_COMPONENT24, pWidth, pHeight);
+        glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT, GL_DEPTH_ATTACHMENT_EXT, GL_RENDERBUFFER_EXT, pDepthbuffer);
+    } else {
+        pDepthbuffer = 0;
+    }
 
     //Does the GPU support current FBO configuration?
     GLenum status;
@@ -555,13 +569,8 @@ void IAFramebuffer::createFBO()
             printf("not so good\n");
             return;
     }
-
     pFramebufferCreated = true;
-
-    glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, pFramebuffer);
-    glClearColor(0.0, 0.0, 0.0, 0.0);
-    glClearDepth(1.0f);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    clear();
 }
 
 

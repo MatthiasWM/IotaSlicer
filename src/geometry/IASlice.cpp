@@ -30,8 +30,8 @@ GLUtesselator *gGluTess = nullptr;
  */
 IASlice::IASlice()
 {
-    pFramebuffer = new IAFramebuffer();
-    pColorbuffer = new IAFramebuffer();
+    pFramebuffer = new IAFramebuffer(IAFramebuffer::RGBA);
+    pColorbuffer = new IAFramebuffer(IAFramebuffer::RGBAZ);
 }
 
 

@@ -213,11 +213,13 @@ void IAPrinterFDM::sliceAll()
         IAFramebuffer infill(slc->pFramebuffer);
 #if 0
         //   build the lid with horizontal and vertical close lines
+        // ZIGZAG (could do bridging if used in the correct direction!)
         lid.overlayLidPattern(i, pNozzleDiameter);
         auto lidPath = lid.toolpathFromLasso(z);
         if (lidPath) tp->add(lidPath.get());
 #else
         //   build the lid with concentric outlines
+        // CONCENTRIC (nicer for lids)
         for (;;) {
             auto tp1 = lid.toolpathFromLassoAndContract(z, pNozzleDiameter);
             if (!tp1) break;

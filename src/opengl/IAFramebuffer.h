@@ -54,7 +54,13 @@ extern bool initializeOpenGL();
 class IAFramebuffer
 {
 public:
-    IAFramebuffer();
+    typedef enum {
+        NONE = 0,
+        RGBA = 1,
+        RGBAZ = 2
+    } Buffers;
+
+    IAFramebuffer(Buffers type);
     IAFramebuffer(IAFramebuffer*);
     ~IAFramebuffer();
     void clear();
@@ -111,6 +117,8 @@ protected:
     /** OpenGL reference to the depth buffer part of the framebuffer */
     GLuint pDepthbuffer = 0;
 
+    /** An enum that lists the buffers used in this framebuffer */
+    Buffers pBuffers = NONE;
 };
 
 

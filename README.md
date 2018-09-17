@@ -33,7 +33,7 @@ Iota currently generates G-Code files for DaVinci Duo printers with Repetier fir
 If will probably run with little or no modifications on other FDM printers as well.
 
 * v0.0.10a
-  * generating lids and bottoms
+  * generating lids and bottoms (different lid styles)
   * range slider to better inspect extruder preview
 * v0.0.9a
   * https://github.com/MatthiasWM/IotaSlicer/releases/tag/v0.0.9a
