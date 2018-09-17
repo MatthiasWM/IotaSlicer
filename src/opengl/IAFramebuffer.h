@@ -72,7 +72,7 @@ public:
     void draw(double z);
     uint8_t *getRawImageRGB();
     uint8_t *getRawImageRGBA();
-    int traceOutline(IAToolpath *toolpath, double z);
+    int traceOutline(IAToolpathList *toolpathList, double z);
     int saveAsJpeg(const char *filename, GLubyte *imgdata=nullptr);
     int saveAsPng(const char *filename, int components, GLubyte *imgdata=nullptr);
 
@@ -87,9 +87,9 @@ public:
     void logicAndNot(IAFramebuffer*);
     void logicAnd(IAFramebuffer*);
 
-    void subtract(IAToolpathSP, double r);
-    IAToolpathSP toolpathFromLassoAndContract(double z, double r);
-    IAToolpathSP toolpathFromLasso(double z);
+    void subtract(IAToolpathListSP, double r);
+    IAToolpathListSP toolpathFromLassoAndContract(double z, double r);
+    IAToolpathListSP toolpathFromLasso(double z);
 
     void overlayLidPattern(int i, double w);
     void overlayInfillPattern(int i, double w);

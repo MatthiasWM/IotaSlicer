@@ -146,9 +146,9 @@ void IAPrinterFDM::sliceAll()
 
     int i = 0, n = (int)((zMax-zMin)/zLayerHeight);
     // create a slice for each layer
-    IASlice **sliceList = (IASlice**)calloc(n+1, sizeof(IASlice*));
+    IASlice **sliceList = (IASlice**)calloc(n+2, sizeof(IASlice*));
 
-    for (double z=zMin; z<zMax; z+=zLayerHeight)
+    for (double z=zMin; z<zMax+2*zLayerHeight; z+=zLayerHeight)
     {
         if (IAProgressDialog::update(i*50/n, i, n, i*50/n)) break;
 
@@ -163,7 +163,7 @@ void IAPrinterFDM::sliceAll()
         auto tp2 = tp1 ? slc->pFramebuffer->toolpathFromLassoAndContract(z, pNozzleDiameter) : nullptr;
         auto tp3 = tp2 ? slc->pFramebuffer->toolpathFromLassoAndContract(z, pNozzleDiameter) : nullptr;
 
-        IAToolpath *tp = pMachineToolpath.createLayer(z);
+        IAToolpathList *tp = pMachineToolpath.createLayer(z);
         if (tp3) tp->add(tp3.get());
         if (tp2) tp->add(tp2.get());
         if (tp1) tp->add(tp1.get());
@@ -177,7 +177,7 @@ void IAPrinterFDM::sliceAll()
     {
         if (IAProgressDialog::update(i*50/n+50, i, n, i*50/n+50)) break;
 
-        IAToolpath *tp = pMachineToolpath.findLayer(z);
+        IAToolpathList *tp = pMachineToolpath.findLayer(z);
         IASlice *slc = sliceList[i];
 
 #if 0
@@ -220,11 +220,16 @@ void IAPrinterFDM::sliceAll()
 #else
         //   build the lid with concentric outlines
         // CONCENTRIC (nicer for lids)
-        for (;;) {
+        // FIXME: hack
+        int k;
+        for (k=0;k<100;k++) {
             auto tp1 = lid.toolpathFromLassoAndContract(z, pNozzleDiameter);
             if (!tp1) break;
             infill.subtract(tp1, pNozzleDiameter);
             tp->add(tp1.get());
+        }
+        if (k==100) {
+            int x = 3;
         }
 #endif
 

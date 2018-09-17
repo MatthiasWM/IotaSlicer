@@ -29,6 +29,7 @@ bool isBlack(uint8_t *rgb, IAVector3d v)
     }
 }
 
+#if 0
 /**
  * This hack slices long Toolpath Motions into smaller pieces if the color
  * of the object changes during that motion.
@@ -77,6 +78,7 @@ void IAToolpath::colorize(uint8_t *rgb, IAToolpath *black, IAToolpath *white)
         }
     }
 }
+#endif
 
 
 uint32_t getRGB(uint8_t *rgb, IAVector3d v)
@@ -100,6 +102,7 @@ bool differ(uint32_t c1, uint32_t c2)
 }
 
 
+#if 0
 void IAToolpath::colorizeSoft(uint8_t *rgb, IAToolpath *dst)
 {
     for (auto &e: pList) {
@@ -136,7 +139,7 @@ void IAToolpath::colorizeSoft(uint8_t *rgb, IAToolpath *dst)
         }
     }
 }
-
+#endif
 
 
 
@@ -163,10 +166,10 @@ IAMachineToolpath::~IAMachineToolpath()
  */
 void IAMachineToolpath::clear()
 {
-    for (auto &p: pToolpathMap) {
+    for (auto &p: pToolpathListMap) {
         delete p.second;
     }
-    pToolpathMap.clear();
+    pToolpathListMap.clear();
 }
 
 
@@ -176,7 +179,7 @@ void IAMachineToolpath::clear()
 void IAMachineToolpath::draw(double lo, double hi)
 {
     int i = 0;
-    for (auto &p: pToolpathMap) {
+    for (auto &p: pToolpathListMap) {
         if (i>=lo && i<=hi)
             p.second->draw();
         i++;
@@ -198,11 +201,11 @@ void IAMachineToolpath::drawLayer(double z)
 /**
  * Return a layer at the give z height, or nullptr if none found.
  */
-IAToolpath *IAMachineToolpath::findLayer(double z)
+IAToolpathList *IAMachineToolpath::findLayer(double z)
 {
     int layer = roundLayerNumber(z);
-    auto p = pToolpathMap.find(layer);
-    if (p==pToolpathMap.end())
+    auto p = pToolpathListMap.find(layer);
+    if (p==pToolpathListMap.end())
         return nullptr;
     else
         return p->second;
@@ -212,13 +215,13 @@ IAToolpath *IAMachineToolpath::findLayer(double z)
 /**
  * Create a new toolpath for a layer at the give z height.
  */
-IAToolpath *IAMachineToolpath::createLayer(double z)
+IAToolpathList *IAMachineToolpath::createLayer(double z)
 {
     int layer = roundLayerNumber(z);
-    auto p = pToolpathMap.find(layer);
-    if (p==pToolpathMap.end()) {
-        IAToolpath *tp = new IAToolpath(z);
-        pToolpathMap.insert(std::make_pair(layer, tp));
+    auto p = pToolpathListMap.find(layer);
+    if (p==pToolpathListMap.end()) {
+        IAToolpathList *tp = new IAToolpathList(z);
+        pToolpathListMap.insert(std::make_pair(layer, tp));
         return tp;
     } else {
         return p->second;
@@ -232,7 +235,7 @@ IAToolpath *IAMachineToolpath::createLayer(double z)
 void IAMachineToolpath::deleteLayer(double z)
 {
     int layer = roundLayerNumber(z);
-    pToolpathMap.erase(layer);
+    pToolpathListMap.erase(layer);
 }
 
 
@@ -255,7 +258,7 @@ bool IAMachineToolpath::saveGCode(const char *filename /*, printer */)
     IAGcodeWriter w;
     if (w.open(filename)) {
         w.macroInit();
-        for (auto &p: pToolpathMap) {
+        for (auto &p: pToolpathListMap) {
             w.cmdComment("");
             w.cmdComment("==== layer at z=%g", p.first / 1000.0);
             w.cmdComment("");
@@ -271,17 +274,142 @@ bool IAMachineToolpath::saveGCode(const char *filename /*, printer */)
 }
 
 
+#pragma mark -
+// =============================================================================
 
-int tpCount = 0;
+
+/**
+ * Manage a list of toolpath types.
+ */
+IAToolpathList::IAToolpathList(double z)
+{
+}
+
+
+/**
+ * Delete a toolpath.
+ */
+IAToolpathList::~IAToolpathList()
+{
+    for (auto &tt: pToolpathTypeList)
+        delete tt;
+    pToolpathTypeList.clear();
+}
+
+
+/**
+ * Delete all resources.
+ */
+void IAToolpathList::clear(double z)
+{
+    pZ = z;
+    for (auto &tt: pToolpathTypeList)
+        delete tt;
+    pToolpathTypeList.clear();
+}
+
+
+/**
+ * Check if this toolpath list is empty.
+ *
+ * \return true if the list is empty or all paths in the list are empty.
+ */
+bool IAToolpathList::isEmpty()
+{
+    if (pToolpathTypeList.size()==0)
+        return true;
+    for (auto &tt: pToolpathTypeList)
+        if (!tt->isEmpty())
+            return false;
+    return true;
+}
+
+
+/**
+ * Add another toolpath type to the list.
+ */
+void IAToolpathList::add(IAToolpath *tt)
+{
+    pToolpathTypeList.push_back(tt);
+}
+
+
+/**
+ * Add another toolpath list to the list.
+ */
+void IAToolpathList::add(IAToolpathList *tl)
+{
+    for (auto &tt: tl->pToolpathTypeList) {
+        add(tt->clone());
+    }
+}
+
+
+/**
+ * Draw the current toolpath into the scene viewer at world coordinates.
+ */
+void IAToolpathList::draw()
+{
+    glDisable(GL_TEXTURE_2D);
+    glEnable(GL_LIGHTING);
+    glColor3f(0, 1, 0);
+    for (auto &tt: pToolpathTypeList) {
+        tt->draw();
+    }
+}
+
+
+void IAToolpathList::drawFlat(double w)
+{
+    /**
+     \todo draw connection between lines.
+     */
+    for (auto &tt: pToolpathTypeList) {
+        tt->drawFlat(w);
+    }
+}
+
+
+/**
+ * Save the toolpath as a GCode file.
+ */
+void IAToolpathList::saveGCode(IAGcodeWriter &w)
+{
+    w.cmdComment("Send generated toolpath...");
+    for (auto &tt: pToolpathTypeList) {
+        tt->saveGCode(w);
+    }
+}
+
+
+/**
+ * Save the toolpath as a DXF file.
+ */
+void IAToolpathList::saveDXF(const char *filename)
+{
+    IADxfWriter w;
+    if (w.open(filename)) {
+        for (auto &tt: pToolpathTypeList) {
+            tt->saveDXF(w);
+        }
+        w.close();
+    }
+}
+
+
+
+#pragma mark -
+// =============================================================================
+
 
 /**
  * Manage a single toolpath.
  */
 IAToolpath::IAToolpath(double z)
-:   tFirst( 0.0, 0.0, z ),
+:   pZ( z ),
+    tFirst( 0.0, 0.0, z ),
     tPrev( 0.0, 0.0, z )
 {
-//    printf("Allocating toolpath (%d)\n", ++tpCount);
 }
 
 
@@ -290,8 +418,19 @@ IAToolpath::IAToolpath(double z)
  */
 IAToolpath::~IAToolpath()
 {
-//    printf("Freeing toolpath (%d)\n", --tpCount);
-    clear(0.0);
+    clear(pZ);
+}
+
+
+IAToolpath *IAToolpath::clone(IAToolpath *t)
+{
+    if (!t)
+        t = new IAToolpath(pZ);
+    t->tFirst = tFirst;
+    t->tPrev = tPrev;
+    for (auto &e: pElementList)
+        t->pElementList.push_back(e->clone());
+    return t;
 }
 
 
@@ -301,20 +440,11 @@ IAToolpath::~IAToolpath()
 void IAToolpath::clear(double z)
 {
     pZ = z;
-    for (auto &e: pList) {
-        delete e;
-    }
-    pList.clear();
+    for (auto &el: pElementList)
+        delete el;
+    pElementList.clear();
     tFirst = { 0.0, 0.0, z };
     tPrev = { 0.0, 0.0, z };
-}
-
-
-void IAToolpath::add(IAToolpath *tp)
-{
-    for (auto &e: tp->pList) {
-        pList.push_back(e->clone());
-    }
 }
 
 
@@ -323,53 +453,31 @@ void IAToolpath::add(IAToolpath *tp)
  */
 void IAToolpath::draw()
 {
-#ifdef RENDER_HEX_TOOLPATH
-    glLineWidth(1.0);
-    glDisable(GL_TEXTURE_2D);
-    glEnable(GL_LIGHTING);
-    glColor3f(0, 1, 0);
-    for (auto &e: pList) {
+    for (auto &e: pElementList) {
         e->draw();
     }
-    glLineWidth(1.0);
-#else
-    glLineWidth(5.0);
-    glDisable(GL_TEXTURE_2D);
-    glDisable(GL_LIGHTING);
-    glColor3f(0, 1, 0);
-    for (auto &e: pList) {
-        e->draw();
-    }
-    glLineWidth(1.0);
-#endif
 }
 
 
 void IAToolpath::drawFlat(double w)
 {
-//    // Hack!
-//    double scale = kFramebufferSize/Iota.pCurrentPrinter->pBuildVolume.x();
-//    glLineWidth(w*scale);
-//    glDisable(GL_TEXTURE_2D);
-//    glDisable(GL_LIGHTING);
     /**
-     \todo draw using polygons.
      \todo draw connection between lines.
      */
-    for (auto &e: pList) {
+    for (auto &e: pElementList) {
         e->drawFlat(w);
     }
-//    glLineWidth(1.0);
 }
+
 
 /**
  * Start a new path.
  */
-void IAToolpath::startPath(double x, double y, double z)
+void IAToolpath::startPath(double x, double y)
 {
-    IAVector3d next(x, y, z);
+    IAVector3d next(x, y, pZ);
     tFirst = next;
-    pList.push_back(new IAToolpathMotion(tPrev, next, true));
+    pElementList.push_back(new IAToolpathMotion(tPrev, next, true));
     tPrev = next;
 }
 
@@ -377,11 +485,11 @@ void IAToolpath::startPath(double x, double y, double z)
 /**
  * Add a motion segment to the path.
  */
-void IAToolpath::continuePath(double x, double y, double z)
+void IAToolpath::continuePath(double x, double y)
 {
-    IAVector3d next(x, y, z);
+    IAVector3d next(x, y, pZ);
     if (!(tPrev==next))
-        pList.push_back(new IAToolpathMotion(tPrev, next));
+        pElementList.push_back(new IAToolpathMotion(tPrev, next));
     tPrev = next;
 }
 
@@ -392,7 +500,7 @@ void IAToolpath::continuePath(double x, double y, double z)
 void IAToolpath::closePath()
 {
     if (!(tPrev==tFirst))
-        pList.push_back(new IAToolpathMotion(tPrev, tFirst));
+        pElementList.push_back(new IAToolpathMotion(tPrev, tFirst));
 }
 
 
@@ -401,9 +509,8 @@ void IAToolpath::closePath()
  */
 void IAToolpath::saveGCode(IAGcodeWriter &w)
 {
-    w.cmdComment("Send generated toolpath...");
-    for (auto &p: pList) {
-        p->saveGCode(w);
+    for (auto &e: pElementList) {
+        e->saveGCode(w);
     }
 }
 
@@ -411,18 +518,39 @@ void IAToolpath::saveGCode(IAGcodeWriter &w)
 /**
  * Save the toolpath as a DXF file.
  */
-void IAToolpath::saveDXF(const char *filename)
+void IAToolpath::saveDXF(IADxfWriter &w)
 {
-    IADxfWriter w;
-    if (w.open(filename)) {
-        for (auto &p: pList) {
-            p->saveDXF(w);
-        }
-        w.close();
+    for (auto &e: pElementList) {
+        e->saveDXF(w);
     }
 }
 
 
+#pragma mark -
+// =============================================================================
+
+
+IAToolpathLoop::IAToolpathLoop(double z)
+:   IAToolpath( z )
+{
+}
+
+
+IAToolpathLoop::~IAToolpathLoop()
+{
+}
+
+
+IAToolpath *IAToolpathLoop::clone(IAToolpath *t)
+{
+    if (!t)
+        t = new IAToolpathLoop(pZ);
+    return super::clone(t);
+}
+
+
+#pragma mark -
+// =============================================================================
 
 
 /**
@@ -447,7 +575,6 @@ IAToolpathElement *IAToolpathElement::clone()
 }
 
 
-
 /**
  * Draw any element.
  */
@@ -455,6 +582,10 @@ void IAToolpathElement::draw()
 {
     // nothing to here
 }
+
+
+#pragma mark -
+// =============================================================================
 
 
 
@@ -515,6 +646,9 @@ void IAToolpathExtruder::saveGCode(IAGcodeWriter &w)
     w.cmdComment("");
 }
 
+
+#pragma mark -
+// =============================================================================
 
 
 /**
