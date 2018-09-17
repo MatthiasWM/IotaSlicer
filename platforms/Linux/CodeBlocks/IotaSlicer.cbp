@@ -138,6 +138,8 @@
 		<Unit filename="../../../src/userinterface/IACamera.h" />
 		<Unit filename="../../../src/userinterface/IAGLButton.cpp" />
 		<Unit filename="../../../src/userinterface/IAGLButton.h" />
+		<Unit filename="../../../src/userinterface/IAGLRangeSlider.cxx" />
+		<Unit filename="../../../src/userinterface/IAGLRangeSlider.h" />
 		<Unit filename="../../../src/userinterface/IAGUIMain.cpp" />
 		<Unit filename="../../../src/userinterface/IAGUIMain.fl">
 			<Option compile="1" />
@@ -147,6 +149,8 @@
 		<Unit filename="../../../src/userinterface/IAGUIMain.h" />
 		<Unit filename="../../../src/userinterface/IAPreferences.cpp" />
 		<Unit filename="../../../src/userinterface/IAPreferences.h" />
+		<Unit filename="../../../src/userinterface/IAProgressDialog.cpp" />
+		<Unit filename="../../../src/userinterface/IAProgressDialog.h" />
 		<Unit filename="../../../src/userinterface/IASceneView.cpp" />
 		<Unit filename="../../../src/userinterface/IASceneView.h" />
 		<Extensions>
