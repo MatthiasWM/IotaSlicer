@@ -15,6 +15,17 @@
 #include <libjpeg/jpeglib.h>
 #include <libpng/png.h>
 
+// Abundant error checking: why did glDebugMessageCallback not exist since OpenGL 1.0? Sigh.
+#define IA_HANDLE_GL_ERRORS(msg) \
+    do { \
+        GLenum err; \
+        while ((err=glGetError())) \
+            printf("*** OpenGL ERROR %d: %s\n%s:%d\n%s", err, gluErrorString(err), __FILE__, __LINE__, #msg); \
+    } while(0)
+//        GLenum err = glGetError();
+//        printf("GL Error %d\n", err);
+
+
 #ifdef __LINUX__
 #include <GL/glext.h>
 #endif
@@ -168,12 +179,13 @@ IAFramebuffer::IAFramebuffer(IAFramebuffer *src)
     if (src->hasFBO()) {
         bindForRendering();
         glBindFramebufferEXT(GL_READ_FRAMEBUFFER, src->pFramebuffer);
+        IA_HANDLE_GL_ERRORS();
         glBindFramebufferEXT(GL_DRAW_FRAMEBUFFER, pFramebuffer);
+        IA_HANDLE_GL_ERRORS();
         glBlitFramebufferEXT(0, 0, pWidth, pHeight,
                           0, 0, pWidth, pHeight,
                           GL_COLOR_BUFFER_BIT, GL_NEAREST);
-//        GLenum err = glGetError();
-//        printf("GL Error %d\n", err);
+        IA_HANDLE_GL_ERRORS();
         unbindFromRendering();
     }
 }
@@ -190,7 +202,9 @@ void IAFramebuffer::logicAndNot(IAFramebuffer *src)
     if (src && src->hasFBO()) {
         bindForRendering();
         glBindFramebufferEXT(GL_READ_FRAMEBUFFER, src->pFramebuffer);
+        IA_HANDLE_GL_ERRORS();
         glBindFramebufferEXT(GL_DRAW_FRAMEBUFFER, pFramebuffer);
+        IA_HANDLE_GL_ERRORS();
 
         // FIXME: we can push and pop these
         glDisable(GL_DEPTH_TEST);
@@ -206,17 +220,23 @@ void IAFramebuffer::logicAndNot(IAFramebuffer *src)
         // only be 0.0 or 1.0, so multiplying the source and inverse
         // destination color will effectively be a logic AND NOT.
         glBlendFunc(GL_ZERO, GL_ONE_MINUS_SRC_COLOR); // dst = 0*src + (1-src)*dst
+        IA_HANDLE_GL_ERRORS();
         glBlendEquationEXT(GL_FUNC_ADD);
+        IA_HANDLE_GL_ERRORS();
 #endif
         glEnable(GL_BLEND);
-//        GLenum err = glGetError(); printf("1 GL Error %d\n", err);
+        IA_HANDLE_GL_ERRORS();
 
         glRasterPos2d(0.0, 0.0);
+        IA_HANDLE_GL_ERRORS();
         glCopyPixels(0, 0, pWidth, pHeight, GL_COLOR);
+        IA_HANDLE_GL_ERRORS();
 
         glDisable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        IA_HANDLE_GL_ERRORS();
         glBlendEquationEXT(GL_FUNC_ADD);
+        IA_HANDLE_GL_ERRORS();
 
         unbindFromRendering();
     } else {
@@ -236,7 +256,9 @@ void IAFramebuffer::logicAnd(IAFramebuffer *src)
     if (src && src->hasFBO()) {
         bindForRendering();
         glBindFramebufferEXT(GL_READ_FRAMEBUFFER, src->pFramebuffer);
+        IA_HANDLE_GL_ERRORS();
         glBindFramebufferEXT(GL_DRAW_FRAMEBUFFER, pFramebuffer);
+        IA_HANDLE_GL_ERRORS();
 
         // FIXME: we can push and pop these
         glDisable(GL_DEPTH_TEST);
@@ -251,17 +273,23 @@ void IAFramebuffer::logicAnd(IAFramebuffer *src)
         // only be 0.0 or 1.0, so multiplying the source and destination color
         // and then clipping it to [0...1] will effectively be a logic AND.
         glBlendFunc(GL_DST_COLOR, GL_ZERO); // dst = src * dst + null * dst
+        IA_HANDLE_GL_ERRORS();
         glBlendEquationEXT(GL_FUNC_ADD);
+        IA_HANDLE_GL_ERRORS();
 #endif
         glEnable(GL_BLEND);
-//        GLenum err = glGetError(); printf("2 GL Error %d\n", err);
+        IA_HANDLE_GL_ERRORS();
 
         glRasterPos2d(0.0, 0.0);
+        IA_HANDLE_GL_ERRORS();
         glCopyPixels(0, 0, pWidth, pHeight, GL_COLOR);
+        IA_HANDLE_GL_ERRORS();
 
         glDisable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        IA_HANDLE_GL_ERRORS();
         glBlendEquationEXT(GL_FUNC_ADD);
+        IA_HANDLE_GL_ERRORS();
 
         unbindFromRendering();
     } else {
@@ -343,7 +371,9 @@ void IAFramebuffer::bindForRendering()
 void IAFramebuffer::unbindFromRendering()
 {
     // deactivate the FBO and set render target to FL_BACKBUFFER
+        IA_HANDLE_GL_ERRORS();
     glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
+        IA_HANDLE_GL_ERRORS();
     // make sure that our scene viewer completely reinitializes
     gSceneView->valid(0);
 }
@@ -358,9 +388,13 @@ uint8_t *IAFramebuffer::getRawImageRGB()
 {
     size_t size = pWidth*pHeight*3;
     uint8_t *data = (uint8_t*)malloc(size);
+        IA_HANDLE_GL_ERRORS();
     glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, pFramebuffer);
+        IA_HANDLE_GL_ERRORS();
     glReadPixels(0, 0, pWidth, pHeight, GL_RGB, GL_UNSIGNED_BYTE, data);
+        IA_HANDLE_GL_ERRORS();
     glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
+        IA_HANDLE_GL_ERRORS();
     return data;
 }
 
@@ -374,9 +408,13 @@ uint8_t *IAFramebuffer::getRawImageRGBA()
 {
     size_t size = pWidth*pHeight*4;
     uint8_t *data = (uint8_t*)malloc(size);
+        IA_HANDLE_GL_ERRORS();
     glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, pFramebuffer);
+        IA_HANDLE_GL_ERRORS();
     glReadPixels(0, 0, pWidth, pHeight, GL_RGBA, GL_UNSIGNED_BYTE, data);
+        IA_HANDLE_GL_ERRORS();
     glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
+        IA_HANDLE_GL_ERRORS();
     return data;
 }
 
@@ -522,7 +560,7 @@ int IAFramebuffer::saveAsPng(const char *filename, int components, GLubyte *imgd
         png_write_row( png, imgdata + y*pWidth*components );
     }
     fclose(fp);
-    
+
     if (freeImgData)
         free(imgdata);
 
@@ -540,7 +578,9 @@ void IAFramebuffer::draw(double z)
     if (!hasFBO()) return;
 
     // set as texture and render out
+        IA_HANDLE_GL_ERRORS();
     glBindTexture(GL_TEXTURE_2D, pColorbuffer);
+        IA_HANDLE_GL_ERRORS();
     glEnable(GL_TEXTURE_2D);
     glColor3f(1.0, 1.0, 1.0);
     glBegin(GL_POLYGON);
@@ -554,6 +594,7 @@ void IAFramebuffer::draw(double z)
     glVertex3d(pPrinter->pBuildVolumeMax.x(), pPrinter->pBuildVolumeMin.y(), z);
     glEnd();
     glDisable(GL_TEXTURE_2D);
+        IA_HANDLE_GL_ERRORS();
 }
 
 
@@ -577,7 +618,9 @@ void IAFramebuffer::activateFBO()
         createFBO();
     }
     /** \todo what if there was an error and FBO is still not created */
+        IA_HANDLE_GL_ERRORS();
     glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, pFramebuffer);
+        IA_HANDLE_GL_ERRORS();
 }
 
 
@@ -593,25 +636,38 @@ void IAFramebuffer::createFBO()
     // Create this thing
 
     //RGBA8 2D texture, 24 bit depth texture
+        IA_HANDLE_GL_ERRORS();
     glGenTextures(1, &pColorbuffer);
+        IA_HANDLE_GL_ERRORS();
     glBindTexture(GL_TEXTURE_2D, pColorbuffer);
+        IA_HANDLE_GL_ERRORS();
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     //NULL means reserve texture memory, but texels are undefined
+        IA_HANDLE_GL_ERRORS();
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, pWidth, pHeight, 0, GL_BGRA, GL_UNSIGNED_BYTE, nullptr);
+        IA_HANDLE_GL_ERRORS();
 
     glGenFramebuffersEXT(1, &pFramebuffer);
+        IA_HANDLE_GL_ERRORS();
     glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, pFramebuffer);
+        IA_HANDLE_GL_ERRORS();
     //Attach 2D texture to this FBO
     glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT, GL_TEXTURE_2D, pColorbuffer, 0);
+        IA_HANDLE_GL_ERRORS();
 
     if (pBuffers==RGBAZ) {
+        IA_HANDLE_GL_ERRORS();
         glGenRenderbuffersEXT(1, &pDepthbuffer);
+        IA_HANDLE_GL_ERRORS();
         glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, pDepthbuffer);
+        IA_HANDLE_GL_ERRORS();
         glRenderbufferStorageEXT(GL_RENDERBUFFER_EXT, GL_DEPTH_COMPONENT24, pWidth, pHeight);
+        IA_HANDLE_GL_ERRORS();
         glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT, GL_DEPTH_ATTACHMENT_EXT, GL_RENDERBUFFER_EXT, pDepthbuffer);
+        IA_HANDLE_GL_ERRORS();
     } else {
         pDepthbuffer = 0;
     }
@@ -625,6 +681,7 @@ void IAFramebuffer::createFBO()
 //            printf("good\n");
             break;
         default:
+        IA_HANDLE_GL_ERRORS();
             printf("not so good\n");
             return;
     }
@@ -639,11 +696,19 @@ void IAFramebuffer::createFBO()
 void IAFramebuffer::deleteFBO()
 {
     //Bind 0, which means render to back buffer, as a result, fb is unbound
+        IA_HANDLE_GL_ERRORS();
     glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
+        IA_HANDLE_GL_ERRORS();
     //Delete resources
-    glDeleteTextures(1, &pColorbuffer);
-    glDeleteRenderbuffersEXT(1, &pDepthbuffer);
-    glDeleteFramebuffersEXT(1, &pFramebuffer);
+    if (pColorbuffer)
+        glDeleteTextures(1, &pColorbuffer);
+        IA_HANDLE_GL_ERRORS();
+    if (pDepthbuffer)
+        glDeleteRenderbuffersEXT(1, &pDepthbuffer);
+        IA_HANDLE_GL_ERRORS();
+    if (pFramebuffer)
+        glDeleteFramebuffersEXT(1, &pFramebuffer);
+        IA_HANDLE_GL_ERRORS();
     pFramebufferCreated = false;
 }
 
