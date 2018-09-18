@@ -15,15 +15,81 @@
 #include <libjpeg/jpeglib.h>
 #include <libpng/png.h>
 
-// Abundant error checking: why did glDebugMessageCallback not exist since OpenGL 1.0? Sigh.
-#define IA_HANDLE_GL_ERRORS(msg) \
-    do { \
-        GLenum err; \
-        while ((err=glGetError())) \
-            printf("*** OpenGL ERROR %d: %s\n%s:%d\n%s", err, gluErrorString(err), __FILE__, __LINE__, #msg); \
-    } while(0)
-//        GLenum err = glGetError();
-//        printf("GL Error %d\n", err);
+#if 0
+// VMWareDetector.cpp : Defines the entry point for the console application.
+//
+
+#include "stdafx.h"
+#include "windows.h"
+#include <conio.h>
+void CheckVM(void);
+int main()
+{
+    CheckVM();
+    _getch();
+    return 0;
+}
+
+void CheckVM(void)
+{
+    unsigned int    a, b;
+
+    __try {
+        __asm {
+
+            // save register values on the stack
+            push eax
+            push ebx
+            push ecx
+            push edx
+
+            // perform fingerprint
+            mov eax, 'VMXh' // VMware magic value (0x564D5868)
+            mov ecx, 0Ah // special version cmd (0x0a)
+            mov dx, 'VX' // special VMware I/O port (0x5658)
+
+            in eax, dx // special I/O cmd
+
+            mov a, ebx // data
+            mov b, ecx // data (eax gets also modified
+            // but will not be evaluated)
+
+            // restore register values from the stack
+            pop edx
+            pop ecx
+            pop ebx
+            pop eax
+        }
+    }
+    __except (EXCEPTION_EXECUTE_HANDLER) {}
+    printf("\n[+] Debug : [ a=%x ; b=%d ]\n\n", a, b);
+    if (a == 'VMXh') { // is the value equal to the VMware magic value?
+        printf("Result  : VMware detected\nVersion : ");
+        if (b == 1)
+            printf("Express\n\n");
+        else if (b == 2)
+            printf("ESX\n\n");
+        else if (b == 3)
+            printf("GSX\n\n");
+        else if (b == 4)
+            printf("Workstation\n\n");
+        else
+            printf("unknown version\n\n");
+    }
+    else
+        printf("Result  : Not Detected\n\n");
+}
+
+#include <intrin.h>
+
+bool isGuestOSVM()
+{
+    unsigned int cpuInfo[4];
+    __cpuid((int*)cpuInfo,1);
+    return ((cpuInfo[2] >> 31) & 1) == 1;
+}
+
+#endif
 
 
 #ifdef __LINUX__
@@ -122,34 +188,34 @@ bool initializeOpenGL()
     // "GL_EXT_blend_minmax"
     // "GL_EXT_blend_subtract"
 
-	static bool beenHere = false;
-	if (beenHere) return true;
-	beenHere = true;
+    static bool beenHere = false;
+    if (beenHere) return true;
+    beenHere = true;
 #ifdef _WIN32
-	//char *gl_version = (char*)glGetString(GL_VERSION);
-	//if (gl_version) printf("OpenGL Version: \"%s\"\n", gl_version);
-	//char *gl_extensions = (char*)glGetString(GL_EXTENSIONS);
-	//if (gl_extensions) printf("OpenGL Extensions: \"%s\"\n", gl_extensions);
+    //char *gl_version = (char*)glGetString(GL_VERSION);
+    //if (gl_version) printf("OpenGL Version: \"%s\"\n", gl_version);
+    //char *gl_extensions = (char*)glGetString(GL_EXTENSIONS);
+    //if (gl_extensions) printf("OpenGL Extensions: \"%s\"\n", gl_extensions);
 #define FINDGL(a, b) \
-	a##EXT=(b)wglGetProcAddress(#a); \
-	if (!a##EXT) a##EXT=(b)wglGetProcAddress(#a"EXT"); \
-	if (!a##EXT) a##EXT=(b)wglGetProcAddress(#a"ARB"); \
-	if (!a##EXT) { Iota.Error.set("Initializing OpenGL", IAError::OpenGLFeatureNotSupported_STR, #a); return false; }
+a##EXT=(b)wglGetProcAddress(#a); \
+if (!a##EXT) a##EXT=(b)wglGetProcAddress(#a"EXT"); \
+if (!a##EXT) a##EXT=(b)wglGetProcAddress(#a"ARB"); \
+if (!a##EXT) { Iota.Error.set("Initializing OpenGL", IAError::OpenGLFeatureNotSupported_STR, #a); return false; }
 
-	FINDGL(glGenFramebuffers, PFNGLGENFRAMEBUFFERSEXTPROC);
-	FINDGL(glDeleteFramebuffers, PFNGLDELETEFRAMEBUFFERSEXTPROC);
-	FINDGL(glBindFramebuffer, PFNGLBINDFRAMEBUFFEREXTPROC);
-	FINDGL(glFramebufferTexture2D, PFNGLFRAMEBUFFERTEXTURE2DEXTPROC);
-	FINDGL(glGenRenderbuffers, PFNGLGENRENDERBUFFERSEXTPROC);
-	FINDGL(glBindRenderbuffer, PFNGLBINDRENDERBUFFEREXTPROC);
-	FINDGL(glRenderbufferStorage, PFNGLRENDERBUFFERSTORAGEEXTPROC);
-	FINDGL(glFramebufferRenderbuffer, PFNGLFRAMEBUFFERRENDERBUFFEREXTPROC);
-	FINDGL(glCheckFramebufferStatus, PFNGLCHECKFRAMEBUFFERSTATUSEXTPROC);
-	FINDGL(glDeleteRenderbuffers, PFNGLDELETERENDERBUFFERSEXTPROC);
-	FINDGL(glBlendEquation, PFNGLBLENDEQUATIONEXTPROC);
-	FINDGL(glBlitFramebuffer, PFNGLBLITFRAMEBUFFEREXTPROC);
+    FINDGL(glGenFramebuffers, PFNGLGENFRAMEBUFFERSEXTPROC);
+    FINDGL(glDeleteFramebuffers, PFNGLDELETEFRAMEBUFFERSEXTPROC);
+    FINDGL(glBindFramebuffer, PFNGLBINDFRAMEBUFFEREXTPROC);
+    FINDGL(glFramebufferTexture2D, PFNGLFRAMEBUFFERTEXTURE2DEXTPROC);
+    FINDGL(glGenRenderbuffers, PFNGLGENRENDERBUFFERSEXTPROC);
+    FINDGL(glBindRenderbuffer, PFNGLBINDRENDERBUFFEREXTPROC);
+    FINDGL(glRenderbufferStorage, PFNGLRENDERBUFFERSTORAGEEXTPROC);
+    FINDGL(glFramebufferRenderbuffer, PFNGLFRAMEBUFFERRENDERBUFFEREXTPROC);
+    FINDGL(glCheckFramebufferStatus, PFNGLCHECKFRAMEBUFFERSTATUSEXTPROC);
+    FINDGL(glDeleteRenderbuffers, PFNGLDELETERENDERBUFFERSEXTPROC);
+    FINDGL(glBlendEquation, PFNGLBLENDEQUATIONEXTPROC);
+    FINDGL(glBlitFramebuffer, PFNGLBLITFRAMEBUFFEREXTPROC);
 #endif
-	return true;
+    return true;
 }
 
 
@@ -163,7 +229,7 @@ bool initializeOpenGL()
  */
 IAFramebuffer::IAFramebuffer(IAPrinter *printer, Buffers buffers)
 :   pBuffers( buffers ),
-    pPrinter( printer )
+pPrinter( printer )
 {
     // variables are initialized inline
 }
@@ -174,7 +240,7 @@ IAFramebuffer::IAFramebuffer(IAPrinter *printer, Buffers buffers)
  */
 IAFramebuffer::IAFramebuffer(IAFramebuffer *src)
 :   pBuffers( src->pBuffers ),
-    pPrinter( src->pPrinter )
+pPrinter( src->pPrinter )
 {
     if (src->hasFBO()) {
         bindForRendering();
@@ -183,8 +249,8 @@ IAFramebuffer::IAFramebuffer(IAFramebuffer *src)
         glBindFramebufferEXT(GL_DRAW_FRAMEBUFFER, pFramebuffer);
         IA_HANDLE_GL_ERRORS();
         glBlitFramebufferEXT(0, 0, pWidth, pHeight,
-                          0, 0, pWidth, pHeight,
-                          GL_COLOR_BUFFER_BIT, GL_NEAREST);
+                             0, 0, pWidth, pHeight,
+                             GL_COLOR_BUFFER_BIT, GL_NEAREST);
         IA_HANDLE_GL_ERRORS();
         unbindFromRendering();
     }
@@ -371,9 +437,9 @@ void IAFramebuffer::bindForRendering()
 void IAFramebuffer::unbindFromRendering()
 {
     // deactivate the FBO and set render target to FL_BACKBUFFER
-        IA_HANDLE_GL_ERRORS();
+    IA_HANDLE_GL_ERRORS();
     glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
-        IA_HANDLE_GL_ERRORS();
+    IA_HANDLE_GL_ERRORS();
     // make sure that our scene viewer completely reinitializes
     gSceneView->valid(0);
 }
@@ -388,13 +454,13 @@ uint8_t *IAFramebuffer::getRawImageRGB()
 {
     size_t size = pWidth*pHeight*3;
     uint8_t *data = (uint8_t*)malloc(size);
-        IA_HANDLE_GL_ERRORS();
+    IA_HANDLE_GL_ERRORS();
     glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, pFramebuffer);
-        IA_HANDLE_GL_ERRORS();
+    IA_HANDLE_GL_ERRORS();
     glReadPixels(0, 0, pWidth, pHeight, GL_RGB, GL_UNSIGNED_BYTE, data);
-        IA_HANDLE_GL_ERRORS();
+    IA_HANDLE_GL_ERRORS();
     glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
-        IA_HANDLE_GL_ERRORS();
+    IA_HANDLE_GL_ERRORS();
     return data;
 }
 
@@ -408,13 +474,13 @@ uint8_t *IAFramebuffer::getRawImageRGBA()
 {
     size_t size = pWidth*pHeight*4;
     uint8_t *data = (uint8_t*)malloc(size);
-        IA_HANDLE_GL_ERRORS();
+    IA_HANDLE_GL_ERRORS();
     glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, pFramebuffer);
-        IA_HANDLE_GL_ERRORS();
+    IA_HANDLE_GL_ERRORS();
     glReadPixels(0, 0, pWidth, pHeight, GL_RGBA, GL_UNSIGNED_BYTE, data);
-        IA_HANDLE_GL_ERRORS();
+    IA_HANDLE_GL_ERRORS();
     glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
-        IA_HANDLE_GL_ERRORS();
+    IA_HANDLE_GL_ERRORS();
     return data;
 }
 
@@ -460,35 +526,35 @@ int IAFramebuffer::saveAsJpeg(const char *filename, GLubyte *imgdata)
     JSAMPROW row_pointer[1];             /* output row buffer */
     int row_stride;                      /* physical row width in output buf */
 
-	if ((ofp = fl_fopen(filename, "wb"))) {
-		cinfo.err = jpeg_std_error(&jerr);
-		jpeg_create_compress(&cinfo);
-		jpeg_stdio_dest(&cinfo, ofp);
+    if ((ofp = fl_fopen(filename, "wb"))) {
+        cinfo.err = jpeg_std_error(&jerr);
+        jpeg_create_compress(&cinfo);
+        jpeg_stdio_dest(&cinfo, ofp);
 
-		cinfo.image_width = pWidth;
-		cinfo.image_height = pHeight;
-		cinfo.input_components = 3;
-		cinfo.in_color_space = JCS_RGB;
+        cinfo.image_width = pWidth;
+        cinfo.image_height = pHeight;
+        cinfo.input_components = 3;
+        cinfo.in_color_space = JCS_RGB;
 
-		jpeg_set_defaults(&cinfo);
-		jpeg_set_quality(&cinfo, 95, FALSE);
+        jpeg_set_defaults(&cinfo);
+        jpeg_set_quality(&cinfo, 95, FALSE);
 
-		jpeg_start_compress(&cinfo, TRUE);
+        jpeg_start_compress(&cinfo, TRUE);
 
-		/* Calculate the size of a row in the image */
-		row_stride = cinfo.image_width * cinfo.input_components;
+        /* Calculate the size of a row in the image */
+        row_stride = cinfo.image_width * cinfo.input_components;
 
-		/* compress the JPEG, one scanline at a time into the buffer */
-		while (cinfo.next_scanline < cinfo.image_height) {
-			row_pointer[0] = &(imgdata[(pHeight - cinfo.next_scanline - 1)*row_stride]);
-			jpeg_write_scanlines(&cinfo, row_pointer, 1);
-		}
+        /* compress the JPEG, one scanline at a time into the buffer */
+        while (cinfo.next_scanline < cinfo.image_height) {
+            row_pointer[0] = &(imgdata[(pHeight - cinfo.next_scanline - 1)*row_stride]);
+            jpeg_write_scanlines(&cinfo, row_pointer, 1);
+        }
 
-		jpeg_finish_compress(&cinfo);
-		jpeg_destroy_compress(&cinfo);
+        jpeg_finish_compress(&cinfo);
+        jpeg_destroy_compress(&cinfo);
 
-		fclose(ofp);
-	}
+        fclose(ofp);
+    }
     if (freeImgData)
         free(imgdata);
 
@@ -578,9 +644,9 @@ void IAFramebuffer::draw(double z)
     if (!hasFBO()) return;
 
     // set as texture and render out
-        IA_HANDLE_GL_ERRORS();
+    IA_HANDLE_GL_ERRORS();
     glBindTexture(GL_TEXTURE_2D, pColorbuffer);
-        IA_HANDLE_GL_ERRORS();
+    IA_HANDLE_GL_ERRORS();
     glEnable(GL_TEXTURE_2D);
     glColor3f(1.0, 1.0, 1.0);
     glBegin(GL_POLYGON);
@@ -594,7 +660,7 @@ void IAFramebuffer::draw(double z)
     glVertex3d(pPrinter->pBuildVolumeMax.x(), pPrinter->pBuildVolumeMin.y(), z);
     glEnd();
     glDisable(GL_TEXTURE_2D);
-        IA_HANDLE_GL_ERRORS();
+    IA_HANDLE_GL_ERRORS();
 }
 
 
@@ -618,9 +684,9 @@ void IAFramebuffer::activateFBO()
         createFBO();
     }
     /** \todo what if there was an error and FBO is still not created */
-        IA_HANDLE_GL_ERRORS();
+    IA_HANDLE_GL_ERRORS();
     glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, pFramebuffer);
-        IA_HANDLE_GL_ERRORS();
+    IA_HANDLE_GL_ERRORS();
 }
 
 
@@ -636,27 +702,27 @@ void IAFramebuffer::createFBO()
     // Create this thing
 
     //RGBA8 2D texture, 24 bit depth texture
-        IA_HANDLE_GL_ERRORS();
+    IA_HANDLE_GL_ERRORS();
     glGenTextures(1, &pColorbuffer);
-        IA_HANDLE_GL_ERRORS();
+    IA_HANDLE_GL_ERRORS();
     glBindTexture(GL_TEXTURE_2D, pColorbuffer);
-        IA_HANDLE_GL_ERRORS();
+    IA_HANDLE_GL_ERRORS();
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     //NULL means reserve texture memory, but texels are undefined
-        IA_HANDLE_GL_ERRORS();
+    IA_HANDLE_GL_ERRORS();
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, pWidth, pHeight, 0, GL_BGRA, GL_UNSIGNED_BYTE, nullptr);
-        IA_HANDLE_GL_ERRORS();
+    IA_HANDLE_GL_ERRORS();
 
     glGenFramebuffersEXT(1, &pFramebuffer);
-        IA_HANDLE_GL_ERRORS();
+    IA_HANDLE_GL_ERRORS();
     glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, pFramebuffer);
-        IA_HANDLE_GL_ERRORS();
+    IA_HANDLE_GL_ERRORS();
     //Attach 2D texture to this FBO
     glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT, GL_TEXTURE_2D, pColorbuffer, 0);
-        IA_HANDLE_GL_ERRORS();
+    IA_HANDLE_GL_ERRORS();
 
     if (pBuffers==RGBAZ) {
         IA_HANDLE_GL_ERRORS();
@@ -678,10 +744,10 @@ void IAFramebuffer::createFBO()
     switch(status)
     {
         case GL_FRAMEBUFFER_COMPLETE_EXT:
-//            printf("good\n");
+            //            printf("good\n");
             break;
         default:
-        IA_HANDLE_GL_ERRORS();
+            IA_HANDLE_GL_ERRORS();
             printf("not so good\n");
             return;
     }
@@ -696,19 +762,19 @@ void IAFramebuffer::createFBO()
 void IAFramebuffer::deleteFBO()
 {
     //Bind 0, which means render to back buffer, as a result, fb is unbound
-        IA_HANDLE_GL_ERRORS();
+    IA_HANDLE_GL_ERRORS();
     glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
-        IA_HANDLE_GL_ERRORS();
+    IA_HANDLE_GL_ERRORS();
     //Delete resources
     if (pColorbuffer)
         glDeleteTextures(1, &pColorbuffer);
-        IA_HANDLE_GL_ERRORS();
+    IA_HANDLE_GL_ERRORS();
     if (pDepthbuffer)
         glDeleteRenderbuffersEXT(1, &pDepthbuffer);
-        IA_HANDLE_GL_ERRORS();
+    IA_HANDLE_GL_ERRORS();
     if (pFramebuffer)
         glDeleteFramebuffersEXT(1, &pFramebuffer);
-        IA_HANDLE_GL_ERRORS();
+    IA_HANDLE_GL_ERRORS();
     pFramebufferCreated = false;
 }
 

@@ -16,6 +16,15 @@
 #include <memory>
 
 
+// Abundant error checking: why did glDebugMessageCallback not exist since OpenGL 1.0? Sigh.
+#define IA_HANDLE_GL_ERRORS() \
+do { \
+GLenum err; \
+while ((err=glGetError())) \
+printf("*** OpenGL ERROR %d: %s\n%s:%d\n", err, gluErrorString(err), __FILE__, __LINE__); \
+} while(0)
+
+
 class IAToolpath;
 class IAPrinter;
 
