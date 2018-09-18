@@ -132,7 +132,7 @@ void IAPrinterFDM::sliceAll()
     double hgt = Iota.pMesh->pMax.z() - Iota.pMesh->pMin.z() + 2.0*layerHeight();
     // initial height determines stickiness to bed
 
-    double zMin = layerHeight() * 0.7;
+    double zMin = layerHeight() * 0.9;
     double zLayerHeight = layerHeight();
 #if 1
     double zMax = hgt;

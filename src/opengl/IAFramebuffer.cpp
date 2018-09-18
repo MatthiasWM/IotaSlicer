@@ -71,6 +71,34 @@ PFNGLBLITFRAMEBUFFEREXTPROC glBlitFramebufferEXT;
  https://www.opengl.org/archives/resources/features/KilgardTechniques/oglpitfall/
  */
 
+int isExtensionSupported(const char *extension)
+{
+    const GLubyte *extensions = NULL;
+    const GLubyte *start;
+    GLubyte *where, *terminator;
+
+    /* Extension names should not have spaces. */
+    where = (GLubyte *) strchr(extension, ' ');
+    if (where || *extension == '\0')
+        return 0;
+    extensions = glGetString(GL_EXTENSIONS);
+    /* It takes a bit of care to be fool-proof about parsing the
+     OpenGL extensions string. Don't be fooled by sub-strings,
+     etc. */
+    start = extensions;
+    for (;;) {
+        where = (GLubyte *) strstr((const char *) start, extension);
+        if (!where)
+            break;
+        terminator = where + strlen(extension);
+        if (where == start || *(where - 1) == ' ')
+            if (*terminator == ' ' || *terminator == '\0')
+                return 1;
+        start = terminator;
+    }
+    return 0;
+}
+
 
 /**
  * Initialize OpenGL for every supported platform.
@@ -80,6 +108,9 @@ PFNGLBLITFRAMEBUFFEREXTPROC glBlitFramebufferEXT;
  */
 bool initializeOpenGL()
 {
+    // "GL_EXT_blend_minmax"
+    // "GL_EXT_blend_subtract"
+
 	static bool beenHere = false;
 	if (beenHere) return true;
 	beenHere = true;
@@ -164,8 +195,19 @@ void IAFramebuffer::logicAndNot(IAFramebuffer *src)
         // FIXME: we can push and pop these
         glDisable(GL_DEPTH_TEST);
         // create a point if the destination point is 1 and the src is 0
-        glBlendFunc(GL_ONE, GL_ONE);
+#if 0
+        // this would be the obvious solution, but is not supported by all
+        // OpenGL drivers
+        glBlendFunc(GL_ONE, GL_ONE); // dst = 1*dst - 1*src
         glBlendEquationEXT(GL_FUNC_REVERSE_SUBTRACT);
+#else
+        // this is the not-so-obvious solution which should be supported
+        // on all OpenGL drivers. We need to remember that R,G, and B should
+        // only be 0.0 or 1.0, so multiplying the source and inverse
+        // destination color will effectively be a logic AND NOT.
+        glBlendFunc(GL_ZERO, GL_ONE_MINUS_SRC_COLOR); // dst = 0*src + (1-src)*dst
+        glBlendEquationEXT(GL_FUNC_ADD);
+#endif
         glEnable(GL_BLEND);
 //        GLenum err = glGetError(); printf("1 GL Error %d\n", err);
 
@@ -198,8 +240,19 @@ void IAFramebuffer::logicAnd(IAFramebuffer *src)
 
         // FIXME: we can push and pop these
         glDisable(GL_DEPTH_TEST);
-        glBlendFunc(GL_ONE, GL_ONE);
-        glBlendEquationEXT(GL_MIN); // FIXME: not all drivers support this
+#if 0
+        // this would be the obvious solution, but is not supported by many
+        // OpenGL drivers
+        glBlendFunc(GL_ONE, GL_ONE); // dst = min(src, dst)
+        glBlendEquationEXT(GL_MIN);
+#else
+        // this is the not-so-obvious solution which should be supported
+        // on all OpenGL drivers. We need to remember that R,G, and B should
+        // only be 0.0 or 1.0, so multiplying the source and destination color
+        // and then clipping it to [0...1] will effectively be a logic AND.
+        glBlendFunc(GL_DST_COLOR, GL_ZERO); // dst = src * dst + null * dst
+        glBlendEquationEXT(GL_FUNC_ADD);
+#endif
         glEnable(GL_BLEND);
 //        GLenum err = glGetError(); printf("2 GL Error %d\n", err);
 
