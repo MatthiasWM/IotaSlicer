@@ -155,8 +155,7 @@ void IAPrinterFDM::sliceAll()
         IASlice *slc = sliceList[i] = new IASlice( this );
         slc->setNewZ(z);
         slc->generateRim(Iota.pMesh);
-        slc->tesselateLidFromRim();
-        slc->drawFlat(false, 1, 1, 1);
+        slc->tesselateAndDrawLid();
 
         auto tp0 = slc->pFramebuffer->toolpathFromLassoAndContract(z, 0.5 * pNozzleDiameter);
         auto tp1 = tp0 ? slc->pFramebuffer->toolpathFromLassoAndContract(z, pNozzleDiameter) : nullptr;
@@ -202,25 +201,26 @@ void IAPrinterFDM::sliceAll()
         IAFramebuffer lid(slc->pFramebuffer);
         lid.logicAndNot(&mask);
         IAFramebuffer infill(slc->pFramebuffer);
-#if 0
+#if 1
         //   build the lid with horizontal and vertical close lines
         // ZIGZAG (could do bridging if used in the correct direction!)
-        lid.overlayLidPattern(i, pNozzleDiameter);
+//        lid.overlayLidPattern(i, pNozzleDiameter);
+        lid.overlayInfillPattern(i, pNozzleDiameter);
         auto lidPath = lid.toolpathFromLasso(z);
-        if (lidPath) tp->add(lidPath.get());
+        if (lidPath) tp->add(lidPath.get(), 2, 0);
 #else
         //   build the lid with concentric outlines
         // CONCENTRIC (nicer for lids)
         /** \bug limit this to the widtha and hight of the build platform divided by the extrsuion width */
         int k;
-        for (k=0;k<500;k++) {
+        for (k=0;k<300;k++) { // FIXME
             auto tp1 = lid.toolpathFromLassoAndContract(z, pNozzleDiameter);
             if (!tp1) break;
             infill.subtract(tp1, pNozzleDiameter);
             tp->add(tp1.get(), 2, k);
         }
-        if (k==500) {
-            assert(0);
+        if (k==300) {
+//            assert(0);
         }
 #endif
 

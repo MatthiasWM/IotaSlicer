@@ -9,6 +9,7 @@
 
 #include "Iota.h"
 #include "toolpath/IAToolpath.h"
+#include "potrace/potracelib.h"
 
 #include <FL/gl.h>
 #include <FL/glu.h>
@@ -21,9 +22,10 @@
 do { \
 GLenum err; \
 while ((err=glGetError())) \
-printf("*** OpenGL ERROR %d: %s\n%s:%d\n", err, gluErrorString(err), __FILE__, __LINE__); \
+printf("*** OpenGL ERROR %d: %s\n%s:%d\n", err, glIAErrorString(err), __FILE__, __LINE__); \
 } while(0)
 
+extern const char *glIAErrorString(int err);
 
 class IAToolpath;
 class IAPrinter;
@@ -33,6 +35,7 @@ class IAPrinter;
  * MSWindows needs a lot of persuasion to provide some of the OpenGL calls.
  */
 extern bool initializeOpenGL();
+
 
 
 /**
@@ -64,16 +67,19 @@ extern bool initializeOpenGL();
 class IAFramebuffer
 {
 public:
+    typedef unsigned long bm_word;
+
     typedef enum {
         NONE = 0,
-        RGBA = 1,
-        RGBAZ = 2
+        RGBA,
+        RGBAZ,
+        BITMAP
     } Buffers;
 
     IAFramebuffer(IAPrinter*, Buffers type);
     IAFramebuffer(IAFramebuffer*);
     ~IAFramebuffer();
-    void clear();
+    void clear(int color=0);
 
     void bindForRendering();
     void unbindFromRendering();
@@ -93,6 +99,9 @@ public:
      \return the height of the buffer. */
     int height() { return pHeight; }
 
+    /** Buffer type */
+    Buffers buffers() { return pBuffers; }
+
     void logicAndNot(IAFramebuffer*);
     void logicAnd(IAFramebuffer*);
 
@@ -103,11 +112,32 @@ public:
     void overlayLidPattern(int i, double w);
     void overlayInfillPattern(int i, double w);
 
+    void drawLid(IAEdgeList &rim);
+
+    void beginComplexPolygon();
+    void endComplexPolygon(int color);
+    void addPoint(IAVector3d&);
+    void addPoint(double x, double y);
+    void addGap();
+
 protected:
     bool hasFBO();
     void activateFBO();
     void createFBO();
     void deleteFBO();
+
+    void addPointRaw(float x, float y, bool gap=false);
+
+    class Vertex {
+    public:
+        void set(float x, float y, bool gap = false) { pX = x; pY = y; pIsGap = gap; }
+        float pX, pY;
+        bool pIsGap;
+    };
+
+    int pnVertex = 0, pNVertex = 0, pVertexGapStart = 0;
+    Vertex *pVertex = nullptr;
+
 
     /** Width of the framebuffer in pixles */
     int pWidth = kFramebufferSize;
@@ -132,6 +162,9 @@ protected:
 
     /** Use this to retrieve the build volume when rendering. */
     IAPrinter *pPrinter = nullptr;
+
+public:
+    potrace_bitmap_t *pBitmap = nullptr;
 };
 
 

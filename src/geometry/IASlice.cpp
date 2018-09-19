@@ -31,7 +31,11 @@ GLUtesselator *gGluTess = nullptr;
 IASlice::IASlice(IAPrinter *printer)
 :   pPrinter( printer )
 {
+#if 0
     pFramebuffer = new IAFramebuffer(printer, IAFramebuffer::RGBA);
+#else
+    pFramebuffer = new IAFramebuffer(printer, IAFramebuffer::BITMAP);
+#endif
     pColorbuffer = new IAFramebuffer(printer, IAFramebuffer::RGBAZ);
 }
 
@@ -428,22 +432,32 @@ void IASlice::tesselateLidFromRim()
     gluTessEndContour(gGluTess);
     gluTessEndPolygon(gGluTess);
 
-    /// \bug temporary hack
-    pFramebuffer->bindForRendering(); // make sure we have a square in the buffer
-    drawFlat(false, 1.0, 1.0, 0.0);
-    pFramebuffer->unbindFromRendering();
-
-    /// \bug temporary hack
-    pColorbuffer->bindForRendering();
-    drawShell();
-    pColorbuffer->unbindFromRendering();
-
     currentSlice = nullptr;
+}
+
+/**
+ * Tesselate the rim and draw the resulting lid.
+ */
+void IASlice::tesselateAndDrawLid()
+{
+    pFramebuffer->bindForRendering(); // make sure we have a square in the buffer
+    if (pFramebuffer->buffers()==IAFramebuffer::BITMAP) {
+        pFramebuffer->drawLid(pRim);
+    } else {
+        tesselateLidFromRim();
+        drawFlat(false, 1.0, 1.0, 0.0);
+        pFramebuffer->unbindFromRendering();
+    }
 }
 
 
 void IASlice::drawShell()
 {
+//    /// \bug temporary hack
+//    pColorbuffer->bindForRendering();
+//    drawShell();
+//    pColorbuffer->unbindFromRendering();
+
     glClearColor(0.0, 0.0, 0.0, 0.0);
     glClearDepth(1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

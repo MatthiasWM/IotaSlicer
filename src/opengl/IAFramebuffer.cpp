@@ -10,10 +10,21 @@
 #include "userinterface/IAGUIMain.h"
 #include "toolpath/IAToolpath.h"
 #include "potrace/IAPotrace.h"
+#include "potrace/bitmap.h"
 
 #include <stdio.h>
+#include <math.h>
 #include <libjpeg/jpeglib.h>
 #include <libpng/png.h>
+
+
+const char *glIAErrorString(int err)
+{
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+    return (const char *)gluErrorString(err);
+#pragma clang diagnostic pop
+}
 
 #if 0
 // VMWareDetector.cpp : Defines the entry point for the console application.
@@ -229,7 +240,7 @@ if (!a##EXT) { Iota.Error.set("Initializing OpenGL", IAError::OpenGLFeatureNotSu
  */
 IAFramebuffer::IAFramebuffer(IAPrinter *printer, Buffers buffers)
 :   pBuffers( buffers ),
-pPrinter( printer )
+    pPrinter( printer )
 {
     // variables are initialized inline
 }
@@ -240,18 +251,23 @@ pPrinter( printer )
  */
 IAFramebuffer::IAFramebuffer(IAFramebuffer *src)
 :   pBuffers( src->pBuffers ),
-pPrinter( src->pPrinter )
+    pPrinter( src->pPrinter )
 {
     if (src->hasFBO()) {
         bindForRendering();
-        glBindFramebufferEXT(GL_READ_FRAMEBUFFER, src->pFramebuffer);
-        IA_HANDLE_GL_ERRORS();
-        glBindFramebufferEXT(GL_DRAW_FRAMEBUFFER, pFramebuffer);
-        IA_HANDLE_GL_ERRORS();
-        glBlitFramebufferEXT(0, 0, pWidth, pHeight,
-                             0, 0, pWidth, pHeight,
-                             GL_COLOR_BUFFER_BIT, GL_NEAREST);
-        IA_HANDLE_GL_ERRORS();
+        if (pBuffers==BITMAP) {
+            // FIXME: assuming that all framebuffers have the same resolution
+            pBitmap = bm_dup(src->pBitmap);
+        } else {
+            glBindFramebufferEXT(GL_READ_FRAMEBUFFER, src->pFramebuffer);
+            IA_HANDLE_GL_ERRORS();
+            glBindFramebufferEXT(GL_DRAW_FRAMEBUFFER, pFramebuffer);
+            IA_HANDLE_GL_ERRORS();
+            glBlitFramebufferEXT(0, 0, pWidth, pHeight,
+                                 0, 0, pWidth, pHeight,
+                                 GL_COLOR_BUFFER_BIT, GL_NEAREST);
+            IA_HANDLE_GL_ERRORS();
+        }
         unbindFromRendering();
     }
 }
@@ -267,43 +283,59 @@ void IAFramebuffer::logicAndNot(IAFramebuffer *src)
 {
     if (src && src->hasFBO()) {
         bindForRendering();
-        glBindFramebufferEXT(GL_READ_FRAMEBUFFER, src->pFramebuffer);
-        IA_HANDLE_GL_ERRORS();
-        glBindFramebufferEXT(GL_DRAW_FRAMEBUFFER, pFramebuffer);
-        IA_HANDLE_GL_ERRORS();
+        if (pBuffers==BITMAP) {
+            int dy = pBitmap->dy;
+            int y;
+            int i;
+            potrace_word *pSrc, *pDst;
+            if (dy < 0) {
+                dy = -dy;
+            }
+            for (y=0; y < pBitmap->h; y++) {
+                pSrc = bm_scanline(src->pBitmap, y);
+                pDst = bm_scanline(pBitmap, y);
+                for (i=0; i < dy; i++) {
+                    pDst[i] = pDst[i] & ~pSrc[i];
+                }
+            }
+        } else {
+            glBindFramebufferEXT(GL_READ_FRAMEBUFFER, src->pFramebuffer);
+            IA_HANDLE_GL_ERRORS();
+            glBindFramebufferEXT(GL_DRAW_FRAMEBUFFER, pFramebuffer);
+            IA_HANDLE_GL_ERRORS();
 
-        // FIXME: we can push and pop these
-        glDisable(GL_DEPTH_TEST);
-        // create a point if the destination point is 1 and the src is 0
+            // FIXME: we can push and pop these
+            glDisable(GL_DEPTH_TEST);
+            // create a point if the destination point is 1 and the src is 0
 #if 0
-        // this would be the obvious solution, but is not supported by all
-        // OpenGL drivers
-        glBlendFunc(GL_ONE, GL_ONE); // dst = 1*dst - 1*src
-        glBlendEquationEXT(GL_FUNC_REVERSE_SUBTRACT);
+            // this would be the obvious solution, but is not supported by all
+            // OpenGL drivers
+            glBlendFunc(GL_ONE, GL_ONE); // dst = 1*dst - 1*src
+            glBlendEquationEXT(GL_FUNC_REVERSE_SUBTRACT);
 #else
-        // this is the not-so-obvious solution which should be supported
-        // on all OpenGL drivers. We need to remember that R,G, and B should
-        // only be 0.0 or 1.0, so multiplying the source and inverse
-        // destination color will effectively be a logic AND NOT.
-        glBlendFunc(GL_ZERO, GL_ONE_MINUS_SRC_COLOR); // dst = 0*src + (1-src)*dst
-        IA_HANDLE_GL_ERRORS();
-        glBlendEquationEXT(GL_FUNC_ADD);
-        IA_HANDLE_GL_ERRORS();
+            // this is the not-so-obvious solution which should be supported
+            // on all OpenGL drivers. We need to remember that R,G, and B should
+            // only be 0.0 or 1.0, so multiplying the source and inverse
+            // destination color will effectively be a logic AND NOT.
+            glBlendFunc(GL_ZERO, GL_ONE_MINUS_SRC_COLOR); // dst = 0*src + (1-src)*dst
+            IA_HANDLE_GL_ERRORS();
+            glBlendEquationEXT(GL_FUNC_ADD);
+            IA_HANDLE_GL_ERRORS();
 #endif
-        glEnable(GL_BLEND);
-        IA_HANDLE_GL_ERRORS();
+            glEnable(GL_BLEND);
+            IA_HANDLE_GL_ERRORS();
 
-        glRasterPos2d(0.0, 0.0);
-        IA_HANDLE_GL_ERRORS();
-        glCopyPixels(0, 0, pWidth, pHeight, GL_COLOR);
-        IA_HANDLE_GL_ERRORS();
+            glRasterPos2d(0.0, 0.0);
+            IA_HANDLE_GL_ERRORS();
+            glCopyPixels(0, 0, pWidth, pHeight, GL_COLOR);
+            IA_HANDLE_GL_ERRORS();
 
-        glDisable(GL_BLEND);
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        IA_HANDLE_GL_ERRORS();
-        glBlendEquationEXT(GL_FUNC_ADD);
-        IA_HANDLE_GL_ERRORS();
-
+            glDisable(GL_BLEND);
+            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+            IA_HANDLE_GL_ERRORS();
+            glBlendEquationEXT(GL_FUNC_ADD);
+            IA_HANDLE_GL_ERRORS();
+        }
         unbindFromRendering();
     } else {
         // if src has no FBO, it is all 0, so AND NOT will not change this buffer
@@ -321,42 +353,59 @@ void IAFramebuffer::logicAnd(IAFramebuffer *src)
 {
     if (src && src->hasFBO()) {
         bindForRendering();
-        glBindFramebufferEXT(GL_READ_FRAMEBUFFER, src->pFramebuffer);
-        IA_HANDLE_GL_ERRORS();
-        glBindFramebufferEXT(GL_DRAW_FRAMEBUFFER, pFramebuffer);
-        IA_HANDLE_GL_ERRORS();
+        bindForRendering();
+        if (pBuffers==BITMAP) {
+            int dy = pBitmap->dy;
+            int y;
+            int i;
+            potrace_word *pSrc, *pDst;
+            if (dy < 0) {
+                dy = -dy;
+            }
+            for (y=0; y < pBitmap->h; y++) {
+                pSrc = bm_scanline(src->pBitmap, y);
+                pDst = bm_scanline(pBitmap, y);
+                for (i=0; i < dy; i++) {
+                    pDst[i] = pDst[i] & pSrc[i];
+                }
+            }
+        } else {
+            glBindFramebufferEXT(GL_READ_FRAMEBUFFER, src->pFramebuffer);
+            IA_HANDLE_GL_ERRORS();
+            glBindFramebufferEXT(GL_DRAW_FRAMEBUFFER, pFramebuffer);
+            IA_HANDLE_GL_ERRORS();
 
-        // FIXME: we can push and pop these
-        glDisable(GL_DEPTH_TEST);
+            // FIXME: we can push and pop these
+            glDisable(GL_DEPTH_TEST);
 #if 0
-        // this would be the obvious solution, but is not supported by many
-        // OpenGL drivers
-        glBlendFunc(GL_ONE, GL_ONE); // dst = min(src, dst)
-        glBlendEquationEXT(GL_MIN);
+            // this would be the obvious solution, but is not supported by many
+            // OpenGL drivers
+            glBlendFunc(GL_ONE, GL_ONE); // dst = min(src, dst)
+            glBlendEquationEXT(GL_MIN);
 #else
-        // this is the not-so-obvious solution which should be supported
-        // on all OpenGL drivers. We need to remember that R,G, and B should
-        // only be 0.0 or 1.0, so multiplying the source and destination color
-        // and then clipping it to [0...1] will effectively be a logic AND.
-        glBlendFunc(GL_DST_COLOR, GL_ZERO); // dst = src * dst + null * dst
-        IA_HANDLE_GL_ERRORS();
-        glBlendEquationEXT(GL_FUNC_ADD);
-        IA_HANDLE_GL_ERRORS();
+            // this is the not-so-obvious solution which should be supported
+            // on all OpenGL drivers. We need to remember that R,G, and B should
+            // only be 0.0 or 1.0, so multiplying the source and destination color
+            // and then clipping it to [0...1] will effectively be a logic AND.
+            glBlendFunc(GL_DST_COLOR, GL_ZERO); // dst = src * dst + null * dst
+            IA_HANDLE_GL_ERRORS();
+            glBlendEquationEXT(GL_FUNC_ADD);
+            IA_HANDLE_GL_ERRORS();
 #endif
-        glEnable(GL_BLEND);
-        IA_HANDLE_GL_ERRORS();
+            glEnable(GL_BLEND);
+            IA_HANDLE_GL_ERRORS();
 
-        glRasterPos2d(0.0, 0.0);
-        IA_HANDLE_GL_ERRORS();
-        glCopyPixels(0, 0, pWidth, pHeight, GL_COLOR);
-        IA_HANDLE_GL_ERRORS();
+            glRasterPos2d(0.0, 0.0);
+            IA_HANDLE_GL_ERRORS();
+            glCopyPixels(0, 0, pWidth, pHeight, GL_COLOR);
+            IA_HANDLE_GL_ERRORS();
 
-        glDisable(GL_BLEND);
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        IA_HANDLE_GL_ERRORS();
-        glBlendEquationEXT(GL_FUNC_ADD);
-        IA_HANDLE_GL_ERRORS();
-
+            glDisable(GL_BLEND);
+            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+            IA_HANDLE_GL_ERRORS();
+            glBlendEquationEXT(GL_FUNC_ADD);
+            IA_HANDLE_GL_ERRORS();
+        }
         unbindFromRendering();
     } else {
         // if src has no FBO, it is all 0, so AND will make the result all 0
@@ -370,6 +419,10 @@ void IAFramebuffer::logicAnd(IAFramebuffer *src)
  */
 IAFramebuffer::~IAFramebuffer()
 {
+    if (pBitmap) {
+        bm_free(pBitmap);
+        pBitmap = nullptr;
+    }
     if (hasFBO()) {
         deleteFBO();
         pFramebufferCreated = false;
@@ -382,7 +435,7 @@ IAFramebuffer::~IAFramebuffer()
  *
  * This call does not delete any resources.
  */
-void IAFramebuffer::clear()
+void IAFramebuffer::clear(int color)
 {
     if (hasFBO()) {
         bindForRendering();
@@ -393,6 +446,8 @@ void IAFramebuffer::clear()
             glClearColor(0.0, 0.0, 0.0, 0.0);
             glClearDepth(1.0f);
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        } else if (pBuffers==BITMAP) {
+            bm_clear(pBitmap, color);
         }
         unbindFromRendering();
     }
@@ -406,27 +461,31 @@ void IAFramebuffer::bindForRendering()
 {
     activateFBO();
 
-    // set matrices, lighting, etc. for this FBO
-    glViewport(0, 0, pWidth, pHeight);
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    IAVector3d vol = pPrinter->pBuildVolume;
-    /** \todo why is the range below [vol.z(), 0] negative? I tested the
-     slice, and it does draw at the correct (positive) Z. Maybe related: we set
-     the z depth to 1.0 when clearing the buffers. Is the depth test flipped?
-     Lastly, make sure that 0 is always within the z range. */
-    glOrtho(pPrinter->pBuildVolumeMin.x(), pPrinter->pBuildVolumeMax.x(),
-            pPrinter->pBuildVolumeMin.y(), pPrinter->pBuildVolumeMax.y(),
-            -vol.z()-1, 1);
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
+    if (pBuffers==BITMAP) {
+        // nothing to do
+    } else {
+        // set matrices, lighting, etc. for this FBO
+        glViewport(0, 0, pWidth, pHeight);
+        glMatrixMode(GL_PROJECTION);
+        glLoadIdentity();
+        IAVector3d vol = pPrinter->pBuildVolume;
+        /** \todo why is the range below [vol.z(), 0] negative? I tested the
+         slice, and it does draw at the correct (positive) Z. Maybe related: we set
+         the z depth to 1.0 when clearing the buffers. Is the depth test flipped?
+         Lastly, make sure that 0 is always within the z range. */
+        glOrtho(pPrinter->pBuildVolumeMin.x(), pPrinter->pBuildVolumeMax.x(),
+                pPrinter->pBuildVolumeMin.y(), pPrinter->pBuildVolumeMax.y(),
+                -vol.z()-1, 1);
+        glMatrixMode(GL_MODELVIEW);
+        glLoadIdentity();
 
-    // draw a aquare, just to see if this works at all
-    glEnable(GL_COLOR_MATERIAL);
-    glDisable(GL_TEXTURE_2D);
-    glDisable(GL_BLEND);
-    glDisable(GL_LIGHTING);
-    glEnable(GL_DEPTH_TEST);
+        // draw a aquare, just to see if this works at all
+        glEnable(GL_COLOR_MATERIAL);
+        glDisable(GL_TEXTURE_2D);
+        glDisable(GL_BLEND);
+        glDisable(GL_LIGHTING);
+        glEnable(GL_DEPTH_TEST);
+    }
 }
 
 
@@ -436,12 +495,16 @@ void IAFramebuffer::bindForRendering()
  */
 void IAFramebuffer::unbindFromRendering()
 {
-    // deactivate the FBO and set render target to FL_BACKBUFFER
-    IA_HANDLE_GL_ERRORS();
-    glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
-    IA_HANDLE_GL_ERRORS();
-    // make sure that our scene viewer completely reinitializes
-    gSceneView->valid(0);
+    if (pBuffers==BITMAP) {
+        // nothing to do
+    } else {
+        // deactivate the FBO and set render target to FL_BACKBUFFER
+        IA_HANDLE_GL_ERRORS();
+        glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
+        IA_HANDLE_GL_ERRORS();
+        // make sure that our scene viewer completely reinitializes
+        gSceneView->valid(0);
+    }
 }
 
 
@@ -454,13 +517,25 @@ uint8_t *IAFramebuffer::getRawImageRGB()
 {
     size_t size = pWidth*pHeight*3;
     uint8_t *data = (uint8_t*)malloc(size);
-    IA_HANDLE_GL_ERRORS();
-    glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, pFramebuffer);
-    IA_HANDLE_GL_ERRORS();
-    glReadPixels(0, 0, pWidth, pHeight, GL_RGB, GL_UNSIGNED_BYTE, data);
-    IA_HANDLE_GL_ERRORS();
-    glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
-    IA_HANDLE_GL_ERRORS();
+    if (pBuffers==BITMAP) {
+        uint8_t *dst = data;
+        for (int y=0; y<pHeight; y++) {
+            for (int x=0; x<pWidth; x++) {
+                uint8_t lum = BM_UGET(pBitmap, x, y) ? 255 : 0;
+                *dst++ = lum;
+                *dst++ = lum;
+                *dst++ = lum;
+            }
+        }
+    } else {
+        IA_HANDLE_GL_ERRORS();
+        glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, pFramebuffer);
+        IA_HANDLE_GL_ERRORS();
+        glReadPixels(0, 0, pWidth, pHeight, GL_RGB, GL_UNSIGNED_BYTE, data);
+        IA_HANDLE_GL_ERRORS();
+        glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
+        IA_HANDLE_GL_ERRORS();
+    }
     return data;
 }
 
@@ -474,13 +549,25 @@ uint8_t *IAFramebuffer::getRawImageRGBA()
 {
     size_t size = pWidth*pHeight*4;
     uint8_t *data = (uint8_t*)malloc(size);
-    IA_HANDLE_GL_ERRORS();
-    glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, pFramebuffer);
-    IA_HANDLE_GL_ERRORS();
-    glReadPixels(0, 0, pWidth, pHeight, GL_RGBA, GL_UNSIGNED_BYTE, data);
-    IA_HANDLE_GL_ERRORS();
-    glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
-    IA_HANDLE_GL_ERRORS();
+    if (pBuffers==BITMAP) {
+        uint8_t *dst = data;
+        for (int y=0; y<pHeight; y++) {
+            for (int x=0; x<pWidth; x++) {
+                uint8_t lum = BM_UGET(pBitmap, x, y) ? 255 : 0;
+                *dst++ = lum;
+                *dst++ = lum;
+                *dst++ = lum;
+            }
+        }
+    } else {
+        IA_HANDLE_GL_ERRORS();
+        glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, pFramebuffer);
+        IA_HANDLE_GL_ERRORS();
+        glReadPixels(0, 0, pWidth, pHeight, GL_RGBA, GL_UNSIGNED_BYTE, data);
+        IA_HANDLE_GL_ERRORS();
+        glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
+        IA_HANDLE_GL_ERRORS();
+    }
     return data;
 }
 
@@ -643,24 +730,28 @@ void IAFramebuffer::draw(double z)
 {
     if (!hasFBO()) return;
 
-    // set as texture and render out
-    IA_HANDLE_GL_ERRORS();
-    glBindTexture(GL_TEXTURE_2D, pColorbuffer);
-    IA_HANDLE_GL_ERRORS();
-    glEnable(GL_TEXTURE_2D);
-    glColor3f(1.0, 1.0, 1.0);
-    glBegin(GL_POLYGON);
-    glTexCoord2f(0.0, 0.0);
-    glVertex3d(pPrinter->pBuildVolumeMin.x(), pPrinter->pBuildVolumeMin.y(), z);
-    glTexCoord2f(0.0, 1.0);
-    glVertex3d(pPrinter->pBuildVolumeMin.x(), pPrinter->pBuildVolumeMax.y(), z);
-    glTexCoord2f(1.0, 1.0);
-    glVertex3d(pPrinter->pBuildVolumeMax.x(), pPrinter->pBuildVolumeMax.y(), z);
-    glTexCoord2f(1.0, 0.0);
-    glVertex3d(pPrinter->pBuildVolumeMax.x(), pPrinter->pBuildVolumeMin.y(), z);
-    glEnd();
-    glDisable(GL_TEXTURE_2D);
-    IA_HANDLE_GL_ERRORS();
+    if (pBuffers==BITMAP) {
+        // FIXME: write this
+    } else {
+        // set as texture and render out
+        IA_HANDLE_GL_ERRORS();
+        glBindTexture(GL_TEXTURE_2D, pColorbuffer);
+        IA_HANDLE_GL_ERRORS();
+        glEnable(GL_TEXTURE_2D);
+        glColor3f(1.0, 1.0, 1.0);
+        glBegin(GL_POLYGON);
+        glTexCoord2f(0.0, 0.0);
+        glVertex3d(pPrinter->pBuildVolumeMin.x(), pPrinter->pBuildVolumeMin.y(), z);
+        glTexCoord2f(0.0, 1.0);
+        glVertex3d(pPrinter->pBuildVolumeMin.x(), pPrinter->pBuildVolumeMax.y(), z);
+        glTexCoord2f(1.0, 1.0);
+        glVertex3d(pPrinter->pBuildVolumeMax.x(), pPrinter->pBuildVolumeMax.y(), z);
+        glTexCoord2f(1.0, 0.0);
+        glVertex3d(pPrinter->pBuildVolumeMax.x(), pPrinter->pBuildVolumeMin.y(), z);
+        glEnd();
+        glDisable(GL_TEXTURE_2D);
+        IA_HANDLE_GL_ERRORS();
+    }
 }
 
 
@@ -683,10 +774,14 @@ void IAFramebuffer::activateFBO()
     if (!pFramebufferCreated) {
         createFBO();
     }
-    /** \todo what if there was an error and FBO is still not created */
-    IA_HANDLE_GL_ERRORS();
-    glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, pFramebuffer);
-    IA_HANDLE_GL_ERRORS();
+    if (pBuffers==BITMAP) {
+        // nothing to do
+    } else {
+        /** \todo what if there was an error and FBO is still not created */
+        IA_HANDLE_GL_ERRORS();
+        glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, pFramebuffer);
+        IA_HANDLE_GL_ERRORS();
+    }
 }
 
 
@@ -701,58 +796,67 @@ void IAFramebuffer::createFBO()
 {
     // Create this thing
 
-    //RGBA8 2D texture, 24 bit depth texture
-    IA_HANDLE_GL_ERRORS();
-    glGenTextures(1, &pColorbuffer);
-    IA_HANDLE_GL_ERRORS();
-    glBindTexture(GL_TEXTURE_2D, pColorbuffer);
-    IA_HANDLE_GL_ERRORS();
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    //NULL means reserve texture memory, but texels are undefined
-    IA_HANDLE_GL_ERRORS();
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, pWidth, pHeight, 0, GL_BGRA, GL_UNSIGNED_BYTE, nullptr);
-    IA_HANDLE_GL_ERRORS();
-
-    glGenFramebuffersEXT(1, &pFramebuffer);
-    IA_HANDLE_GL_ERRORS();
-    glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, pFramebuffer);
-    IA_HANDLE_GL_ERRORS();
-    //Attach 2D texture to this FBO
-    glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT, GL_TEXTURE_2D, pColorbuffer, 0);
-    IA_HANDLE_GL_ERRORS();
-
-    if (pBuffers==RGBAZ) {
-        IA_HANDLE_GL_ERRORS();
-        glGenRenderbuffersEXT(1, &pDepthbuffer);
-        IA_HANDLE_GL_ERRORS();
-        glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, pDepthbuffer);
-        IA_HANDLE_GL_ERRORS();
-        glRenderbufferStorageEXT(GL_RENDERBUFFER_EXT, GL_DEPTH_COMPONENT24, pWidth, pHeight);
-        IA_HANDLE_GL_ERRORS();
-        glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT, GL_DEPTH_ATTACHMENT_EXT, GL_RENDERBUFFER_EXT, pDepthbuffer);
-        IA_HANDLE_GL_ERRORS();
+    if (pBuffers==BITMAP) {
+        pBitmap = bm_new(pWidth, pHeight);
     } else {
-        pDepthbuffer = 0;
-    }
+        //RGBA8 2D texture, 24 bit depth texture
+        IA_HANDLE_GL_ERRORS();
+        glGenTextures(1, &pColorbuffer);
+        IA_HANDLE_GL_ERRORS();
+        glBindTexture(GL_TEXTURE_2D, pColorbuffer);
+        IA_HANDLE_GL_ERRORS();
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        //NULL means reserve texture memory, but texels are undefined
+        IA_HANDLE_GL_ERRORS();
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, pWidth, pHeight, 0, GL_BGRA, GL_UNSIGNED_BYTE, nullptr);
+        IA_HANDLE_GL_ERRORS();
 
-    //Does the GPU support current FBO configuration?
-    GLenum status;
-    status = glCheckFramebufferStatusEXT(GL_FRAMEBUFFER_EXT);
-    switch(status)
-    {
-        case GL_FRAMEBUFFER_COMPLETE_EXT:
-            //            printf("good\n");
-            break;
-        default:
+        glGenFramebuffersEXT(1, &pFramebuffer);
+        IA_HANDLE_GL_ERRORS();
+        glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, pFramebuffer);
+        IA_HANDLE_GL_ERRORS();
+        //Attach 2D texture to this FBO
+        glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT, GL_TEXTURE_2D, pColorbuffer, 0);
+        IA_HANDLE_GL_ERRORS();
+
+        if (pBuffers==RGBAZ) {
             IA_HANDLE_GL_ERRORS();
-            printf("not so good\n");
-            return;
+            glGenRenderbuffersEXT(1, &pDepthbuffer);
+            IA_HANDLE_GL_ERRORS();
+            glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, pDepthbuffer);
+            IA_HANDLE_GL_ERRORS();
+            glRenderbufferStorageEXT(GL_RENDERBUFFER_EXT, GL_DEPTH_COMPONENT24, pWidth, pHeight);
+            IA_HANDLE_GL_ERRORS();
+            glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT, GL_DEPTH_ATTACHMENT_EXT, GL_RENDERBUFFER_EXT, pDepthbuffer);
+            IA_HANDLE_GL_ERRORS();
+        } else {
+            pDepthbuffer = 0;
+        }
+
+        //Does the GPU support current FBO configuration?
+        GLenum status;
+        status = glCheckFramebufferStatusEXT(GL_FRAMEBUFFER_EXT);
+        switch(status)
+        {
+            case GL_FRAMEBUFFER_COMPLETE_EXT:
+                //            printf("good\n");
+                break;
+            default:
+                IA_HANDLE_GL_ERRORS();
+                printf("not so good\n");
+                return;
+        }
     }
     pFramebufferCreated = true;
     clear();
+//    //    FIXME: this is a test pattern for the bitmap mode
+//    if (pBitmap) {
+//        for (int y = 800; y<1600; y++)
+//            bm_hline(pBitmap, 800, 1500, y);
+//    }
 }
 
 
@@ -761,20 +865,24 @@ void IAFramebuffer::createFBO()
  */
 void IAFramebuffer::deleteFBO()
 {
-    //Bind 0, which means render to back buffer, as a result, fb is unbound
-    IA_HANDLE_GL_ERRORS();
-    glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
-    IA_HANDLE_GL_ERRORS();
-    //Delete resources
-    if (pColorbuffer)
-        glDeleteTextures(1, &pColorbuffer);
-    IA_HANDLE_GL_ERRORS();
-    if (pDepthbuffer)
-        glDeleteRenderbuffersEXT(1, &pDepthbuffer);
-    IA_HANDLE_GL_ERRORS();
-    if (pFramebuffer)
-        glDeleteFramebuffersEXT(1, &pFramebuffer);
-    IA_HANDLE_GL_ERRORS();
+    if (pBuffers==BITMAP) {
+        bm_free(pBitmap);
+    } else {
+        //Bind 0, which means render to back buffer, as a result, fb is unbound
+        IA_HANDLE_GL_ERRORS();
+        glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
+        IA_HANDLE_GL_ERRORS();
+        //Delete resources
+        if (pColorbuffer)
+            glDeleteTextures(1, &pColorbuffer);
+        IA_HANDLE_GL_ERRORS();
+        if (pDepthbuffer)
+            glDeleteRenderbuffersEXT(1, &pDepthbuffer);
+        IA_HANDLE_GL_ERRORS();
+        if (pFramebuffer)
+            glDeleteFramebuffersEXT(1, &pFramebuffer);
+        IA_HANDLE_GL_ERRORS();
+    }
     pFramebufferCreated = false;
 }
 
@@ -832,9 +940,13 @@ void IAFramebuffer::subtract(IAToolpathListSP tp, double r)
     if (tp) {
         // draw the outline to contract the image
         bindForRendering();
-        glDisable(GL_DEPTH_TEST);
-        glColor3f(0.0, 0.0, 0.0);
-        tp->drawFlat(r*2.0);
+        if (pBuffers==BITMAP) {
+            tp->drawFlatToBitmap(this, r*2.0);
+        } else {
+            glDisable(GL_DEPTH_TEST);
+            glColor3f(0.0, 0.0, 0.0);
+            tp->drawFlat(r*2.0);
+        }
         unbindFromRendering();
     }
 }
@@ -850,26 +962,46 @@ void IAFramebuffer::subtract(IAToolpathListSP tp, double r)
 void IAFramebuffer::overlayLidPattern(int i, double infillWdt)
 {
     bindForRendering();
-    glDisable(GL_DEPTH_TEST);
-    glColor3f(0.0, 0.0, 0.0);
     // draw spaces so the infill gets spread out nicely
     /** \todo What if the printer has negative coordintes as well? */
     double wdt = pPrinter->pBuildVolumeMax.x();
     double hgt = pPrinter->pBuildVolumeMax.y();
-    // generate a lid
-    glPushMatrix();
-    if (i&1) {
-        glRotated(90, 0, 0, 1);
+    if (pBuffers==BITMAP) {
+        if (i&1) {
+            int dx = infillWdt/pPrinter->pBuildVolume.x()*pWidth;
+            if (dx<1) dx = 1;
+            for (int x=0; x<pWidth; x+=2*dx) {
+                for (int y=0; y<pHeight; y++) {
+                    bm_hline(pBitmap, x, x+dx, y, 0);
+                }
+            }
+        } else {
+            int dy = infillWdt/pPrinter->pBuildVolume.y()*pHeight;
+            if (dy<1) dy = 1;
+            for (int y1=0; y1<pHeight; y1+=2*dy) {
+                for (int y2=0; y2<dy; y2++) {
+                    bm_hline(pBitmap, 0, pWidth, y1+y2, 0);
+                }
+            }
+        }
+    } else {
+        glDisable(GL_DEPTH_TEST);
+        glColor3f(0.0, 0.0, 0.0);
+        // generate a lid
+        glPushMatrix();
+        if (i&1) {
+            glRotated(90, 0, 0, 1);
+        }
+        for (double j=-wdt; j<wdt; j+=infillWdt*2) {
+            glBegin(GL_POLYGON);
+            glVertex2d(j+infillWdt, -hgt);
+            glVertex2d(j, -hgt);
+            glVertex2d(j, hgt);
+            glVertex2d(j+infillWdt, hgt);
+            glEnd();
+        }
+        glPopMatrix();
     }
-    for (double j=-wdt; j<wdt; j+=infillWdt*2) {
-        glBegin(GL_POLYGON);
-        glVertex2d(j+infillWdt, -hgt);
-        glVertex2d(j, -hgt);
-        glVertex2d(j, hgt);
-        glVertex2d(j+infillWdt, hgt);
-        glEnd();
-    }
-    glPopMatrix();
     unbindFromRendering();
 }
 
@@ -884,31 +1016,177 @@ void IAFramebuffer::overlayLidPattern(int i, double infillWdt)
 void IAFramebuffer::overlayInfillPattern(int i, double infillWdt)
 {
     bindForRendering();
-    glDisable(GL_DEPTH_TEST);
-    glColor3f(0.0, 0.0, 0.0);
-    // draw spaces so the infill gets spread out nicely
-    /** \todo What if the printer has negative coordinates as well? */
-    double wdt = pPrinter->pBuildVolumeMax.x();
-    double hgt = pPrinter->pBuildVolumeMax.y();
-    glPushMatrix();
-    if (i&1)
-        glRotated(45, 0, 0, 1);
-    else
-        glRotated(-45, 0, 0, 1);
-    for (double j=-2*wdt; j<2*wdt; j+=infillWdt*2) {
-        glBegin(GL_POLYGON);
-        /** \todo Draw this large enough so that it renders the entire scene, even if rotated. */
-        glVertex2d(j+infillWdt, -2*hgt);
-        glVertex2d(j, -2*hgt);
-        glVertex2d(j, 2*hgt);
-        glVertex2d(j+infillWdt, 2*hgt);
-        glEnd();
+    if (pBuffers==BITMAP) {
+        int dx = infillWdt/pPrinter->pBuildVolume.x()*pWidth;
+        if (dx<1) dx = 1;
+        if (i&1) {
+            for (int x=-pWidth; x<pWidth; x+=2*dx) {
+                for (int y=0; y<pHeight; y++) {
+                    bm_hline(pBitmap, x+y, x+y+dx, y, 0);
+                }
+            }
+        } else {
+            for (int x=0; x<2*pWidth; x+=2*dx) {
+                for (int y=0; y<pHeight; y++) {
+                    bm_hline(pBitmap, x-y, x-y+dx, y, 0);
+                }
+            }
+        }
+    } else {
+        glDisable(GL_DEPTH_TEST);
+        glColor3f(0.0, 0.0, 0.0);
+        // draw spaces so the infill gets spread out nicely
+        /** \todo What if the printer has negative coordinates as well? */
+        double wdt = pPrinter->pBuildVolumeMax.x();
+        double hgt = pPrinter->pBuildVolumeMax.y();
+        glPushMatrix();
+        if (i&1)
+            glRotated(45, 0, 0, 1);
+        else
+            glRotated(-45, 0, 0, 1);
+        for (double j=-2*wdt; j<2*wdt; j+=infillWdt*2) {
+            glBegin(GL_POLYGON);
+            /** \todo Draw this large enough so that it renders the entire scene, even if rotated. */
+            glVertex2d(j+infillWdt, -2*hgt);
+            glVertex2d(j, -2*hgt);
+            glVertex2d(j, 2*hgt);
+            glVertex2d(j+infillWdt, 2*hgt);
+            glEnd();
+        }
+        glPopMatrix();
     }
-    glPopMatrix();
     unbindFromRendering();
 }
 
 
+void IAFramebuffer::drawLid(IAEdgeList &rim)
+{
+    beginComplexPolygon();
+    for (auto &e: rim) {
+        if (e) {
+            addPoint(e->pVertex[0]->pGlobalPosition);
+        } else {
+            addGap();
+        }
+    }
+    endComplexPolygon(1);
+}
+
+
+void IAFramebuffer::beginComplexPolygon()
+{
+    pnVertex = 0;
+    pVertexGapStart = 0;
+}
+
+
+void IAFramebuffer::endComplexPolygon(int color)
+{
+    if (pnVertex < 2) return;
+
+    addGap(); // adds the first coordinate of this loop and marks it as a gap
+    int begin = 0, end = pnVertex;
+
+    Vertex *v = pVertex+0;
+    int xMin = v->pX, xMax = xMin, yMin = v->pY, yMax = yMin;
+    for (int i = begin+1; i < end; i++) {
+        v = pVertex+i;
+        if (v->pX < xMin) xMin = v->pX;
+        if (v->pX > xMax) xMax = v->pX;
+        if (v->pY < yMin) yMin = v->pY;
+        if (v->pY > yMax) yMax = v->pY;
+    }
+    xMax++; yMax++;
+
+    int nodes, nodeX[end - begin], pixelY, i, j, swap;
+
+    //  Loop through the rows of the image.
+    for (pixelY = yMin; pixelY < yMax; pixelY++) {
+        //  Build a list of nodes.
+        nodes = 0;
+        for (i = begin+1; i < end; i++) {
+            j = i-1;
+            if (pVertex[j].pIsGap)
+                continue;
+            if (   (pVertex[i].pY < pixelY && pVertex[j].pY >= pixelY)
+                || (pVertex[j].pY < pixelY && pVertex[i].pY >= pixelY) )
+            {
+                float dy = pVertex[j].pY - pVertex[i].pY;
+                if (fabsf(dy)>.0001) {
+                    nodeX[nodes++] = (int)(pVertex[i].pX +
+                                           (pixelY - pVertex[i].pY) / dy
+                                           * (pVertex[j].pX - pVertex[i].pX));
+                } else {
+                    nodeX[nodes++] = pVertex[i].pX;
+                }
+            }
+        }
+        //Fl_Android_Application::log_e("%d nodes (must be even!)", nodes);
+
+        //  Sort the nodes, via a simple “Bubble” sort.
+        i = 0;
+        while (i < nodes - 1) {
+            if (nodeX[i] > nodeX[i + 1]) {
+                swap = nodeX[i];
+                nodeX[i] = nodeX[i + 1];
+                nodeX[i + 1] = swap;
+                if (i) i--;
+            } else {
+                i++;
+            }
+        }
+
+        //  Fill the pixels between node pairs.
+        for (i = 0; i < nodes; i += 2) {
+            if (nodeX[i] >= xMax) break;
+            if (nodeX[i + 1] > xMin) {
+                if (nodeX[i] < xMin) nodeX[i] = xMin;
+                if (nodeX[i + 1] > xMax) nodeX[i + 1] = xMax;
+                bm_hline(pBitmap, nodeX[i], nodeX[i+1], pixelY, color);
+            }
+        }
+    }
+}
+
+
+void IAFramebuffer::addPointRaw(float x, float y, bool gap)
+{
+    if (pnVertex == pNVertex) {
+        pNVertex += 16;
+        pVertex = (Vertex*)::realloc(pVertex, pNVertex*sizeof(Vertex));
+    }
+    pVertex[pnVertex].set(x, y);
+    pVertex[pnVertex].pIsGap = gap;
+    pnVertex++;
+
+}
+
+
+void IAFramebuffer::addPoint(double x, double y)
+{
+    addPointRaw(x/pPrinter->pBuildVolume.x()*pWidth,
+                y/pPrinter->pBuildVolume.y()*pHeight, false);
+}
+
+
+void IAFramebuffer::addPoint(IAVector3d &v)
+{
+    addPointRaw(v.x()/pPrinter->pBuildVolume.x()*pWidth,
+             v.y()/pPrinter->pBuildVolume.y()*pHeight, false);
+}
+
+
+void IAFramebuffer::addGap()
+{
+    // drop gaps at the start or gap after gap
+    if (pnVertex==0 || pnVertex==pVertexGapStart)
+        return;
+
+    // create a loop
+    Vertex &v = pVertex[pVertexGapStart];
+    addPointRaw(v.pX, v.pY, true);
+    pVertexGapStart = pnVertex;
+}
 
 
 

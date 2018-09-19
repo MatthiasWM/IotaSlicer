@@ -470,6 +470,7 @@ void IAError::showDialog()
  */
 int main (int argc, char **argv)
 {
+
     Fl::scheme("gtk+");
 	Fl::args(argc, argv);
     Fl::set_color(FL_BACKGROUND_COLOR, 0xeeeeee00);

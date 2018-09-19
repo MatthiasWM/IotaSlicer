@@ -225,4 +225,18 @@ static inline int bm_resize(potrace_bitmap_t *bm, int h) {
   return 1;  
 }
 
+
+static inline void bm_hline(potrace_bitmap_t *bm, int x1, int x2, int y, int color)
+{
+    // FIXME: this can be optimized a lot!
+    if (x1>=x2) return;
+    if (x1<0) x1 = 0;
+    if (x2>bm->w) x2 = bm->w;
+    if (color)
+        for (int x=x1; x<x2; x++) BM_USET(bm, x, y);
+    else
+        for (int x=x1; x<x2; x++) BM_UCLR(bm, x, y);
+}
+
+
 #endif /* BITMAP_H */

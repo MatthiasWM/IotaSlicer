@@ -38,6 +38,7 @@ public:
     void addFirstRimVertex(IATriangle *IATriangle);
     bool addNextRimVertex(IAHalfEdgePtr &edge);
     void drawRim();
+    void tesselateAndDrawLid();
     void drawShell();
     void drawFramebuffer();
     void tesselateLidFromRim();

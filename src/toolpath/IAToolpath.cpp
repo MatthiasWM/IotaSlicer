@@ -11,6 +11,7 @@
 #include "IAToolpath.h"
 
 #include "Iota.h"
+#include "opengl/IAFramebuffer.h"
 
 #include <FL/gl.h>
 
@@ -383,6 +384,17 @@ void IAToolpathList::drawFlat(double w)
 }
 
 
+void IAToolpathList::drawFlatToBitmap(IAFramebuffer *fb, double w)
+{
+    /**
+     \todo draw connection between lines.
+     */
+    for (auto &tt: pToolpathList) {
+        tt->drawFlatToBitmap(fb, w);
+    }
+}
+
+
 /**
  * Save the toolpath as a GCode file.
  */
@@ -530,6 +542,17 @@ void IAToolpath::drawFlat(double w)
      */
     for (auto &e: pElementList) {
         e->drawFlat(w);
+    }
+}
+
+
+void IAToolpath::drawFlatToBitmap(IAFramebuffer *fb, double w)
+{
+    /**
+     \todo draw connection between lines.
+     */
+    for (auto &e: pElementList) {
+        e->drawFlatToBitmap(fb, w);
     }
 }
 
@@ -842,7 +865,7 @@ void IAToolpathMotion::drawFlat(double w)
         /**
          \todo this should draw a cap depending on the previous line.
          \todo this is the brute force approach which could be made so much
-            faster. This approach just draws an octagon, extende by a line.
+         faster. This approach just draws an octagon, extende by a line.
          */
         IAVector3d d = pEnd - pStart;
         IAVector3d u = d.normalized();
@@ -867,6 +890,37 @@ void IAToolpathMotion::drawFlat(double w)
         glVertex3dv(pEnd.dataPointer());
         glEnd();
 #endif
+    }
+}
+
+
+/**
+ * Draw the toolpath motion into the scene viewer.
+ */
+void IAToolpathMotion::drawFlatToBitmap(IAFramebuffer *fb, double w)
+{
+    if (!pIsRapid) {
+        /**
+         \todo this should draw a cap depending on the previous line.
+         \todo this is the brute force approach which could be made so much
+         faster. This approach just draws an octagon, extende by a line.
+         */
+        IAVector3d d = pEnd - pStart;
+        IAVector3d u = d.normalized();
+        double xo = u.x() * w * 0.5, x7 = xo * 0.7;
+        double yo = u.y() * w * 0.5, y7 = yo * 0.7;;
+        fb->beginComplexPolygon();
+        fb->addPoint(pStart.x()-xo, pStart.y()-yo);
+        fb->addPoint(pStart.x()-x7-y7, pStart.y()-y7+x7);
+        fb->addPoint(pStart.x()-yo, pStart.y()+xo);
+        fb->addPoint(pEnd.x()-yo, pEnd.y()+xo);
+        fb->addPoint(pEnd.x()+x7-y7, pEnd.y()+y7+x7);
+        fb->addPoint(pEnd.x()+xo, pEnd.y()+yo);
+        fb->addPoint(pEnd.x()+x7+y7, pEnd.y()+y7-x7);
+        fb->addPoint(pEnd.x()+yo, pEnd.y()-xo);
+        fb->addPoint(pStart.x()+yo, pStart.y()-xo);
+        fb->addPoint(pStart.x()-x7+y7, pStart.y()-y7-x7);
+        fb->endComplexPolygon(0);
     }
 }
 

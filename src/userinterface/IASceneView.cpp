@@ -140,6 +140,7 @@ void IASceneView::initializeView()
 
     if (!valid()) {
         gl_font(FL_HELVETICA, 16 );
+        IA_HANDLE_GL_ERRORS();
         static GLfloat mat_specular[] = { 1.0f, 1.0f, 1.0f, 1.0f };
         static GLfloat mat_shininess[] = { 50.0f };
         static GLfloat light_ambient[] = { 0.1f, 0.1f, 0.1f, 1.0f};
@@ -161,10 +162,11 @@ void IASceneView::initializeView()
         glEnable(GL_NORMALIZE);
 
         glEnable(GL_BLEND);
-        // glBlendFunc(GL_ONE, GL_ZERO);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        IA_HANDLE_GL_ERRORS();
 
         glViewport(0,0,pixel_w(),pixel_h());
+        IA_HANDLE_GL_ERRORS();
 
         if (!pShadersValid) initializeShaders();
 
@@ -183,19 +185,28 @@ void IASceneView::beginTextures()
     static Fl_RGB_Image *lTexture = nullptr;
 //    static GLUInt tex = 0;
     if (lTexture != Iota.texture) {
+        IA_HANDLE_GL_ERRORS();
         glGenTextures(1, &tex);
+        IA_HANDLE_GL_ERRORS();
         glBindTexture(GL_TEXTURE_2D, tex);
+        IA_HANDLE_GL_ERRORS();
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        IA_HANDLE_GL_ERRORS();
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        IA_HANDLE_GL_ERRORS();
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB8, Iota.texture->w(), Iota.texture->h(),
                      0, GL_RGB, GL_UNSIGNED_BYTE, *Iota.texture->data());
+        IA_HANDLE_GL_ERRORS();
         glEnable(GL_TEXTURE_2D);
+        IA_HANDLE_GL_ERRORS();
         lTexture = Iota.texture;
     }
     if (Iota.texture) {
         glBindTexture(GL_TEXTURE_2D, tex);
+        IA_HANDLE_GL_ERRORS();
     } else {
         glBindTexture(GL_TEXTURE_2D, 0);
+        IA_HANDLE_GL_ERRORS();
     }
 }
 
@@ -206,9 +217,11 @@ void IASceneView::beginTextures()
 void IASceneView::beginModels()
 {
     // initialize model drawing
+    IA_HANDLE_GL_ERRORS();
     glPushMatrix();
     glEnable(GL_LIGHTING);
     glEnable(GL_DEPTH_TEST);
+    IA_HANDLE_GL_ERRORS();
 }
 
 
@@ -217,7 +230,9 @@ void IASceneView::beginModels()
  */
 void IASceneView::endModels()
 {
+    IA_HANDLE_GL_ERRORS();
     glPopMatrix();
+    IA_HANDLE_GL_ERRORS();
 }
 
 
@@ -230,9 +245,12 @@ void IASceneView::draw()
 {
     if (!valid()) initializeView();
 
+    IA_HANDLE_GL_ERRORS();
     // initialize the frame buffer
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    IA_HANDLE_GL_ERRORS();
     glEnable(GL_BLEND);
+    IA_HANDLE_GL_ERRORS();
     beginTextures();
 
     pCurrentCamera->draw();
@@ -243,7 +261,9 @@ void IASceneView::draw()
     glLightfv(GL_LIGHT1, GL_POSITION, light_position1);
 
     // Draw the OpenGL origin.
+    IA_HANDLE_GL_ERRORS();
     glDisable(GL_LIGHTING);
+    IA_HANDLE_GL_ERRORS();
     const float sze = 5.0f;
     glColor3f(0.0, 0.0, 0.0);
     glLineWidth(3.0);
@@ -252,9 +272,10 @@ void IASceneView::draw()
     glVertex3f( 0.0,  sze, 0.0);
     glVertex3f(-sze,  0.0, 0.0);
     glVertex3f( 0.0, -sze, 0.0);
-    glLineWidth(1.0);
     glEnd();
+    glLineWidth(1.0);
     glEnable(GL_LIGHTING);
+    IA_HANDLE_GL_ERRORS();
 
     glPushMatrix();
     Iota.pCurrentPrinter->draw();
@@ -274,18 +295,22 @@ void IASceneView::draw()
         }
         glPopMatrix();
 #else
+        IA_HANDLE_GL_ERRORS();
         glPushMatrix();
         glTranslated(Iota.pMesh->position().x(), Iota.pMesh->position().y(), Iota.pMesh->position().z());
         Iota.pMesh->drawSliced(zRangeSlider->lowValue() * Iota.pCurrentPrinter->pLayerHeight);
         glPopMatrix();
+        IA_HANDLE_GL_ERRORS();
 
         if (Iota.pCurrentPrinter)
             Iota.pCurrentPrinter->drawPreview(zRangeSlider->lowValue(),
                                               zRangeSlider->highValue());
+        IA_HANDLE_GL_ERRORS();
         glPushMatrix();
         glTranslated(Iota.pMesh->position().x(), Iota.pMesh->position().y(), Iota.pMesh->position().z());
         Iota.pMesh->drawSlicedGhost(zRangeSlider->lowValue() * Iota.pCurrentPrinter->pLayerHeight);
         glPopMatrix();
+        IA_HANDLE_GL_ERRORS();
 #endif
 
     }
@@ -325,6 +350,7 @@ void IASceneView::draw_children()
 {
     if (!child(0)) return;
     
+    IA_HANDLE_GL_ERRORS();
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     glOrtho(-0.5, w()-0.5, h()-0.5, -0.5, 1.0, -1.0);
@@ -357,6 +383,7 @@ void IASceneView::draw_children()
         gl_draw("Drag and drop STL files here", 0, 0, w(), h(), FL_ALIGN_CENTER|FL_ALIGN_INSIDE);
     }
     fl_pop_clip();
+    IA_HANDLE_GL_ERRORS();
 }
 
 
