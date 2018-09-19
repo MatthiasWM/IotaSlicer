@@ -146,7 +146,7 @@ void IAPrinterFDM::sliceAll()
 
     int i = 0, n = (int)((zMax-zMin)/zLayerHeight);
     // create a slice for each layer
-    IASlice **sliceList = (IASlice**)calloc(n+2, sizeof(IASlice*));
+    IASlice **sliceList = (IASlice**)calloc(n+4, sizeof(IASlice*));
 
     for (double z=zMin; z<zMax+2*zLayerHeight; z+=zLayerHeight)
     {
@@ -236,11 +236,9 @@ void IAPrinterFDM::sliceAll()
         i++;
     }
 
-    i=0;
-    for (double z=zMin; z<zMax; z+=zLayerHeight) {
+    for (i=0; i<n+4; i++) {
         IASlice *slc = sliceList[i];
         delete slc;
-        i++;
     }
     free((void*)sliceList);
 

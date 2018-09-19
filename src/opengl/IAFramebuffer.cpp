@@ -1098,7 +1098,8 @@ void IAFramebuffer::endComplexPolygon(int color)
     }
     xMax++; yMax++;
 
-    int nodes, nodeX[end - begin], pixelY, i, j, swap;
+    int nodes, pixelY, i, j, swap;
+	int *nodeX = (int*)::malloc((end - begin) * sizeof(int));
 
     //  Loop through the rows of the image.
     for (pixelY = yMin; pixelY < yMax; pixelY++) {
@@ -1146,6 +1147,7 @@ void IAFramebuffer::endComplexPolygon(int color)
             }
         }
     }
+	::free((void*)nodeX);
 }
 
 
