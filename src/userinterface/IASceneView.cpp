@@ -298,7 +298,7 @@ void IASceneView::draw()
         IA_HANDLE_GL_ERRORS();
         glPushMatrix();
         glTranslated(Iota.pMesh->position().x(), Iota.pMesh->position().y(), Iota.pMesh->position().z());
-        Iota.pMesh->drawSliced(zRangeSlider->lowValue() * Iota.pCurrentPrinter->pLayerHeight);
+        Iota.pMesh->drawSliced(zRangeSlider->lowValue() * Iota.pCurrentPrinter->layerHeight());
         glPopMatrix();
         IA_HANDLE_GL_ERRORS();
 
@@ -308,7 +308,7 @@ void IASceneView::draw()
         IA_HANDLE_GL_ERRORS();
         glPushMatrix();
         glTranslated(Iota.pMesh->position().x(), Iota.pMesh->position().y(), Iota.pMesh->position().z());
-        Iota.pMesh->drawSlicedGhost(zRangeSlider->lowValue() * Iota.pCurrentPrinter->pLayerHeight);
+        Iota.pMesh->drawSlicedGhost(zRangeSlider->lowValue() * Iota.pCurrentPrinter->layerHeight());
         glPopMatrix();
         IA_HANDLE_GL_ERRORS();
 #endif

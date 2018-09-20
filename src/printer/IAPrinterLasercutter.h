@@ -35,18 +35,6 @@ public:
     // ----
     void sliceAll();
     void saveToolpaths(const char *filename = nullptr);
-
-
-    virtual void buildSessionSettings() override;
-
-    double layerHeight() { return pLayerHeight; }
-
-protected:
-    void userSetLayerHeight(Fl_Input_Choice *w);
-
-private:
-    static void userSetLayerHeightCB(Fl_Widget *w, void *d) {
-        ((IAPrinterLasercutter*)d)->userSetLayerHeight((Fl_Input_Choice*)w); }
 };
 
 

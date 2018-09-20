@@ -36,28 +36,25 @@ public:
     void sliceAll();
     void saveToolpath(const char *filename = nullptr);
 
-    virtual void buildSessionSettings() override;
-
-    double layerHeight() { return pLayerHeight; }
     int colorMode() { return pColorMode; }
 
 protected:
-    void userSetLayerHeight(Fl_Input_Choice *w);
-    void userSetColorMode(Fl_Choice *w);
     void userChangedColorMode();
+    void userChangedNumLids();
+    void userChangedLidType();
+    void userChangedNumShells();
+    void userChangedInfillDensity();
 
 private:
-    static void userSetLayerHeightCB(Fl_Widget *w, void *d) {
-        ((IAPrinterFDM*)d)->userSetLayerHeight((Fl_Input_Choice*)w); }
-    static void userSetColorModeCB(Fl_Widget *w, void *d) {
-        ((IAPrinterFDM*)d)->userSetColorMode((Fl_Choice*)w); }
 
     double pNozzleDiameter = 0.4;
 
-    IASettingList pSettingList;
     /** \todo make this an enum */
     int pColorMode = 0;
-//    IASettingChoice pSettingColorMode;
+    int pNumShells = 3;
+    int pNumLids = 2;
+    int pLidType = 0; // 0=zigzag, 1=concentric
+    double pInfillDensity = 20.0; // %
 };
 
 

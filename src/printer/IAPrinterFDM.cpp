@@ -66,17 +66,68 @@
 
 typedef Fl_Menu_Item Fl_Menu_Item_List[];
 
+static Fl_Menu_Item numShellsMenu[] = {
+    { "0*", 0, nullptr, (void*)0, 0, 0, 0, 11 },
+    { "1", 0, nullptr, (void*)1, 0, 0, 0, 11 },
+    { "2", 0, nullptr, (void*)2, 0, 0, 0, 11 },
+    { "3", 0, nullptr, (void*)3, 0, 0, 0, 11 },
+    { nullptr } };
+
+static Fl_Menu_Item numLidsMenu[] = {
+    { "0*", 0, nullptr, (void*)0, 0, 0, 0, 11 },
+    { "1", 0, nullptr, (void*)1, 0, 0, 0, 11 },
+    { "2", 0, nullptr, (void*)2, 0, 0, 0, 11 },
+    { nullptr } };
+
+static Fl_Menu_Item lidTypeMenu[] = {
+    { "zigzag", 0, nullptr, (void*)0, 0, 0, 0, 11 },
+    { "concentric", 0, nullptr, (void*)1, 0, 0, 0, 11 },
+    { nullptr } };
+
+static Fl_Menu_Item infillDensityMenuMenu[] = {
+    { "0", 0, nullptr, (void*)0, 0, 0, 0, 11 },
+    { "5", 0, nullptr, (void*)0, 0, 0, 0, 11 },
+    { "10", 0, nullptr, (void*)0, 0, 0, 0, 11 },
+    { "20", 0, nullptr, (void*)0, 0, 0, 0, 11 },
+    { "30", 0, nullptr, (void*)0, 0, 0, 0, 11 },
+    { "50", 0, nullptr, (void*)0, 0, 0, 0, 11 },
+    { "100", 0, nullptr, (void*)0, 0, 0, 0, 11 },
+    { nullptr } };
+
+
 IAPrinterFDM::IAPrinterFDM(const char *name)
 :   super(name)
 {
-	static Fl_Menu_Item colorMenu[] = {
-		{ "monochrome", 0, nullptr, (void*)0, 0, 0, 0, 11 },
-		{ "dual color", 0, nullptr, (void*)1, 0, 0, 0, 11 },
-		{ nullptr } };
+    pSettingList.push_back(
+                           new IASettingChoice("# of shells: ",
+                                               pNumShells,
+                                               [this]{userChangedNumShells();},
+                                               numShellsMenu ) );
 
-	/** \bug pSettingList must free all members */
-	pSettingList.push_back(
-		new IASettingChoice("Color:", pColorMode, [this]{userChangedColorMode(); }, colorMenu));
+    pSettingList.push_back(
+                           new IASettingChoice("# of lids: ",
+                                               pNumLids,
+                                               [this]{userChangedNumLids();},
+                                               numLidsMenu ) );
+
+    pSettingList.push_back(
+                           new IASettingChoice("lid type: ",
+                                               pLidType,
+                                               [this]{userChangedLidType();},
+                                               lidTypeMenu ) );
+
+    pSettingList.push_back(
+                           new IASettingFloatChoice("infill density: ",
+                                               pInfillDensity,
+                                               [this]{userChangedInfillDensity();},
+                                               infillDensityMenuMenu ) );
+
+//    static Fl_Menu_Item colorMenu[] = {
+//        { "monochrome", 0, nullptr, (void*)0, 0, 0, 0, 11 },
+//        { "dual color", 0, nullptr, (void*)1, 0, 0, 0, 11 },
+//        { nullptr } };
+//    pSettingList.push_back(
+//        new IASettingChoice("Color:", pColorMode, [this]{userChangedColorMode(); }, colorMenu));
 }
 
 
@@ -157,10 +208,17 @@ void IAPrinterFDM::sliceAll()
         slc->generateRim(Iota.pMesh);
         slc->tesselateAndDrawLid();
 
-        auto tp0 = slc->pFramebuffer->toolpathFromLassoAndContract(z, 0.5 * pNozzleDiameter);
-        auto tp1 = tp0 ? slc->pFramebuffer->toolpathFromLassoAndContract(z, pNozzleDiameter) : nullptr;
-        auto tp2 = tp1 ? slc->pFramebuffer->toolpathFromLassoAndContract(z, pNozzleDiameter) : nullptr;
-        auto tp3 = tp2 ? slc->pFramebuffer->toolpathFromLassoAndContract(z, pNozzleDiameter) : nullptr;
+        IAToolpathListSP tp0 = nullptr, tp1 = nullptr, tp2 = nullptr, tp3 = nullptr;
+        if (pNumShells>0) {
+            tp0 = slc->pFramebuffer->toolpathFromLassoAndContract(z, 0.5 * pNozzleDiameter);
+            tp1 = tp0 ? slc->pFramebuffer->toolpathFromLassoAndContract(z, pNozzleDiameter) : nullptr;
+        }
+        if (pNumShells>1) {
+            tp2 = tp1 ? slc->pFramebuffer->toolpathFromLassoAndContract(z, pNozzleDiameter) : nullptr;
+        }
+        if (pNumShells>2) {
+            tp3 = tp2 ? slc->pFramebuffer->toolpathFromLassoAndContract(z, pNozzleDiameter) : nullptr;
+        }
 
         IAToolpathList *tp = pMachineToolpath.createLayer(z);
         if (tp3) tp->add(tp3.get(), 1, 0);
@@ -179,59 +237,58 @@ void IAPrinterFDM::sliceAll()
         IAToolpathList *tp = pMachineToolpath.findLayer(z);
         IASlice *slc = sliceList[i];
 
-#if 0
-        IAFramebuffer lid_mask(sliceList[i+1]->pFramebuffer);
-        if (sliceList[i+2] && sliceList[i+2]->pFramebuffer)
-            lid_mask.logicAnd(sliceList[i+2]->pFramebuffer);
-        IAFramebuffer mask(lid_mask);
-        if (i>0) {
-            IAFramebuffer bot_mask(sliceList[i-1]->pFramebuffer);
-            bot_mask.logicAnd((i>1) ? sliceList[i-2]->pFramebuffer : nullptr);
-            mask.logicAnd(&bot_mask);
-        }
-#else
-        IAFramebuffer mask(sliceList[i+1]->pFramebuffer);
-        if (sliceList[i+2] && sliceList[i+2]->pFramebuffer)
-            mask.logicAnd(sliceList[i+2]->pFramebuffer);
-        mask.logicAnd((i>0) ? sliceList[i-1]->pFramebuffer : nullptr);
-        mask.logicAnd((i>1) ? sliceList[i-2]->pFramebuffer : nullptr);
-#endif
+        IAFramebuffer infill(slc->pFramebuffer);
 
         // build lids and bottoms
-        IAFramebuffer lid(slc->pFramebuffer);
-        lid.logicAndNot(&mask);
-        IAFramebuffer infill(slc->pFramebuffer);
-#if 1
-        //   build the lid with horizontal and vertical close lines
-        // ZIGZAG (could do bridging if used in the correct direction!)
-//        lid.overlayLidPattern(i, pNozzleDiameter);
-        lid.overlayInfillPattern(i, pNozzleDiameter);
-        auto lidPath = lid.toolpathFromLasso(z);
-        if (lidPath) tp->add(lidPath.get(), 2, 0);
-#else
-        //   build the lid with concentric outlines
-        // CONCENTRIC (nicer for lids)
-        /** \bug limit this to the widtha and hight of the build platform divided by the extrsuion width */
-        int k;
-        for (k=0;k<300;k++) { // FIXME
-            auto tp1 = lid.toolpathFromLassoAndContract(z, pNozzleDiameter);
-            if (!tp1) break;
-            infill.subtract(tp1, pNozzleDiameter);
-            tp->add(tp1.get(), 2, k);
+        if (pNumLids>0) {
+            IAFramebuffer mask(sliceList[i+1]->pFramebuffer);
+            if (pNumLids>1) {
+                if (sliceList[i+2] && sliceList[i+2]->pFramebuffer)
+                    mask.logicAnd(sliceList[i+2]->pFramebuffer);
+                else
+                    mask.clear();
+            }
+            mask.logicAnd((i>0) ? sliceList[i-1]->pFramebuffer : nullptr);
+            if (pNumLids>1) {
+                mask.logicAnd((i>1) ? sliceList[i-2]->pFramebuffer : nullptr);
+            }
+
+            IAFramebuffer lid(slc->pFramebuffer);
+            lid.logicAndNot(&mask);
+            infill.logicAnd(&mask);
+
+            if (pLidType==0) {
+                // ZIGZAG (could do bridging if used in the correct direction!)
+                lid.overlayInfillPattern(i, pNozzleDiameter);
+                auto lidPath = lid.toolpathFromLasso(z);
+                if (lidPath) tp->add(lidPath.get(), 2, 0);
+            } else {
+                // CONCENTRIC (nicer for lids)
+                /** \bug limit this to the widtha and hight of the build platform divided by the extrsuion width */
+                int k;
+                for (k=0;k<300;k++) { // FIXME
+                    auto tp1 = lid.toolpathFromLassoAndContract(z, pNozzleDiameter);
+                    if (!tp1) break;
+                    infill.subtract(tp1, pNozzleDiameter);
+                    tp->add(tp1.get(), 2, k);
+                }
+                if (k==300) {
+                    //            assert(0);
+                }
+            }
         }
-        if (k==300) {
-//            assert(0);
-        }
-#endif
 
         // build infills
         /** \todo We are actually filling the areas where the lids and the infill touch twice! */
         /** \todo remove material that we generated in the lid already */
-        infill.logicAnd(&mask);
 
-        infill.overlayInfillPattern(i, 3.0);
-        auto infillPath = infill.toolpathFromLasso(z);
-        if (infillPath) tp->add(infillPath.get(), 3, 0);
+        if (pInfillDensity>0.0001) {
+            // pNozzleDiameter = 100%
+            // pNozzleDiameter*2 = 50%
+            infill.overlayInfillPattern(i, 2*pNozzleDiameter * (100.0 / pInfillDensity) - pNozzleDiameter);
+            auto infillPath = infill.toolpathFromLasso(z);
+            if (infillPath) tp->add(infillPath.get(), 3, 0);
+        }
 
         i++;
     }
@@ -264,76 +321,35 @@ void IAPrinterFDM::saveToolpath(const char *filename)
 }
 
 
-/**
- * Create the Treeview items for setting up the printout for this session.
- *
- * \todo number of extrusion in the shell
- * \todo number of layers for lids and bottoms
- * \todo density for infills
- */
-void IAPrinterFDM::buildSessionSettings()
-{
-    wSessionSettings->begin();
-    
-    char buf[80];
-
-    static Fl_Menu_Item lHgtMenu[] = {
-        { "0.1", 0, nullptr, nullptr, 0, 0, 0, 11 },
-        { "0.2", 0, nullptr, nullptr, 0, 0, 0, 11 },
-        { "0.3", 0, nullptr, nullptr, 0, 0, 0, 11 },
-        { }
-    };
-
-    /** \bug this keeps on adding Choice widgets to the tree class!
-     * We must either delete the widgets when changing printer (which is hard,
-     * because the scrollbars are also children of Fl_Tree), or we must
-     * store the link to this widget and show and hide it accordingly (which
-     * is also not obvious)
-     * Or, we override Fl_Tree and write our owb clean() method?
-     */
-    Fl_Input_Choice *lHgt = new Fl_Input_Choice(1, 1, 60, 1, "mm");
-    lHgt->align(FL_ALIGN_RIGHT);
-    lHgt->labelsize(11);
-    lHgt->textsize(11);
-    lHgt->menu(lHgtMenu);
-    sprintf(buf, "%.2f", layerHeight()); lHgt->value(buf);
-    lHgt->callback(userSetLayerHeightCB, this);
-    Fl_Tree_Item *it = wSessionSettings->add("Layer Height: ");
-    it->widget(lHgt);
-
-    for (auto &s: pSettingList) {
-        s->build();
-    }
-}
-
-
-/**
- * The layer height was changed via the layer height chooser in the seesion
- * setting view.
- */
-void IAPrinterFDM::userSetLayerHeight(Fl_Input_Choice *w)
-{
-    /** \todo warn if layer height is 0, negative, or huge */
-    pLayerHeight = atof(w->value());
-}
-
-
-/**
- * The color mode was changed via the color mode chooser in the session
- * settings view.
- */
-void IAPrinterFDM::userSetColorMode(Fl_Choice *w)
-{
-    Fl_Menu_Item const* mi = w->mvalue();
-    if (mi) {
-        pColorMode = (int)(fl_intptr_t)(mi->user_data());
-    }
-}
-
 void IAPrinterFDM::userChangedColorMode()
 {
     printf("Colormode is now %d\n", pColorMode);
+    // TODO: clear toolpath and slice cache
 }
+
+
+void IAPrinterFDM::userChangedNumLids()
+{
+    // TODO: clear toolpath and slice cache
+}
+
+
+void IAPrinterFDM::userChangedNumShells()
+{
+    // TODO: clear toolpath and slice cache
+}
+
+
+void IAPrinterFDM::userChangedLidType()
+{
+    // TODO: clear toolpath and slice cache
+}
+
+void IAPrinterFDM::userChangedInfillDensity()
+{
+    // TODO: clear toolpath and slice cache
+}
+
 
 
 

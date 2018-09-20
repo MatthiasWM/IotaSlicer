@@ -30,6 +30,16 @@
 #include <FL/Fl_Tree_Item.H>
 
 
+static Fl_Menu_Item layerHeightMenu[] = {
+    { "0.1", 0, nullptr, nullptr, 0, 0, 0, 11 },
+    { "0.2", 0, nullptr, nullptr, 0, 0, 0, 11 },
+    { "0.3", 0, nullptr, nullptr, 0, 0, 0, 11 },
+    { "0.4", 0, nullptr, nullptr, 0, 0, 0, 11 },
+    { }
+};
+
+
+
 /**
  Create a default printer.
 
@@ -60,6 +70,14 @@ IAPrinter::IAPrinter(const char *newName)
 {
     setName(newName);
     loadSettings();
+
+    pSettingList.push_back(
+                           new IASettingFloatChoice("Layer Height:",
+                                                    pLayerHeight,
+                                                    [this]{userChangedLayerHeight();},
+                                                    layerHeightMenu)
+                           );
+
 }
 
 
@@ -114,6 +132,22 @@ void IAPrinter::saveSettings()
     Fl_Preferences prefs(Fl_Preferences::USER, "com.matthiasm.iota.printer", name());
     Fl_Preferences output(prefs, "output");
     output.set("lastFilename", outputPath());
+}
+
+
+/**
+ * Create the Treeview items for setting up the printout for this session.
+ *
+ * \todo number of extrusion in the shell
+ * \todo number of layers for lids and bottoms
+ * \todo density for infills
+ */
+void IAPrinter::buildSessionSettings()
+{
+    wSessionSettings->begin();
+    for (auto &s: pSettingList) {
+        s->build();
+    }
 }
 
 
@@ -327,15 +361,16 @@ void IAPrinter::drawPreview(double lo, double hi)
 }
 
 
-
-void IAPrinter::buildSessionSettings()
+void IAPrinter::userChangedLayerHeight()
 {
-    // there are currently no common settings for all printer types
+    printf("New layer height is %f\n", pLayerHeight);
 }
 
 
-
-//===========================================================================//
+#ifdef __APPLE__
+#pragma mark -
+#endif
+//============================================================================//
 
 
 /**
@@ -463,75 +498,5 @@ void IAPrinterList::userSelectsPrinterCB(Fl_Menu_Item*, void *p)
 {
     Iota.pPrinterList.userSelectsPrinter((IAPrinter*)p);
 }
-
-
-//===========================================================================//
-
-
-IASetting::IASetting()
-{
-}
-
-
-IASetting::~IASetting()
-{
-}
-
-
-Fl_Menu_Item *IASetting::dup(Fl_Menu_Item const *src)
-{
-    Fl_Menu_Item const *s = src;
-    int n = 1;
-    while (s->label()!=nullptr) {
-        s++; n++;
-        // we assum that there are no submenus
-    }
-    Fl_Menu_Item *ret = (Fl_Menu_Item*)malloc(n*sizeof(Fl_Menu_Item));
-    memmove(ret, src, n*sizeof(Fl_Menu_Item));
-    return ret;
-}
-
-
-
-IASettingChoice::IASettingChoice(const char *path, int &value, std::function<void()>&& cb, Fl_Menu_Item *menu)
-:   pPath(strdup(path)),
-    pValue(value),
-    pCallback(cb),
-    pMenu(dup(menu))
-{
-}
-
-
-IASettingChoice::~IASettingChoice()
-{
-    ::free((void*)pPath);
-    ::free((void*)pMenu);
-}
-
-void IASettingChoice::wCallback(Fl_Choice *w, IASettingChoice *d)
-{
-    d->pValue = (int)(fl_intptr_t)(w->mvalue()->user_data());
-    if (d->pCallback) d->pCallback();
-}
-
-
-void IASettingChoice::build()
-{
-    /**
-     \todo The color settings should be determined by the number of extruders,
-     extruder types (mixing, mono), and by the number of filemanets (color,
-     fill, support)
-     */
-    Fl_Choice *colorMode = new Fl_Choice(1, 1, 120, 1);
-    colorMode->textsize(12);
-    colorMode->menu(pMenu);
-    colorMode->value(pValue);
-    colorMode->callback((Fl_Callback*)wCallback, this);
-    pTreeItem = wSessionSettings->add("Color: ");
-    pTreeItem->widget(colorMode);
-}
-
-
-
 
 

@@ -9,17 +9,9 @@
 
 
 #include "geometry/IAVector3d.h"
-
 #include "geometry/IASlice.h"
 #include "toolpath/IAToolpath.h"
-
-#include <vector>
-#include <functional>
-
-
-struct Fl_Menu_Item;
-class Fl_Choice;
-class Fl_Tree_Item;
+#include "IASetting.h"
 
 
 /**
@@ -60,6 +52,8 @@ public:
 
     void loadSettings();
     void saveSettings();
+
+    double layerHeight() { return pLayerHeight; } // Session Setting
     
     void setName(const char *name);
     const char *name();
@@ -79,8 +73,6 @@ public:
 
     /// This is the current slice that contains the entire scene at a give z.
     IASlice gSlice;
-    
-    double pLayerHeight = 0.3;
 
 protected:
     bool queryOutputFilename(const char *title,
@@ -89,7 +81,13 @@ protected:
 
     bool pFirstWrite = true;
 
+    IASettingList pSettingList;
+
 private:
+    void userChangedLayerHeight();
+    
+    double pLayerHeight = 0.3; // Session setting
+
     char *pName = nullptr;
 
     char *pOutputPath = nullptr;
@@ -119,57 +117,6 @@ private:
     std::vector<IAPrinter *> pPrinterList;
 };
 
-
-//class IAPrintLayer
-//{
-//public:
-// we need the slice only once to create the color and property buffer
-// there is no reason to keep it around
-// the printer superclass holds this list of framebuffers
-// the specialized printer class holds printer specific data, like toolpaths
-//
-//    IASlice *pSlice;
-//    IAFramebuffer *pColorBuffer; // or use alpha buffer bit: shell, infill, support, lid, bottom
-//    // also contains a 24 bit depth buffer and possibly 8 bits for masking
-//    IAFramebuffer *pPropsBuffer; // properties: model shell, model infill, support, etc.
-//    IAToolpath *pToolpath; // only for certain printers...
-//};
-
-class IASetting
-{
-public:
-    IASetting();
-    virtual ~IASetting();
-    virtual void build() { }
-
-    // write to preferences
-    // read from preferences
-    // FIXME: what actually happens whe the tree is cleared? Tree-Items deletd? Widget stay in Group? ???
-
-    Fl_Menu_Item *dup(Fl_Menu_Item const*);
-};
-
-/**
- * Manage a setting that appears in a tree view.
- */
-class IASettingChoice : public IASetting
-{
-public:
-    IASettingChoice(const char *path, int &value, std::function<void()>&& cb, Fl_Menu_Item *menu);
-    virtual ~IASettingChoice() override;
-    virtual void build() override;
-
-    static void wCallback(Fl_Choice *w, IASettingChoice *d);
-
-    char *pPath;
-    int &pValue;
-    Fl_Menu_Item *pMenu;
-    std::function<void()> pCallback;
-    void *pUserData;
-    Fl_Tree_Item *pTreeItem;
-};
-
-typedef std::vector<IASetting*> IASettingList;
 
 #endif /* IA_PRINTER_H */
 

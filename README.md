@@ -32,9 +32,16 @@ inside a model, colors and transparencies.
 Iota currently generates G-Code files for DaVinci Duo printers with Repetier firmware.
 If will probably run with little or no modifications on other FDM printers as well.
 
+* v0.1.0b
+  * **Milestone!** My first release that earned a whole revision number! It's still  beta because
+    much of the release process is not yet in place. Nevertheless, this app can read even
+    damaged STL files without crashing and convert them into a printable GCode file for
+    an average FDM printer
 * v0.0.10a
   * generating lids and bottoms (different lid styles)
   * range slider to better inspect extruder preview
+  * converted entire OpenGL based slicing to CPU based slicing for compatibility, less memory
+    use, and higher speed.
 * v0.0.9a
   * https://github.com/MatthiasWM/IotaSlicer/releases/tag/v0.0.9a
   * Iota compiles on MacOS (Xcode), MSWindows (VisualC 2017), and Ubuntu Linux (Code::Blocks)
