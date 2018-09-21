@@ -9,6 +9,7 @@
 
 #include "data/binaryData.h"
 #include "userinterface/IAGUIMain.h"
+#include "userinterface/IAVersioneer.h"
 #include "fileformats/IAFmtTexJpeg.h"
 #include "fileformats/IAFmtObj3ds.h"
 #include "fileformats/IAGeometryReader.h"
@@ -30,6 +31,9 @@
 
 
 IAIota Iota;
+
+IAVersioneer gVersioneer;
+
 
 /* Do not change the somewhat funky [ver stuff below. It is used for automated
  * version number updates.
@@ -202,11 +206,7 @@ void IAIota::userMenuSliceSliceAll()
  */
 void IAIota::userMenuHelpVersioneer()
 {
-    if (!wVersionWindow) {
-        createVersionWindow();
-    }
-    loadSettings();
-    wVersionWindow->show();
+    gVersioneer.show();
 }
 
 

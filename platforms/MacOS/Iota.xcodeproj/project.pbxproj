@@ -62,6 +62,7 @@
 		C9E4C3192130311F004ED18C /* IAGcodeWriter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C9E4C3182130311F004ED18C /* IAGcodeWriter.cpp */; };
 		C9E5885921544A8600C4B64D /* IASetting.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C9E5885721544A8500C4B64D /* IASetting.cpp */; };
 		C9E5885C2155394900C4B64D /* IAPrinterList.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C9E5885B2155394900C4B64D /* IAPrinterList.cpp */; };
+		C9E588622155532100C4B64D /* IAVersioneer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C9E588602155532100C4B64D /* IAVersioneer.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXBuildRule section */
@@ -200,6 +201,8 @@
 		C9E5885821544A8500C4B64D /* IASetting.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IASetting.h; sourceTree = "<group>"; };
 		C9E5885A2155394800C4B64D /* IAPrinterList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IAPrinterList.h; sourceTree = "<group>"; };
 		C9E5885B2155394900C4B64D /* IAPrinterList.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = IAPrinterList.cpp; sourceTree = "<group>"; };
+		C9E588602155532100C4B64D /* IAVersioneer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = IAVersioneer.cpp; sourceTree = "<group>"; };
+		C9E588612155532100C4B64D /* IAVersioneer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IAVersioneer.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -420,6 +423,8 @@
 				C938CC132124D51200BAC374 /* IAGLButton.h */,
 				C9A67732214AA16800B3031E /* IAGLRangeSlider.cxx */,
 				C9A67733214AA16900B3031E /* IAGLRangeSlider.h */,
+				C9E588602155532100C4B64D /* IAVersioneer.cpp */,
+				C9E588612155532100C4B64D /* IAVersioneer.h */,
 			);
 			path = userinterface;
 			sourceTree = "<group>";
@@ -623,6 +628,7 @@
 				C9163EBD213EA6A700876F17 /* IAPrinterLasercutter.cpp in Sources */,
 				C9163EBB213EA6A700876F17 /* IAPrinterFDM.cpp in Sources */,
 				C97632DA211E348E00D9D4B5 /* IATriangle.cpp in Sources */,
+				C9E588622155532100C4B64D /* IAVersioneer.cpp in Sources */,
 				C993323B21238A5900629BE1 /* decompose.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
