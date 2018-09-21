@@ -9,6 +9,7 @@
 
 #include "Iota.h"
 #include "geometry/IAEdge.h"
+#include "printer/IAPrinter.h"
 
 #include <FL/fl_draw.H>
 #include <FL/gl.h>

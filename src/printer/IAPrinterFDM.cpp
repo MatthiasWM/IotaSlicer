@@ -122,6 +122,10 @@ IAPrinterFDM::IAPrinterFDM(const char *name)
                                                [this]{userChangedInfillDensity();},
                                                infillDensityMenuMenu ) );
 
+    // Nozzle diameter
+    // Extrusion width
+    // Extrusion speed
+
 //    static Fl_Menu_Item colorMenu[] = {
 //        { "monochrome", 0, nullptr, (void*)0, 0, 0, 0, 11 },
 //        { "dual color", 0, nullptr, (void*)1, 0, 0, 0, 11 },

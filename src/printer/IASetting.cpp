@@ -75,10 +75,11 @@ void IASettingChoice::build()
 {
     if (!pWidget) {
         pWidget = new Fl_Choice(1, 1, 120, 1);
-        pWidget->textsize(12);
+        pWidget->textsize(11);
         pWidget->menu(pMenu);
         pWidget->value(pValue); // select a menu item by index!
         pWidget->callback((Fl_Callback*)wCallback, this);
+        pWidget->box(FL_FLAT_BOX);
     }
     pTreeItem = wSessionSettings->add(pPath);
     pTreeItem->widget(pWidget);
@@ -120,7 +121,8 @@ void IASettingFloatChoice::build()
 {
     if (!pWidget) {
         pWidget = new Fl_Input_Choice(1, 1, 60, 1);
-        pWidget->textsize(12);
+        pWidget->textsize(11);
+        pWidget->labelsize(11);
         pWidget->menu(pMenu);
         char buf[80];
         snprintf(buf, 80, "%.2f", pValue);

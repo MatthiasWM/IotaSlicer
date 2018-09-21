@@ -10,6 +10,7 @@
 #include "Iota.h"
 #include "userinterface/IASceneView.h"
 #include "geometry/IAMath.h"
+#include "printer/IAPrinter.h"
 
 #include <FL/gl.h>
 #include <FL/glu.h>

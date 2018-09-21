@@ -12,7 +12,7 @@
 
 #include "geometry/IAMesh.h"
 #include "geometry/IASlice.h"
-#include "printer/IAPrinter.h"
+#include "printer/IAPrinterList.h"
 #include "userinterface/IAPreferences.h"
 
 

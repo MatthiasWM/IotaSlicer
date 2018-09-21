@@ -61,6 +61,7 @@
 		C9E4C31521299385004ED18C /* IAToolpath.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C9E4C31321299385004ED18C /* IAToolpath.cpp */; };
 		C9E4C3192130311F004ED18C /* IAGcodeWriter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C9E4C3182130311F004ED18C /* IAGcodeWriter.cpp */; };
 		C9E5885921544A8600C4B64D /* IASetting.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C9E5885721544A8500C4B64D /* IASetting.cpp */; };
+		C9E5885C2155394900C4B64D /* IAPrinterList.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C9E5885B2155394900C4B64D /* IAPrinterList.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXBuildRule section */
@@ -197,6 +198,8 @@
 		C9E4C3182130311F004ED18C /* IAGcodeWriter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = IAGcodeWriter.cpp; sourceTree = "<group>"; };
 		C9E5885721544A8500C4B64D /* IASetting.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = IASetting.cpp; sourceTree = "<group>"; };
 		C9E5885821544A8500C4B64D /* IASetting.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IASetting.h; sourceTree = "<group>"; };
+		C9E5885A2155394800C4B64D /* IAPrinterList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IAPrinterList.h; sourceTree = "<group>"; };
+		C9E5885B2155394900C4B64D /* IAPrinterList.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = IAPrinterList.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -329,6 +332,8 @@
 		C97632EC211FA7CC00D9D4B5 /* printer */ = {
 			isa = PBXGroup;
 			children = (
+				C9E5885B2155394900C4B64D /* IAPrinterList.cpp */,
+				C9E5885A2155394800C4B64D /* IAPrinterList.h */,
 				C97632ED211FA7CC00D9D4B5 /* IAPrinter.cpp */,
 				C97632EE211FA7CC00D9D4B5 /* IAPrinter.h */,
 				C9163EB5213EA6A700876F17 /* IAPrinterFDM.cpp */,
@@ -613,6 +618,7 @@
 				C993323921238A4900629BE1 /* curve.c in Sources */,
 				C993323D21238A9700629BE1 /* IAPotrace.cpp in Sources */,
 				C97632CD211E2DD000D9D4B5 /* IAVector3d.cpp in Sources */,
+				C9E5885C2155394900C4B64D /* IAPrinterList.cpp in Sources */,
 				C993323A21238A5100629BE1 /* trace.c in Sources */,
 				C9163EBD213EA6A700876F17 /* IAPrinterLasercutter.cpp in Sources */,
 				C9163EBB213EA6A700876F17 /* IAPrinterFDM.cpp in Sources */,

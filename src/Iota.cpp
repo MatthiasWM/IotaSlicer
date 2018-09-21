@@ -15,6 +15,8 @@
 #include "fileformats/IAGeometryReaderBinaryStl.h"
 #include "opengl/IAFramebuffer.h"
 #include "toolpath/IAToolpath.h"
+#include "printer/IAPrinter.h"
+
 
 #include <FL/fl_ask.H>
 #include <FL/fl_utf8.h>
@@ -32,7 +34,7 @@ IAIota Iota;
 /* Do not change the somewhat funky [ver stuff below. It is used for automated
  * version number updates.
  */
-const char *gVersion = /*[ver*/"v0.1.0b"/*]*/;
+const char *gVersion = /*[ver*/"v0.1.1b"/*]*/;
 
 const int kFramebufferSize = 2048;
 //const int kFramebufferSize = 4096;

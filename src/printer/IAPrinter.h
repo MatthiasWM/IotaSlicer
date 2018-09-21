@@ -60,8 +60,7 @@ public:
     void setOutputPath(const char *name);
     const char *outputPath();
 
-
-    virtual void buildSessionSettings();
+    void buildSessionSettings();
 
     IAVector3d pBuildVolume = { 214.0, 214.0, 230.0 };
     IAVector3d pBuildVolumeMin = { 0.0, 0.0, 0.0 };
@@ -91,30 +90,6 @@ private:
     char *pName = nullptr;
 
     char *pOutputPath = nullptr;
-};
-
-
-/**
- * Manage a list of printers.
- */
-class IAPrinterList
-{
-public:
-    IAPrinterList(Fl_Menu_Item *printermenu);
-    ~IAPrinterList();
-    bool add(IAPrinter *printer);
-    IAPrinter *defaultPrinter();
-    void userSelectsPrinter(IAPrinter *p);
-
-private:
-    void buildMenuArray();
-    void buildSessionSettings(IAPrinter *p);
-    static void userSelectsPrinterCB(Fl_Menu_Item*, void *p);
-
-    Fl_Menu_Item *pMenuItem = nullptr;
-    Fl_Menu_Item *pMenuArray = nullptr;
-
-    std::vector<IAPrinter *> pPrinterList;
 };
 
 

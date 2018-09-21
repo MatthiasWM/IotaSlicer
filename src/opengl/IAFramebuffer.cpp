@@ -11,6 +11,7 @@
 #include "toolpath/IAToolpath.h"
 #include "potrace/IAPotrace.h"
 #include "potrace/bitmap.h"
+#include "printer/IAPrinter.h"
 
 #include <stdio.h>
 #include <math.h>
