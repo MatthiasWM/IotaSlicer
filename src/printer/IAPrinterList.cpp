@@ -22,7 +22,20 @@
 /**
  * Manage a number of printers.
  *
- * Not setting printermenu should manage a printer list without user interface.
+ * This list holds customized printers and generic printers. Customized
+ * printers are based on other customized printers or on Generic printers.
+ * Generic printers can not be removed.
+ *
+ * New custom printers are added by selecting an existing printer and
+ * duplicating it. Existing printers can be deleted in the printer setting
+ * editor.
+ *
+ * This class provides pulldown menu structure for selecting, editing, and
+ * duplicating printers.
+ *
+ * \todo Not setting printermenu should manage a printer list without user
+ *      interface. V0.1.0: Is thaat still so? We should change the API!
+ * \todo should we create a derived class that adds UI functionality.
  *
  * \param printermenu a menu item that will be modified to point at all the
  *        printers in this list.
