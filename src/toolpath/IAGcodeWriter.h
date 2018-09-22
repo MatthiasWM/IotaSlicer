@@ -74,12 +74,12 @@ private:
     /*
      Calculating the E-Factor:
      When sending a G1 command, X, Y and Z give the distance of the move in mm.
-     E is the ditance in mm that the cold filament will be move.
+     E is the ditance in mm that the cold filament will be moved.
      If the E factor was 1, and there was no hotend, G1 would extrude exactly
      the length of filament corresponding to the XYZ motion.
 
      So, the incoming filament is 1.75mm in diameter. That gives an area
-     of PI*r^2 = (1.75/2)^2*pi = 2.41 . WIth a nozzle diameter of 0.4mm and
+     of PI*r^2 = (1.75/2)^2*pi = 2.41 . With a nozzle diameter of 0.4mm and
      a layer heigt of 0.3mm, we want an area of 0.4*0.3 = 0.12 .
      Dividing the surface areas 2.41/0.12 gives us the factor 20.0 .
 

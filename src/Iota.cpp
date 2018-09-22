@@ -483,7 +483,7 @@ int main (int argc, char **argv)
     Iota.gMainWindow = createIotaAppWindow();
     {
         char buf[80];
-        sprintf(buf, "Iota Voxe Slicer %s", gVersion);
+        sprintf(buf, "Iota Voxel Slicer %s", gVersion);
         Iota.gMainWindow->copy_label(buf);
     }
     if (Iota.gPreferences.pMainWindowX==-1) {

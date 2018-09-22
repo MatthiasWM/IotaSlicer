@@ -10,87 +10,86 @@
 
 void IAVersioneer::loadSettings()
 {
-  int v;
-  char buf[2048];
-  
-  Fl_Preferences pref(Fl_Preferences::USER, "iota.matthiasm.com", "versioneer");
-  pref.get("path", buf, "/Users/matt/dev/IotaSlicer/", 2046);
-  wBasePath->value(buf);
-  Fl_Preferences vers( pref, "version");
-  vers.get("major", v, 0);
-  sprintf(buf, "%d", v);
-  wMajor->value(buf);
-  vers.get("minor", v, 0);
-  sprintf(buf, "%d", v);
-  wMinor->value(buf);
-  vers.get("build", v, 0);
-  sprintf(buf, "%d", v);
-  wBuild->value(buf);
-  vers.get("class", buf, "-", 8);
-  wClass->value(buf);
-  
-  const char *name = "README.md";
-  
-  char filename[2048];
-  sprintf(filename, "%s/%s", wBasePath->value(), name);
-  FILE *f = fopen(filename, "rb");
-  if (f) {
-    while (!feof(f)) {
-      fgets(buf, 1024, f);
-      if (feof(f)) break;
-      char *a = strstr(buf, "<!--[ver-->");
-      char *b = strstr(buf, "<!--]-->");
-      if (a!=nullptr && b!=nullptr) {
-        *b = 0;
-        int maj, min, bld;
-        char cls[80];
-        int cc = sscanf(a+11, "v%d.%d.%d%s", &maj, &min, &bld, cls);
-        if (cc>0) {
-          sprintf(buf, "%d", maj);
-          wMajor->value(buf);
+    int v;
+    char buf[2048];
+
+    Fl_Preferences pref(Fl_Preferences::USER, "iota.matthiasm.com", "versioneer");
+    pref.get("path", buf, "/Users/matt/dev/IotaSlicer/", 2046);
+    wBasePath->value(buf);
+    Fl_Preferences vers( pref, "version");
+    vers.get("major", v, 0);
+    sprintf(buf, "%d", v);
+    wMajor->value(buf);
+    vers.get("minor", v, 0);
+    sprintf(buf, "%d", v);
+    wMinor->value(buf);
+    vers.get("build", v, 0);
+    sprintf(buf, "%d", v);
+    wBuild->value(buf);
+    vers.get("class", buf, "-", 8);
+    wClass->value(buf);
+
+    const char *name = "README.md";
+
+    char filename[2048];
+    sprintf(filename, "%s/%s", wBasePath->value(), name);
+    FILE *f = fopen(filename, "rb");
+    if (f) {
+        while (!feof(f)) {
+            fgets(buf, 1024, f);
+            if (feof(f)) break;
+            char *a = strstr(buf, "<!--[ver-->");
+            char *b = strstr(buf, "<!--]-->");
+            if (a!=nullptr && b!=nullptr) {
+                *b = 0;
+                int maj, min, bld;
+                char cls[80];
+                int cc = sscanf(a+11, "v%d.%d.%d%s", &maj, &min, &bld, cls);
+                if (cc>0) {
+                    sprintf(buf, "%d", maj);
+                    wMajor->value(buf);
+                }
+                if (cc>1) {
+                    sprintf(buf, "%d", min);
+                    wMinor->value(buf);
+                }
+                if (cc>2) {
+                    sprintf(buf, "%d", bld);
+                    wBuild->value(buf);
+                }
+                if (cc>3) {
+                    wClass->value(cls);
+                }
+                break;
+            }
         }
-        if (cc>1) {
-          sprintf(buf, "%d", min);
-          wMinor->value(buf);
-        }
-        if (cc>2) {
-          sprintf(buf, "%d", bld);
-          wBuild->value(buf);
-        }
-        if (cc>3) {
-          wClass->value(cls);
-        }
-        break;
-      }
+        fclose(f);
+        printf("Versioneer: found current version in %s\n", filename);
+    } else {
+        perror(filename);
     }
-    fclose(f);
-    printf("Versioneer: found current version in %s\n", filename);
-  } else {
-    perror(filename);
-  }
 }
 
 void IAVersioneer::saveSettings()
 {
-  Fl_Preferences pref(Fl_Preferences::USER, "iota.matthiasm.com", "versioneer");
-  pref.set("path", wBasePath->value());
-  Fl_Preferences vers( pref, "version");
-  vers.set("major", atoi(wMajor->value()));
-  vers.set("minor", atoi(wMinor->value()));
-  vers.set("build", atoi(wBuild->value()));
-  vers.set("class", wClass->value());
+    Fl_Preferences pref(Fl_Preferences::USER, "iota.matthiasm.com", "versioneer");
+    pref.set("path", wBasePath->value());
+    Fl_Preferences vers( pref, "version");
+    vers.set("major", atoi(wMajor->value()));
+    vers.set("minor", atoi(wMinor->value()));
+    vers.set("build", atoi(wBuild->value()));
+    vers.set("class", wClass->value());
 }
 
 void IAVersioneer::setProjectPath()
 {
-  Fl_Preferences pref(Fl_Preferences::USER, "iota.matthiasm.com", "versioneer");
-  pref.set("path", wBasePath->value());
+    Fl_Preferences pref(Fl_Preferences::USER, "iota.matthiasm.com", "versioneer");
+    pref.set("path", wBasePath->value());
 }
 
 void IAVersioneer::selectProjectPath()
 {
-    const char *path = fl_dir_chooser(
-                                      "Choose the Iota Base Directory",
+    const char *path = fl_dir_chooser("Choose the Iota Base Directory",
                                       wBasePath->value(),
                                       0);
     if (path) {
@@ -134,135 +133,135 @@ void IAVersioneer::buildPlus()
 
 
 void IAVersioneer::applySettingsHtml(const char *name) {
-  char filename[2048];
-  char out[2048];
-  char buf[2048];
-  sprintf(filename, "%s/%s", wBasePath->value(), name);
-  strcpy(out, filename);
-  strcat(out, "~");
-  FILE *fOut = fopen(out, "wb");
-  if (!fOut) {
-    perror(out);
-    return;
-  }
-  FILE *f = fopen(filename, "rb");
-  if (f) {
-    int n = 0;
-    while (!feof(f)) {
-      fgets(buf, 1024, f);
-      if (feof(f)) break;
-      char *a = strstr(buf, "<!--[ver-->");
-      char *b = strstr(buf, "<!--]-->");
-      if (a!=nullptr && b!=nullptr) {
-        char *c = strdup(b);
-        sprintf(a,
-          "<!--[ver-->v%d.%d.%d%s%s",
-          atoi(wMajor->value()),
-          atoi(wMinor->value()),
-          atoi(wBuild->value()),
-          wClass->value(),
-          c
-        );
-        free(c);
-        n++;
-      }
-      fputs(buf, fOut);
+    char filename[2048];
+    char out[2048];
+    char buf[2048];
+    sprintf(filename, "%s/%s", wBasePath->value(), name);
+    strcpy(out, filename);
+    strcat(out, "~");
+    FILE *fOut = fopen(out, "wb");
+    if (!fOut) {
+        perror(out);
+        return;
     }
-    fclose(f);
-    fclose(fOut);
-    ::remove(filename);
-    ::rename(out, filename);
-    printf("Versioneer: %d replacements in %s\n", n, filename);
-  } else {
-    perror(filename);
-  }
+    FILE *f = fopen(filename, "rb");
+    if (f) {
+        int n = 0;
+        while (!feof(f)) {
+            fgets(buf, 1024, f);
+            if (feof(f)) break;
+            char *a = strstr(buf, "<!--[ver-->");
+            char *b = strstr(buf, "<!--]-->");
+            if (a!=nullptr && b!=nullptr) {
+                char *c = strdup(b);
+                sprintf(a,
+                        "<!--[ver-->v%d.%d.%d%s%s",
+                        atoi(wMajor->value()),
+                        atoi(wMinor->value()),
+                        atoi(wBuild->value()),
+                        wClass->value(),
+                        c
+                        );
+                free(c);
+                n++;
+            }
+            fputs(buf, fOut);
+        }
+        fclose(f);
+        fclose(fOut);
+        ::remove(filename);
+        ::rename(out, filename);
+        printf("Versioneer: %d replacements in %s\n", n, filename);
+    } else {
+        perror(filename);
+    }
 }
 
 void IAVersioneer::applySettingsCpp(const char *name)
 {
-  char filename[2048];
-  char out[2048];
-  char buf[2048];
-  sprintf(filename, "%s/%s", wBasePath->value(), name);
-  strcpy(out, filename);
-  strcat(out, "~");
-  FILE *fOut = fopen(out, "wb");
-  if (!fOut) {
-    perror(out);
-    return;
-  }
-  FILE *f = fopen(filename, "rb");
-  if (f) {
-    int n = 0;
-    while (!feof(f)) {
-      fgets(buf, 1024, f);
-      if (feof(f)) break;
-      char *a = strstr(buf, "/*[ver*/");
-      char *b = strstr(buf, "/*]*/");
-      if (a!=nullptr && b!=nullptr) {
-        char *c = strdup(b);
-        sprintf(a,
-          "/*[ver*/\"v%d.%d.%d%s\"%s",
-          atoi(wMajor->value()),
-          atoi(wMinor->value()),
-          atoi(wBuild->value()),
-          wClass->value(),
-          c
-        );
-        free(c);
-        n++;
-      }
-      fputs(buf, fOut);
+    char filename[2048];
+    char out[2048];
+    char buf[2048];
+    sprintf(filename, "%s/%s", wBasePath->value(), name);
+    strcpy(out, filename);
+    strcat(out, "~");
+    FILE *fOut = fopen(out, "wb");
+    if (!fOut) {
+        perror(out);
+        return;
     }
-    fclose(f);
-    fclose(fOut);
-    ::remove(filename);
-    ::rename(out, filename);
-    printf("Versioneer: %d replacements in %s\n", n, filename);
-  } else {
-    perror(filename);
-  }
+    FILE *f = fopen(filename, "rb");
+    if (f) {
+        int n = 0;
+        while (!feof(f)) {
+            fgets(buf, 1024, f);
+            if (feof(f)) break;
+            char *a = strstr(buf, "/*[ver*/");
+            char *b = strstr(buf, "/*]*/");
+            if (a!=nullptr && b!=nullptr) {
+                char *c = strdup(b);
+                sprintf(a,
+                        "/*[ver*/\"v%d.%d.%d%s\"%s",
+                        atoi(wMajor->value()),
+                        atoi(wMinor->value()),
+                        atoi(wBuild->value()),
+                        wClass->value(),
+                        c
+                        );
+                free(c);
+                n++;
+            }
+            fputs(buf, fOut);
+        }
+        fclose(f);
+        fclose(fOut);
+        ::remove(filename);
+        ::rename(out, filename);
+        printf("Versioneer: %d replacements in %s\n", n, filename);
+    } else {
+        perror(filename);
+    }
 }
 
 void IAVersioneer::applySettingsDoxyfile(const char *name)
 {
-  char filename[2048];
-  char out[2048];
-  char buf[2048];
-  sprintf(filename, "%s/%s", wBasePath->value(), name);
-  strcpy(out, filename);
-  strcat(out, "~");
-  FILE *fOut = fopen(out, "wb");
-  if (!fOut) {
-    perror(out);
-    return;
-  }
-  FILE *f = fopen(filename, "rb");
-  if (f) {
-    int n = 0;
-    while (!feof(f)) {
-      fgets(buf, 1024, f);
-      if (feof(f)) break;
-      if (strncmp(buf, "PROJECT_NUMBER         = ", 25)==0) {
-        sprintf(buf,
-          "PROJECT_NUMBER         = %d.%d.%d%s\n",
-          atoi(wMajor->value()),
-          atoi(wMinor->value()),
-          atoi(wBuild->value()),
-          wClass->value()
-        );
-        n++;
-      }
-      fputs(buf, fOut);
+    char filename[2048];
+    char out[2048];
+    char buf[2048];
+    sprintf(filename, "%s/%s", wBasePath->value(), name);
+    strcpy(out, filename);
+    strcat(out, "~");
+    FILE *fOut = fopen(out, "wb");
+    if (!fOut) {
+        perror(out);
+        return;
     }
-    fclose(f);
-    fclose(fOut);
-    ::remove(filename);
-    ::rename(out, filename);
-    printf("Versioneer: %d replacements in %s\n", n, filename);
-  } else {
-    perror(filename);
-  }
+    FILE *f = fopen(filename, "rb");
+    if (f) {
+        int n = 0;
+        while (!feof(f)) {
+            fgets(buf, 1024, f);
+            if (feof(f)) break;
+            if (strncmp(buf, "PROJECT_NUMBER         = ", 25)==0) {
+                sprintf(buf,
+                        "PROJECT_NUMBER         = %d.%d.%d%s\n",
+                        atoi(wMajor->value()),
+                        atoi(wMinor->value()),
+                        atoi(wBuild->value()),
+                        wClass->value()
+                        );
+                n++;
+            }
+            fputs(buf, fOut);
+        }
+        fclose(f);
+        fclose(fOut);
+        ::remove(filename);
+        ::rename(out, filename);
+        printf("Versioneer: %d replacements in %s\n", n, filename);
+    } else {
+        perror(filename);
+    }
 }
 
 
@@ -274,28 +273,62 @@ void IAVersioneer::touch(const char *name)
 }
 
 
+void IAVersioneer::updatePlatformFiles()
+{
+#ifdef __APPLE__
+    char rev[80];
+    strcpy(rev, "0000000");
+    FILE *f = popen("/usr/bin/git rev-parse --short HEAD", "r");
+    fgets(rev, 78, f);
+    fclose(f);
+    rev[7] = 0;
+
+    char filename[2048];
+    sprintf(filename, "%s/platforms/MacOS/Info.plist", wBasePath->value());
+    char cmd[2*2048];
+    sprintf(cmd,
+            "/usr/libexec/PlistBuddy -c \"Set :CFBundleVersion %s\" %s",
+            rev, filename);
+    fl_system(cmd);
+    sprintf(cmd,
+            "/usr/libexec/PlistBuddy -c \"Set :CFBundleShortVersionString %d.%d.%d%s\" %s",
+            atoi(wMajor->value()),
+            atoi(wMinor->value()),
+            atoi(wBuild->value()),
+            wClass->value(),
+            filename);
+    fl_system(cmd);
+#endif
+}
+
+
 void IAVersioneer::applySettings()
 {
-  applySettingsHtml("README.md");
-  applySettingsHtml("html/helpAbout.html");
-  applySettingsHtml("html/helpLicenses.html");
-  applySettingsHtml("html/index.html");
-  applySettingsCpp("src/Iota.cpp");
-  applySettingsDoxyfile("Doxyfile");
-  touch("userinterface/IAGUIMain.fl");
+    fl_chdir(wBasePath->value());
+    applySettingsHtml("README.md");
+    applySettingsHtml("html/helpAbout.html");
+    applySettingsHtml("html/helpLicenses.html");
+    applySettingsHtml("html/index.html");
+    applySettingsCpp("src/Iota.cpp");
+    applySettingsDoxyfile("Doxyfile");
+    updatePlatformFiles();
+    touch("userinterface/IAGUIMain.fl");
 }
 
 
 void IAVersioneer::gitTag()
 {
-  char buf[2048];
-  sprintf(buf, "cd %s; /usr/bin/git tag v%d.%d.%d%s",
-  	wBasePath->value(),
-          atoi(wMajor->value()),
-          atoi(wMinor->value()),
-          atoi(wBuild->value()),
-          wClass->value());
-  fl_system(buf);
+    char buf[2048];
+    sprintf(buf, "cd %s; /usr/bin/git tag v%d.%d.%d%s",
+            wBasePath->value(),
+            atoi(wMajor->value()),
+            atoi(wMinor->value()),
+            atoi(wBuild->value()),
+            wClass->value());
+    fl_system(buf);
+    sprintf(buf, "cd %s; /usr/bin/git push --tags",
+            wBasePath->value());
+    fl_system(buf);
 }
 
 

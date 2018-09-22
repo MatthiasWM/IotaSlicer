@@ -49,7 +49,7 @@ data sHelpLicenses {private local filename {../../html/helpLicenses.html} textmo
 Function {createIotaAppWindow()} {open
 } {
   Fl_Window wMainWindow {
-    label {Iota Slicer V0.1a} open
+    label {Iota Slicer} open selected
     xywh {472 202 850 600} type Double resizable visible
   } {
     Fl_Menu_Bar {} {open
@@ -376,8 +376,7 @@ Function {createIotaAboutWindow()} {} {
   }
 }
 
-class IAVersioneerDialog {open
-} {
+class IAVersioneerDialog {} {
   Function {createWindow()} {open return_type {virtual Fl_Double_Window *}
   } {
     Fl_Window wVersionWindow {
@@ -499,7 +498,7 @@ wVersionWindow->hide();}
   } {
     code {} {}
   }
-  Function {IAVersioneerDialog()} {selected protected
+  Function {IAVersioneerDialog()} {protected
   } {
     code {} {}
   }

@@ -98,26 +98,22 @@ static Fl_Menu_Item infillDensityMenuMenu[] = {
 IAPrinterFDM::IAPrinterFDM(const char *name)
 :   super(name)
 {
-    pSettingList.push_back(
-                           new IASettingChoice("# of shells: ",
+    pSettingList.push_back(new IASettingChoice("# of shells: ",
                                                pNumShells,
                                                [this]{userChangedNumShells();},
                                                numShellsMenu ) );
 
-    pSettingList.push_back(
-                           new IASettingChoice("# of lids: ",
+    pSettingList.push_back(new IASettingChoice("# of lids: ",
                                                pNumLids,
                                                [this]{userChangedNumLids();},
                                                numLidsMenu ) );
 
-    pSettingList.push_back(
-                           new IASettingChoice("lid type: ",
+    pSettingList.push_back(new IASettingChoice("lid type: ",
                                                pLidType,
                                                [this]{userChangedLidType();},
                                                lidTypeMenu ) );
 
-    pSettingList.push_back(
-                           new IASettingFloatChoice("infill density: ",
+    pSettingList.push_back(new IASettingFloatChoice("infill density: ",
                                                pInfillDensity,
                                                [this]{userChangedInfillDensity();},
                                                infillDensityMenuMenu ) );
@@ -223,6 +219,10 @@ void IAPrinterFDM::sliceAll()
         if (pNumShells>2) {
             tp3 = tp2 ? slc->pFramebuffer->toolpathFromLassoAndContract(z, pNozzleDiameter) : nullptr;
         }
+        /** \todo We can create an overlap between the infill and the shell by
+         *      reducing the second parameter of toolpathFromLassoAndContract
+         *      for the last shell that is created.
+         */
 
         IAToolpathList *tp = pMachineToolpath.createLayer(z);
         if (tp3) tp->add(tp3.get(), 1, 0);

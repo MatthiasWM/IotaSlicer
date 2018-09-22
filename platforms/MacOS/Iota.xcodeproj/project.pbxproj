@@ -63,6 +63,7 @@
 		C9E5885921544A8600C4B64D /* IASetting.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C9E5885721544A8500C4B64D /* IASetting.cpp */; };
 		C9E5885C2155394900C4B64D /* IAPrinterList.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C9E5885B2155394900C4B64D /* IAPrinterList.cpp */; };
 		C9E588622155532100C4B64D /* IAVersioneer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C9E588602155532100C4B64D /* IAVersioneer.cpp */; };
+		C9E5886521563EDA00C4B64D /* xcode_archive.sh in Resources */ = {isa = PBXBuildFile; fileRef = C9E5886421563EDA00C4B64D /* xcode_archive.sh */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXBuildRule section */
@@ -121,7 +122,7 @@
 		C960ED4F2143B62C007FC037 /* Doxyfile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = Doxyfile; path = ../../Doxyfile; sourceTree = "<group>"; };
 		C960ED522143CE7D007FC037 /* IAGUIMain.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = IAGUIMain.h; sourceTree = "<group>"; };
 		C960ED532143CE7E007FC037 /* IAGUIMain.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = IAGUIMain.cpp; sourceTree = "<group>"; };
-		C96B142D211A3E9E00978AC7 /* Iota.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Iota.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		C96B142D211A3E9E00978AC7 /* IotaSlicer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = IotaSlicer.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C96B1433211A3E9F00978AC7 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		C96B1438211A3E9F00978AC7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C97632C4211E2DD000D9D4B5 /* IAVector3d.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IAVector3d.h; sourceTree = "<group>"; };
@@ -203,6 +204,7 @@
 		C9E5885B2155394900C4B64D /* IAPrinterList.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = IAPrinterList.cpp; sourceTree = "<group>"; };
 		C9E588602155532100C4B64D /* IAVersioneer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = IAVersioneer.cpp; sourceTree = "<group>"; };
 		C9E588612155532100C4B64D /* IAVersioneer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IAVersioneer.h; sourceTree = "<group>"; };
+		C9E5886421563EDA00C4B64D /* xcode_archive.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = xcode_archive.sh; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -241,6 +243,7 @@
 				C9D38736211A4B75009F7580 /* README.md */,
 				C960ED4F2143B62C007FC037 /* Doxyfile */,
 				C96B1444211A402900978AC7 /* src */,
+				C9E5886321563EDA00C4B64D /* scripts */,
 				C9DC51B7211A7CDF00AE069F /* html */,
 				C98C66BE212060EE00BD3ACE /* Notes */,
 				C96B1447211A422D00978AC7 /* libs */,
@@ -252,7 +255,7 @@
 		C96B142E211A3E9E00978AC7 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				C96B142D211A3E9E00978AC7 /* Iota.app */,
+				C96B142D211A3E9E00978AC7 /* IotaSlicer.app */,
 				C960ED492143B10C007FC037 /* libIota Developer Docs.a */,
 			);
 			name = Products;
@@ -474,6 +477,15 @@
 			path = toolpath;
 			sourceTree = "<group>";
 		};
+		C9E5886321563EDA00C4B64D /* scripts */ = {
+			isa = PBXGroup;
+			children = (
+				C9E5886421563EDA00C4B64D /* xcode_archive.sh */,
+			);
+			name = scripts;
+			path = ../../scripts;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
@@ -505,9 +517,9 @@
 			productReference = C960ED492143B10C007FC037 /* libIota Developer Docs.a */;
 			productType = "com.apple.product-type.library.static";
 		};
-		C96B142C211A3E9E00978AC7 /* Iota */ = {
+		C96B142C211A3E9E00978AC7 /* IotaSlicer */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = C96B143E211A3E9F00978AC7 /* Build configuration list for PBXNativeTarget "Iota" */;
+			buildConfigurationList = C96B143E211A3E9F00978AC7 /* Build configuration list for PBXNativeTarget "IotaSlicer" */;
 			buildPhases = (
 				C96B1429211A3E9E00978AC7 /* Sources */,
 				C96B142A211A3E9E00978AC7 /* Frameworks */,
@@ -518,9 +530,9 @@
 			);
 			dependencies = (
 			);
-			name = Iota;
+			name = IotaSlicer;
 			productName = Iota;
-			productReference = C96B142D211A3E9E00978AC7 /* Iota.app */;
+			productReference = C96B142D211A3E9E00978AC7 /* IotaSlicer.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -558,7 +570,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				C96B142C211A3E9E00978AC7 /* Iota */,
+				C96B142C211A3E9E00978AC7 /* IotaSlicer */,
 				C960ED482143B10C007FC037 /* Iota Developer Docs */,
 			);
 		};
@@ -572,6 +584,7 @@
 				C9DC51B9211A7CE000AE069F /* index.html in Resources */,
 				C99331E62123068F00629BE1 /* helpAbout.html in Resources */,
 				C99331E821230BDB00629BE1 /* helpLicenses.html in Resources */,
+				C9E5886521563EDA00C4B64D /* xcode_archive.sh in Resources */,
 				C96B1434211A3E9F00978AC7 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -846,7 +859,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		C96B143E211A3E9F00978AC7 /* Build configuration list for PBXNativeTarget "Iota" */ = {
+		C96B143E211A3E9F00978AC7 /* Build configuration list for PBXNativeTarget "IotaSlicer" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				C96B143F211A3E9F00978AC7 /* Debug */,
