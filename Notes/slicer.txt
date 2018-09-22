@@ -1,4 +1,7 @@
 
+!!! THIS DOCUMENT IS OUTDATED !!!
+
+
 Slicing Strategy:
 
 We need two sets of information in a slice.

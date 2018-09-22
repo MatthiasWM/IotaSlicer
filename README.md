@@ -34,6 +34,7 @@ If will probably run with little or no modifications on other FDM printers as we
 
 * v0.1.1b
   * added session seetting for FDM printing parameters
+  * improved Versioneer to help build and distribute
 * v0.1.0b
   * **Milestone!** My first release that earned a whole revision number! It's still  beta because
     much of the release process is not yet in place. Nevertheless, this app can read even

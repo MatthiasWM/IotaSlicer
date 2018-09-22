@@ -61,8 +61,6 @@ extern bool initializeOpenGL();
  * By repeatedly vectorizing and shrinking the image in the framebuffer, GCode
  * for the outer shell is generated. The remaining graphics in the image can
  * be used to overlay a vectorized fill pattern.
- *
- * \todo allow for framebuffers without z buffer.
  */
 class IAFramebuffer
 {

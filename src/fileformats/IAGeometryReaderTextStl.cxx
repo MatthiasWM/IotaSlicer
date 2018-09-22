@@ -210,10 +210,21 @@ IAMesh *IAGeometryReaderTextStl::load()
             
             // this should be the end of the loop
             // Some files have additional vertices here, but that is agains the
-            // standard. SO for now, we error out here. We could let it slip, but
-            // to support this perfectly, we would need to tesselate the emtire
-            // llop then.
+            // standard. I found only very few files that do this, since this
+            // is incompatible with the binary version of this format. So far
+            // I have only seen quads, so we simply generate a second triangle
+            // here.
             getWord();
+            if (wordIs("vertex")) {
+                msh->addNewTriangle(p1, p2, p3);
+                p2 = p3;
+                x = getDouble();
+                y = getDouble();
+                z = getDouble();
+                p3 = msh->findOrAddNewVertex(IAVector3d(x, y, z));
+                p3->pTex.set(x*0.8+0.5, -z*0.8+0.5, 0.0);
+                getWord();
+            }
             /** \todo word can actually be "vertex" to add more vertices to this polygon */
             if (!wordIs("endloop")) goto fileFormatErr;
             

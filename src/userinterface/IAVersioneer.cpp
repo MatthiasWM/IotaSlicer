@@ -8,6 +8,13 @@
 #include "IAVersioneer.h"
 
 
+/**
+ * \todo copy newly built FLTK binaries automatically:
+ *      /Users/matt/dev/fltk-1.4.svn/build/Xcode/bin/Release/fluid.app
+ * \todo add terminal view when running system commands to see output
+ * \todo path setting and "release" button to create distributables
+ */
+
 void IAVersioneer::loadSettings()
 {
     int v;
