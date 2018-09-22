@@ -89,6 +89,8 @@ protected:
     void touch(const char *name);
     void updatePlatformFiles();
 
+    void system(const char *);
+
     Fl_Double_Window *pDialog = nullptr;
 };
 

@@ -7,6 +7,8 @@
 
 #include "IAVersioneer.h"
 
+#include <errno.h>
+
 
 /**
  * \todo copy newly built FLTK binaries automatically:
@@ -71,7 +73,7 @@ void IAVersioneer::loadSettings()
             }
         }
         fclose(f);
-        printf("Versioneer: found current version in %s\n", filename);
+        wTerminal->printf("Versioneer: found current version in %s\n", filename);
     } else {
         perror(filename);
     }
@@ -178,7 +180,7 @@ void IAVersioneer::applySettingsHtml(const char *name) {
         fclose(fOut);
         ::remove(filename);
         ::rename(out, filename);
-        printf("Versioneer: %d replacements in %s\n", n, filename);
+        wTerminal->printf("Versioneer: %d replacements in %s\n", n, filename);
     } else {
         perror(filename);
     }
@@ -224,7 +226,7 @@ void IAVersioneer::applySettingsCpp(const char *name)
         fclose(fOut);
         ::remove(filename);
         ::rename(out, filename);
-        printf("Versioneer: %d replacements in %s\n", n, filename);
+        wTerminal->printf("Versioneer: %d replacements in %s\n", n, filename);
     } else {
         perror(filename);
     }
@@ -265,7 +267,7 @@ void IAVersioneer::applySettingsDoxyfile(const char *name)
         fclose(fOut);
         ::remove(filename);
         ::rename(out, filename);
-        printf("Versioneer: %d replacements in %s\n", n, filename);
+        wTerminal->printf("Versioneer: %d replacements in %s\n", n, filename);
     } else {
         perror(filename);
     }
@@ -296,7 +298,7 @@ void IAVersioneer::updatePlatformFiles()
     sprintf(cmd,
             "/usr/libexec/PlistBuddy -c \"Set :CFBundleVersion %s\" %s",
             rev, filename);
-    fl_system(cmd);
+    system(cmd);
     sprintf(cmd,
             "/usr/libexec/PlistBuddy -c \"Set :CFBundleShortVersionString %d.%d.%d%s\" %s",
             atoi(wMajor->value()),
@@ -304,7 +306,7 @@ void IAVersioneer::updatePlatformFiles()
             atoi(wBuild->value()),
             wClass->value(),
             filename);
-    fl_system(cmd);
+    system(cmd);
 #endif
 }
 
@@ -332,10 +334,10 @@ void IAVersioneer::gitTag()
             atoi(wMinor->value()),
             atoi(wBuild->value()),
             wClass->value());
-    fl_system(buf);
+    system(buf);
     sprintf(buf, "cd %s; /usr/bin/git push --tags",
             wBasePath->value());
-    fl_system(buf);
+    system(buf);
 }
 
 
@@ -349,10 +351,31 @@ IAVersioneer::~IAVersioneer()
 }
 
 
+void IAVersioneer::system(const char *cmd)
+{
+    wTerminal->printf("> %s\n", cmd);
+    FILE *f = ::popen(cmd, "r");
+    if (f) {
+        while (!::feof(f)) {
+            char buf[82];
+            if (fgets(buf, 80, f)) {
+                wTerminal->append(buf);
+            }
+        }
+        ::fclose(f);
+    } else {
+        wTerminal->printf("Failed: %s\n", strerror(errno));
+    }
+}
+
+
 void IAVersioneer::show()
 {
-    if (!pDialog)
+    if (!pDialog) {
         pDialog = createWindow();
+        wTerminal->ansi(true);
+        wTerminal->color(FL_BLACK);
+    }
     if (pDialog) {
         loadSettings();
         pDialog->show();

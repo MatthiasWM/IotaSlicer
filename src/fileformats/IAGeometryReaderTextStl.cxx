@@ -225,7 +225,6 @@ IAMesh *IAGeometryReaderTextStl::load()
                 p3->pTex.set(x*0.8+0.5, -z*0.8+0.5, 0.0);
                 getWord();
             }
-            /** \todo word can actually be "vertex" to add more vertices to this polygon */
             if (!wordIs("endloop")) goto fileFormatErr;
             
             // this should be the end of the facet

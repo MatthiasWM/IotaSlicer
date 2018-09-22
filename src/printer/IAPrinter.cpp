@@ -137,10 +137,6 @@ void IAPrinter::saveSettings()
 
 /**
  * Create the Treeview items for setting up the printout for this session.
- *
- * \todo number of extrusion in the shell
- * \todo number of layers for lids and bottoms
- * \todo density for infills
  */
 void IAPrinter::buildSessionSettings()
 {
@@ -242,7 +238,6 @@ bool IAPrinter::queryOutputFilename(const char *title,
 
     if (!filename || !*filename)
         return false;
-    //    strcpy(gPreferences.pLastGCodeFilename, filename);
     fl_filename_absolute(buf, sizeof(buf), filename);
     const char *ext = fl_filename_ext(buf);
     if (!ext || !*ext) {

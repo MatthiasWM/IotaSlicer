@@ -146,8 +146,6 @@ bool IAMesh::validate()
  * Find outside edges and connect them to other outside edges with new triangles.
  *
  * Find half-edges that have no twin and call the fixHole() on them.
- *
- * \todo: verify that this is robust
  */
 void IAMesh::fixHoles()
 {
@@ -544,8 +542,6 @@ void IAMesh::updateBoundingBox(IAVector3d const& v)
  * Draw a sliced version of this mesh.
  *
  * \param zPlane the clipping plane in z
- *
- * \todo we need to rethink most of the mesh and toolpath drawing.
  */
 void IAMesh::drawSliced(double zPlane)
 {
@@ -599,8 +595,6 @@ void IAMesh::drawSliced(double zPlane)
  * Draw upper half of a sliced version of this mesh as a ghost.
  *
  * \param zPlane the clipping plane in z
- *
- * \todo we need to rethink most of the mesh and toolpath drawing.
  */
 void IAMesh::drawSlicedGhost(double zPlane)
 {

@@ -62,8 +62,6 @@ IASceneView::~IASceneView()
  *
  * \return 1 if we handled the event, 0 if we did not know what to do with it.
  *
- * \todo Handle all mouse input for manipulating the scene or the camera.
- * \todo Handle drag'n'drop events to add new models or textures.
  * \todo Handle copy and paste events.
  * \todo Handle context menus.
  */

@@ -29,7 +29,6 @@ IAPreferences::IAPreferences()
 
     Fl_Preferences filenames(main, "filenames");
 
-    filenames.get("lastGCode", pLastGCodeFilename, "", sizeof(pLastGCodeFilename));
     filenames.get("lastLoad", pLastLoadFilename, "", sizeof(pLastLoadFilename));
 }
 
@@ -61,7 +60,6 @@ void IAPreferences::flush()
 
     Fl_Preferences filenames(main, "filenames");
 
-    filenames.set("lastGCode", pLastGCodeFilename);
     filenames.set("lastLoad", pLastLoadFilename);
 
     pPrefs.flush();

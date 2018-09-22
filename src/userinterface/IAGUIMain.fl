@@ -18,6 +18,9 @@ decl {\#include "IAGLRangeSlider.h"} {public global
 decl {\#include <FL/Fl_File_Chooser.H>} {public global
 }
 
+decl {\#include <FL/Fl_Simple_Terminal.H>} {public global
+}
+
 declblock {\#ifdef __APPLE__} {public after {\#endif}
 } {
   decl {\#include <unistd.h>} {public global
@@ -46,10 +49,9 @@ data sHelpAbout {private local filename {../../html/helpAbout.html} textmode
 data sHelpLicenses {private local filename {../../html/helpLicenses.html} textmode
 }
 
-Function {createIotaAppWindow()} {open
-} {
+Function {createIotaAppWindow()} {} {
   Fl_Window wMainWindow {
-    label {Iota Slicer} open selected
+    label {Iota Slicer} open
     xywh {472 202 850 600} type Double resizable visible
   } {
     Fl_Menu_Bar {} {open
@@ -376,46 +378,47 @@ Function {createIotaAboutWindow()} {} {
   }
 }
 
-class IAVersioneerDialog {} {
+class IAVersioneerDialog {open
+} {
   Function {createWindow()} {open return_type {virtual Fl_Double_Window *}
   } {
     Fl_Window wVersionWindow {
       label {Versioneer for Iota Slicer} open
-      xywh {593 672 388 151} type Double visible
+      xywh {443 389 532 389} type Double visible
     } {
       Fl_Input wBasePath {
         label {IotaBase Path}
         callback {setProjectPath();}
-        xywh {94 18 250 20} labelsize 12 textsize 12
+        xywh {105 18 265 20} labelsize 12 textsize 12
       }
       Fl_Button {} {
         label {@fileopen}
         callback {selectProjectPath();}
-        xywh {344 18 33 20} labelcolor 3
+        xywh {369 18 33 20} labelcolor 3
       }
       Fl_Box {} {
         label Version
-        xywh {95 47 0 20} labelsize 12 align 4
+        xywh {88 47 0 20} labelsize 12 align 4
       }
       Fl_Input wMajor {
-        xywh {95 47 52 20} labelsize 12 textsize 12
+        xywh {105 47 52 20} labelsize 12 textsize 12
       }
       Fl_Box {} {
         label {.}
-        xywh {147 47 15 20} labelsize 12
+        xywh {157 47 15 20} labelsize 12
       }
       Fl_Input wMinor {
-        xywh {162 47 52 20} labelsize 12 textsize 12
+        xywh {172 47 52 20} labelsize 12 textsize 12
       }
       Fl_Box {} {
         label {.}
-        xywh {214 47 15 20} labelsize 12
+        xywh {224 47 15 20} labelsize 12
       }
       Fl_Input wBuild {
-        xywh {229 47 52 20} labelsize 12 textsize 12
+        xywh {239 47 52 20} labelsize 12 textsize 12
       }
       Fl_Input_Choice wClass {open
-        xywh {283 47 64 20} labelsize 12 textsize 12
+        xywh {293 47 64 20} labelsize 12 textsize 12
       } {
         MenuItem {} {
           label {-}
@@ -433,35 +436,57 @@ class IAVersioneerDialog {} {
       Fl_Button wMajorPlus {
         label {+}
         callback {majorPlus();}
-        xywh {123 70 24 20} labelsize 12
+        xywh {133 70 24 20} labelsize 12
       }
       Fl_Button wMinorPlus {
         label {+}
         callback {minorPlus();}
-        xywh {190 70 24 20} labelsize 12
+        xywh {200 70 24 20} labelsize 12
       }
       Fl_Button wBuildPlus {
         label {+}
         callback {buildPlus();}
-        xywh {257 70 24 20} labelsize 12
+        xywh {267 70 24 20} labelsize 12
       }
       Fl_Button {} {
-        label Cancel
-        callback {wVersionWindow->hide();}
-        xywh {16 110 78 24} labelsize 12
+        label {Apply to FIles}
+        callback {saveSettings();
+applySettings();}
+        xywh {420 67 90 24} labelsize 12
+      }
+      Fl_Text_Display wTerminal {
+        xywh {10 212 510 164}
+        class Fl_Simple_Terminal
+      }
+      Fl_Input wArchivePath {
+        label {Archive Path}
+        callback {// archive destination path} selected
+        xywh {105 98 265 20} labelsize 12 textsize 12 deactivate
       }
       Fl_Button {} {
-        label {git tag}
+        label {@fileopen}
+        callback {// archive destination path} selected
+        xywh {369 98 33 20} labelcolor 3 deactivate
+      }
+      Fl_Button {} {
+        label {Create Archive}
+        callback {saveSettings();
+// recompile in release mode
+// pack into zip archive
+// move to release folder
+// ? upload}
+        xywh {420 96 90 24} labelsize 12 deactivate
+      }
+      Fl_Button {} {
+        label {git tag && push}
         callback {saveSettings();
 gitTag();}
-        xywh {184 110 90 24} labelsize 12
+        xywh {420 128 90 24} labelsize 12
       }
       Fl_Button {} {
-        label Apply
-        callback {saveSettings();
-applySettings();
-wVersionWindow->hide();}
-        xywh {284 110 90 24} labelsize 12
+        label {Close Dialog}
+        callback {wVersionWindow->hide();}
+        xywh {420 159 90 24} labelsize 12
       }
     }
     code {return wVersionWindow;} {}

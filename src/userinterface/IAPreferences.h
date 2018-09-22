@@ -33,8 +33,6 @@ public:
     /** main window height. */
     int pMainWindowH = 600;
 
-    /** \todo obsolete. Every printer driver saves its own "last file". */
-    char pLastGCodeFilename[FL_PATH_MAX] = { 0 };
     /** Name and path of the last STL file that was read.
      * \todo we should remember 10 files and put them in a menu.
      */
