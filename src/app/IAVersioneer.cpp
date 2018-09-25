@@ -25,6 +25,8 @@ void IAVersioneer::loadSettings()
     Fl_Preferences pref(Fl_Preferences::USER, "iota.matthiasm.com", "versioneer");
     pref.get("path", buf, "/Users/matt/dev/IotaSlicer/", 2046);
     wBasePath->value(buf);
+    pref.get("archivePath", buf, "/Users/matt/Desktop/", 2046);
+    wArchivePath->value(buf);
     Fl_Preferences vers( pref, "version");
     vers.get("major", v, 0);
     sprintf(buf, "%d", v);
@@ -83,6 +85,7 @@ void IAVersioneer::saveSettings()
 {
     Fl_Preferences pref(Fl_Preferences::USER, "iota.matthiasm.com", "versioneer");
     pref.set("path", wBasePath->value());
+    pref.set("archivePath", wBasePath->value());
     Fl_Preferences vers( pref, "version");
     vers.set("major", atoi(wMajor->value()));
     vers.set("minor", atoi(wMinor->value()));
@@ -105,6 +108,35 @@ void IAVersioneer::selectProjectPath()
         wBasePath->value(path);
         wBasePath->do_callback();
     }
+}
+
+
+void IAVersioneer::setArchivePath()
+{
+    Fl_Preferences pref(Fl_Preferences::USER, "iota.matthiasm.com", "versioneer");
+    pref.set("archivePath", wArchivePath->value());
+}
+
+void IAVersioneer::selectArchivePath()
+{
+    const char *path = fl_dir_chooser("Choose the Archive Directory",
+                                      wArchivePath->value(),
+                                      0);
+    if (path) {
+        wArchivePath->value(path);
+        wArchivePath->do_callback();
+    }
+}
+
+
+void IAVersioneer::createArchive()
+{
+#ifdef __APPLE__
+    // in platforms/MacOS
+    // xcodebuild -target IotaSlicer -configuration Release
+    // xcodebuild -scheme Iota -showBuildSettings | grep TARGET_BUILD_DIR
+    fl_message("Select the menu 'Product > Archive' in Xcode.\nArchive will be created in $HOME/Desktop");
+#endif
 }
 
 
