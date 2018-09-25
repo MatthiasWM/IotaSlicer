@@ -267,16 +267,25 @@ bool IAMachineToolpath::saveGCode(const char *filename /*, printer */)
     bool ret = false;
     IAGcodeWriter w;
     if (w.open(filename)) {
+        w.resetTotalTime();
         w.sendInitSequence();
         for (auto &p: pToolpathListMap) {
             w.cmdComment("");
             w.cmdComment("==== layer at z=%g", p.first / 1000.0);
             w.cmdComment("");
             w.cmdResetExtruder();
+            w.resetLayerTime();
             // send all motion commands
             p.second->saveGCode(w);
+            double layerTime = w.getLayerTime();
+            printf("Layer %f will print in %f seconds\n", p.first / 1000.0, layerTime);
+            /** \todo tune this parameter */
+            if (layerTime>0.0 && layerTime<20.0) {
+                w.cmdDwell(20.0-layerTime);
+            }
         }
         w.sendShutdownSequence();
+        printf("Total print time is %f minutes\n", w.getTotalTime()/60.0);
         w.close();
         ret = true;
     }

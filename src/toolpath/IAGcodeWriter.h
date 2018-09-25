@@ -37,6 +37,11 @@ public:
     /** Set the default feedrate for printing moves. */
     void setPrintFeedrate(double feedrate);
 
+    void resetTotalTime();
+    double getTotalTime();
+    void resetLayerTime();
+    double getLayerTime();
+
     /** Position of the extruder head.
      \return the position of the current extruder's tip. */
     IAVector3d &position() { return pPosition; }
@@ -56,6 +61,7 @@ public:
     void cmdPrintMove(IAVector3d &v);
     void cmdRetract(double d=1.0);
     void cmdUnretract(double d=1.0);
+    void cmdDwell(double seconds);
 
 private:
     DEPRECATED("This call does not work yet!")
@@ -106,6 +112,9 @@ private:
      */
 
     double pEFactor = ((1.75/2)*(1.75/2)*M_PI) / (0.4*0.3); // ~20.0
+
+    double pLayerStartTime = 0.0;
+    double pTotalTime = 0.0;
 };
 
 

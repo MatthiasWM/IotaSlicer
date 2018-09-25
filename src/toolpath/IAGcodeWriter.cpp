@@ -62,6 +62,8 @@ bool IAGcodeWriter::open(const char *filename)
     pRapidFeedrate = 3000.0;
     pPrintFeedrate = 1000.0;
     pLayerHeight = 0.3;
+    pLayerStartTime = 0.0;
+    pTotalTime = 0.0;
     return true;
 }
 
@@ -98,6 +100,31 @@ void IAGcodeWriter::setPrintFeedrate(double feedrate)
 }
 
 
+
+void IAGcodeWriter::resetTotalTime()
+{
+    pTotalTime = 0.0;
+}
+
+
+double IAGcodeWriter::getTotalTime()
+{
+    return pTotalTime;
+}
+
+
+void IAGcodeWriter::resetLayerTime()
+{
+    pLayerStartTime = pTotalTime;
+}
+
+
+double IAGcodeWriter::getLayerTime()
+{
+    return pTotalTime - pLayerStartTime;
+}
+
+
 #ifdef __APPLE__
 #pragma mark -
 #endif
@@ -111,6 +138,7 @@ void IAGcodeWriter::cmdHome()
 {
     fprintf(pFile, "G28 ; home all axes\n");
     pPosition = { 0.0, 0.0, 0.0 };
+    // unknown time to execute
 }
 
 
@@ -136,6 +164,7 @@ void IAGcodeWriter::cmdRetract(double d)
 #else
     // lowest common denominator
     fprintf(pFile, "G10\n");
+    pTotalTime += 0.1; // assuming this time to execute
 #endif
 }
 
@@ -164,6 +193,7 @@ void IAGcodeWriter::cmdUnretract(double d)
 #else
     // lowest common denominator
     fprintf(pFile, "G11\n");
+    pTotalTime += 0.1; // assuming this time to execute
 #endif
 }
 
@@ -196,8 +226,9 @@ void IAGcodeWriter::cmdExtrude(double distance, double feedrate)
 {
     if (feedrate<0.0) feedrate = pPrintFeedrate;
     fprintf(pFile, "G1 E%.4f F%.4f\n", pE+distance, feedrate);
-    pE += distance;
-    pF = feedrate;
+    pE += distance;  // mm
+    pF = feedrate;   // mm/min
+    pTotalTime += distance / (feedrate/60.0);
 }
 
 
@@ -217,6 +248,7 @@ void IAGcodeWriter::cmdExtrudeRel(double distance, double feedrate)
     if (feedrate<0.0) feedrate = pPrintFeedrate;
     fprintf(pFile, "G1 E%.4f:%.4f:%.4f:%.4f F%.4f\n", distance/4.0, distance/4.0, distance/4.0, distance/4.0, feedrate);
     pF = feedrate;
+    pTotalTime += distance / (feedrate/60.0);
 }
 
 
@@ -242,6 +274,8 @@ void IAGcodeWriter::cmdRapidMove(IAVector3d &v)
     sendRapidMoveTo(v);
     sendFeedrate(pRapidFeedrate);
     sendNewLine();
+    double distance = (v-position()).length();
+    pTotalTime += distance / (pRapidFeedrate/60.0);
 }
 
 
@@ -258,7 +292,7 @@ void IAGcodeWriter::cmdRapidMove(IAVector3d &v)
  */
 void IAGcodeWriter::cmdRetractMove(IAVector3d &v)
 {
-    cmdComment("Retract");
+//    cmdComment("Retract");
 #if 0
     // simple method including a pause:
     double len = (v-pPosition).length();
@@ -275,7 +309,8 @@ void IAGcodeWriter::cmdRetractMove(IAVector3d &v)
     //   just as we reach the position v
 
     // Filament = (1.75/2)^2*pi = 2.41, Extrusion = (0.4/2)^2*pi = 0.125
-    const double retraction = 1.0 / pEFactor; // mm filament (factor 0.05 or 20.0)
+    /** \todo tune this parameter */
+    const double retraction = 4.0 / pEFactor; // mm filament (factor 0.05 or 20.0)
     // distance of first and last rapid motion
     double retrDist = retraction * (pRapidFeedrate/pPrintFeedrate);
     // total distance to travel
@@ -311,8 +346,9 @@ void IAGcodeWriter::cmdRetractMove(IAVector3d &v)
         sendFeedrate(pRapidFeedrate);
         sendNewLine();
     }
+    pTotalTime += totalDist / (pRapidFeedrate/60.0);
 #endif
-    cmdComment("Retract End");
+//    cmdComment("Retract End");
 }
 
 
@@ -341,11 +377,12 @@ void IAGcodeWriter::cmdPrintMove(double x, double y)
  */
 void IAGcodeWriter::cmdPrintMove(IAVector3d &v)
 {
-    double len = (v-pPosition).length();
+    double distance = (v-pPosition).length();
     sendMoveTo(v);
-    sendExtrusionAdd(len/pEFactor);
+    sendExtrusionAdd(distance/pEFactor);
     sendFeedrate(pPrintFeedrate);
     sendNewLine();
+    pTotalTime += distance / (pPrintFeedrate/60.0);
 }
 
 
@@ -393,6 +430,18 @@ void IAGcodeWriter::cmdComment(const char *format, ...)
     fprintf(pFile, "\n");
 }
 
+
+/**
+ * Pause the printer for a number of seconds.
+ *
+ * This is used to let fine structures cool down before starting new layers.
+ */
+void IAGcodeWriter::cmdDwell(double seconds)
+{
+    fprintf(pFile, "G4 P%.f", seconds*1000);
+    sendNewLine("wait");
+    pTotalTime += seconds;
+}
 
 #ifdef __APPLE__
 #pragma mark -
