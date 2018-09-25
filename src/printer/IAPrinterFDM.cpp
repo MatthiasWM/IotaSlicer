@@ -289,6 +289,7 @@ void IAPrinterFDM::sliceAll()
         if (pInfillDensity>0.0001) {
             // pNozzleDiameter = 100%
             // pNozzleDiameter*2 = 50%
+            // pNozzleDiameter*4 = 25%
             infill.overlayInfillPattern(i, 2*pNozzleDiameter * (100.0 / pInfillDensity) - pNozzleDiameter);
             auto infillPath = infill.toolpathFromLasso(z);
             if (infillPath) tp->add(infillPath.get(), 3, 0);

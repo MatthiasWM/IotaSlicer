@@ -1018,6 +1018,7 @@ void IAFramebuffer::overlayInfillPattern(int i, double infillWdt)
 {
     bindForRendering();
     if (pBuffers==BITMAP) {
+        infillWdt *= sqrt(2.0); // compensate that we draw at a 45 deg angle
         int dx = infillWdt/pPrinter->pBuildVolume.x()*pWidth;
         if (dx<1) dx = 1;
         if (i&1) {

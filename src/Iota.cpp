@@ -40,8 +40,8 @@ IAVersioneer gVersioneer;
  */
 const char *gVersion = /*[ver*/"v0.1.1b"/*]*/;
 
-const int kFramebufferSize = 2048;
-//const int kFramebufferSize = 4096;
+//const int kFramebufferSize = 2048;
+const int kFramebufferSize = 4096;
 
 
 #ifdef __APPLE__
