@@ -104,7 +104,9 @@ public:
     void logicAnd(IAFramebuffer*);
 
     void subtract(IAToolpathListSP, double r);
+    void add(IAToolpathListSP, double r);
     IAToolpathListSP toolpathFromLassoAndContract(double z, double r);
+    IAToolpathListSP toolpathFromLassoAndExpand(double z, double r);
     IAToolpathListSP toolpathFromLasso(double z);
 
     void overlayLidPattern(int i, double w);

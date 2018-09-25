@@ -931,6 +931,25 @@ IAToolpathListSP IAFramebuffer::toolpathFromLassoAndContract(double z, double r)
 
 
 /**
+ * Trace the framebuffer, create a toolpath, and increase the framebuffer by
+ * the toolpath pattern.
+ *
+ * \param z create a toolpath at this layer
+ * \param r the pattern will be increased by the amount in r
+ *
+ * \return nullptr, if tracing generates an empty toolpath
+ * \return a new smart_pointer to a toolpath
+ */
+IAToolpathListSP IAFramebuffer::toolpathFromLassoAndExpand(double z, double r)
+{
+    // use a shared pointer, so we don;t have to worry about deallocating
+    auto tp0 = toolpathFromLasso(z);
+    add(tp0, r);
+    return tp0;
+}
+
+
+/**
  * Subtract a toolpath from this pattern.
  *
  * \param tp subtract this toolpath form the pattern
@@ -946,6 +965,29 @@ void IAFramebuffer::subtract(IAToolpathListSP tp, double r)
         } else {
             glDisable(GL_DEPTH_TEST);
             glColor3f(0.0, 0.0, 0.0);
+            tp->drawFlat(r*2.0);
+        }
+        unbindFromRendering();
+    }
+}
+
+
+/**
+ * Add a toolpath to this pattern.
+ *
+ * \param tp add this toolpath to the pattern
+ * \param r the pattern will be expanded by the amount in r
+ */
+void IAFramebuffer::add(IAToolpathListSP tp, double r)
+{
+    if (tp) {
+        // draw the outline to contract the image
+        bindForRendering();
+        if (pBuffers==BITMAP) {
+            tp->drawFlatToBitmap(this, r*2.0, 1);
+        } else {
+            glDisable(GL_DEPTH_TEST);
+            glColor3f(1.0, 1.0, 1.0);
             tp->drawFlat(r*2.0);
         }
         unbindFromRendering();

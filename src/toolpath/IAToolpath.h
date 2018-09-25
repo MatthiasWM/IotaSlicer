@@ -80,7 +80,7 @@ public:
     void clear(double z);
     void draw();
     void drawFlat(double w);
-    void drawFlatToBitmap(IAFramebuffer*, double w);
+    void drawFlatToBitmap(IAFramebuffer*, double w, int color=0);
 
     void add(IAToolpathList *tl, int group, int priority);
     void add(IAToolpath *tt, int group, int priority);
@@ -114,7 +114,7 @@ public:
     void clear(double z);
     void draw();
     void drawFlat(double w);
-    void drawFlatToBitmap(IAFramebuffer*, double w);
+    void drawFlatToBitmap(IAFramebuffer*, double w, int color=0);
 
     bool isEmpty() { return pElementList.empty(); }
 
@@ -169,7 +169,7 @@ public:
     virtual ~IAToolpathElement();
     virtual void draw();
     virtual void drawFlat(double w) { }
-    virtual void drawFlatToBitmap(IAFramebuffer*, double w) { }
+    virtual void drawFlatToBitmap(IAFramebuffer*, double w, int color=0) { }
     virtual void saveGCode(IAGcodeWriter &g) { }
     virtual void saveDXF(IADxfWriter &g) { }
     virtual IAToolpathElement *clone();
@@ -202,7 +202,7 @@ public:
     IAToolpathMotion(IAVector3d &a, IAVector3d &b, bool rapid=false);
     virtual void draw() override;
     virtual void drawFlat(double w) override;
-    virtual void drawFlatToBitmap(IAFramebuffer*, double w) override;
+    virtual void drawFlatToBitmap(IAFramebuffer*, double w, int color=0) override;
     virtual void saveGCode(IAGcodeWriter &g) override;
     virtual void saveDXF(IADxfWriter &g) override;
     virtual IAToolpathElement *clone() override;

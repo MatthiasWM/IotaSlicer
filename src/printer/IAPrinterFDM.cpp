@@ -94,6 +94,11 @@ static Fl_Menu_Item infillDensityMenuMenu[] = {
     { "100", 0, nullptr, (void*)0, 0, 0, 0, 11 },
     { nullptr } };
 
+static Fl_Menu_Item skirtMenu[] = {
+    { "no", 0, nullptr, (void*)0, 0, 0, 0, 11 },
+    { "yes", 0, nullptr, (void*)1, 0, 0, 0, 11 },
+    { nullptr } };
+
 
 IAPrinterFDM::IAPrinterFDM(const char *name)
 :   super(name)
@@ -117,6 +122,12 @@ IAPrinterFDM::IAPrinterFDM(const char *name)
                                                pInfillDensity,
                                                [this]{userChangedInfillDensity();},
                                                infillDensityMenuMenu ) );
+
+    pSettingList.push_back(new IASettingChoice("skirt: ",
+                                               pHasSkirt,
+                                               [this]{userChangedSkirt();},
+                                               skirtMenu ) );
+
 
     // Nozzle diameter
     // Extrusion width
@@ -207,6 +218,16 @@ void IAPrinterFDM::sliceAll()
         slc->setNewZ(z);
         slc->generateRim(Iota.pMesh);
         slc->tesselateAndDrawLid();
+        IAToolpathList *tp = pMachineToolpath.createLayer(z);
+
+        if (pHasSkirt && z==zMin) {
+            IAFramebuffer skirt = slc->pFramebuffer;
+            skirt.toolpathFromLassoAndExpand(z, 3);  // 3mm, should probably be more if the extrusion is 1mm or more
+            IAToolpathListSP tpSkirt1 = skirt.toolpathFromLassoAndContract(z, pNozzleDiameter);
+            tp->add(tpSkirt1.get(), 5, 0);
+            IAToolpathListSP tpSkirt2 = skirt.toolpathFromLassoAndContract(z, pNozzleDiameter);
+            tp->add(tpSkirt2.get(), 5, 1);
+        }
 
         IAToolpathListSP tp0 = nullptr, tp1 = nullptr, tp2 = nullptr, tp3 = nullptr;
         if (pNumShells>0) {
@@ -224,10 +245,9 @@ void IAPrinterFDM::sliceAll()
          *      for the last shell that is created.
          */
 
-        IAToolpathList *tp = pMachineToolpath.createLayer(z);
-        if (tp3) tp->add(tp3.get(), 1, 0);
-        if (tp2) tp->add(tp2.get(), 1, 1);
-        if (tp1) tp->add(tp1.get(), 1, 2);
+        if (tp3) tp->add(tp3.get(), 10, 0);
+        if (tp2) tp->add(tp2.get(), 10, 1);
+        if (tp1) tp->add(tp1.get(), 10, 2);
 
         i++;
     }
@@ -265,7 +285,7 @@ void IAPrinterFDM::sliceAll()
                 // ZIGZAG (could do bridging if used in the correct direction!)
                 lid.overlayInfillPattern(i, pNozzleDiameter);
                 auto lidPath = lid.toolpathFromLasso(z);
-                if (lidPath) tp->add(lidPath.get(), 2, 0);
+                if (lidPath) tp->add(lidPath.get(), 20, 0);
             } else {
                 // CONCENTRIC (nicer for lids)
                 /** \bug limit this to the widtha and hight of the build platform divided by the extrsuion width */
@@ -274,7 +294,7 @@ void IAPrinterFDM::sliceAll()
                     auto tp1 = lid.toolpathFromLassoAndContract(z, pNozzleDiameter);
                     if (!tp1) break;
                     infill.subtract(tp1, pNozzleDiameter);
-                    tp->add(tp1.get(), 2, k);
+                    tp->add(tp1.get(), 20, k);
                 }
                 if (k==300) {
                     //            assert(0);
@@ -292,7 +312,7 @@ void IAPrinterFDM::sliceAll()
             // pNozzleDiameter*4 = 25%
             infill.overlayInfillPattern(i, 2*pNozzleDiameter * (100.0 / pInfillDensity) - pNozzleDiameter);
             auto infillPath = infill.toolpathFromLasso(z);
-            if (infillPath) tp->add(infillPath.get(), 3, 0);
+            if (infillPath) tp->add(infillPath.get(), 30, 0);
         }
 
         i++;
@@ -351,6 +371,11 @@ void IAPrinterFDM::userChangedLidType()
 }
 
 void IAPrinterFDM::userChangedInfillDensity()
+{
+    // TODO: clear toolpath and slice cache
+}
+
+void IAPrinterFDM::userChangedSkirt()
 {
     // TODO: clear toolpath and slice cache
 }

@@ -37,6 +37,7 @@ If will probably run with little or no modifications on other FDM printers as we
   * improved Versioneer to help build and distribute
   * Cleaned up GCode writer
   * Recent files menu
+  * minimum layer time
 * v0.1.0b
   * **Milestone!** My first release that earned a whole revision number! It's still  beta because
     much of the release process is not yet in place. Nevertheless, this app can read even

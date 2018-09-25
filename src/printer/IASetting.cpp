@@ -77,7 +77,7 @@ void IASettingChoice::build()
         pWidget = new Fl_Choice(1, 1, 120, 1);
         pWidget->textsize(11);
         pWidget->menu(pMenu);
-        pWidget->value(pValue); // select a menu item by index!
+        pWidget->value(pValue); // FIXME: select a menu item by index, should be set by user_data value
         pWidget->callback((Fl_Callback*)wCallback, this);
         pWidget->box(FL_FLAT_BOX);
     }

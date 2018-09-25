@@ -405,13 +405,13 @@ void IAToolpathList::drawFlat(double w)
 }
 
 
-void IAToolpathList::drawFlatToBitmap(IAFramebuffer *fb, double w)
+void IAToolpathList::drawFlatToBitmap(IAFramebuffer *fb, double w, int color)
 {
     /**
      \todo draw connection between lines.
      */
     for (auto &tt: pToolpathList) {
-        tt->drawFlatToBitmap(fb, w);
+        tt->drawFlatToBitmap(fb, w, color);
     }
 }
 
@@ -567,13 +567,13 @@ void IAToolpath::drawFlat(double w)
 }
 
 
-void IAToolpath::drawFlatToBitmap(IAFramebuffer *fb, double w)
+void IAToolpath::drawFlatToBitmap(IAFramebuffer *fb, double w, int color)
 {
     /**
      \todo draw connection between lines.
      */
     for (auto &e: pElementList) {
-        e->drawFlatToBitmap(fb, w);
+        e->drawFlatToBitmap(fb, w, color);
     }
 }
 
@@ -921,7 +921,7 @@ void IAToolpathMotion::drawFlat(double w)
 /**
  * Draw the toolpath motion into the scene viewer.
  */
-void IAToolpathMotion::drawFlatToBitmap(IAFramebuffer *fb, double w)
+void IAToolpathMotion::drawFlatToBitmap(IAFramebuffer *fb, double w, int color)
 {
     if (!pIsRapid) {
         /**
@@ -944,7 +944,7 @@ void IAToolpathMotion::drawFlatToBitmap(IAFramebuffer *fb, double w)
         fb->addPoint(pEnd.x()+yo, pEnd.y()-xo);
         fb->addPoint(pStart.x()+yo, pStart.y()-xo);
         fb->addPoint(pStart.x()-x7+y7, pStart.y()-y7-x7);
-        fb->endComplexPolygon(0);
+        fb->endComplexPolygon(color);
     }
 }
 

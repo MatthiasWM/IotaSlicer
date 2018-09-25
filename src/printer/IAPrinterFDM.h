@@ -44,6 +44,7 @@ protected:
     void userChangedLidType();
     void userChangedNumShells();
     void userChangedInfillDensity();
+    void userChangedSkirt();
 
 private:
 
@@ -55,6 +56,7 @@ private:
     int pNumLids = 2;
     int pLidType = 0; // 0=zigzag, 1=concentric
     double pInfillDensity = 20.0; // %
+    int pHasSkirt = 1;
 };
 
 
