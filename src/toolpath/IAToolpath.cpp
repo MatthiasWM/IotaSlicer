@@ -264,6 +264,8 @@ int IAMachineToolpath::roundLayerNumber(double z)
  */
 bool IAMachineToolpath::saveGCode(const char *filename /*, printer */)
 {
+    double minLayerTime = 15.0;
+
     bool ret = false;
     IAGcodeWriter w;
     if (w.open(filename)) {
@@ -280,8 +282,18 @@ bool IAMachineToolpath::saveGCode(const char *filename /*, printer */)
             double layerTime = w.getLayerTime();
             printf("Layer %f will print in %f seconds\n", p.first / 1000.0, layerTime);
             /** \todo tune this parameter */
-            if (layerTime>0.0 && layerTime<20.0) {
-                w.cmdDwell(20.0-layerTime);
+            if (layerTime>0.0 && layerTime<minLayerTime) {
+                IAVector3d prev = w.position();
+                IAVector3d pause = Iota.pMesh->pMin
+                                 - IAVector3d(10.0, 10.0, 0.0)
+                                 + Iota.pMesh->position(); /** \bug in world coordinates */
+                pause.setMax(IAVector3d(0.0, 0.0, 0.0));
+                pause.z( prev.z() );
+                w.cmdRetract();
+                w.cmdRapidMove(pause);
+                w.cmdDwell(minLayerTime-layerTime);
+                w.cmdRapidMove(prev);
+                w.cmdUnretract();
             }
         }
         w.sendShutdownSequence();
