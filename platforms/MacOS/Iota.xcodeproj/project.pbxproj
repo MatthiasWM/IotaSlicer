@@ -12,11 +12,13 @@
 		C9163EBC213EA6A700876F17 /* IAPrinterInkjet.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C9163EB6213EA6A700876F17 /* IAPrinterInkjet.cpp */; };
 		C9163EBD213EA6A700876F17 /* IAPrinterLasercutter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C9163EB9213EA6A700876F17 /* IAPrinterLasercutter.cpp */; };
 		C9163EC0213EAA4300876F17 /* IAPrinterFDMBelt.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C9163EBE213EAA4300876F17 /* IAPrinterFDMBelt.cpp */; };
+		C934EAD9215806C90086C36D /* IAPreferences.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C934EAD4215806C80086C36D /* IAPreferences.cpp */; };
+		C934EADA215806C90086C36D /* IAVersioneer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C934EAD7215806C80086C36D /* IAVersioneer.cpp */; };
+		C934EADB215806C90086C36D /* IAError.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C934EAD8215806C80086C36D /* IAError.cpp */; };
 		C938CC152124D51200BAC374 /* IAGLButton.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C938CC142124D51200BAC374 /* IAGLButton.cpp */; };
 		C938CC182125CFB100BAC374 /* IAGeometryReader.cxx in Sources */ = {isa = PBXBuildFile; fileRef = C938CC162125CFB100BAC374 /* IAGeometryReader.cxx */; };
 		C938CC20212602F600BAC374 /* IAGeometryReaderBinaryStl.cxx in Sources */ = {isa = PBXBuildFile; fileRef = C938CC1F212602F600BAC374 /* IAGeometryReaderBinaryStl.cxx */; };
 		C938CC232126E67700BAC374 /* IAMath.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C938CC212126E67600BAC374 /* IAMath.cpp */; };
-		C9554699213C9A530061E60E /* IAPreferences.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C9554697213C9A520061E60E /* IAPreferences.cpp */; };
 		C960ED512143B64D007FC037 /* Doxyfile in Sources */ = {isa = PBXBuildFile; fileRef = C960ED4F2143B62C007FC037 /* Doxyfile */; };
 		C96B1434211A3E9F00978AC7 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C96B1433211A3E9F00978AC7 /* Assets.xcassets */; };
 		C97632CA211E2DD000D9D4B5 /* Iota.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C97632C5211E2DD000D9D4B5 /* Iota.cpp */; };
@@ -62,7 +64,6 @@
 		C9E4C3192130311F004ED18C /* IAGcodeWriter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C9E4C3182130311F004ED18C /* IAGcodeWriter.cpp */; };
 		C9E5885921544A8600C4B64D /* IASetting.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C9E5885721544A8500C4B64D /* IASetting.cpp */; };
 		C9E5885C2155394900C4B64D /* IAPrinterList.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C9E5885B2155394900C4B64D /* IAPrinterList.cpp */; };
-		C9E588622155532100C4B64D /* IAVersioneer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C9E588602155532100C4B64D /* IAVersioneer.cpp */; };
 		C9E5886521563EDA00C4B64D /* xcode_archive.sh in Resources */ = {isa = PBXBuildFile; fileRef = C9E5886421563EDA00C4B64D /* xcode_archive.sh */; };
 /* End PBXBuildFile section */
 
@@ -104,6 +105,13 @@
 		C9163EB9213EA6A700876F17 /* IAPrinterLasercutter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = IAPrinterLasercutter.cpp; sourceTree = "<group>"; };
 		C9163EBE213EAA4300876F17 /* IAPrinterFDMBelt.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = IAPrinterFDMBelt.cpp; sourceTree = "<group>"; };
 		C9163EBF213EAA4300876F17 /* IAPrinterFDMBelt.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IAPrinterFDMBelt.h; sourceTree = "<group>"; };
+		C934EAD2215806C80086C36D /* IAError.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IAError.h; sourceTree = "<group>"; };
+		C934EAD3215806C80086C36D /* IAPreferences.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IAPreferences.h; sourceTree = "<group>"; };
+		C934EAD4215806C80086C36D /* IAPreferences.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = IAPreferences.cpp; sourceTree = "<group>"; };
+		C934EAD5215806C80086C36D /* IAMacros.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IAMacros.h; sourceTree = "<group>"; };
+		C934EAD6215806C80086C36D /* IAVersioneer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IAVersioneer.h; sourceTree = "<group>"; };
+		C934EAD7215806C80086C36D /* IAVersioneer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = IAVersioneer.cpp; sourceTree = "<group>"; };
+		C934EAD8215806C80086C36D /* IAError.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = IAError.cpp; sourceTree = "<group>"; };
 		C938CC132124D51200BAC374 /* IAGLButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IAGLButton.h; sourceTree = "<group>"; };
 		C938CC142124D51200BAC374 /* IAGLButton.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = IAGLButton.cpp; sourceTree = "<group>"; };
 		C938CC162125CFB100BAC374 /* IAGeometryReader.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = IAGeometryReader.cxx; sourceTree = "<group>"; };
@@ -116,8 +124,6 @@
 		C938CC1F212602F600BAC374 /* IAGeometryReaderBinaryStl.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = IAGeometryReaderBinaryStl.cxx; sourceTree = "<group>"; };
 		C938CC212126E67600BAC374 /* IAMath.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = IAMath.cpp; sourceTree = "<group>"; };
 		C938CC222126E67700BAC374 /* IAMath.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IAMath.h; sourceTree = "<group>"; };
-		C9554697213C9A520061E60E /* IAPreferences.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = IAPreferences.cpp; sourceTree = "<group>"; };
-		C9554698213C9A530061E60E /* IAPreferences.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IAPreferences.h; sourceTree = "<group>"; };
 		C960ED492143B10C007FC037 /* libIota Developer Docs.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libIota Developer Docs.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		C960ED4F2143B62C007FC037 /* Doxyfile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = Doxyfile; path = ../../Doxyfile; sourceTree = "<group>"; };
 		C960ED522143CE7D007FC037 /* IAGUIMain.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = IAGUIMain.h; sourceTree = "<group>"; };
@@ -168,7 +174,6 @@
 		C993320E2123881800629BE1 /* trace.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = trace.h; sourceTree = "<group>"; };
 		C993321A2123881800629BE1 /* potracelib.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = potracelib.c; sourceTree = "<group>"; };
 		C993321C2123881800629BE1 /* platform.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = platform.h; sourceTree = "<group>"; };
-		C9A6772E2147F2D000B3031E /* IotaMacros.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IotaMacros.h; sourceTree = "<group>"; };
 		C9A6772F214862D800B3031E /* IAProgressDialog.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = IAProgressDialog.cpp; sourceTree = "<group>"; };
 		C9A67730214862D800B3031E /* IAProgressDialog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IAProgressDialog.h; sourceTree = "<group>"; };
 		C9A67732214AA16800B3031E /* IAGLRangeSlider.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = IAGLRangeSlider.cxx; sourceTree = "<group>"; };
@@ -202,8 +207,6 @@
 		C9E5885821544A8500C4B64D /* IASetting.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IASetting.h; sourceTree = "<group>"; };
 		C9E5885A2155394800C4B64D /* IAPrinterList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IAPrinterList.h; sourceTree = "<group>"; };
 		C9E5885B2155394900C4B64D /* IAPrinterList.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = IAPrinterList.cpp; sourceTree = "<group>"; };
-		C9E588602155532100C4B64D /* IAVersioneer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = IAVersioneer.cpp; sourceTree = "<group>"; };
-		C9E588612155532100C4B64D /* IAVersioneer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IAVersioneer.h; sourceTree = "<group>"; };
 		C9E5886421563EDA00C4B64D /* xcode_archive.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = xcode_archive.sh; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -237,6 +240,20 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		C934EAD1215806C80086C36D /* app */ = {
+			isa = PBXGroup;
+			children = (
+				C934EAD5215806C80086C36D /* IAMacros.h */,
+				C934EAD8215806C80086C36D /* IAError.cpp */,
+				C934EAD2215806C80086C36D /* IAError.h */,
+				C934EAD4215806C80086C36D /* IAPreferences.cpp */,
+				C934EAD3215806C80086C36D /* IAPreferences.h */,
+				C934EAD7215806C80086C36D /* IAVersioneer.cpp */,
+				C934EAD6215806C80086C36D /* IAVersioneer.h */,
+			);
+			path = app;
+			sourceTree = "<group>";
+		};
 		C96B1424211A3E9E00978AC7 = {
 			isa = PBXGroup;
 			children = (
@@ -276,15 +293,15 @@
 			children = (
 				C97632C5211E2DD000D9D4B5 /* Iota.cpp */,
 				C9CD015B21204D0700713CAF /* Iota.h */,
-				C9A6772E2147F2D000B3031E /* IotaMacros.h */,
-				C9E4C30E21285AFB004ED18C /* opengl */,
-				C9CD015721204C2600713CAF /* userinterface */,
-				C97632EC211FA7CC00D9D4B5 /* printer */,
-				C97632CE211E2FFA00D9D4B5 /* geometry */,
-				C98C66B421205D1D00BD3ACE /* fileformats */,
-				C9E4C31221299385004ED18C /* toolpath */,
-				C99331EA2123881800629BE1 /* potrace */,
+				C934EAD1215806C80086C36D /* app */,
 				C97632E4211E41F700D9D4B5 /* data */,
+				C98C66B421205D1D00BD3ACE /* fileformats */,
+				C97632CE211E2FFA00D9D4B5 /* geometry */,
+				C9E4C30E21285AFB004ED18C /* opengl */,
+				C99331EA2123881800629BE1 /* potrace */,
+				C97632EC211FA7CC00D9D4B5 /* printer */,
+				C9E4C31221299385004ED18C /* toolpath */,
+				C9CD015721204C2600713CAF /* userinterface */,
 			);
 			name = src;
 			path = ../../src;
@@ -411,8 +428,6 @@
 		C9CD015721204C2600713CAF /* userinterface */ = {
 			isa = PBXGroup;
 			children = (
-				C9554697213C9A520061E60E /* IAPreferences.cpp */,
-				C9554698213C9A530061E60E /* IAPreferences.h */,
 				C97632C6211E2DD000D9D4B5 /* IAGUIMain.fl */,
 				C960ED532143CE7E007FC037 /* IAGUIMain.cpp */,
 				C960ED522143CE7D007FC037 /* IAGUIMain.h */,
@@ -426,8 +441,6 @@
 				C938CC132124D51200BAC374 /* IAGLButton.h */,
 				C9A67732214AA16800B3031E /* IAGLRangeSlider.cxx */,
 				C9A67733214AA16900B3031E /* IAGLRangeSlider.h */,
-				C9E588602155532100C4B64D /* IAVersioneer.cpp */,
-				C9E588612155532100C4B64D /* IAVersioneer.h */,
 			);
 			path = userinterface;
 			sourceTree = "<group>";
@@ -632,16 +645,17 @@
 				C9A67734214AA16900B3031E /* IAGLRangeSlider.cxx in Sources */,
 				C97632D7211E33B000D9D4B5 /* IAMesh.cpp in Sources */,
 				C9163EBC213EA6A700876F17 /* IAPrinterInkjet.cpp in Sources */,
-				C9554699213C9A530061E60E /* IAPreferences.cpp in Sources */,
+				C934EAD9215806C90086C36D /* IAPreferences.cpp in Sources */,
 				C993323921238A4900629BE1 /* curve.c in Sources */,
 				C993323D21238A9700629BE1 /* IAPotrace.cpp in Sources */,
 				C97632CD211E2DD000D9D4B5 /* IAVector3d.cpp in Sources */,
+				C934EADB215806C90086C36D /* IAError.cpp in Sources */,
 				C9E5885C2155394900C4B64D /* IAPrinterList.cpp in Sources */,
 				C993323A21238A5100629BE1 /* trace.c in Sources */,
 				C9163EBD213EA6A700876F17 /* IAPrinterLasercutter.cpp in Sources */,
 				C9163EBB213EA6A700876F17 /* IAPrinterFDM.cpp in Sources */,
 				C97632DA211E348E00D9D4B5 /* IATriangle.cpp in Sources */,
-				C9E588622155532100C4B64D /* IAVersioneer.cpp in Sources */,
+				C934EADA215806C90086C36D /* IAVersioneer.cpp in Sources */,
 				C993323B21238A5900629BE1 /* decompose.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

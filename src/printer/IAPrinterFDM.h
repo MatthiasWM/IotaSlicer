@@ -58,6 +58,37 @@ private:
 };
 
 
+class IALayerMapFDM;
+
+/**
+ * Layers foor FDM printers contain all data from slice to toolpath.
+ */
+class IALayerFDM
+{
+public:
+    IALayerFDM(IALayerMapFDM*, double z, double height);
+    ~IALayerFDM();
+    void createToolpath();
+    void createInfill();
+    void createLid();
+    void createBottom();
+    void createShells();
+    void createSLice();
+private:
+    IASlice *pSlice;
+    IAFramebuffer *pFBSlice;
+    IAFramebuffer *pFBCore; // slice without shell
+};
+
+
+class IALayerMapFDM
+{
+    IALayerMapFDM(IAPrinterFDM*);
+    ~IALayerMapFDM();
+    std::map<IALayerFDM, double> pMap;
+};
+
+
 #endif /* IA_PRINTER_FDM_H */
 
 

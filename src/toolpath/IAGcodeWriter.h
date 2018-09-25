@@ -9,7 +9,9 @@
 
 
 #include "geometry/IAVector3d.h"
+#include "app/IAMacros.h"
 
+#include <math.h>
 #include <vector>
 #include <map>
 
@@ -24,57 +26,67 @@ public:
     ~IAGcodeWriter();
 
     bool open(const char *filename);
-    
     void close();
-    /** \todo save and update pEFactor */
-    void setFilamentDiameter(double d);
-    /** \todo save and update pEFactor */
-    void setLayerHeight(double d);
+
+//    /** \todo save and update pEFactor */
+//    void setFilamentDiameter(double d);
+//    /** \todo save and update pEFactor */
+//    void setLayerHeight(double d);
+    /** Set the default feedrate for rapid moves. */
+    void setRapidFeedrate(double feedrate);
+    /** Set the default feedrate for printing moves. */
+    void setPrintFeedrate(double feedrate);
 
     /** Position of the extruder head.
      \return the position of the current extruder's tip. */
     IAVector3d &position() { return pPosition; }
 
-    void sendMoveTo(IAVector3d &v);
+    void sendInitSequence();
+    void sendShutdownSequence();
+
+    void cmdHome();
+    void cmdResetExtruder();
+    void cmdExtrude(double distance, double feedrate=-1.0);
+    void cmdComment(const char *format, ...);
+    void cmdRapidMove(double x, double y);
+    void cmdRapidMove(IAVector3d &v);
+    void cmdRetractMove(double x, double y);
+    void cmdRetractMove(IAVector3d &v);
+    void cmdPrintMove(double x, double y);
+    void cmdPrintMove(IAVector3d &v);
+    void cmdRetract(double d=1.0);
+    void cmdUnretract(double d=1.0);
+
+private:
+    DEPRECATED("This call does not work yet!")
+    void cmdSelectExtruder(int);
+    DEPRECATED("This call does not work yet!") 
+    void cmdExtrudeRel(double distance, double feedrate=-1.0);
+    DEPRECATED("This call does not work yet!")
+    void cmdMove(IAVector3d &v, uint32_t color, double feedrate=-1.0);
+    DEPRECATED("This call does not work yet!")
+    void sendPurgeExtruderSequence(int t);
+    void sendMoveTo(const IAVector3d &v);
     void sendRapidMoveTo(IAVector3d &v);
-    void sendPosition(IAVector3d &v);
+    void sendPosition(const IAVector3d &v);
     void sendFeedrate(double f);
     void sendExtrusionAdd(double e);
     void sendExtrusionRel(uint32_t color, double e);
     void sendNewLine(const char *comment=nullptr);
 
-    void macroInit();
-    void macroShutdown();
-    void macroPurgeExtruder(int t);
-
-    void cmdHome();
-    void cmdResetExtruder();
-    void cmdSelectExtruder(int);
-    void cmdExtrude(double distance, double feedrate=-1.0);
-    void cmdExtrudeRel(double distance, double feedrate=-1.0);
-    void cmdComment(const char *format, ...);
-    void cmdRapidMove(double x, double y);
-    void cmdRapidMove(IAVector3d &v);
-    void cmdMove(double x, double y, double feedrate=-1.0);
-    void cmdMove(IAVector3d &v, double feedrate=-1.0);
-    void cmdMove(IAVector3d &v, uint32_t color, double feedrate=-1.0);
-    void cmdRetract(double d=1.0);
-    void cmdUnretract(double d=1.0);
-
-private:
     FILE *pFile = nullptr;
     IAVector3d pPosition;
     int pT = 0;
     double pE = 0.0;
     double pF = 0.0;
-    double pRapidF = 5000.0;
-    double pPrintingF = 1400.0;
+    double pRapidFeedrate = 3000.0;
+    double pPrintFeedrate = 1000.0; // 1400.0
     double pLayerHeight = 0.3;
 
     /*
      Calculating the E-Factor:
      When sending a G1 command, X, Y and Z give the distance of the move in mm.
-     E is the ditance in mm that the cold filament will be moved.
+     E is the distance in mm that the filament will be moved.
      If the E factor was 1, and there was no hotend, G1 would extrude exactly
      the length of filament corresponding to the XYZ motion.
 
@@ -93,7 +105,7 @@ private:
      may stretch or squash.
      */
 
-    double pEFactor = 20.0;
+    double pEFactor = ((1.75/2)*(1.75/2)*M_PI) / (0.4*0.3); // ~20.0
 };
 
 

@@ -15,6 +15,12 @@
 #include <stdarg.h>
 
 
+#ifdef __APPLE__
+#pragma mark -
+#endif
+// =============================================================================
+
+
 /**
  * Create a new GCode writer.
  */
@@ -49,21 +55,53 @@ bool IAGcodeWriter::open(const char *filename)
         printf("Can't open file %s\n", filename);
         return false;
     }
+    pPosition = { MAXFLOAT, MAXFLOAT, MAXFLOAT };
+    pT = -1;
+    pE = 0.0;
+    pF = 0.0;
+    pRapidFeedrate = 3000.0;
+    pPrintFeedrate = 1000.0;
+    pLayerHeight = 0.3;
     return true;
 }
 
 
 /**
- * Send the end-of-line character.
- *
- * \param comment an optional commant that is added to the line.
+ * Close the GCode writer.
  */
-void IAGcodeWriter::sendNewLine(const char *comment)
+void IAGcodeWriter::close()
 {
-    if (comment)
-        fprintf(pFile, " ; %s", comment);
-    fprintf(pFile, "\n");
+    if (pFile!=nullptr) {
+        fclose(pFile);
+        pFile = nullptr;
+    }
 }
+
+
+#ifdef __APPLE__
+#pragma mark -
+#endif
+// =============================================================================
+
+
+/** Set the default feedrate for rapid moves. */
+void IAGcodeWriter::setRapidFeedrate(double feedrate)
+{
+    pRapidFeedrate = feedrate;
+}
+
+
+/** Set the default feedrate for printing moves. */
+void IAGcodeWriter::setPrintFeedrate(double feedrate)
+{
+    pPrintFeedrate = feedrate;
+}
+
+
+#ifdef __APPLE__
+#pragma mark -
+#endif
+// =============================================================================
 
 
 /**
@@ -81,7 +119,9 @@ void IAGcodeWriter::cmdHome()
  *
  * \param d optional retraction length
  *
- * \todo the parameter d does not do much.
+ * \todo if d works or not depends on the GCode dialect that the printer
+ *      firmware uses.
+ * \todo we want to do smart retraction using continuous movement.
  */
 void IAGcodeWriter::cmdRetract(double d)
 {
@@ -94,6 +134,7 @@ void IAGcodeWriter::cmdRetract(double d)
 #elif 0
     w.cmdExtrudeRel(-d);
 #else
+    // lowest common denominator
     fprintf(pFile, "G10\n");
 #endif
 }
@@ -104,9 +145,11 @@ void IAGcodeWriter::cmdRetract(double d)
  *
  * \param d optional retraction length
  *
- * \todo the parameter d does not do much.
+ * \todo if d works or not depends on the GCode dialect that the printer
+ *      firmware uses.
  * \todo d should be the same d that was used when retracting. We could
  *      remember that ourselves.
+ * \todo we want to do smart retraction using continuous movement.
  */
 void IAGcodeWriter::cmdUnretract(double d)
 {
@@ -119,6 +162,7 @@ void IAGcodeWriter::cmdUnretract(double d)
 #elif 0
     w.cmdExtrudeRel(d);
 #else
+    // lowest common denominator
     fprintf(pFile, "G11\n");
 #endif
 }
@@ -129,7 +173,7 @@ void IAGcodeWriter::cmdUnretract(double d)
  *
  * \param n index of the new extruder
  *
- * \todo we need to save some parameters on a per-extruder base and update
+ * \todo we need to save some parameters on a per-extruder basis and update
  *      them to whichever extruder we choose.
  */
 void IAGcodeWriter::cmdSelectExtruder(int n)
@@ -146,10 +190,11 @@ void IAGcodeWriter::cmdSelectExtruder(int n)
  *
  * \todo no need to send feedrate if it did not change
  * \todo we need a different pE for each extruder
+ * \todo this works in absolute mode only
  */
 void IAGcodeWriter::cmdExtrude(double distance, double feedrate)
 {
-    if (feedrate<0.0) feedrate = pPrintingF;
+    if (feedrate<0.0) feedrate = pPrintFeedrate;
     fprintf(pFile, "G1 E%.4f F%.4f\n", pE+distance, feedrate);
     pE += distance;
     pF = feedrate;
@@ -169,7 +214,7 @@ void IAGcodeWriter::cmdExtrude(double distance, double feedrate)
  */
 void IAGcodeWriter::cmdExtrudeRel(double distance, double feedrate)
 {
-    if (feedrate<0.0) feedrate = pPrintingF;
+    if (feedrate<0.0) feedrate = pPrintFeedrate;
     fprintf(pFile, "G1 E%.4f:%.4f:%.4f:%.4f F%.4f\n", distance/4.0, distance/4.0, distance/4.0, distance/4.0, feedrate);
     pF = feedrate;
 }
@@ -195,24 +240,95 @@ void IAGcodeWriter::cmdRapidMove(double x, double y)
 void IAGcodeWriter::cmdRapidMove(IAVector3d &v)
 {
     sendRapidMoveTo(v);
-    sendFeedrate(pRapidF);
+    sendFeedrate(pRapidFeedrate);
     sendNewLine();
 }
+
+
+/**
+ * Move the printhead rapidly while retracting and then unretracting.
+ *
+ * The goal of this function is to print without pause by retracting while
+ * moving rapidly at the same time. This avoids the typical retraction pause
+ * that otherwise stalls the entire print.
+ *
+ * \param v new position in mm from origin in x, y, and z.
+ *
+ * \todo What exactly is the feedrate parameter now, and could we simplify that?
+ */
+void IAGcodeWriter::cmdRetractMove(IAVector3d &v)
+{
+    cmdComment("Retract");
+#if 0
+    // simple method including a pause:
+    double len = (v-pPosition).length();
+    bool retract = (len > 5.0);
+    if (retract) cmdRetract();
+    cmdRapidMove(v);
+    if (retract) cmdUnretract();
+#else
+    // complex method:
+    // - first, we move rapidly toward v while retracting the filament
+    // - when the filament is retracted sufficiently, we continue to move the
+    //   head without moving the filament
+    // - last, we unretract the filament so that filament is available again,
+    //   just as we reach the position v
+
+    // Filament = (1.75/2)^2*pi = 2.41, Extrusion = (0.4/2)^2*pi = 0.125
+    const double retraction = 1.0 / pEFactor; // mm filament (factor 0.05 or 20.0)
+    // distance of first and last rapid motion
+    double retrDist = retraction * (pRapidFeedrate/pPrintFeedrate);
+    // total distance to travel
+    double totalDist = (v-pPosition).length();
+    IAVector3d start = pPosition;
+    IAVector3d direction = (v-pPosition).normalized();
+
+    if (2.0*retrDist>=totalDist) {
+        double f = totalDist/(2.0*retrDist);
+        // first move, retract while moving
+        sendMoveTo(start + direction*(f*retrDist));
+        sendExtrusionAdd(f*-retraction);
+        sendFeedrate(pRapidFeedrate);
+        sendNewLine();
+        // last, move and unretract
+        sendMoveTo(v);
+        sendExtrusionAdd(f*retraction);
+        sendFeedrate(pRapidFeedrate);
+        sendNewLine();
+    } else {
+        // first move, retract while moving
+        sendMoveTo(start + direction*retrDist);
+        sendExtrusionAdd(-retraction);
+        sendFeedrate(pRapidFeedrate);
+        sendNewLine();
+        // now just move rapidly
+        sendMoveTo(start + direction*(totalDist-retrDist));
+        sendFeedrate(pRapidFeedrate);
+        sendNewLine();
+        // last, move and unretract
+        sendMoveTo(v);
+        sendExtrusionAdd(retraction);
+        sendFeedrate(pRapidFeedrate);
+        sendNewLine();
+    }
+#endif
+    cmdComment("Retract End");
+}
+
+
 
 
 /**
  * Move the printhead to a new position in current z while extruding.
  *
  * \param x, y new position in mm from origin.
- * \param feedrate this is actually the extrusion lentgh divided by the length
- *      of the vector
  *
  * \todo What exactly is the feedrate parameter now, and could we simplify that?
  */
-void IAGcodeWriter::cmdMove(double x, double y, double feedrate)
+void IAGcodeWriter::cmdPrintMove(double x, double y)
 {
     IAVector3d p(x, y, pPosition.z());
-    cmdMove(p, feedrate);
+    cmdPrintMove(p);
 }
 
 
@@ -220,18 +336,15 @@ void IAGcodeWriter::cmdMove(double x, double y, double feedrate)
  * Move the printhead to a new position while extruding.
  *
  * \param v new position in mm from origin in x, y, and z.
- * \param feedrate this is actually the extrusion lentgh divided by the length
- *      of the vector
  *
  * \todo What exactly is the feedrate parameter now, and could we simplify that?
  */
-void IAGcodeWriter::cmdMove(IAVector3d &v, double feedrate)
+void IAGcodeWriter::cmdPrintMove(IAVector3d &v)
 {
-    if (feedrate<0.0) feedrate = pF;
     double len = (v-pPosition).length();
     sendMoveTo(v);
     sendExtrusionAdd(len/pEFactor);
-    sendFeedrate(feedrate);
+    sendFeedrate(pPrintFeedrate);
     sendNewLine();
 }
 
@@ -246,15 +359,144 @@ void IAGcodeWriter::cmdMove(IAVector3d &v, double feedrate)
  *
  * \todo What do color and feedrate do?
  */
-void IAGcodeWriter::cmdMove(IAVector3d &v, uint32_t color, double feedrate)
+//void IAGcodeWriter::cmdMove(IAVector3d &v, uint32_t color, double feedrate)
+//{
+//    if (feedrate<0.0) feedrate = pF;
+//    double len = (v-pPosition).length();
+//    sendMoveTo(v);
+//    sendExtrusionRel(color, len/pEFactor);
+//    sendFeedrate(feedrate);
+//    sendNewLine();
+//}
+
+
+/**
+ * Reset the current total extrusion counter.
+ */
+void IAGcodeWriter::cmdResetExtruder()
 {
-    if (feedrate<0.0) feedrate = pF;
-    double len = (v-pPosition).length();
-    sendMoveTo(v);
-    sendExtrusionRel(color, len/pEFactor);
-    sendFeedrate(feedrate);
-    sendNewLine();
+    fprintf(pFile, "G92 E0 ; reset extruder\n");
+    pE = 0.0;
 }
+
+
+/**
+ * Send a single line with a comment in printf() formatting.
+ */
+void IAGcodeWriter::cmdComment(const char *format, ...)
+{
+    fprintf(pFile, "; ");
+    va_list va;
+    va_start(va, format);
+    vfprintf(pFile, format, va);
+    va_end(va);
+    fprintf(pFile, "\n");
+}
+
+
+#ifdef __APPLE__
+#pragma mark -
+#endif
+// =============================================================================
+
+
+/**
+ * Send the end-of-line character.
+ *
+ * \param comment an optional commant that is added to the line.
+ */
+void IAGcodeWriter::sendNewLine(const char *comment)
+{
+    if (comment)
+        fprintf(pFile, " ; %s", comment);
+    fprintf(pFile, "\n");
+}
+
+
+/**
+ * Send the 'move' component of a GCode command.
+ */
+void IAGcodeWriter::sendMoveTo(const IAVector3d &v)
+{
+    fprintf(pFile, "G1 ");
+    sendPosition(v);
+}
+
+
+/**
+ * Send the 'rapid move' component of a GCode command.
+ */
+void IAGcodeWriter::sendRapidMoveTo(IAVector3d &v)
+{
+    fprintf(pFile, "G0 ");
+    sendPosition(v);
+}
+
+
+/**
+ * Send the x, y, and z component of a GCode command.
+ */
+void IAGcodeWriter::sendPosition(const IAVector3d &v)
+{
+    if (v.x()!=pPosition.x())
+        fprintf(pFile, "X%.3f ", v.x());
+    if (v.y()!=pPosition.y())
+        fprintf(pFile, "Y%.3f ", v.y());
+    if (v.z()!=pPosition.z())
+        fprintf(pFile, "Z%.3f ", v.z());
+    pPosition = v;
+}
+
+
+/**
+ * Send the feedrate component of a GCode command.
+ */
+void IAGcodeWriter::sendFeedrate(double f)
+{
+    if (f!=pF) {
+        fprintf(pFile, "F%.1f ", f);
+        pF = f;
+    }
+}
+
+
+/**
+ * Send the extrusion component of a GCode command.
+ *
+ * \param e relative extrusion in mm, will be added to the total extrusion in absolute mode.
+ *
+ * \todo how do we know if we are in absolute or relative mode?
+ */
+void IAGcodeWriter::sendExtrusionAdd(double e)
+{
+    double newE = pE + e;
+    if (newE!=pE) {
+        fprintf(pFile, "E%.5f ", newE);
+        pE = newE;
+    }
+}
+
+
+/**
+ * Send the relative extrusion component of a GCode command for a mixing extruder.
+ *
+ * \param color packed format: 0x00RRGGBB.
+ * \param e total extrusion rate of transport r, g, b, and key.
+ */
+//void IAGcodeWriter::sendExtrusionRel(uint32_t color, double e)
+//{
+//    double r = (double((color>>16)&255))/255.0/4.0;
+//    double g = (double((color>>8)&255))/255.0/4.0;
+//    double b = (double((color>>0)&255))/255.0/4.0;
+//    double k = 1.0 - r - g - b;
+//    fprintf(pFile, "E%.4f:%.4f:%.4f:%.4f ", r*e, g*e, b*e, k*e);
+//}
+
+
+#ifdef __APPLE__
+#pragma mark -
+#endif
+// =============================================================================
 
 
 /**
@@ -262,7 +504,7 @@ void IAGcodeWriter::cmdMove(IAVector3d &v, uint32_t color, double feedrate)
  *
  * \todo This should be more general, plus some commands for specific machines.
  */
-void IAGcodeWriter::macroInit()
+void IAGcodeWriter::sendInitSequence()
 {
 #ifdef IA_QUAD
 #error
@@ -305,9 +547,9 @@ void IAGcodeWriter::macroInit()
     fprintf(pFile, "G28 ; home all axes\n");
     fprintf(pFile, "G1 Z5 F5000 ; lift nozzle\n");
     fprintf(pFile, "M140 S60 ; set bed temperature\n");
-//    fprintf(pFile, "T1\n");
-//    fprintf(pFile, "M82 ; use absolute distances for extrusion\n");
-//    fprintf(pFile, "M104 S230 ; set extruder temperature\n");
+    //    fprintf(pFile, "T1\n");
+    //    fprintf(pFile, "M82 ; use absolute distances for extrusion\n");
+    //    fprintf(pFile, "M104 S230 ; set extruder temperature\n");
     fprintf(pFile, "T0\n");
     fprintf(pFile, "M82 ; use absolute distances for extrusion\n");
     fprintf(pFile, "M104 S230 ; set extruder temperature\n");
@@ -348,12 +590,12 @@ void IAGcodeWriter::macroInit()
  *
  * \todo This should be more general, plus some commands for specific machines.
  */
-void IAGcodeWriter::macroShutdown()
+void IAGcodeWriter::sendShutdownSequence()
 {
     cmdComment("");
     cmdComment("==== Macro Shutdown");
     cmdResetExtruder();
-//    fprintf(pFile, "T1 M104 S0 ; set extruder temperature\n");
+    //    fprintf(pFile, "T1 M104 S0 ; set extruder temperature\n");
     fprintf(pFile, "T0\n");
     fprintf(pFile, "M104 S0 ; set extruder temperature\n");
     fprintf(pFile, "M140 S0 ; set bed temperature\n");
@@ -380,7 +622,7 @@ void IAGcodeWriter::macroShutdown()
  *
  * \todo This should be more general, plus some commands for specific machines.
  */
-void IAGcodeWriter::macroPurgeExtruder(int t)
+void IAGcodeWriter::sendPurgeExtruderSequence(int t)
 {
     cmdComment("");
     cmdComment("==== Macro Purge Extruder %d", t);
@@ -451,118 +693,5 @@ void IAGcodeWriter::macroPurgeExtruder(int t)
     }
     cmdComment("");
 }
-
-
-/**
- * Send the 'move' component of a GCode command.
- */
-void IAGcodeWriter::sendMoveTo(IAVector3d &v)
-{
-    fprintf(pFile, "G1 ");
-    sendPosition(v);
-}
-
-
-/**
- * Send the 'rapid move' component of a GCode command.
- */
-void IAGcodeWriter::sendRapidMoveTo(IAVector3d &v)
-{
-    fprintf(pFile, "G0 ");
-    sendPosition(v);
-}
-
-
-/**
- * Send the x, y, and z component of a GCode command.
- */
-void IAGcodeWriter::sendPosition(IAVector3d &v)
-{
-    if (v.x()!=pPosition.x())
-        fprintf(pFile, "X%.3f ", v.x());
-    if (v.y()!=pPosition.y())
-        fprintf(pFile, "Y%.3f ", v.y());
-    if (v.z()!=pPosition.z())
-        fprintf(pFile, "Z%.3f ", v.z());
-    pPosition = v;
-}
-
-
-/**
- * Send the feedrate component of a GCode command.
- */
-void IAGcodeWriter::sendFeedrate(double f)
-{
-    if (f!=pF) { fprintf(pFile, "F%.1f ", f); pF = f; }
-}
-
-
-/**
- * Send the extrusion component of a GCode command.
- *
- * \param e relative extrusion in mm, will be added to the total extrusion in absolute mode.
- *
- * \todo how do we know if we are in absolute or relative mode?
- */
-void IAGcodeWriter::sendExtrusionAdd(double e)
-{
-    double newE = pE + e;
-    if (newE!=pE) { fprintf(pFile, "E%.5f ", newE); pE = newE; }
-}
-
-
-/**
- * Send the relative extrusion component of a GCode command for a mixing extruder.
- *
- * \param color packed format: 0x00RRGGBB.
- * \param e total extrusion rate of transport r, g, b, and key.
- */
-void IAGcodeWriter::sendExtrusionRel(uint32_t color, double e)
-{
-    double r = (double((color>>16)&255))/255.0/4.0;
-    double g = (double((color>>8)&255))/255.0/4.0;
-    double b = (double((color>>0)&255))/255.0/4.0;
-    double k = 1.0 - r - g - b;
-    fprintf(pFile, "E%.4f:%.4f:%.4f:%.4f ", r*e, g*e, b*e, k*e);
-}
-
-
-/**
- * Reset the current total extrusion counter.
- */
-void IAGcodeWriter::cmdResetExtruder()
-{
-    fprintf(pFile, "G92 E0 ; reset extruder\n");
-    pE = 0.0;
-}
-
-
-
-/**
- * Send a single line with a comment in printf() formatting.
- */
-void IAGcodeWriter::cmdComment(const char *format, ...)
-{
-    fprintf(pFile, "; ");
-    va_list va;
-    va_start(va, format);
-    vfprintf(pFile, format, va);
-    va_end(va);
-    fprintf(pFile, "\n");
-}
-
-
-/**
- * Close the GCode writer.
- */
-void IAGcodeWriter::close()
-{
-    if (pFile!=nullptr) {
-        fclose(pFile);
-        pFile = nullptr;
-    }
-}
-
-
 
 

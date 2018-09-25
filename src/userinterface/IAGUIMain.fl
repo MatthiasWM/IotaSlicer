@@ -49,7 +49,8 @@ data sHelpAbout {private local filename {../../html/helpAbout.html} textmode
 data sHelpLicenses {private local filename {../../html/helpLicenses.html} textmode
 }
 
-Function {createIotaAppWindow()} {} {
+Function {createIotaAppWindow()} {open
+} {
   Fl_Window wMainWindow {
     label {Iota Slicer} open
     xywh {472 202 850 600} type Double resizable visible
@@ -72,42 +73,53 @@ Function {createIotaAppWindow()} {} {
           xywh {12 12 100 20} shortcut 0x40006f
         }
         Submenu {} {
-          label {Open Recent}
-          xywh {0 0 100 20} deactivate divider
+          label {Open Recent} open selected
+          xywh {0 0 100 20} divider
         } {
-          MenuItem {} {
-            xywh {0 0 100 20} deactivate
+          MenuItem wRecentFiles {
+            callback {Iota.userMenuOpenRecentFile(0);}
+            xywh {0 0 100 20} shortcut 0x80031
           }
           MenuItem {} {
-            xywh {12 12 100 20} deactivate
+            callback {Iota.userMenuOpenRecentFile(1);}
+            xywh {12 12 100 20} shortcut 0x80032
           }
           MenuItem {} {
-            xywh {20 20 100 20} deactivate
+            callback {Iota.userMenuOpenRecentFile(2);}
+            xywh {20 20 100 20} shortcut 0x80033
           }
           MenuItem {} {
-            xywh {32 32 100 20} deactivate
+            callback {Iota.userMenuOpenRecentFile(3);}
+            xywh {32 32 100 20} shortcut 0x80034
           }
           MenuItem {} {
-            xywh {40 40 100 20} deactivate
+            callback {Iota.userMenuOpenRecentFile(4);}
+            xywh {40 40 100 20} shortcut 0x80035
           }
           MenuItem {} {
-            xywh {52 52 100 20} deactivate
+            callback {Iota.userMenuOpenRecentFile(5);}
+            xywh {52 52 100 20} shortcut 0x80036
           }
           MenuItem {} {
-            xywh {60 60 100 20} deactivate
+            callback {Iota.userMenuOpenRecentFile(6);}
+            xywh {60 60 100 20} shortcut 0x80037
           }
           MenuItem {} {
-            xywh {72 72 100 20} deactivate
+            callback {Iota.userMenuOpenRecentFile(7);}
+            xywh {72 72 100 20} shortcut 0x80038
           }
           MenuItem {} {
-            xywh {80 80 100 20} deactivate
+            callback {Iota.userMenuOpenRecentFile(8);}
+            xywh {80 80 100 20} shortcut 0x80039
           }
           MenuItem {} {
-            xywh {92 92 100 20} deactivate
+            callback {Iota.userMenuOpenRecentFile(9);}
+            xywh {92 92 100 20} shortcut 0x80030
           }
           MenuItem {} {
             label {Clear List}
-            xywh {100 100 100 20} deactivate
+            callback {Iota.userMenuClearRecentFileList();}
+            xywh {100 100 100 20}
           }
         }
         MenuItem {} {
@@ -181,12 +193,12 @@ Function {createIotaAppWindow()} {} {
         MenuItem {} {
           label {Save Slices}
           callback {Iota.userMenuSliceSave();}
-          xywh {36 36 100 20} shortcut 0x40006f
+          xywh {36 36 100 20} shortcut 0x400075
         }
         MenuItem {} {
           label {Save Slices As...}
           callback {Iota.userMenuSliceSaveAs();}
-          xywh {24 24 100 20} shortcut 0x41006f
+          xywh {24 24 100 20} shortcut 0x410075
         }
         MenuItem {} {
           label Clean
@@ -460,22 +472,23 @@ applySettings();}
       }
       Fl_Input wArchivePath {
         label {Archive Path}
-        callback {// archive destination path} selected
-        xywh {105 98 265 20} labelsize 12 textsize 12 deactivate
+        callback {setProjectPath();}
+        xywh {105 98 265 20} labelsize 12 textsize 12
       }
       Fl_Button {} {
         label {@fileopen}
-        callback {// archive destination path} selected
-        xywh {369 98 33 20} labelcolor 3 deactivate
+        callback {selectArchivePath();}
+        xywh {369 98 33 20} labelcolor 3
       }
       Fl_Button {} {
         label {Create Archive}
         callback {saveSettings();
+createArchive();
 // recompile in release mode
 // pack into zip archive
 // move to release folder
 // ? upload}
-        xywh {420 96 90 24} labelsize 12 deactivate
+        xywh {420 96 90 24} labelsize 12
       }
       Fl_Button {} {
         label {git tag && push}
@@ -512,6 +525,18 @@ gitTag();}
     code {} {}
   }
   Function {saveSettings()} {protected return_type {virtual void}
+  } {
+    code {} {}
+  }
+  Function {setArchivePath()} {protected return_type {virtual void}
+  } {
+    code {} {}
+  }
+  Function {selectArchivePath()} {protected return_type {virtual void}
+  } {
+    code {} {}
+  }
+  Function {createArchive()} {protected return_type {virtual void}
   } {
     code {} {}
   }

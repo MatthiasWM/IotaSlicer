@@ -8,7 +8,7 @@
 #define IA_EDGE_H
 
 
-#include "IotaMacros.h"
+#include "IAMacros.h"
 
 #include <vector>
 #include <assert.h>

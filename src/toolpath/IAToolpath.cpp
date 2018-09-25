@@ -267,7 +267,7 @@ bool IAMachineToolpath::saveGCode(const char *filename /*, printer */)
     bool ret = false;
     IAGcodeWriter w;
     if (w.open(filename)) {
-        w.macroInit();
+        w.sendInitSequence();
         for (auto &p: pToolpathListMap) {
             w.cmdComment("");
             w.cmdComment("==== layer at z=%g", p.first / 1000.0);
@@ -276,7 +276,7 @@ bool IAMachineToolpath::saveGCode(const char *filename /*, printer */)
             // send all motion commands
             p.second->saveGCode(w);
         }
-        w.macroShutdown();
+        w.sendShutdownSequence();
         w.close();
         ret = true;
     }
@@ -429,7 +429,7 @@ void IAToolpathList::optimize()
     // and with the same priority, sort them so that trips between toolpaths
     // is short
     size_t i, j, n = pToolpathList.size();
-    for (i=0; i<n-1; i++) {
+    if (n) for (i=0; i<n-1; i++) {
         IAToolpath *ta = pToolpathList[i];
         IAToolpath *tx = pToolpathList[i+1];
         size_t x = i+1;
@@ -711,6 +711,8 @@ IAToolpathElement *IAToolpathExtruder::clone()
  */
 void IAToolpathExtruder::saveGCode(IAGcodeWriter &w)
 {
+    assert(0); // this must be implemented again
+#if 0
     w.cmdComment("");
     w.cmdComment("---- Change to extruder %d", pTool);
     // deactivate the other extruder
@@ -728,8 +730,8 @@ void IAToolpathExtruder::saveGCode(IAGcodeWriter &w)
     w.cmdRapidMove(x, 10.0);
     int i;
     for (i=0; i<4; i++) {
-        w.cmdMove(x+pw, 10.0+i);
-        w.cmdMove(x+pw, 10.0+i+0.5);
+        w.cmdPrintMove(x+pw, 10.0+i);
+        w.cmdPrintMove(x+pw, 10.0+i+0.5);
         w.cmdMove(x, 10.0+i+0.5);
         w.cmdMove(x, 10.0+i+1.0);
     }
@@ -737,6 +739,7 @@ void IAToolpathExtruder::saveGCode(IAGcodeWriter &w)
     w.cmdResetExtruder();
     w.cmdComment("Extruder %d ready", pTool);
     w.cmdComment("");
+#endif
 }
 
 
@@ -931,18 +934,20 @@ void IAToolpathMotion::drawFlatToBitmap(IAFramebuffer *fb, double w)
 void IAToolpathMotion::saveGCode(IAGcodeWriter &w)
 {
     if (pIsRapid) {
-        bool retract = ((pEnd-pStart).length() > 5.0);
-        if (retract) w.cmdRetract();
-        w.cmdRapidMove(pEnd);
-        if (retract) w.cmdUnretract();
+        w.cmdRetractMove(pEnd);
+//        bool retract = ((pEnd-pStart).length() > 5.0);
+//        if (retract) w.cmdRetract();
+//        w.cmdRapidMove(pEnd);
+//        if (retract) w.cmdUnretract();
     } else {
         if (w.position()!=pStart) {
-            bool retract = ((w.position()-pStart).length() > 5.0);
-            if (retract) w.cmdRetract();
-            w.cmdRapidMove(pStart);
-            if (retract) w.cmdUnretract();
+            w.cmdRetractMove(pStart);
+//            bool retract = ((w.position()-pStart).length() > 5.0);
+//            if (retract) w.cmdRetract();
+//            w.cmdRapidMove(pStart);
+//            if (retract) w.cmdUnretract();
         }
-        w.cmdMove(pEnd);
+        w.cmdPrintMove(pEnd);
     }
 }
 
