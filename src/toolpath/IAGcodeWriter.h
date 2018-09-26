@@ -16,13 +16,16 @@
 #include <map>
 
 
+class IAPrinterFDM;
+
+
 /**
  * Helps the toolpath classes to write GCode
  */
 class IAGcodeWriter
 {
 public:
-    IAGcodeWriter();
+    IAGcodeWriter(IAPrinterFDM *printer);
     ~IAGcodeWriter();
 
     bool open(const char *filename);
@@ -80,6 +83,7 @@ private:
     void sendExtrusionRel(uint32_t color, double e);
     void sendNewLine(const char *comment=nullptr);
 
+    IAPrinterFDM *pPrinter = nullptr;
     FILE *pFile = nullptr;
     IAVector3d pPosition;
     int pT = 0;

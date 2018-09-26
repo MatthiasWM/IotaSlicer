@@ -26,7 +26,7 @@ void IAPrinterFDM::sliceAndWrite(const char *filename)
         filename = outputPath();
 
     if (!pMachineToolpath)
-        pMachineToolpath = new IAMachineToolpath();
+        pMachineToolpath = new IAMachineToolpath(this);
     else
         pMachineToolpath->clear();
     double hgt = Iota.pMesh->pMax.z() - Iota.pMesh->pMin.z();

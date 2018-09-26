@@ -98,7 +98,6 @@ IAPrinter::~IAPrinter()
  */
 void IAPrinter::purgeSlicesAndCaches()
 {
-    pMachineToolpath.clear();
     gSlice.clear();
     gSceneView->redraw();
 }
@@ -352,7 +351,6 @@ void IAPrinter::draw()
  */
 void IAPrinter::drawPreview(double lo, double hi)
 {
-    pMachineToolpath.draw(lo, hi);
 }
 
 

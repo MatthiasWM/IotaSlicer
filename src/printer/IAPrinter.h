@@ -46,7 +46,6 @@ public:
 
     // ----
     virtual void draw();
-//    virtual void drawPreview();
     virtual void drawPreview(double lo, double hi);
     virtual void purgeSlicesAndCaches();
 
@@ -66,9 +65,6 @@ public:
     IAVector3d pBuildVolumeMin = { 0.0, 0.0, 0.0 };
     IAVector3d pBuildVolumeMax = { 214.0, 214.0, 230.0 };
     double pBuildVolumeRadius = 200.0; // sphere that contains the entire centered build volume
-
-    /// the toolpath for the entire scene for vector based machines
-    IAMachineToolpath pMachineToolpath;
 
     /// This is the current slice that contains the entire scene at a give z.
     IASlice gSlice;

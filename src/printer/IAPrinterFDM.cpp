@@ -99,9 +99,15 @@ static Fl_Menu_Item skirtMenu[] = {
     { "yes", 0, nullptr, (void*)1, 0, 0, 0, 11 },
     { nullptr } };
 
+static Fl_Menu_Item nozzleDiameterMenu[] = {
+    { "0.40", 0, nullptr, (void*)0, 0, 0, 0, 11 },
+    { "0.35", 0, nullptr, (void*)0, 0, 0, 0, 11 },
+    { nullptr } };
+
 
 IAPrinterFDM::IAPrinterFDM(const char *name)
-:   super(name)
+:   super(name),
+    pMachineToolpath( this )
 {
     pSettingList.push_back(new IASettingChoice("# of shells: ",
                                                pNumShells,
@@ -127,6 +133,11 @@ IAPrinterFDM::IAPrinterFDM(const char *name)
                                                pHasSkirt,
                                                [this]{userChangedSkirt();},
                                                skirtMenu ) );
+
+    pSettingList.push_back(new IASettingFloatChoice("nozzle diameter: ",
+                                                    pNozzleDiameter,
+                                                    [this]{userChangedNozzleDiameter();},
+                                                    nozzleDiameterMenu ) );
 
 
     // Nozzle diameter
@@ -346,6 +357,27 @@ void IAPrinterFDM::saveToolpath(const char *filename)
 }
 
 
+/**
+ * Clear all buffered data and prepare for a modified scene.
+ */
+void IAPrinterFDM::purgeSlicesAndCaches()
+{
+    pMachineToolpath.clear();
+    super::purgeSlicesAndCaches();
+}
+
+
+/**
+ * Draw a preview of the slicing operation.
+ */
+void IAPrinterFDM::drawPreview(double lo, double hi)
+{
+    pMachineToolpath.draw(lo, hi);
+}
+
+
+
+
 void IAPrinterFDM::userChangedColorMode()
 {
     printf("Colormode is now %d\n", pColorMode);
@@ -376,6 +408,11 @@ void IAPrinterFDM::userChangedInfillDensity()
 }
 
 void IAPrinterFDM::userChangedSkirt()
+{
+    // TODO: clear toolpath and slice cache
+}
+
+void IAPrinterFDM::userChangedNozzleDiameter()
 {
     // TODO: clear toolpath and slice cache
 }

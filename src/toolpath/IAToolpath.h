@@ -21,6 +21,7 @@ class IAToolpathList;
 class IAToolpath;
 class IAToolpathElement;
 class IAFramebuffer;
+class IAPrinterFDM;
 
 
 typedef std::map<int, IAToolpathList*> IAToolpathListMap;
@@ -47,7 +48,7 @@ typedef std::shared_ptr<IAToolpath> IAToolpathTypeSP;
 class IAMachineToolpath
 {
 public:
-    IAMachineToolpath();
+    IAMachineToolpath(IAPrinterFDM *printer);
     ~IAMachineToolpath();
 
     void clear();
@@ -63,6 +64,7 @@ public:
 
 private:
     IAToolpathListMap pToolpathListMap;
+    IAPrinterFDM *pPrinter = nullptr;
 };
 
 

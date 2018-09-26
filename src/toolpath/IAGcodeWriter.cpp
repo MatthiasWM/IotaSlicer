@@ -8,6 +8,7 @@
 #include "IAGcodeWriter.h"
 
 #include "Iota.h"
+#include "printer/IAPrinterFDM.h"
 
 #include <FL/gl.h>
 
@@ -24,7 +25,8 @@
 /**
  * Create a new GCode writer.
  */
-IAGcodeWriter::IAGcodeWriter()
+IAGcodeWriter::IAGcodeWriter(IAPrinterFDM *printer)
+:   pPrinter( printer )
 {
 }
 
@@ -64,6 +66,8 @@ bool IAGcodeWriter::open(const char *filename)
     pLayerHeight = 0.3;
     pLayerStartTime = 0.0;
     pTotalTime = 0.0;
+    pEFactor = ((pPrinter->filamentDiameter()/2)*(pPrinter->filamentDiameter()/2)*M_PI)
+             / (pPrinter->nozzleDiameter()*pPrinter->layerHeight());
     return true;
 }
 

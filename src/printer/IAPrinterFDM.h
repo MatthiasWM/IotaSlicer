@@ -32,11 +32,16 @@ public:
     virtual void userSliceSaveAs() override;
     virtual void userSliceGenerateAll() override;
 
+    virtual void purgeSlicesAndCaches() override;
+    virtual void drawPreview(double lo, double hi) override;
+
     // ----
     void sliceAll();
     void saveToolpath(const char *filename = nullptr);
 
     int colorMode() { return pColorMode; }
+    double nozzleDiameter() { return pNozzleDiameter; }
+    double filamentDiameter() { return 1.75; }
 
 protected:
     void userChangedColorMode();
@@ -45,8 +50,12 @@ protected:
     void userChangedNumShells();
     void userChangedInfillDensity();
     void userChangedSkirt();
+    void userChangedNozzleDiameter();
 
 private:
+
+    /// the toolpath for the entire scene for vector based machines
+    IAMachineToolpath pMachineToolpath;
 
     double pNozzleDiameter = 0.4;
 
@@ -56,7 +65,7 @@ private:
     int pNumLids = 2;
     int pLidType = 0; // 0=zigzag, 1=concentric
     double pInfillDensity = 20.0; // %
-    int pHasSkirt = 1;
+    int pHasSkirt = 1; // prime line around perimeter
 };
 
 

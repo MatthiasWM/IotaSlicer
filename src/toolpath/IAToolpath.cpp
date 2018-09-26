@@ -12,6 +12,7 @@
 
 #include "Iota.h"
 #include "opengl/IAFramebuffer.h"
+#include "printer/IAPrinterFDM.h"
 
 #include <FL/gl.h>
 
@@ -149,7 +150,8 @@ void IAToolpath::colorizeSoft(uint8_t *rgb, IAToolpath *dst)
 /**
  * Create a list of toolpaths for the entire printout.
  */
-IAMachineToolpath::IAMachineToolpath()
+IAMachineToolpath::IAMachineToolpath(IAPrinterFDM *printer)
+:   pPrinter( printer )
 {
 }
 
@@ -267,7 +269,7 @@ bool IAMachineToolpath::saveGCode(const char *filename /*, printer */)
     double minLayerTime = 15.0;
 
     bool ret = false;
-    IAGcodeWriter w;
+    IAGcodeWriter w(pPrinter);
     if (w.open(filename)) {
         w.resetTotalTime();
         w.sendInitSequence();

@@ -102,6 +102,8 @@ void IAPrinterLasercutter::sliceAll()
  */
 void IAPrinterLasercutter::saveToolpaths(const char *filename)
 {
+    assert(0);
+#if 0
     if (!filename)
         filename = outputPath();
     char fn[FL_PATH_MAX];
@@ -151,6 +153,7 @@ void IAPrinterLasercutter::saveToolpaths(const char *filename)
     }
     IAProgressDialog::hide();
     gSceneView->redraw();
+#endif
 }
 
 
