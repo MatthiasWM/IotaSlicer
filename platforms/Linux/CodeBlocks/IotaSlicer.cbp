@@ -58,6 +58,13 @@
 		</Linker>
 		<Unit filename="../../../src/Iota.cpp" />
 		<Unit filename="../../../src/Iota.h" />
+		<Unit filename="../../../src/app/IAError.cpp" />
+		<Unit filename="../../../src/app/IAError.h" />
+		<Unit filename="../../../src/app/IAMacros.h" />
+		<Unit filename="../../../src/app/IAPreferences.cpp" />
+		<Unit filename="../../../src/app/IAPreferences.h" />
+		<Unit filename="../../../src/app/IAVersioneer.cpp" />
+		<Unit filename="../../../src/app/IAVersioneer.h" />
 		<Unit filename="../../../src/data/binaryData.cpp" />
 		<Unit filename="../../../src/data/binaryData.fl">
 			<Option compile="1" />
@@ -126,8 +133,12 @@
 		<Unit filename="../../../src/printer/IAPrinterInkjet.h" />
 		<Unit filename="../../../src/printer/IAPrinterLasercutter.cpp" />
 		<Unit filename="../../../src/printer/IAPrinterLasercutter.h" />
+		<Unit filename="../../../src/printer/IAPrinterList.cpp" />
+		<Unit filename="../../../src/printer/IAPrinterList.h" />
 		<Unit filename="../../../src/printer/IAPrinterSLS.cpp" />
 		<Unit filename="../../../src/printer/IAPrinterSLS.h" />
+		<Unit filename="../../../src/printer/IASetting.cpp" />
+		<Unit filename="../../../src/printer/IASetting.h" />
 		<Unit filename="../../../src/toolpath/IADxfWriter.cpp" />
 		<Unit filename="../../../src/toolpath/IADxfWriter.h" />
 		<Unit filename="../../../src/toolpath/IAGcodeWriter.cpp" />
@@ -147,8 +158,6 @@
 			<Option compiler="gcc" use="1" buildCommand="cd ../../../src/userinterface/ &amp;&amp; ../../platforms/Linux/bin/fluid -c IAGUIMain.fl" />
 		</Unit>
 		<Unit filename="../../../src/userinterface/IAGUIMain.h" />
-		<Unit filename="../../../src/userinterface/IAPreferences.cpp" />
-		<Unit filename="../../../src/userinterface/IAPreferences.h" />
 		<Unit filename="../../../src/userinterface/IAProgressDialog.cpp" />
 		<Unit filename="../../../src/userinterface/IAProgressDialog.h" />
 		<Unit filename="../../../src/userinterface/IASceneView.cpp" />

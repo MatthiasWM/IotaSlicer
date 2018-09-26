@@ -149,18 +149,39 @@ void IAVersioneer::createArchive()
 #endif
 #ifdef _WIN32
 	if (fl_choice(
-		"Select 'Release' Solution Configuration in VisualC and press F7\n"
+		"Select 'Release' Solution Configuration in VisualC and press F7.\n"
 		"Archive will be created in the given directory.", "Cancel", "Continue", nullptr) == 1)
 	{
 		char buf[4096];
-		sprintf(buf, 
+		sprintf(buf,
 			"cd %s/platforms/MSWindows/VisualStudio/Release && "
 			"powershell Compress-Archive "
 				"-Path IotaSlicer.exe "
 				"-DestinationPath %s/IotaSlicer_%d.%d.%d%s_MSWindows.zip "
 				"-Force",
-			wBasePath->value(), 
-			wArchivePath->value(), 
+			wBasePath->value(),
+			wArchivePath->value(),
+			atoi(wMajor->value()),
+			atoi(wMinor->value()),
+			atoi(wBuild->value()),
+			wClass->value()
+			);
+		system(buf);
+	}
+#endif
+#ifdef __LINUX__
+	if (fl_choice(
+		"Select 'Release' in CodeBlock and click 'Build'.\n"
+		"Archive will be created in the given directory.", "Cancel", "Continue", nullptr) == 1)
+	{
+		char buf[4096];
+		sprintf(buf,
+			"cd %s/platforms/Linux/CodeBlocks/bin/Release/ && "
+			"/usr/bin/zip -r -y "
+				"%s/IotaSlicer_%d.%d.%d%s_Linux.zip "
+				"IotaSlicer ",
+			wBasePath->value(),
+			wArchivePath->value(),
 			atoi(wMajor->value()),
 			atoi(wMinor->value()),
 			atoi(wBuild->value()),
