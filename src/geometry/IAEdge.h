@@ -8,7 +8,7 @@
 #define IA_EDGE_H
 
 
-#include "IAMacros.h"
+#include "app/IAMacros.h"
 
 #include <vector>
 #include <assert.h>

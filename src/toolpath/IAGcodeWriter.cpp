@@ -57,7 +57,7 @@ bool IAGcodeWriter::open(const char *filename)
         printf("Can't open file %s\n", filename);
         return false;
     }
-    pPosition = { MAXFLOAT, MAXFLOAT, MAXFLOAT };
+    pPosition = { 0.0, 0.0, 0.0 };
     pT = -1;
     pE = 0.0;
     pF = 0.0;

@@ -121,6 +121,9 @@
     </CustomBuildStep>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\..\src\app\IAError.cpp" />
+    <ClCompile Include="..\..\..\src\app\IAPreferences.cpp" />
+    <ClCompile Include="..\..\..\src\app\IAVersioneer.cpp" />
     <ClCompile Include="..\..\..\src\data\binaryData.cpp" />
     <ClCompile Include="..\..\..\src\fileformats\IAFmtObj3ds.cxx" />
     <ClCompile Include="..\..\..\src\fileformats\IAFmtTexJpeg.cxx" />
@@ -146,19 +149,24 @@
     <ClCompile Include="..\..\..\src\printer\IAPrinterFDMBelt.cpp" />
     <ClCompile Include="..\..\..\src\printer\IAPrinterInkjet.cpp" />
     <ClCompile Include="..\..\..\src\printer\IAPrinterLasercutter.cpp" />
+    <ClCompile Include="..\..\..\src\printer\IAPrinterList.cpp" />
     <ClCompile Include="..\..\..\src\printer\IAPrinterSLS.cpp" />
+    <ClCompile Include="..\..\..\src\printer\IASetting.cpp" />
     <ClCompile Include="..\..\..\src\toolpath\IADxfWriter.cpp" />
     <ClCompile Include="..\..\..\src\toolpath\IAGcodeWriter.cpp" />
     <ClCompile Include="..\..\..\src\toolpath\IAToolpath.cpp" />
     <ClCompile Include="..\..\..\src\userinterface\IACamera.cpp" />
     <ClCompile Include="..\..\..\src\userinterface\IAGLButton.cpp" />
     <ClCompile Include="..\..\..\src\userinterface\IAGLRangeSlider.cxx" />
-    <ClCompile Include="..\..\..\src\userinterface\IAPreferences.cpp" />
     <ClCompile Include="..\..\..\src\userinterface\IAProgressDialog.cpp" />
     <ClCompile Include="..\..\..\src\userinterface\IASceneView.cpp" />
     <ClCompile Include="..\..\..\src\userinterface\IAGUIMain.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\..\src\app\IAError.h" />
+    <ClInclude Include="..\..\..\src\app\IAMacros.h" />
+    <ClInclude Include="..\..\..\src\app\IAPreferences.h" />
+    <ClInclude Include="..\..\..\src\app\IAVersioneer.h" />
     <ClInclude Include="..\..\..\src\data\binaryData.h" />
     <ClInclude Include="..\..\..\src\fileformats\IAFmtObj3ds.h" />
     <ClInclude Include="..\..\..\src\fileformats\IAFmtTexJpeg.h" />
@@ -191,14 +199,15 @@
     <ClInclude Include="..\..\..\src\printer\IAPrinterFDMBelt.h" />
     <ClInclude Include="..\..\..\src\printer\IAPrinterInkjet.h" />
     <ClInclude Include="..\..\..\src\printer\IAPrinterLasercutter.h" />
+    <ClInclude Include="..\..\..\src\printer\IAPrinterList.h" />
     <ClInclude Include="..\..\..\src\printer\IAPrinterSLS.h" />
+    <ClInclude Include="..\..\..\src\printer\IASetting.h" />
     <ClInclude Include="..\..\..\src\toolpath\IADxfWriter.h" />
     <ClInclude Include="..\..\..\src\toolpath\IAGcodeWriter.h" />
     <ClInclude Include="..\..\..\src\toolpath\IAToolpath.h" />
     <ClInclude Include="..\..\..\src\userinterface\IACamera.h" />
     <ClInclude Include="..\..\..\src\userinterface\IAGLButton.h" />
     <ClInclude Include="..\..\..\src\userinterface\IAGLRangeSlider.h" />
-    <ClInclude Include="..\..\..\src\userinterface\IAPreferences.h" />
     <ClInclude Include="..\..\..\src\userinterface\IAProgressDialog.h" />
     <ClInclude Include="..\..\..\src\userinterface\IASceneView.h" />
     <ClInclude Include="..\..\..\src\userinterface\IAGUIMain.h" />
@@ -242,6 +251,7 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     <None Include="..\..\..\html\helpAbout.html" />
     <None Include="..\..\..\html\helpLicenses.html" />
     <None Include="..\..\..\html\index.html" />
+    <None Include="..\..\..\README.md" />
     <None Include="..\..\..\src\data\suzanne.stl" />
     <None Include="..\..\..\src\data\xyz.stl" />
     <CustomBuild Include="..\..\..\src\userinterface\IAGUIMain.fl">

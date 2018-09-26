@@ -39,6 +39,9 @@
     <Filter Include="src\toolpath">
       <UniqueIdentifier>{5da277f0-54f1-4c9b-8e5a-2ea3fd37e97d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\app">
+      <UniqueIdentifier>{f4f8196a-295c-4f84-8580-03cc1890a12e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\src\geometry\IAEdge.cpp">
@@ -125,9 +128,6 @@
     <ClCompile Include="..\..\..\src\toolpath\IADxfWriter.cpp">
       <Filter>src\toolpath</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\userinterface\IAPreferences.cpp">
-      <Filter>src\userInterface</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\src\printer\IAPrinterFDM.cpp">
       <Filter>src\printer</Filter>
     </ClCompile>
@@ -148,6 +148,21 @@
     </ClCompile>
     <ClCompile Include="..\..\..\src\userinterface\IAGLRangeSlider.cxx">
       <Filter>src\userInterface</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\app\IAError.cpp">
+      <Filter>src\app</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\app\IAPreferences.cpp">
+      <Filter>src\app</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\app\IAVersioneer.cpp">
+      <Filter>src\app</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\printer\IAPrinterList.cpp">
+      <Filter>src\printer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\printer\IASetting.cpp">
+      <Filter>src\printer</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -256,9 +271,6 @@
     <ClInclude Include="..\..\..\src\toolpath\IADxfWriter.h">
       <Filter>src\toolpath</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\src\userinterface\IAPreferences.h">
-      <Filter>src\userInterface</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\src\printer\IAPrinterFDM.h">
       <Filter>src\printer</Filter>
     </ClInclude>
@@ -280,6 +292,24 @@
     <ClInclude Include="..\..\..\src\userinterface\IAGLRangeSlider.h">
       <Filter>src\userInterface</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\src\app\IAError.h">
+      <Filter>src\app</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\app\IAMacros.h">
+      <Filter>src\app</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\app\IAPreferences.h">
+      <Filter>src\app</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\app\IAVersioneer.h">
+      <Filter>src\app</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\printer\IAPrinterList.h">
+      <Filter>src\printer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\printer\IASetting.h">
+      <Filter>src\printer</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\..\src\data\suzanne.stl">
@@ -297,6 +327,7 @@
     <None Include="..\..\..\html\helpLicenses.html">
       <Filter>html</Filter>
     </None>
+    <None Include="..\..\..\README.md" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\..\..\src\data\testcard1024.jpg">

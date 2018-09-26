@@ -8,7 +8,7 @@
 #define IA_VERSIONEER_H
 
 
-#include "IAGUIMain.h"
+#include "userinterface/IAGUIMain.h"
 
 
 class IAVersioneer : public IAVersioneerDialog

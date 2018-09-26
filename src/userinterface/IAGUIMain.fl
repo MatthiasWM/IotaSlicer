@@ -73,7 +73,7 @@ Function {createIotaAppWindow()} {open
           xywh {12 12 100 20} shortcut 0x40006f
         }
         Submenu {} {
-          label {Open Recent} open selected
+          label {Open Recent} open
           xywh {0 0 100 20} divider
         } {
           MenuItem wRecentFiles {
@@ -472,12 +472,12 @@ applySettings();}
       }
       Fl_Input wArchivePath {
         label {Archive Path}
-        callback {setProjectPath();}
+        callback {setArchivePath();}
         xywh {105 98 265 20} labelsize 12 textsize 12
       }
       Fl_Button {} {
         label {@fileopen}
-        callback {selectArchivePath();}
+        callback {selectArchivePath();} selected
         xywh {369 98 33 20} labelcolor 3
       }
       Fl_Button {} {

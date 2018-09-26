@@ -10,6 +10,16 @@
 #include <errno.h>
 
 
+#ifdef _WIN32
+FILE *popen(const char *name, const char *mode) {
+	return _popen(name, mode);
+}
+void pclose(FILE *f) {
+	_pclose(f);
+}
+#endif
+
+
 /**
  * \todo copy newly built FLTK binaries automatically:
  *      /Users/matt/dev/fltk-1.4.svn/build/Xcode/bin/Release/fluid.app
@@ -85,7 +95,7 @@ void IAVersioneer::saveSettings()
 {
     Fl_Preferences pref(Fl_Preferences::USER, "iota.matthiasm.com", "versioneer");
     pref.set("path", wBasePath->value());
-    pref.set("archivePath", wBasePath->value());
+    pref.set("archivePath", wArchivePath->value());
     Fl_Preferences vers( pref, "version");
     vers.set("major", atoi(wMajor->value()));
     vers.set("minor", atoi(wMinor->value()));
@@ -136,6 +146,28 @@ void IAVersioneer::createArchive()
     // xcodebuild -target IotaSlicer -configuration Release
     // xcodebuild -scheme Iota -showBuildSettings | grep TARGET_BUILD_DIR
     fl_message("Select the menu 'Product > Archive' in Xcode.\nArchive will be created in $HOME/Desktop");
+#endif
+#ifdef _WIN32
+	if (fl_choice(
+		"Select 'Release' Solution Configuration in VisualC and press F7\n"
+		"Archive will be created in the given directory.", "Cancel", "Continue", nullptr) == 1)
+	{
+		char buf[4096];
+		sprintf(buf, 
+			"cd %s/platforms/MSWindows/VisualStudio/Release && "
+			"powershell Compress-Archive "
+				"-Path IotaSlicer.exe "
+				"-DestinationPath %s/IotaSlicer_%d.%d.%d%s_MSWindows.zip "
+				"-Force",
+			wBasePath->value(), 
+			wArchivePath->value(), 
+			atoi(wMajor->value()),
+			atoi(wMinor->value()),
+			atoi(wBuild->value()),
+			wClass->value()
+			);
+		system(buf);
+	}
 #endif
 }
 
@@ -319,9 +351,9 @@ void IAVersioneer::updatePlatformFiles()
 #ifdef __APPLE__
     char rev[80];
     strcpy(rev, "0000000");
-    FILE *f = popen("/usr/bin/git rev-parse --short HEAD", "r");
+    FILE *f = ::popen("/usr/bin/git rev-parse --short HEAD", "r");
     fgets(rev, 78, f);
-    fclose(f);
+    ::pclose(f);
     rev[7] = 0;
 
     char filename[2048];
@@ -394,7 +426,7 @@ void IAVersioneer::system(const char *cmd)
                 wTerminal->append(buf);
             }
         }
-        ::fclose(f);
+        ::pclose(f);
     } else {
         wTerminal->printf("Failed: %s\n", strerror(errno));
     }

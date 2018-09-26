@@ -21,10 +21,14 @@
 
 const char *glIAErrorString(int err)
 {
+#ifdef __APPLE__
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
+#endif
     return (const char *)gluErrorString(err);
+#ifdef __APPLE__
 #pragma clang diagnostic pop
+#endif
 }
 
 #if 0
