@@ -71,6 +71,8 @@ IAPrinter::IAPrinter(const char *newName)
     setName(newName);
     loadSettings();
 
+    // TODO: add choice of profiles (and how to manage them)
+
     pSettingList.push_back(
         new IASettingFloatChoice(
             "layerHeight", "Layer Height:", pLayerHeight, "mm",

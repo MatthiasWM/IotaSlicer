@@ -148,6 +148,9 @@ IAPrinterFDM::IAPrinterFDM(const char *name)
 //        { nullptr } };
 //    pSettingList.push_back(
 //        new IASettingChoice("Color:", pColorMode, [this]{userChangedColorMode(); }, colorMenu));
+    
+//    pSettingList.push_back( new IASettingLabel( "test", "Test") );
+//    pSettingList.push_back( new IASettingLabel( "test/toast", "Whitebread") );
 }
 
 

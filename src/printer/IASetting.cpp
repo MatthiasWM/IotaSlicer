@@ -17,13 +17,17 @@
 
 
 
-IASetting::IASetting()
+IASetting::IASetting(const char *path, const char *label)
+:   pPath(strdup(path)),
+    pLabel(strdup(label))
 {
 }
 
 
 IASetting::~IASetting()
 {
+    if (pPath) ::free((void*)pPath);
+    if (pLabel) ::free((void*)pLabel);
 }
 
 
@@ -38,6 +42,48 @@ Fl_Menu_Item *IASetting::dup(Fl_Menu_Item const *src)
     Fl_Menu_Item *ret = (Fl_Menu_Item*)malloc(n*sizeof(Fl_Menu_Item));
     memmove(ret, src, n*sizeof(Fl_Menu_Item));
     return ret;
+}
+
+
+#ifdef __APPLE__
+#pragma mark -
+#endif
+//============================================================================//
+
+
+class IAFLLabel : public Fl_Group
+{
+public:
+    IAFLLabel(int x, int y, int w, int h, const char *label=nullptr)
+    :   Fl_Group(x, y, w, h, label) {
+        begin();
+        align(FL_ALIGN_INSIDE|FL_ALIGN_LEFT);
+        labelsize(11);
+        box(FL_FLAT_BOX);
+        end();
+    }
+    ~IAFLLabel() { }
+};
+
+
+IASettingLabel::IASettingLabel(const char *path, const char *label)
+:   IASetting(path, label)
+{
+}
+
+
+IASettingLabel::~IASettingLabel()
+{
+}
+
+
+void IASettingLabel::build()
+{
+    if (!pWidget) {
+        pWidget = new IAFLLabel(0, 0, 200, 13, pLabel);
+    }
+    pTreeItem = wSessionSettings->add(pPath);
+    pTreeItem->widget(pWidget);
 }
 
 
@@ -89,8 +135,7 @@ public:
 IASettingChoice::IASettingChoice(
     const char *path, const char *label, int &value,
     std::function<void()>&& cb, Fl_Menu_Item *menu)
-:   pPath(strdup(path)),
-    pLabel(strdup(label)),
+:   IASetting(path, label),
     pValue(value),
     pCallback(cb),
     pMenu(dup(menu)),
@@ -101,7 +146,6 @@ IASettingChoice::IASettingChoice(
 
 IASettingChoice::~IASettingChoice()
 {
-    if (pPath) ::free((void*)pPath);
     if (pMenu) ::free((void*)pMenu);
     if (pWidget) delete pWidget;
 }
@@ -165,8 +209,7 @@ public:
 IASettingFloatChoice::IASettingFloatChoice(
     const char *path, const char *label, double &value, const char *unit,
     std::function<void()>&& cb, Fl_Menu_Item *menu)
-:   pPath(strdup(path)),
-    pLabel(strdup(label)),
+:   IASetting(path, label),
     pValue(value),
     pUnit(strdup(unit)),
     pCallback(cb),
@@ -178,8 +221,6 @@ IASettingFloatChoice::IASettingFloatChoice(
 
 IASettingFloatChoice::~IASettingFloatChoice()
 {
-    if (pPath) ::free((void*)pPath);
-    if (pLabel) ::free((void*)pLabel);
     if (pUnit) ::free((void*)pUnit);
     if (pMenu) ::free((void*)pMenu);
     if (pWidget) delete pWidget;

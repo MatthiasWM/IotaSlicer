@@ -21,7 +21,7 @@ class Fl_Tree_Item;
 class IASetting
 {
 public:
-    IASetting();
+    IASetting(const char *path, const char *label);
     virtual ~IASetting();
     virtual void build() { }
 
@@ -31,7 +31,25 @@ public:
 
     Fl_Menu_Item *dup(Fl_Menu_Item const*);
 
+    char *pPath = nullptr;
+    char *pLabel = nullptr;
     Fl_Tree_Item *pTreeItem = nullptr;
+};
+
+
+class IAFLLabel;
+
+/**
+ * Manage a setting that appears in a tree view.
+ */
+class IASettingLabel : public IASetting
+{
+public:
+    IASettingLabel(const char *path, const char *label);
+    virtual ~IASettingLabel() override;
+    virtual void build() override;
+
+    IAFLLabel *pWidget = nullptr;
 };
 
 
@@ -51,8 +69,6 @@ public:
 
     static void wCallback(IAFLFloatChoice *w, IASettingFloatChoice *d);
 
-    char *pPath = nullptr;
-    char *pLabel = nullptr;
     double &pValue;
     char *pUnit = nullptr;
     std::function<void()> pCallback;
@@ -76,8 +92,6 @@ public:
 
     static void wCallback(IAFLChoice *w, IASettingChoice *d);
 
-    char *pPath = nullptr;
-    char *pLabel = nullptr;
     int &pValue;
     Fl_Menu_Item *pMenu = nullptr;
     std::function<void()> pCallback;
