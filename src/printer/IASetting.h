@@ -18,7 +18,6 @@ class Fl_Choice;
 class Fl_Tree_Item;
 
 
-
 class IASetting
 {
 public:
@@ -31,8 +30,12 @@ public:
     // FIXME: what actually happens whe the tree is cleared? Tree-Items deletd? Widget stay in Group? ???
 
     Fl_Menu_Item *dup(Fl_Menu_Item const*);
+
+    Fl_Tree_Item *pTreeItem = nullptr;
 };
 
+
+class IAFLFloatChoice;
 
 /**
  * Manage a setting that appears in a tree view.
@@ -40,21 +43,25 @@ public:
 class IASettingFloatChoice : public IASetting
 {
 public:
-    IASettingFloatChoice(const char *path, double &value, std::function<void()>&& cb, Fl_Menu_Item *menu);
+    IASettingFloatChoice(const char *path, const char *label, double &value,
+                         const char *unit, std::function<void()>&& cb,
+                         Fl_Menu_Item *menu);
     virtual ~IASettingFloatChoice() override;
     virtual void build() override;
 
-    static void wCallback(Fl_Input_Choice *w, IASettingFloatChoice *d);
+    static void wCallback(IAFLFloatChoice *w, IASettingFloatChoice *d);
 
     char *pPath = nullptr;
+    char *pLabel = nullptr;
     double &pValue;
-    Fl_Menu_Item *pMenu = nullptr;
+    char *pUnit = nullptr;
     std::function<void()> pCallback;
-    void *pUserData = nullptr;
-    Fl_Tree_Item *pTreeItem = nullptr;
-    Fl_Input_Choice *pWidget = nullptr;
+    Fl_Menu_Item *pMenu = nullptr;
+    IAFLFloatChoice *pWidget = nullptr;
 };
 
+
+class IAFLChoice;
 
 /**
  * Manage a setting that appears in a tree view.
@@ -62,19 +69,19 @@ public:
 class IASettingChoice : public IASetting
 {
 public:
-    IASettingChoice(const char *path, int &value, std::function<void()>&& cb, Fl_Menu_Item *menu);
+    IASettingChoice(const char *path, const char *label, int &value,
+                    std::function<void()>&& cb, Fl_Menu_Item *menu);
     virtual ~IASettingChoice() override;
     virtual void build() override;
 
-    static void wCallback(Fl_Choice *w, IASettingChoice *d);
+    static void wCallback(IAFLChoice *w, IASettingChoice *d);
 
     char *pPath = nullptr;
+    char *pLabel = nullptr;
     int &pValue;
     Fl_Menu_Item *pMenu = nullptr;
     std::function<void()> pCallback;
-    void *pUserData = nullptr;
-    Fl_Tree_Item *pTreeItem = nullptr;
-    Fl_Choice *pWidget = nullptr;
+    IAFLChoice *pWidget = nullptr;
 };
 
 

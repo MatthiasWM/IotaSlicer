@@ -140,10 +140,11 @@ void IAPrinterList::userSelectsPrinter(IAPrinter *p)
 void IAPrinterList::buildSessionSettings(IAPrinter *p)
 {
     wSessionSettings->showroot(0);
-    wSessionSettings->item_labelsize(11);
+    wSessionSettings->item_labelsize(13);
 //    wSessionSettings->spacing
-    wSessionSettings->linespacing(5);
-    wSessionSettings->item_draw_mode(FL_TREE_ITEM_DRAW_LABEL_AND_WIDGET);
+    wSessionSettings->linespacing(3);
+//    wSessionSettings->item_draw_mode(FL_TREE_ITEM_DRAW_LABEL_AND_WIDGET);
+    wSessionSettings->item_draw_mode(FL_TREE_ITEM_DRAW_DEFAULT);
     wSessionSettings->clear();
     wSessionSettings->begin();
     p->buildSessionSettings();

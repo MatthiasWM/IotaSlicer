@@ -72,12 +72,10 @@ IAPrinter::IAPrinter(const char *newName)
     loadSettings();
 
     pSettingList.push_back(
-                           new IASettingFloatChoice("Layer Height:",
-                                                    pLayerHeight,
-                                                    [this]{userChangedLayerHeight();},
-                                                    layerHeightMenu)
-                           );
-
+        new IASettingFloatChoice(
+            "layerHeight", "Layer Height:", pLayerHeight, "mm",
+            [this]{userChangedLayerHeight();},
+            layerHeightMenu) );
 }
 
 

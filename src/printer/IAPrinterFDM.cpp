@@ -109,38 +109,36 @@ IAPrinterFDM::IAPrinterFDM(const char *name)
 :   super(name),
     pMachineToolpath( this )
 {
-    pSettingList.push_back(new IASettingChoice("# of shells: ",
-                                               pNumShells,
-                                               [this]{userChangedNumShells();},
-                                               numShellsMenu ) );
+    pSettingList.push_back(
+        new IASettingChoice(
+            "NPerimiter", "# of perimeters: ", pNumShells,
+            [this]{userChangedNumShells();}, numShellsMenu ) );
 
-    pSettingList.push_back(new IASettingChoice("# of lids: ",
-                                               pNumLids,
-                                               [this]{userChangedNumLids();},
-                                               numLidsMenu ) );
+    pSettingList.push_back(
+        new IASettingChoice(
+            "NLids", "# of lids: ", pNumLids,
+            [this]{userChangedNumLids();}, numLidsMenu ) );
 
-    pSettingList.push_back(new IASettingChoice("lid type: ",
-                                               pLidType,
-                                               [this]{userChangedLidType();},
-                                               lidTypeMenu ) );
+    pSettingList.push_back(
+        new IASettingChoice(
+            "lidType", "lid type: ", pLidType,
+            [this]{userChangedLidType();}, lidTypeMenu ) );
 
-    pSettingList.push_back(new IASettingFloatChoice("infill density: ",
-                                               pInfillDensity,
-                                               [this]{userChangedInfillDensity();},
-                                               infillDensityMenuMenu ) );
+    pSettingList.push_back(
+        new IASettingFloatChoice(
+            "infillDensity", "infill density: ", pInfillDensity, "%",
+            [this]{userChangedInfillDensity();}, infillDensityMenuMenu ) );
 
-    pSettingList.push_back(new IASettingChoice("skirt: ",
-                                               pHasSkirt,
-                                               [this]{userChangedSkirt();},
-                                               skirtMenu ) );
+    pSettingList.push_back(
+        new IASettingChoice(
+            "skirt", "skirt: ", pHasSkirt,
+            [this]{userChangedSkirt();}, skirtMenu ) );
 
-    pSettingList.push_back(new IASettingFloatChoice("nozzle diameter: ",
-                                                    pNozzleDiameter,
-                                                    [this]{userChangedNozzleDiameter();},
-                                                    nozzleDiameterMenu ) );
+    pSettingList.push_back(
+        new IASettingFloatChoice(
+            "nozzleDiameter", "nozzle diameter: ", pNozzleDiameter, "mm",
+            [this]{userChangedNozzleDiameter();}, nozzleDiameterMenu ) );
 
-
-    // Nozzle diameter
     // Extrusion width
     // Extrusion speed
 
@@ -299,7 +297,7 @@ void IAPrinterFDM::sliceAll()
                 if (lidPath) tp->add(lidPath.get(), 20, 0);
             } else {
                 // CONCENTRIC (nicer for lids)
-                /** \bug limit this to the widtha and hight of the build platform divided by the extrsuion width */
+                /** \bug limit this to the width and hight of the build platform divided by the extrsuion width */
                 int k;
                 for (k=0;k<300;k++) { // FIXME
                     auto tp1 = lid.toolpathFromLassoAndContract(z, pNozzleDiameter);
