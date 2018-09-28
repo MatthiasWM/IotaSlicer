@@ -95,7 +95,7 @@ public:
     void userMenuSliceSliceAll();
     // - slice selected
     // ---- menuSettings
-    // - ..
+    void userMenuSettingsManagePrinter();
     // ---- menu Help
     void userMenuHelpVersioneer();
     void userMenuHelpAbout();

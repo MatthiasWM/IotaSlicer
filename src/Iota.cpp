@@ -213,7 +213,17 @@ void IAIota::userMenuSliceSliceAll()
 
 // ---- menu Settings ----------------------------------------------------------
 
-// nothing yet
+
+void IAIota::userMenuSettingsManagePrinter()
+{
+    if (!wSettingsWindow) {
+        wSettingsWindow = createSettingWindow();
+    }
+    // TODO: fill with current settings
+    // TODO: choose printer teb
+    wSettingsWindow->show();
+}
+
 
 // ---- menu Help --------------------------------------------------------------
 

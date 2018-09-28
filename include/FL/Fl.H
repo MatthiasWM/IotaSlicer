@@ -1,5 +1,5 @@
 //
-// "$Id: Fl.H 12930 2018-05-24 10:58:47Z manolo $"
+// "$Id: Fl.H 13013 2018-08-09 11:51:38Z manolo $"
 //
 // Main header file for the Fast Light Tool Kit (FLTK).
 //
@@ -252,6 +252,10 @@ public:
      /// if the GTK library is available on the platform (linux/unix only).
      /// When switched off, GTK file dialogs aren't used even if the GTK library is available.
     OPTION_FNFC_USES_GTK,
+    /// When switched on (default), the library shows in a transient yellow window the zoom factor
+    /// value.
+    /// When switched off, no such window gets displayed.
+    OPTION_SHOW_SCALING,
       // don't change this, leave it always as the last element
       /// For internal use only.
     OPTION_LAST
@@ -989,7 +993,20 @@ int main() {
 
 
 /** \defgroup  fl_screen  Screen functions
-	fl global screen functions declared in <FL/Fl.H>
+ Fl global screen functions declared in <FL/Fl.H>.
+ FLTK supports high-DPI screens using a screen scaling factor.
+ The scaling factor is initialized by the library to a value
+ based on information obtained from the OS. If this initial value
+ is not satisfactory, the FLTK_SCALING_FACTOR environment variable
+ can be set to a value FLTK will use as initial scaling factor.
+ The scaling factor value can be further changed at runtime
+ by typing ctrl-/+/-/0/ (cmd-/+/-/0/ under MacOS). FLTK sends the
+ \ref FL_ZOOM_EVENT when the factor value is changed, to which a
+ callback can be associated with Fl::add_handler().
+ By default, FLTK also displays the new scaling factor value in a yellow, transient window.
+ This can be changed with option Fl::OPTION_SHOW_SCALING.
+ The scaling factor value is programmatically get and set with the Fl::screen_scale() functions.
+ 
      @{ */
   static int x(); // via screen driver
   static int y(); // via screen driver
@@ -1009,6 +1026,9 @@ int main() {
   static void screen_work_area(int &X, int &Y, int &W, int &H, int n); // via screen driver
   static void screen_work_area(int &X, int &Y, int &W, int &H); // via screen driver
   static float screen_scale(int n); // via screen driver
+  static void screen_scale(int n, float factor); // via screen driver
+  static int screen_scaling_supported();
+
 /**   @} */
 
 
@@ -1428,5 +1448,5 @@ public:
 #endif // !Fl_H
 
 //
-// End of "$Id: Fl.H 12930 2018-05-24 10:58:47Z manolo $".
+// End of "$Id: Fl.H 13013 2018-08-09 11:51:38Z manolo $".
 //

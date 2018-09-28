@@ -37,6 +37,8 @@ void IAVersioneer::loadSettings()
     wBasePath->value(buf);
     pref.get("archivePath", buf, "/Users/matt/Desktop/", 2046);
     wArchivePath->value(buf);
+    pref.get("FLTKPath", buf, "/Users/matt/dev/fltk-1.4.svn", 2046);
+    wFLTKPath->value(buf);
     Fl_Preferences vers( pref, "version");
     vers.get("major", v, 0);
     sprintf(buf, "%d", v);
@@ -96,6 +98,7 @@ void IAVersioneer::saveSettings()
     Fl_Preferences pref(Fl_Preferences::USER, "iota.matthiasm.com", "versioneer");
     pref.set("path", wBasePath->value());
     pref.set("archivePath", wArchivePath->value());
+    pref.set("FLTKPath", wFLTKPath->value());
     Fl_Preferences vers( pref, "version");
     vers.set("major", atoi(wMajor->value()));
     vers.set("minor", atoi(wMinor->value()));
@@ -118,6 +121,60 @@ void IAVersioneer::selectProjectPath()
         wBasePath->value(path);
         wBasePath->do_callback();
     }
+}
+
+
+void IAVersioneer::setFLTKPath()
+{
+    Fl_Preferences pref(Fl_Preferences::USER, "iota.matthiasm.com", "versioneer");
+    pref.set("FLTKPath", wFLTKPath->value());
+}
+
+
+void IAVersioneer::selectFLTKPath()
+{
+    const char *path = fl_dir_chooser("Choose the FLTK root Directory",
+                                      wFLTKPath->value(),
+                                      0);
+    if (path) {
+        wFLTKPath->value(path);
+        wFLTKPath->do_callback();
+    }
+}
+
+
+void IAVersioneer::updateFLTK()
+{
+    if (fl_choice(
+                  "Did you build all FLTK libraries and Fluid\n"
+                  "in Debug *and* Release mode?\n\n"
+                  "Set MacOS Deployment Target to 10.9!",
+                  "Cancel", "Continue", nullptr) == 0)
+        return;
+
+    chdir(wBasePath->value());
+#ifdef __APPLE__
+    system("mkdir platforms");
+    system("mkdir platforms/MacOS");
+    system("mkdir platforms/MacOS/bin");
+    systemf("cp %s/build/Xcode/bin/Debug/fluid.app/Contents/MacOS/fluid platforms/MacOS/bin",
+            wFLTKPath->value());
+    // TODO: separate debug and release builds
+    systemf("cp %s/build/Xcode/lib/Debug/lib* platforms/MacOS/lib",
+            wFLTKPath->value());
+    system("mkdir include");
+    systemf("cp -R %s/FL include", wFLTKPath->value());
+    systemf("cp %s/build/Xcode/FL/abi-version.h include/FL", wFLTKPath->value());
+    system("mkdir include/libjpeg");
+    system("mkdir include/libpng");
+    systemf("cp %s/jpeg/*.h include/libjpeg/", wFLTKPath->value());
+    systemf("cp %s/jpeg/*.h include/libjpeg/", wFLTKPath->value());
+    systemf("cp %s/png/*.h include/libpng/", wFLTKPath->value());
+#endif
+#ifdef _WIN32
+#endif
+#ifdef __LINUX__
+#endif
 }
 
 
@@ -435,6 +492,16 @@ IAVersioneer::~IAVersioneer()
 {
 }
 
+
+void IAVersioneer::systemf(const char *fmt, ...)
+{
+    char buf[4*FL_PATH_MAX];
+    va_list ap;
+    va_start(ap, fmt);
+    vsnprintf(buf, sizeof(buf), fmt, ap);
+    va_end(ap);
+    system(buf);
+}
 
 void IAVersioneer::system(const char *cmd)
 {

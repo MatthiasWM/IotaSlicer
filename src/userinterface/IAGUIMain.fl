@@ -225,7 +225,8 @@ Function {createIotaAppWindow()} {open
         }
         MenuItem {} {
           label {Manage Printers...}
-          xywh {0 0 100 20} deactivate
+          callback {Iota.userMenuSettingsManagePrinter();}
+          xywh {0 0 100 20} shortcut 0x40002c
         }
         MenuItem {} {
           label {Manage Materials...}
@@ -390,13 +391,105 @@ Function {createIotaAboutWindow()} {} {
   }
 }
 
+Function {createSettingWindow()} {open
+} {
+  Fl_Window wSettingsWindow {
+    label Settings
+    comment {TODO: save position and size} open
+    xywh {548 249 640 400} type Double resizable modal size_range {640 320 640 2048} visible
+  } {
+    Fl_Pack {} {
+      comment {TODO: implement the tab style selection of panes} open
+      xywh {0 0 640 48} type HORIZONTAL
+    } {
+      Fl_Group {} {
+        label General
+        comment {// TODO: add general settings below} open
+        xywh {0 2 50 44} box FLAT_BOX labelsize 10 align 18
+      } {
+        Fl_Button {} {
+          label {@filesaveas}
+          comment {TODO: find a new icon}
+          xywh {0 2 50 36} box NO_BOX labelsize 20 labelcolor 40 align 16
+        }
+      }
+      Fl_Group {} {
+        label {3D Printer} open
+        xywh {50 2 50 44} box FLAT_BOX color 47 labelsize 10 align 18
+      } {
+        Fl_Button {} {
+          label {@fileprint}
+          comment {TODO: find a new icon}
+          xywh {50 2 50 36} box NO_BOX labelsize 20 labelcolor 40 align 16
+        }
+      }
+      Fl_Group {} {
+        label Material open
+        xywh {100 2 50 44} box FLAT_BOX labelsize 10 align 18
+      } {
+        Fl_Button {} {
+          label {@circle}
+          comment {TODO: find a new icon}
+          xywh {100 2 50 36} box NO_BOX labelsize 20 labelcolor 40 align 16
+        }
+      }
+    }
+    Fl_Box {} {
+      xywh {0 48 640 4} box DOWN_BOX
+    }
+    Fl_Group {} {open
+      xywh {0 52 640 348} box FLAT_BOX color 51 resizable
+    } {
+      Fl_Group {} {open
+        xywh {9 62 151 328} box THIN_DOWN_BOX color 54
+      } {
+        Fl_Box {} {
+          label {3D Printer}
+          xywh {11 63 148 20} box THIN_UP_BOX color 52 labelsize 13
+        }
+        Fl_Browser {} {
+          comment {TODO: fill with a list of available printers}
+          xywh {11 83 148 286} box FLAT_BOX color 55 resizable
+        }
+        Fl_Group {} {open
+          xywh {11 369 148 20} box THIN_UP_BOX color 52
+        } {
+          Fl_Button {} {
+            label {+}
+            comment {TODO: popup menu to duplicate or choose from template}
+            xywh {12 370 18 18} box NO_BOX color 52
+          }
+          Fl_Button {} {
+            label {-}
+            comment {TODO: just delete the selected printer (undo?)}
+            xywh {30 370 18 18} box NO_BOX color 52
+          }
+          Fl_Button {} {
+            label {@-22>}
+            comment {TODO: ICON, choose form internet templates? }
+            xywh {48 370 18 18} box NO_BOX color 52 labelcolor 42
+          }
+        }
+      }
+      Fl_Group {} {open
+        xywh {170 62 460 328} box THIN_DOWN_BOX color 54 resizable
+      } {
+        Fl_Tree {} {
+          comment {TODO: fill with printer settings} selected
+          xywh {172 64 456 324} box FLAT_BOX color 55 resizable
+        }
+      }
+    }
+  }
+}
+
 class IAVersioneerDialog {open
 } {
-  Function {createWindow()} {open return_type {virtual Fl_Double_Window *}
+  Function {createWindow()} {return_type {virtual Fl_Double_Window *}
   } {
     Fl_Window wVersionWindow {
       label {Versioneer for Iota Slicer} open
-      xywh {443 389 532 389} type Double visible
+      xywh {443 389 532 431} type Double visible
     } {
       Fl_Input wBasePath {
         label {IotaBase Path}
@@ -467,18 +560,34 @@ applySettings();}
         xywh {420 67 90 24} labelsize 12
       }
       Fl_Text_Display wTerminal {
-        xywh {10 212 510 164}
+        xywh {12 244 510 164}
         class Fl_Simple_Terminal
       }
-      Fl_Input wArchivePath {
-        label {Archive Path}
-        callback {setArchivePath();}
-        xywh {105 98 265 20} labelsize 12 textsize 12
+      Fl_Input wFLTKPath {
+        label {Path to FLTK}
+        callback {setFLTKPath();}
+        xywh {107 99 265 20} labelsize 12 textsize 12
       }
       Fl_Button {} {
         label {@fileopen}
-        callback {selectArchivePath();} selected
-        xywh {369 98 33 20} labelcolor 3
+        callback {selectFLTKPath();}
+        xywh {371 99 33 20} labelcolor 3
+      }
+      Fl_Button {} {
+        label {Update FLTK}
+        callback {saveSettings();
+updateFLTK();}
+        xywh {422 97 90 24} labelsize 12
+      }
+      Fl_Input wArchivePath {
+        label {Archive Path}
+        callback {setProjectPath();}
+        xywh {107 130 265 20} labelsize 12 textsize 12
+      }
+      Fl_Button {} {
+        label {@fileopen}
+        callback {selectArchivePath();}
+        xywh {371 130 33 20} labelcolor 3
       }
       Fl_Button {} {
         label {Create Archive}
@@ -488,18 +597,18 @@ createArchive();
 // pack into zip archive
 // move to release folder
 // ? upload}
-        xywh {420 96 90 24} labelsize 12
+        xywh {422 128 90 24} labelsize 12
       }
       Fl_Button {} {
         label {git tag && push}
         callback {saveSettings();
 gitTag();}
-        xywh {420 128 90 24} labelsize 12
+        xywh {422 160 90 24} labelsize 12
       }
       Fl_Button {} {
         label {Close Dialog}
         callback {wVersionWindow->hide();}
-        xywh {420 159 90 24} labelsize 12
+        xywh {422 191 90 24} labelsize 12
       }
     }
     code {return wVersionWindow;} {}
@@ -525,6 +634,18 @@ gitTag();}
     code {} {}
   }
   Function {saveSettings()} {protected return_type {virtual void}
+  } {
+    code {} {}
+  }
+  Function {setFLTKPath()} {protected return_type {virtual void}
+  } {
+    code {} {}
+  }
+  Function {selectFLTKPath()} {protected return_type {virtual void}
+  } {
+    code {} {}
+  }
+  Function {updateFLTK()} {protected return_type {virtual void}
   } {
     code {} {}
   }

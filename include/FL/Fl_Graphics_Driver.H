@@ -1,5 +1,5 @@
 //
-// "$Id: Fl_Graphics_Driver.H 12991 2018-07-10 10:51:02Z manolo $"
+// "$Id: Fl_Graphics_Driver.H 13011 2018-08-08 20:08:10Z manolo $"
 //
 // Definition of classes Fl_Graphics_Driver, Fl_Surface_Device, Fl_Display_Device
 // for the Fast Light Tool Kit (FLTK).
@@ -158,8 +158,6 @@ public:
   } driver_feature;
 
 protected:
-  /** Sets the current value of the scaling factor */
-  virtual void scale(float f) { scale_ = f; }
   int fl_clip_state_number; ///< For internal use by FLTK
   static const matrix m0; ///< For internal use by FLTK
   Fl_Font font_; ///< current font
@@ -256,6 +254,8 @@ public:
   static Fl_Graphics_Driver &default_driver();
   /** Current scale factor between FLTK and drawing units: drawing = FLTK * scale() */
   float scale() { return scale_; }
+  /** Sets the current value of the scaling factor */
+  virtual void scale(float f) { scale_ = f; }
   /** Return whether the graphics driver can do alpha blending */
   virtual char can_do_alpha_blending() { return 0; }
   // --- implementation is in src/fl_rect.cxx which includes src/drivers/xxx/Fl_xxx_Graphics_Driver_rect.cxx
@@ -553,5 +553,5 @@ protected:
  */
 
 //
-// End of "$Id: Fl_Graphics_Driver.H 12991 2018-07-10 10:51:02Z manolo $".
+// End of "$Id: Fl_Graphics_Driver.H 13011 2018-08-08 20:08:10Z manolo $".
 //

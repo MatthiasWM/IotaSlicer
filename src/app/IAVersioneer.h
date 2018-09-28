@@ -25,6 +25,9 @@ protected:
     virtual void majorPlus() override;
     virtual void minorPlus() override;
     virtual void buildPlus() override;
+    virtual void setFLTKPath() override;
+    virtual void selectFLTKPath() override;
+    virtual void updateFLTK() override;
     virtual void setArchivePath() override;
     virtual void selectArchivePath() override;
     virtual void createArchive() override;
@@ -39,6 +42,7 @@ protected:
     void updatePlatformFiles();
 
     void system(const char *);
+    void systemf(const char *, ...);
 
     Fl_Double_Window *pDialog = nullptr;
 };
