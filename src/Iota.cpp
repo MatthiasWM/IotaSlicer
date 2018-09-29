@@ -220,6 +220,18 @@ void IAIota::userMenuSettingsManagePrinter()
         wSettingsWindow = createSettingWindow();
     }
     // TODO: fill with current settings
+    wSettingsPrinterList->add("M3D Quad Crane");
+    wSettingsPrinterList->add("DaVinci 2.0 Due");
+
+    wSettingsPrinterProperties->add("Print Bed");
+    wSettingsPrinterProperties->add("Print Bed/Rectangular");
+    wSettingsPrinterProperties->add("Print Bed/Rectangular/Width");
+    wSettingsPrinterProperties->add("Print Bed/Rectangular/Depth");
+    wSettingsPrinterProperties->add("Print Bed/Rectangular/Height");
+    wSettingsPrinterProperties->add("Nozzle 1");
+    wSettingsPrinterProperties->add("Nozzle 1/Diameter 0.35");
+    wSettingsPrinterProperties->add("Nozzle 1/Transport 1");
+    wSettingsPrinterProperties->add("Nozzle 1/Transport 1/Trim 0.89");
     // TODO: choose printer teb
     wSettingsWindow->show();
 }

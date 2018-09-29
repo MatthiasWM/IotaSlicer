@@ -447,9 +447,9 @@ Function {createSettingWindow()} {open
           label {3D Printer}
           xywh {11 63 148 20} box THIN_UP_BOX color 52 labelsize 13
         }
-        Fl_Browser {} {
+        Fl_Browser wSettingsPrinterList {
           comment {TODO: fill with a list of available printers}
-          xywh {11 83 148 286} box FLAT_BOX color 55 resizable
+          xywh {11 83 148 286} box FLAT_BOX color 55 textsize 12 resizable
         }
         Fl_Group {} {open
           xywh {11 369 148 20} box THIN_UP_BOX color 52
@@ -474,7 +474,7 @@ Function {createSettingWindow()} {open
       Fl_Group {} {open
         xywh {170 62 460 328} box THIN_DOWN_BOX color 54 resizable
       } {
-        Fl_Tree {} {
+        Fl_Tree wSettingsPrinterProperties {
           comment {TODO: fill with printer settings} selected
           xywh {172 64 456 324} box FLAT_BOX color 55 resizable
         }
