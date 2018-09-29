@@ -59,7 +59,8 @@ public:
     void setOutputPath(const char *name);
     const char *outputPath();
 
-    void buildSessionSettings();
+    void buildPrinterSettings(Fl_Tree*);
+    void buildSceneSettings(Fl_Tree*);
 
     IAVector3d pBuildVolume = { 214.0, 214.0, 230.0 };
     IAVector3d pBuildVolumeMin = { 0.0, 0.0, 0.0 };
@@ -76,7 +77,8 @@ protected:
 
     bool pFirstWrite = true;
 
-    IASettingList pSettingList;
+    IASettingList pPrinterSettingList;
+    IASettingList pSceneSettingList;
 
 private:
     void userChangedLayerHeight();

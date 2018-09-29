@@ -109,32 +109,32 @@ IAPrinterFDM::IAPrinterFDM(const char *name)
 :   super(name),
     pMachineToolpath( this )
 {
-    pSettingList.push_back(
+    pSceneSettingList.push_back(
         new IASettingChoice(
             "NPerimiter", "# of perimeters: ", pNumShells,
             [this]{userChangedNumShells();}, numShellsMenu ) );
 
-    pSettingList.push_back(
+    pSceneSettingList.push_back(
         new IASettingChoice(
             "NLids", "# of lids: ", pNumLids,
             [this]{userChangedNumLids();}, numLidsMenu ) );
 
-    pSettingList.push_back(
+    pSceneSettingList.push_back(
         new IASettingChoice(
             "lidType", "lid type: ", pLidType,
             [this]{userChangedLidType();}, lidTypeMenu ) );
 
-    pSettingList.push_back(
+    pSceneSettingList.push_back(
         new IASettingFloatChoice(
             "infillDensity", "infill density: ", pInfillDensity, "%",
             [this]{userChangedInfillDensity();}, infillDensityMenuMenu ) );
 
-    pSettingList.push_back(
+    pSceneSettingList.push_back(
         new IASettingChoice(
             "skirt", "skirt: ", pHasSkirt,
             [this]{userChangedSkirt();}, skirtMenu ) );
 
-    pSettingList.push_back(
+    pSceneSettingList.push_back(
         new IASettingFloatChoice(
             "nozzleDiameter", "nozzle diameter: ", pNozzleDiameter, "mm",
             [this]{userChangedNozzleDiameter();}, nozzleDiameterMenu ) );

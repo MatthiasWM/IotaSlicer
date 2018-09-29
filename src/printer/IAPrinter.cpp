@@ -71,9 +71,20 @@ IAPrinter::IAPrinter(const char *newName)
     setName(newName);
     loadSettings();
 
+
+    pPrinterSettingList.push_back( new IASettingLabel("buildVolume", "Buid Volume:") );
+    pPrinterSettingList.push_back( new IASettingLabel("buildVolume/printable", "Printable Area:") );
+    pPrinterSettingList.push_back( new IASettingFloat("buildVolume/printable/xMin", "Minimal X:", pLayerHeight, "mm",
+                                  [this]{userChangedLayerHeight();} ) );
+    pPrinterSettingList.push_back(
+        new IASettingFloatChoice(
+                                 "diagonal", "Build Volume Diagonal:", pLayerHeight, "mm",
+                                  [this]{userChangedLayerHeight();},
+                                  layerHeightMenu) );
+
     // TODO: add choice of profiles (and how to manage them)
 
-    pSettingList.push_back(
+    pSceneSettingList.push_back(
         new IASettingFloatChoice(
             "layerHeight", "Layer Height:", pLayerHeight, "mm",
             [this]{userChangedLayerHeight();},
@@ -137,12 +148,37 @@ void IAPrinter::saveSettings()
 /**
  * Create the Treeview items for setting up the printout for this session.
  */
-void IAPrinter::buildSessionSettings()
+void IAPrinter::buildSceneSettings(Fl_Tree *treeWidget)
 {
+    treeWidget->showroot(0);
+    treeWidget->item_labelsize(13);
+    treeWidget->linespacing(3);
+    treeWidget->item_draw_mode(FL_TREE_ITEM_DRAW_DEFAULT);
+    treeWidget->clear();
+    treeWidget->begin();
     wSessionSettings->begin();
-    for (auto &s: pSettingList) {
-        s->build();
+    for (auto &s: pSceneSettingList) {
+        s->build(treeWidget, IASetting::kSetting);
     }
+    treeWidget->end();
+}
+
+
+/**
+ * Create the Treeview items for editing the printer properties.
+ */
+void IAPrinter::buildPrinterSettings(Fl_Tree *treeWidget)
+{
+    treeWidget->showroot(0);
+    treeWidget->item_labelsize(13);
+    treeWidget->linespacing(3);
+    treeWidget->item_draw_mode(FL_TREE_ITEM_DRAW_DEFAULT);
+    treeWidget->clear();
+    treeWidget->begin();
+    for (auto &s: pPrinterSettingList) {
+        s->build(treeWidget, IASetting::kProperty);
+    }
+    treeWidget->end();
 }
 
 

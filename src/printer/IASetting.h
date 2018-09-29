@@ -15,15 +15,17 @@
 struct Fl_Menu_Item;
 class Fl_Input_Choice;
 class Fl_Choice;
+class Fl_Tree;
 class Fl_Tree_Item;
 
 
 class IASetting
 {
 public:
+    typedef enum { kProperty, kSetting } Type;
     IASetting(const char *path, const char *label);
     virtual ~IASetting();
-    virtual void build() { }
+    virtual void build(Fl_Tree*, Type) { }
 
     // write to preferences
     // read from preferences
@@ -47,9 +49,31 @@ class IASettingLabel : public IASetting
 public:
     IASettingLabel(const char *path, const char *label);
     virtual ~IASettingLabel() override;
-    virtual void build() override;
+    virtual void build(Fl_Tree*, Type) override;
 
     IAFLLabel *pWidget = nullptr;
+};
+
+
+class IAFLFloat;
+
+/**
+ * Manage a setting that appears in a tree view.
+ */
+class IASettingFloat : public IASetting
+{
+public:
+    IASettingFloat(const char *path, const char *label, double &value,
+                         const char *unit, std::function<void()>&& cb);
+    virtual ~IASettingFloat() override;
+    virtual void build(Fl_Tree*, Type) override;
+
+    static void wCallback(IAFLFloat *w, IASettingFloat *d);
+
+    double &pValue;
+    char *pUnit = nullptr;
+    std::function<void()> pCallback;
+    IAFLFloat *pWidget = nullptr;
 };
 
 
@@ -65,7 +89,7 @@ public:
                          const char *unit, std::function<void()>&& cb,
                          Fl_Menu_Item *menu);
     virtual ~IASettingFloatChoice() override;
-    virtual void build() override;
+    virtual void build(Fl_Tree*, Type) override;
 
     static void wCallback(IAFLFloatChoice *w, IASettingFloatChoice *d);
 
@@ -88,7 +112,7 @@ public:
     IASettingChoice(const char *path, const char *label, int &value,
                     std::function<void()>&& cb, Fl_Menu_Item *menu);
     virtual ~IASettingChoice() override;
-    virtual void build() override;
+    virtual void build(Fl_Tree*, Type) override;
 
     static void wCallback(IAFLChoice *w, IASettingChoice *d);
 
