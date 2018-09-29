@@ -54,9 +54,9 @@ const int kFramebufferSize = 4096;
  * Creat the Iota Slicer application.
  */
 IAIota::IAIota()
-:   pCurrentPrinter( nullptr ),
-    pPrinterList( wPrinterSelectionMenu )
 {
+    pPrinterPrototypeList.generatePrototypes();
+    pCustomPrinterList.loadCustomPrinters(pCurrentPrinter);
 }
 
 
@@ -264,6 +264,55 @@ void IAIota::userMenuHelpAbout()
 // =============================================================================
 
 
+/**
+ * User clicked into the printer list and selected a printer to edit.
+ *
+ * This saves the current printer settings and fills the setting of another
+ * printer into the preferences view.
+ *
+ * \todo implement printer select callback
+ */
+void IAIota::userDialogSettingPrinterSelect()
+{
+}
+
+
+/**
+ * User clicked the [+] button in the Printer panel of the setting dialog.
+ *
+ * This pops up a menu that lets the user choose to duplicate the currently
+ * selected printer or duplicate any of the default printer types.
+ *
+ * \todo implement printer [+] callback
+ */
+void IAIota::userDialogSettingPrinterAdd()
+{
+    Fl_Menu_Item *menu = pPrinterPrototypeList.createPrinterAddMenu();
+    const Fl_Menu_Item *m = menu->popup(wSettingPrinterAdd->x(), wSettingPrinterAdd->y()+wSettingPrinterAdd->h());
+    /** \todo Duplicate the selected printer and add it to the list */
+    ::free((void*)menu);
+}
+
+
+/**
+ * User clicked the [-] button in the Printer panel of the setting dialog.
+ *
+ * If a printer is selected, this pops up a warning dialog to confirm the
+ * deletion of a printer, and deletes the printer if confirmed.
+ *
+ * \todo implement printer [-] callback
+ */
+void IAIota::userDialogSettingPrinterRemove()
+{
+}
+
+
+#ifdef __APPLE__
+#pragma mark -
+#endif
+// =============================================================================
+
+
 
 /**
  * Load a list of files from mass storage.
@@ -406,8 +455,6 @@ int main (int argc, char **argv)
     Fl::set_color(FL_BACKGROUND_COLOR, 0xeeeeee00);
     Fl::use_high_res_GL(1);
 
-    Iota.pCurrentPrinter = Iota.pPrinterList.defaultPrinter();
-
     Iota.gMainWindow = createIotaAppWindow();
     {
         char buf[80];
@@ -423,12 +470,12 @@ int main (int argc, char **argv)
                                  Iota.gPreferences.pMainWindowW,
                                  Iota.gPreferences.pMainWindowH);
     }
+    wPrinterName->copy_label(Iota.pCurrentPrinter->name());
+    Iota.pCurrentPrinter->buildSessionSettings(wSessionSettings);
     Iota.gMainWindow->show();
     Fl::flush();
 
-    Iota.pPrinterList.userSelectsPrinter(Iota.pPrinterList.defaultPrinter());
     Iota.loadDemoFiles();
-
     gSceneView->redraw();
 
     return Fl::run();

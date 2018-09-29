@@ -219,10 +219,6 @@ Function {createIotaAppWindow()} {open
         label Settings open
         xywh {0 0 100 20}
       } {
-        MenuItem wPrinterSelectionMenu {
-          label {Select Printer}
-          xywh {12 12 100 20}
-        }
         MenuItem {} {
           label {Manage Printers...}
           callback {Iota.userMenuSettingsManagePrinter();}
@@ -448,26 +444,27 @@ Function {createSettingWindow()} {open
           xywh {11 63 148 20} box THIN_UP_BOX color 52 labelsize 13
         }
         Fl_Browser wSettingsPrinterList {
+          callback {Iota.userDialogSettingPrinterSelect();}
           comment {TODO: fill with a list of available printers}
           xywh {11 83 148 286} box FLAT_BOX color 55 textsize 12 resizable
         }
         Fl_Group {} {open
           xywh {11 369 148 20} box THIN_UP_BOX color 52
         } {
-          Fl_Button {} {
+          Fl_Button wSettingPrinterAdd {
             label {+}
-            comment {TODO: popup menu to duplicate or choose from template}
+            callback {Iota.userDialogSettingPrinterAdd();} selected
             xywh {12 370 18 18} box NO_BOX color 52
           }
           Fl_Button {} {
             label {-}
-            comment {TODO: just delete the selected printer (undo?)}
+            callback {Iota.userDialogSettingPrinterAdd();}
             xywh {30 370 18 18} box NO_BOX color 52
           }
           Fl_Button {} {
             label {@-22>}
             comment {TODO: ICON, choose form internet templates? }
-            xywh {48 370 18 18} box NO_BOX color 52 labelcolor 42
+            xywh {48 370 18 18} box NO_BOX color 52 labelcolor 42 hide
           }
         }
       }
@@ -475,7 +472,6 @@ Function {createSettingWindow()} {open
         xywh {170 62 460 328} box THIN_DOWN_BOX color 54 resizable
       } {
         Fl_Tree wSettingsPrinterProperties {
-          comment {TODO: fill with printer settings} selected
           xywh {172 64 456 324} box FLAT_BOX color 55 resizable
         }
       }

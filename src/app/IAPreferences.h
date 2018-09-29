@@ -27,6 +27,7 @@ public:
     void updateRecentfilesMenu();
     void addRecentFile(const char *filename);
     void clearRecentFileList();
+    const char *printerDefinitionsPath() const;
 
     /** main window position, or -1 if undefined. */
     int pMainWindowX = -1;
@@ -44,6 +45,7 @@ public:
     
     static const int pNRecentFiles = 10;
     char *pRecentFile[pNRecentFiles] = { 0 };
+    char *pPrinterDefinitionsPath = nullptr;
 };
 
 

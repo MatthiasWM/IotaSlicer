@@ -101,6 +101,10 @@ IAPrinter::~IAPrinter()
         ::free((void*)pName);
     if (pOutputPath)
         ::free((void*)pOutputPath);
+    for (auto &s: pPrinterSettingList)
+        delete s;
+    for (auto &s: pSceneSettingList)
+        delete s;
 }
 
 
@@ -148,7 +152,7 @@ void IAPrinter::saveSettings()
 /**
  * Create the Treeview items for setting up the printout for this session.
  */
-void IAPrinter::buildSceneSettings(Fl_Tree *treeWidget)
+void IAPrinter::buildSessionSettings(Fl_Tree *treeWidget)
 {
     treeWidget->showroot(0);
     treeWidget->item_labelsize(13);

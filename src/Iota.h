@@ -100,6 +100,11 @@ public:
     void userMenuHelpVersioneer();
     void userMenuHelpAbout();
 
+    // -------- settings dialog callbacks
+    void userDialogSettingPrinterSelect();
+    void userDialogSettingPrinterAdd();
+    void userDialogSettingPrinterRemove();
+
     // --------
     void loadDemoFiles();
     void loadAnyFile(const char *list);
@@ -126,7 +131,9 @@ public:
     /// the current 3d printer
     IAPrinter *pCurrentPrinter = nullptr;
     /// a list of available printers
-    IAPrinterList pPrinterList;
+    IAPrinterList pCustomPrinterList;
+    /// a list of available printer types
+    IAPrinterList pPrinterPrototypeList;
     /// show the slice in the 3d view
     /// \todo move to UI class
     bool gShowSlice;

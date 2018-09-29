@@ -16,7 +16,13 @@
  */
 IAPreferences::IAPreferences()
 {
+    char buf[FL_PATH_MAX];
+
     Fl_Preferences pPrefs(Fl_Preferences::USER, "com.matthiasm.iota", "IotaSlicer");
+    buf[0] = 0;
+    pPrefs.getUserdataPath(buf, sizeof(buf));
+    strcat(buf, "printerDefinitions/");
+    pPrinterDefinitionsPath = strdup(buf);
 
     Fl_Preferences main(pPrefs, "main");
 
@@ -41,6 +47,7 @@ IAPreferences::IAPreferences()
 IAPreferences::~IAPreferences()
 {
     flush();
+    if (pPrinterDefinitionsPath) ::free((void*)pPrinterDefinitionsPath);
 }
 
 
@@ -139,3 +146,15 @@ void IAPreferences::clearRecentFileList()
     updateRecentfilesMenu();
     flush();
 }
+
+
+/**
+ * Get a file path for storing 3d printer definitions.
+ *
+ * \return path to a directory in the user data area.
+ */
+const char *IAPreferences::printerDefinitionsPath() const
+{
+    return pPrinterDefinitionsPath;
+}
+

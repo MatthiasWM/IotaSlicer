@@ -21,19 +21,24 @@ struct Fl_Menu_Item;
 class IAPrinterList
 {
 public:
-    IAPrinterList(Fl_Menu_Item *printermenu);
+    IAPrinterList();
     ~IAPrinterList();
     bool add(IAPrinter *printer);
-    IAPrinter *defaultPrinter();
-    void userSelectsPrinter(IAPrinter *p);
+//    IAPrinter *defaultPrinter();
+//    void userSelectsPrinter(IAPrinter *p);
+
+    void generatePrototypes();
+    void loadCustomPrinters(IAPrinter *(&p));
+
+    Fl_Menu_Item *createPrinterAddMenu();
 
 private:
-    void buildMenuArray();
-    void buildSessionSettings(IAPrinter *p);
-    static void userSelectsPrinterCB(Fl_Menu_Item*, void *p);
+//    void buildMenuArray();
+//    void buildSessionSettings(IAPrinter *p);
+//    static void userSelectsPrinterCB(Fl_Menu_Item*, void *p);
 
-    Fl_Menu_Item *pMenuItem = nullptr;
-    Fl_Menu_Item *pMenuArray = nullptr;
+//    Fl_Menu_Item *pMenuItem = nullptr;
+//    Fl_Menu_Item *pMenuArray = nullptr;
 
     std::vector<IAPrinter *> pPrinterList;
 };

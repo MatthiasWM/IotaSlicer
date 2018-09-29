@@ -60,7 +60,7 @@ public:
     const char *outputPath();
 
     void buildPrinterSettings(Fl_Tree*);
-    void buildSceneSettings(Fl_Tree*);
+    void buildSessionSettings(Fl_Tree*);
 
     IAVector3d pBuildVolume = { 214.0, 214.0, 230.0 };
     IAVector3d pBuildVolumeMin = { 0.0, 0.0, 0.0 };
