@@ -8,8 +8,8 @@
 #include "IAPrinterInkjet.h"
 
 #include "Iota.h"
-#include "userinterface/IAGUIMain.h"
-#include "userinterface/IAProgressDialog.h"
+#include "view/IAGUIMain.h"
+#include "view/IAProgressDialog.h"
 #include "toolpath/IAToolpath.h"
 #include "opengl/IAFramebuffer.h"
 
@@ -18,6 +18,14 @@
 #include <FL/Fl_Input_Choice.H>
 #include <FL/Fl_Choice.H>
 #include <FL/filename.H>
+
+
+
+IAPrinter *IAPrinterInkjet::clone()
+{
+    // write me
+    return new IAPrinterInkjet(name());
+}
 
 
 /**

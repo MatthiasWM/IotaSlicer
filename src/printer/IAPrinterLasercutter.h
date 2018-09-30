@@ -26,6 +26,7 @@ class IAPrinterLasercutter : public IAPrinter
     typedef IAPrinter super;
 public:
     IAPrinterLasercutter(const char *name) : super(name) { }
+    virtual IAPrinter *clone() override;
 
     // ---- direct user interaction
     virtual void userSliceSave() override;

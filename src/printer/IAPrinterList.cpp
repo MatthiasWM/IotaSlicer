@@ -13,7 +13,7 @@
 #include "IAPrinterInkjet.h"
 #include "IAPrinterLasercutter.h"
 #include "IAPrinterSLS.h"
-#include "userinterface/IAGUIMain.h"
+#include "view/IAGUIMain.h"
 
 #include <FL/Fl_Menu_Item.H>
 #include <FL/Fl_Window.H>
@@ -36,7 +36,7 @@ IAPrinterList::IAPrinterList()
 
 
 /**
- * Relase all userinterface parts of the list.
+ * Relase all view parts of the list.
  *
  * Does not release the individual printers.
  */
@@ -123,6 +123,7 @@ Fl_Menu_Item *IAPrinterList::createPrinterAddMenu()
     for (int i=0; i<n; i++) {
         IAPrinter *p = pPrinterList[i];
         mi[i+2].label(p->name());
+        mi[i+2].user_data(p);
     }
     return mi;
 }
@@ -190,5 +191,18 @@ Fl_Menu_Item *IAPrinterList::createPrinterAddMenu()
 //{
 //    Iota.pPrinterPrototypeList.userSelectsPrinter((IAPrinter*)p);
 //}
+
+
+void IAPrinterList::fillBrowserWidget(Fl_Browser *browser, IAPrinter *select)
+{
+    browser->clear();
+    int ix = 1, ixSelected = 0;
+    for (auto &p: pPrinterList) {
+        browser->add(p->name(), p);
+        if (p==select) ixSelected = ix;
+        ix++;
+    }
+    if (ixSelected) browser->value(ixSelected);
+}
 
 

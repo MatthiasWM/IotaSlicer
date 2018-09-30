@@ -8,7 +8,7 @@
 #include "Iota.h"
 
 #include "data/binaryData.h"
-#include "userinterface/IAGUIMain.h"
+#include "view/IAGUIMain.h"
 #include "app/IAVersioneer.h"
 #include "fileformats/IAFmtTexJpeg.h"
 #include "fileformats/IAFmtObj3ds.h"
@@ -222,9 +222,8 @@ void IAIota::userMenuSettingsManagePrinter()
     if (!wSettingsWindow) {
         wSettingsWindow = createSettingWindow();
     }
-    /** \todo insert all available custo printers into wSettingsPrinterList */
     IAPrinter *p = pCurrentPrinter;
-    wSettingsPrinterList->add( p->name() );
+    pCustomPrinterList.fillBrowserWidget(wSettingsPrinterList, p);
 
     /** \todo update the printer editor tree viw with all settings items. */
     p->buildPrinterSettings(wSettingsPrinterProperties);
@@ -274,6 +273,15 @@ void IAIota::userMenuHelpAbout()
  */
 void IAIota::userDialogSettingPrinterSelect()
 {
+    IAPrinter *p = nullptr;
+    int line = wSettingsPrinterList->value();
+    if (line) p = (IAPrinter*)wSettingsPrinterList->data(line);
+    if (p) {
+        p->buildPrinterSettings(wSettingsPrinterProperties);
+    } else {
+        wSettingsPrinterProperties->clear();
+    }
+    wSettingsPrinterProperties->redraw();
 }
 
 
@@ -289,7 +297,19 @@ void IAIota::userDialogSettingPrinterAdd()
 {
     Fl_Menu_Item *menu = pPrinterPrototypeList.createPrinterAddMenu();
     const Fl_Menu_Item *m = menu->popup(wSettingPrinterAdd->x(), wSettingPrinterAdd->y()+wSettingPrinterAdd->h());
-    /** \todo Duplicate the selected printer and add it to the list */
+    if (m) {
+        IAPrinter *p = (IAPrinter*)m->user_data();
+        if (!p) {
+            int line = wSettingsPrinterList->value();
+            if (line) p = (IAPrinter*)wSettingsPrinterList->data(line);
+        }
+        if (p) {
+            IAPrinter *pNew = p->clone();
+            pCustomPrinterList.add(pNew);
+            pCustomPrinterList.fillBrowserWidget(wSettingsPrinterList, pNew);
+            wSettingsPrinterList->do_callback();
+        }
+    }
     ::free((void*)menu);
 }
 

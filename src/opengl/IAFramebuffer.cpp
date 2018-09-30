@@ -7,7 +7,7 @@
 
 #include "IAFramebuffer.h"
 
-#include "userinterface/IAGUIMain.h"
+#include "view/IAGUIMain.h"
 #include "toolpath/IAToolpath.h"
 #include "potrace/IAPotrace.h"
 #include "potrace/bitmap.h"
@@ -1186,7 +1186,7 @@ void IAFramebuffer::endComplexPolygon(int color)
         }
 
         //  Fill the pixels between node pairs.
-        for (i = 0; i < nodes; i += 2) {
+        for (i = 0; i < nodes-1; i += 2) {
             if (nodeX[i] >= xMax) break;
             if (nodeX[i + 1] > xMin) {
                 if (nodeX[i] < xMin) nodeX[i] = xMin;

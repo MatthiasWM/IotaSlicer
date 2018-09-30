@@ -8,7 +8,7 @@
 #include "IACamera.h"
 
 #include "Iota.h"
-#include "userinterface/IASceneView.h"
+#include "widget/IASceneView.h"
 #include "geometry/IAMath.h"
 #include "printer/IAPrinter.h"
 

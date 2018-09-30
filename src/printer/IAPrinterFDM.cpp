@@ -8,8 +8,8 @@
 #include "IAPrinterFDM.h"
 
 #include "Iota.h"
-#include "userinterface/IAGUIMain.h"
-#include "userinterface/IAProgressDialog.h"
+#include "view/IAGUIMain.h"
+#include "view/IAProgressDialog.h"
 #include "toolpath/IAToolpath.h"
 #include "opengl/IAFramebuffer.h"
 
@@ -151,6 +151,48 @@ IAPrinterFDM::IAPrinterFDM(const char *name)
     
 //    pSettingList.push_back( new IASettingLabel( "test", "Test") );
 //    pSettingList.push_back( new IASettingLabel( "test/toast", "Whitebread") );
+}
+
+
+/**
+ * Create a new printer that is a clone of this printer.
+ *
+ * The printer name will be change to be unique by adding an index number.
+ */
+IAPrinter *IAPrinterFDM::clone()
+{
+    char buf[FL_PATH_MAX];
+    strcpy(buf, name());
+    char *ext = (char*)fl_filename_ext(buf);
+    if (ext && isdigit(ext[1])) {
+        int v = atoi(ext+1);
+        sprintf(ext, ".%d", v+1);
+    } else {
+        fl_filename_setext(buf, sizeof(buf), ".1");
+    }
+    IAPrinterFDM *dst = new IAPrinterFDM(buf);
+
+    dst->pNozzleDiameter = pNozzleDiameter;
+    dst->pColorMode = pColorMode;
+    dst->pNumShells = pNumShells;
+    dst->pNumLids = 2;
+    dst->pLidType = pLidType;
+    dst->pInfillDensity = pInfillDensity;
+    dst->pHasSkirt = pHasSkirt;
+    return dst;
+}
+
+
+void IAPrinterFDM::operator=(const IAPrinterFDM &rhs)
+{
+    super::operator=(rhs);
+    pNozzleDiameter = rhs.pNozzleDiameter;
+    pColorMode = rhs.pColorMode;
+    pNumShells = rhs.pNumShells;
+    pNumLids = rhs.pNumLids;
+    pLidType = rhs.pLidType;
+    pInfillDensity = rhs.pInfillDensity;
+    pHasSkirt = rhs.pHasSkirt;
 }
 
 

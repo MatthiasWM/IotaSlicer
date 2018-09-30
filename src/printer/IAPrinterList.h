@@ -13,6 +13,7 @@
 
 class IAPrinter;
 struct Fl_Menu_Item;
+class Fl_Browser;
 
 
 /**
@@ -31,6 +32,7 @@ public:
     void loadCustomPrinters(IAPrinter *(&p));
 
     Fl_Menu_Item *createPrinterAddMenu();
+    void fillBrowserWidget(Fl_Browser*, IAPrinter *select=nullptr);
 
 private:
 //    void buildMenuArray();

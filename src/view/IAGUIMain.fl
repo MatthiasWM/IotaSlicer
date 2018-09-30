@@ -391,7 +391,7 @@ Function {createSettingWindow()} {open
 } {
   Fl_Window wSettingsWindow {
     label Settings
-    comment {TODO: save position and size} open
+    comment {TODO: save position and size} open selected
     xywh {548 249 640 400} type Double resizable modal size_range {640 320 640 2048} visible
   } {
     Fl_Pack {} {
@@ -445,15 +445,14 @@ Function {createSettingWindow()} {open
         }
         Fl_Browser wSettingsPrinterList {
           callback {Iota.userDialogSettingPrinterSelect();}
-          comment {TODO: fill with a list of available printers}
-          xywh {11 83 148 286} box FLAT_BOX color 55 textsize 12 resizable
+          xywh {11 83 148 286} type Hold box FLAT_BOX color 55 textsize 12 resizable
         }
         Fl_Group {} {open
           xywh {11 369 148 20} box THIN_UP_BOX color 52
         } {
           Fl_Button wSettingPrinterAdd {
             label {+}
-            callback {Iota.userDialogSettingPrinterAdd();} selected
+            callback {Iota.userDialogSettingPrinterAdd();}
             xywh {12 370 18 18} box NO_BOX color 52
           }
           Fl_Button {} {

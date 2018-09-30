@@ -26,6 +26,8 @@ class IAPrinterFDM : public IAPrinter
 public:
     // ---- constructor and destructor
     IAPrinterFDM(const char *name);
+    virtual IAPrinter *clone() override;
+    void operator=(const IAPrinterFDM &rhs);
 
     // ---- direct user interaction
     virtual void userSliceSave() override;
@@ -57,9 +59,8 @@ private:
     /// the toolpath for the entire scene for vector based machines
     IAMachineToolpath pMachineToolpath;
 
+    // make sure that the values below are cloned!
     double pNozzleDiameter = 0.4;
-
-    /** \todo make this an enum */
     int pColorMode = 0;
     int pNumShells = 3;
     int pNumLids = 2;

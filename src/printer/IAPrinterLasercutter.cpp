@@ -8,8 +8,8 @@
 #include "IAPrinterLasercutter.h"
 
 #include "Iota.h"
-#include "userinterface/IAGUIMain.h"
-#include "userinterface/IAProgressDialog.h"
+#include "view/IAGUIMain.h"
+#include "view/IAProgressDialog.h"
 #include "toolpath/IAToolpath.h"
 #include "opengl/IAFramebuffer.h"
 
@@ -19,6 +19,12 @@
 #include <FL/Fl_Choice.H>
 #include <FL/filename.H>
 
+
+IAPrinter *IAPrinterLasercutter::clone()
+{
+    // write me
+    return new IAPrinterLasercutter(name());
+}
 
 
 /**

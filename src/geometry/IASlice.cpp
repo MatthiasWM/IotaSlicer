@@ -9,7 +9,7 @@
 
 #include "Iota.h"
 #include "IAMesh.h"
-#include "userinterface/IAGUIMain.h"
+#include "view/IAGUIMain.h"
 #include "opengl/IAFramebuffer.h"
 
 #include <FL/gl.h>

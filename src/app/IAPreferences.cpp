@@ -7,7 +7,7 @@
 
 #include "IAPreferences.h"
 
-#include "userinterface/IAGUIMain.h"
+#include "view/IAGUIMain.h"
 #include <FL/Fl_Preferences.H>
 
 

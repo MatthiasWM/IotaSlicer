@@ -463,7 +463,7 @@ void IAVersioneer::applySettings()
     applySettingsCpp("src/Iota.cpp");
     applySettingsDoxyfile("Doxyfile");
     updatePlatformFiles();
-    touch("userinterface/IAGUIMain.fl");
+    touch("view/IAGUIMain.fl");
 }
 
 

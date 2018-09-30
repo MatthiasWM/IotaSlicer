@@ -8,9 +8,9 @@
 #include "IASceneView.h"
 
 #include "Iota.h"
-#include "userinterface/IAGUIMain.h"
-#include "userinterface/IACamera.h"
-#include "userinterface/IAGLRangeSlider.h"
+#include "view/IAGUIMain.h"
+#include "widget/IACamera.h"
+#include "widget/IAGLRangeSlider.h"
 #include "geometry/IAMesh.h"
 #include "geometry/IASlice.h"
 #include "printer/IAPrinter.h"
@@ -252,6 +252,7 @@ void IASceneView::draw()
     beginTextures();
 
     pCurrentCamera->draw();
+    IA_HANDLE_GL_ERRORS();
 
     static GLfloat light_position0[] = { 4.0, -1.0, 2.0, 0.0 };
     glLightfv(GL_LIGHT0, GL_POSITION, light_position0);

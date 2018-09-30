@@ -13,7 +13,7 @@
 #include "IAPrinterInkjet.h"
 #include "IAPrinterLasercutter.h"
 #include "IAPrinterSLS.h"
-#include "userinterface/IAGUIMain.h"
+#include "view/IAGUIMain.h"
 #include "toolpath/IAToolpath.h"
 
 #include <math.h>
@@ -105,6 +105,22 @@ IAPrinter::~IAPrinter()
         delete s;
     for (auto &s: pSceneSettingList)
         delete s;
+}
+
+
+/**
+ * Copy properties from another printer.
+ */
+void IAPrinter::operator=(const IAPrinter &rhs)
+{
+    pName = strdup(rhs.pName);
+    pOutputPath = rhs.pOutputPath ? strdup(rhs.pOutputPath) : nullptr;
+    pBuildVolumeMin = rhs.pBuildVolumeMin;
+    pBuildVolumeMax = rhs.pBuildVolumeMax;
+    pBuildVolume = rhs.pBuildVolume;
+    pBuildVolumeRadius = rhs.pBuildVolumeRadius;
+
+    pLayerHeight = rhs.pLayerHeight;
 }
 
 

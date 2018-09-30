@@ -75,7 +75,7 @@ If will probably run with little or no modifications on other FDM printers as we
 * v0.0.5a
   * Iota now compiles on MacOS (Xcode), MSWindows (VisualC 2017), and Ubuntu Linux (Code::Blocks)
 * v0.0.4a
-  * mostly cleanup around Fluid userinterface design files and versioning
+  * mostly cleanup around Fluid view design files and versioning
 * v0.0.3a 
   * CGode files print successfully on DaVinci Duo printers with Repetier firmware.
 * v0.0.2a

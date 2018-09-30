@@ -37,6 +37,8 @@ public:
     // ---- constructor, destructor
     IAPrinter(const char *name);
     virtual ~IAPrinter();
+    virtual IAPrinter *clone() = 0;
+    void operator=(const IAPrinter&);
 
     // ---- direct user interaction
     virtual void userSliceSave() = 0;
@@ -62,10 +64,6 @@ public:
     void buildPrinterSettings(Fl_Tree*);
     void buildSessionSettings(Fl_Tree*);
 
-    IAVector3d pBuildVolume = { 214.0, 214.0, 230.0 };
-    IAVector3d pBuildVolumeMin = { 0.0, 0.0, 0.0 };
-    IAVector3d pBuildVolumeMax = { 214.0, 214.0, 230.0 };
-    double pBuildVolumeRadius = 200.0; // sphere that contains the entire centered build volume
 
     /// This is the current slice that contains the entire scene at a give z.
     IASlice gSlice;
@@ -82,12 +80,18 @@ protected:
 
 private:
     void userChangedLayerHeight();
-    
-    double pLayerHeight = 0.3; // Session setting
 
+public: // FIXME: should be at least protected
+    // properties, make sure to assign and clone
     char *pName = nullptr;
-
     char *pOutputPath = nullptr;
+    IAVector3d pBuildVolumeMin = { 0.0, 0.0, 0.0 };
+    IAVector3d pBuildVolumeMax = { 214.0, 214.0, 230.0 };
+    IAVector3d pBuildVolume = { 214.0, 214.0, 230.0 };
+    double pBuildVolumeRadius = 200.0; // sphere that contains the entire centered build volume
+
+    // Scenen setting, should be in another class
+    double pLayerHeight = 0.3; // Session setting
 };
 
 
