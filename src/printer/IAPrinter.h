@@ -39,12 +39,12 @@ public:
     virtual ~IAPrinter();
     virtual IAPrinter *clone() = 0;
     void operator=(const IAPrinter&);
+    virtual const char *type() = 0;
 
     // ---- direct user interaction
     virtual void userSliceSave() = 0;
     virtual void userSliceSaveAs() = 0;
     virtual void userSliceGenerateAll() = 0;
-
 
     // ----
     virtual void draw();
@@ -60,6 +60,7 @@ public:
     const char *name();
     void setOutputPath(const char *name);
     const char *outputPath();
+    const char *uuid() { return pUUID; }
 
     void buildPrinterSettings(Fl_Tree*);
     void buildSessionSettings(Fl_Tree*);
@@ -83,6 +84,7 @@ private:
 
 public: // FIXME: should be at least protected
     // properties, make sure to assign and clone
+    char *pUUID = nullptr;
     char *pName = nullptr;
     char *pOutputPath = nullptr;
     IAVector3d pBuildVolumeMin = { 0.0, 0.0, 0.0 };

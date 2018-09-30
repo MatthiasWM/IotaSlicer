@@ -66,22 +66,53 @@ static Fl_Menu_Item layerHeightMenu[] = {
  Extrusion Width = 0.6 mm = 1.2 0.5 Flow Rate = 4.5 mm^3/s = 0.6 0.25 * 30
  */
 IAPrinter::IAPrinter(const char *newName)
-:   gSlice( this )
+:   pUUID( strdup(Fl_Preferences::newUUID()) ),
+    gSlice( this )
 {
     setName(newName);
     loadSettings();
 
+    pPrinterSettingList.push_back( new IASettingLabel("uuid", "Printer ID:", uuid()) );
+    pPrinterSettingList.push_back( new IASettingText("name", "Printer Name:", pName, 32, "",
+                                                     [this]{ ; } ) );
+    pPrinterSettingList.push_back( new IASettingLabel("buildVolume", "Build Volume:"));
+    // bed shape (Choice, rect, round)
+    // printbed width, depth
+    pPrinterSettingList.push_back(new IASettingFloat("buildVolume/x", "X:",
+                                                     *(pBuildVolume.dataPointer()+0),
+                                                     "width in mm",
+                                                     [this]{ ; } ) );
+    pPrinterSettingList.push_back(new IASettingFloat("buildVolume/y", "Y:",
+                                                     *(pBuildVolume.dataPointer()+1),
+                                                     "depth in mm",
+                                                     [this]{ ; } ) );
+    pPrinterSettingList.push_back(new IASettingFloat("buildVolume/z", "Z:",
+                                                     *(pBuildVolume.dataPointer()+2),
+                                                     "height in mm",
+                                                     [this]{ ; } ) );
 
-    pPrinterSettingList.push_back( new IASettingLabel("buildVolume", "Buid Volume:") );
-    pPrinterSettingList.push_back( new IASettingLabel("buildVolume/printable", "Printable Area:") );
-    pPrinterSettingList.push_back( new IASettingFloat("buildVolume/printable/xMin", "Minimal X:", pLayerHeight, "mm",
-                                  [this]{userChangedLayerHeight();} ) );
-    pPrinterSettingList.push_back(
-        new IASettingFloatChoice(
-                                 "diagonal", "Build Volume Diagonal:", pLayerHeight, "mm",
-                                  [this]{userChangedLayerHeight();},
-                                  layerHeightMenu) );
+    // build volume (x, y, z);
+    // coordinate zero (front left, back right)
+    // zero point offset (x, y, z)
+    // # extruders
+    //   extruder 1
+    //     type (single, changing, mixing)
+    //     nozzle diameter
+    //     # transports
+    //       transport 1
+    //
 
+
+//    pPrinterSettingList.push_back( new IASettingLabel("buildVolume", "Buid Volume:") );
+//    pPrinterSettingList.push_back( new IASettingLabel("buildVolume/printable", "Printable Area:") );
+//    pPrinterSettingList.push_back( new IASettingFloat("buildVolume/printable/xMin", "Minimal X:", pLayerHeight, "mm",
+//                                  [this]{userChangedLayerHeight();} ) );
+//    pPrinterSettingList.push_back(
+//        new IASettingFloatChoice(
+//                                 "diagonal", "Build Volume Diagonal:", pLayerHeight, "mm",
+//                                  [this]{userChangedLayerHeight();},
+//                                  layerHeightMenu) );
+//
     // TODO: add choice of profiles (and how to manage them)
 
     pSceneSettingList.push_back(
@@ -97,6 +128,8 @@ IAPrinter::IAPrinter(const char *newName)
  */
 IAPrinter::~IAPrinter()
 {
+    if (pUUID)
+        ::free((void*)pUUID);
     if (pName)
         ::free((void*)pName);
     if (pOutputPath)
@@ -162,6 +195,13 @@ void IAPrinter::saveSettings()
     Fl_Preferences prefs(Fl_Preferences::USER, "com.matthiasm.iota.printer", name());
     Fl_Preferences output(prefs, "output");
     output.set("lastFilename", outputPath());
+
+    const char *path = Iota.gPreferences.printerDefinitionsPath();
+    Fl_Preferences printerProperties(path, "Iota Printer Properties", uuid());
+    for (auto &s: pPrinterSettingList) {
+        s->write(printerProperties);
+    }
+    printerProperties.set("name", name());
 }
 
 

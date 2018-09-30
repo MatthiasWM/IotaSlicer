@@ -38,7 +38,7 @@ IAVersioneer gVersioneer;
 /* Do not change the somewhat funky [ver stuff below. It is used for automated
  * version number updates.
  */
-const char *gVersion = /*[ver*/"v0.2.0b"/*]*/;
+const char *gVersion = /*[ver*/"v0.2.1b"/*]*/;
 
 //const int kFramebufferSize = 2048;
 const int kFramebufferSize = 4096;
@@ -278,6 +278,7 @@ void IAIota::userDialogSettingPrinterSelect()
     if (line) p = (IAPrinter*)wSettingsPrinterList->data(line);
     if (p) {
         p->buildPrinterSettings(wSettingsPrinterProperties);
+        p->saveSettings(); // FIXME:
     } else {
         wSettingsPrinterProperties->clear();
     }
@@ -308,6 +309,8 @@ void IAIota::userDialogSettingPrinterAdd()
             pCustomPrinterList.add(pNew);
             pCustomPrinterList.fillBrowserWidget(wSettingsPrinterList, pNew);
             wSettingsPrinterList->do_callback();
+            pCustomPrinterList.saveCustomPrinters();
+            p->saveSettings(); // FIXME:
         }
     }
     ::free((void*)menu);

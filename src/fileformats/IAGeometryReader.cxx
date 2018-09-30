@@ -188,7 +188,12 @@ uint16_t IAGeometryReader::getUInt16LSB() {
  */
 float IAGeometryReader::getFloatLSB()
 {
-    float ret = *(const float*)pCurrData;
+    union { float f; uint8_t u[4]; };
+    u[0] = pCurrData[0];
+    u[1] = pCurrData[1];
+    u[2] = pCurrData[2];
+    u[3] = pCurrData[3];
+    float ret = f;
     pCurrData += 4;
     return ret;
 }

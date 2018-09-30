@@ -11,12 +11,15 @@
 #include <vector>
 #include <functional>
 
+#include <FL/Fl_Preferences.H>
+
 
 struct Fl_Menu_Item;
 class Fl_Input_Choice;
 class Fl_Choice;
 class Fl_Tree;
 class Fl_Tree_Item;
+class Fl_Preferences;
 
 
 class IASetting
@@ -26,6 +29,7 @@ public:
     IASetting(const char *path, const char *label);
     virtual ~IASetting();
     virtual void build(Fl_Tree*, Type) { }
+    virtual void write(Fl_Preferences&) { }
 
     // write to preferences
     // read from preferences
@@ -47,10 +51,11 @@ class IAFLLabel;
 class IASettingLabel : public IASetting
 {
 public:
-    IASettingLabel(const char *path, const char *label);
+    IASettingLabel(const char *path, const char *label, const char *text=nullptr);
     virtual ~IASettingLabel() override;
     virtual void build(Fl_Tree*, Type) override;
 
+    char *pText = nullptr;
     IAFLLabel *pWidget = nullptr;
 };
 
@@ -64,9 +69,10 @@ class IASettingFloat : public IASetting
 {
 public:
     IASettingFloat(const char *path, const char *label, double &value,
-                         const char *unit, std::function<void()>&& cb);
+                   const char *unit, std::function<void()>&& cb);
     virtual ~IASettingFloat() override;
     virtual void build(Fl_Tree*, Type) override;
+    virtual void write(Fl_Preferences &p) override { p.set(pPath, pValue); }
 
     static void wCallback(IAFLFloat *w, IASettingFloat *d);
 
@@ -74,6 +80,30 @@ public:
     char *pUnit = nullptr;
     std::function<void()> pCallback;
     IAFLFloat *pWidget = nullptr;
+};
+
+
+class IAFLText;
+
+/**
+ * Manage a setting that appears in a tree view.
+ */
+class IASettingText : public IASetting
+{
+public:
+    IASettingText(const char *path, const char *label, char *(&value), int wdt,
+                  const char *unit, std::function<void()>&& cb);
+    virtual ~IASettingText() override;
+    virtual void build(Fl_Tree*, Type) override;
+    virtual void write(Fl_Preferences &p) override { p.set(pPath, pValue); }
+
+    static void wCallback(IAFLText *w, IASettingText *d);
+
+    char *(&pValue);
+    int pWdt;
+    char *pUnit = nullptr;
+    std::function<void()> pCallback;
+    IAFLText *pWidget = nullptr;
 };
 
 
@@ -90,6 +120,7 @@ public:
                          Fl_Menu_Item *menu);
     virtual ~IASettingFloatChoice() override;
     virtual void build(Fl_Tree*, Type) override;
+    virtual void write(Fl_Preferences &p) override { p.set(pPath, pValue); }
 
     static void wCallback(IAFLFloatChoice *w, IASettingFloatChoice *d);
 
@@ -113,6 +144,7 @@ public:
                     std::function<void()>&& cb, Fl_Menu_Item *menu);
     virtual ~IASettingChoice() override;
     virtual void build(Fl_Tree*, Type) override;
+    virtual void write(Fl_Preferences &p) override { p.set(pPath, pValue); }
 
     static void wCallback(IAFLChoice *w, IASettingChoice *d);
 

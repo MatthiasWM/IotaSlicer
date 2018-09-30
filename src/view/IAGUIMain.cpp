@@ -9,7 +9,7 @@
 #endif
 static char *sHelpAbout = /* text inlined from ../../html/helpAbout.html */
 "<html>\n    <body>\n        <font face=\"sans\">\n            <p>&nbsp;</p>\n\
-            <p><center><font size=8><b>Iota <!--[ver-->v0.2.0b<!--]--></b></fo\
+            <p><center><font size=8><b>Iota <!--[ver-->v0.2.1b<!--]--></b></fo\
 nt></center></p>\n            <p><center><font size=5><b>Voxel based Mesh Slic\
 er for Color 3D Printing</b></font></center></p>\n            \n            <p\
 >\n            Iota is a voxel based slicer that can handle textured meshes fo\
@@ -43,7 +43,7 @@ omated builds and releases, etc. </li>\n                <li> new infills, more\
 </ul>\n        </font>\n    </body>\n</html>\n";
 static char *sHelpLicenses = /* text inlined from ../../html/helpLicenses.html */
 "<html>\n    <body>\n        <font face=\"sans\">\n            <p>&nbsp;</p>\n\
-            <p><center><font size=8><b>Iota <!--[ver-->v0.2.0b<!--]--></b></fo\
+            <p><center><font size=8><b>Iota <!--[ver-->v0.2.1b<!--]--></b></fo\
 nt></center></p>\n            <p><center><font size=5><b>Voxel based Mesh Slic\
 er for Color 3D Printing</b></font></center></p>\n\n            <h3>Iota uses \
 <a href=\"http://www.fltk.org/\">FLTK</a></h3>\n            <p>\n            F\

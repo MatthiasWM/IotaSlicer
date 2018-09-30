@@ -62,6 +62,9 @@ public:
         pLabel = new Fl_Box(0, 0, w/2-4, h());
         pLabel->labelsize(h()-2);
         pLabel->label(label);
+        pText = new Fl_Box(w/2, 0, w/2-4, h());
+        pText->labelsize(h()-2);
+        pText->align(FL_ALIGN_INSIDE|FL_ALIGN_LEFT);
         if (t==IASetting::kSetting) {
             pLabel->align(FL_ALIGN_INSIDE|FL_ALIGN_LEFT);
         } else {
@@ -73,17 +76,20 @@ public:
     }
     ~IAFLLabel() { }
     Fl_Box *pLabel;
+    Fl_Box *pText;
 };
 
 
-IASettingLabel::IASettingLabel(const char *path, const char *label)
+IASettingLabel::IASettingLabel(const char *path, const char *label, const char *text)
 :   IASetting(path, label)
 {
+    if (text) pText = strdup(text);
 }
 
 
 IASettingLabel::~IASettingLabel()
 {
+    if (pText) ::free((void*)pText);
 }
 
 
@@ -91,6 +97,7 @@ void IASettingLabel::build(Fl_Tree *treeWidget, Type t)
 {
     if (!pWidget) {
         pWidget = new IAFLLabel(t, treeWidget->w()-40, pLabel);
+        if (pText) pWidget->pText->label(pText);
     }
     pTreeItem = treeWidget->add(pPath);
     pTreeItem->widget(pWidget);
@@ -172,6 +179,88 @@ void IASettingFloat::build(Fl_Tree *treeWidget, Type t)
 {
     if (!pWidget) {
         pWidget = new IAFLFloat(t, treeWidget->w()-40, pLabel);
+        pWidget->pInput->label(pUnit);
+        pWidget->value(pValue);
+        pWidget->callback((Fl_Callback*)wCallback, this);
+    }
+    pTreeItem = treeWidget->add(pPath);
+    pTreeItem->widget(pWidget);
+}
+
+
+#ifdef __APPLE__
+#pragma mark -
+#endif
+//============================================================================//
+
+class IAFLText : public Fl_Group
+{
+public:
+    IAFLText(IASetting::Type t, int w, const char *label=nullptr)
+    :   Fl_Group(0, 0, w, t==IASetting::kSetting?13:15) {
+        box(FL_FLAT_BOX);
+        begin();
+        pLabel = new Fl_Box(0, 0, w/2-4, h());
+        pLabel->labelsize(h()-2);
+        pLabel->label(label);
+        pInput = new Fl_Input(w/2, 0, h()*12, h());
+        pInput->textsize(h()-2);
+        pInput->labelsize(h()-2);
+        pInput->align(FL_ALIGN_RIGHT);
+        pInput->callback((Fl_Callback*)choice_cb);
+        if (t==IASetting::kSetting) {
+            pLabel->align(FL_ALIGN_INSIDE|FL_ALIGN_LEFT);
+        } else {
+            pLabel->align(FL_ALIGN_INSIDE|FL_ALIGN_RIGHT);
+            color(parent()->color());
+            pLabel->color(parent()->color());
+            pInput->color(parent()->color());
+        }
+        end();
+    }
+    ~IAFLText() { }
+    const char *value() { return pInput->value(); }
+    void value(char *v) { pInput->value(v); }
+    static void choice_cb(Fl_Choice *w, void *u) {
+        w->parent()->do_callback();
+    }
+    Fl_Box *pLabel = nullptr;
+    Fl_Input *pInput = nullptr;
+};
+
+
+IASettingText::IASettingText(const char *path, const char *label, char *(&value),
+                              int wdt, const char *unit,
+                              std::function<void()>&& cb)
+:   IASetting(path, label),
+    pValue(value),
+    pWdt(wdt),
+    pUnit(strdup(unit)),
+    pCallback(cb),
+    pWidget(nullptr)
+{
+}
+
+
+IASettingText::~IASettingText()
+{
+    if (pUnit) ::free((void*)pUnit);
+    if (pWidget) delete pWidget;
+}
+
+
+void IASettingText::wCallback(IAFLText *w, IASettingText *d)
+{
+    if (d->pValue) ::free((void*)d->pValue);
+    d->pValue = strdup( w->value() );
+    if (d->pCallback) d->pCallback();
+}
+
+
+void IASettingText::build(Fl_Tree *treeWidget, Type t)
+{
+    if (!pWidget) {
+        pWidget = new IAFLText(t, treeWidget->w()-40, pLabel);
         pWidget->pInput->label(pUnit);
         pWidget->value(pValue);
         pWidget->callback((Fl_Callback*)wCallback, this);

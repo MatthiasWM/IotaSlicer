@@ -28,7 +28,10 @@ static uchar inactive_ramp[24] = {
     51, 51, 52, 52};
 static int draw_it_active = 1;
 
-static uchar *flgl_gray_ramp() {return (draw_it_active?active_ramp:inactive_ramp)-'A';}
+static uchar *flgl_gray_ramp() {
+    uchar *base = (draw_it_active?active_ramp:inactive_ramp);
+    return base-'A';
+}
 
 void flgl_xyline(int x, int y, int x1)
 {

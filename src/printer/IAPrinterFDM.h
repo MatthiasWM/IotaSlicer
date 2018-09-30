@@ -28,6 +28,7 @@ public:
     IAPrinterFDM(const char *name);
     virtual IAPrinter *clone() override;
     void operator=(const IAPrinterFDM &rhs);
+    virtual const char *type() override { return "IAPrinterFDM"; }
 
     // ---- direct user interaction
     virtual void userSliceSave() override;

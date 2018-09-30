@@ -30,6 +30,7 @@ public:
 
     void generatePrototypes();
     void loadCustomPrinters(IAPrinter *(&p));
+    void saveCustomPrinters();
 
     Fl_Menu_Item *createPrinterAddMenu();
     void fillBrowserWidget(Fl_Browser*, IAPrinter *select=nullptr);

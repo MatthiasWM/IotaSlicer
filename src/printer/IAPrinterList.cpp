@@ -74,8 +74,58 @@ void IAPrinterList::generatePrototypes()
  */
 void IAPrinterList::loadCustomPrinters(IAPrinter *(&currentPrinter))
 {
-    /** \todo write me! */
-    currentPrinter = Iota.pPrinterPrototypeList.pPrinterList[0];
+    const char *path = Iota.gPreferences.printerDefinitionsPath();
+    Fl_Preferences customPrinterList(path, "Iota Printer List", "customPrinters");
+    Fl_Preferences printers(customPrinterList, "Printers");
+    int i, n = printers.groups();
+    for (i=0; i<n; i++) {
+        Fl_Preferences printerRef(printers, printers.group(i));
+        char uuid[128], name[128], type[128];
+        printerRef.get("uuid", uuid, "", 128);
+        printerRef.get("name", name, "", 128);
+        printerRef.get("type", type, "", 128);
+        IAPrinter *printer = nullptr;
+        if (strcmp(type, "IAPrinterFDM")==0) {
+            printer = new IAPrinterFDM(name);
+        } else if (strcmp(type, "IAPrinterInkjet")==0) {
+            printer = new IAPrinterInkjet(name);
+        } else if (strcmp(type, "IAPrinterLasercutter")==0) {
+            printer = new IAPrinterLasercutter(name);
+        }
+        if (printer) {
+            // FIXME: read printer configuration from preferences file
+            add(printer);
+        }
+    }
+    if (pPrinterList.size()==0) {
+        add(Iota.pPrinterPrototypeList.pPrinterList[0]->clone());
+        // FIXME: saveCustomPrinters();
+    }
+    currentPrinter = pPrinterList[0];
+}
+
+
+/**
+ * Write the list of user created printers to a preference file.
+ *
+ * Create at least on generic printer if no user generated printers were found.
+ *
+ * \todo Do we want to write the currently selected printer here?
+ */
+void IAPrinterList::saveCustomPrinters()
+{
+    const char *path = Iota.gPreferences.printerDefinitionsPath();
+    Fl_Preferences customPrinterList(path, "Iota Printer List", "customPrinters");
+    Fl_Preferences printers(customPrinterList, "Printers");
+    printers.clear();
+    int i, n = (int)pPrinterList.size();
+    for (i=0; i<n; i++) {
+        Fl_Preferences printerRef(printers, Fl_Preferences::Name(i));
+        IAPrinter *printer = pPrinterList[i];
+        printerRef.set("uuid", printer->uuid());
+        printerRef.set("name", printer->name());
+        printerRef.set("type", printer->type());
+    }
 }
 
 

@@ -31,6 +31,7 @@ class IAPrinterInkjet : public IAPrinter
 public:
     IAPrinterInkjet(const char *name) : super(name) { }
     virtual IAPrinter *clone() override;
+    virtual const char *type() override { return "IAPrinterInkjet"; }
 
     // ---- direct user interaction
     virtual void userSliceSave() override;
