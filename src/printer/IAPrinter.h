@@ -40,6 +40,7 @@ public:
     virtual IAPrinter *clone() = 0;
     void operator=(const IAPrinter&);
     virtual const char *type() = 0;
+    void makePrototype() { pIsPrototype = true; }
 
     // ---- direct user interaction
     virtual void userSliceSave() = 0;
@@ -75,6 +76,7 @@ protected:
                              const char *extension);
 
     bool pFirstWrite = true;
+    bool pIsPrototype = false;
 
     IASettingList pPrinterSettingList;
     IASettingList pSceneSettingList;

@@ -66,7 +66,7 @@ static Fl_Menu_Item layerHeightMenu[] = {
  Extrusion Width = 0.6 mm = 1.2 0.5 Flow Rate = 4.5 mm^3/s = 0.6 0.25 * 30
  */
 IAPrinter::IAPrinter(const char *newName)
-:   pUUID( strdup(Fl_Preferences::newUUID()) ),
+:   pUUID( strdup(Fl_Preferences::newUUID()) ), // FIXME: this does not work well at all!
     gSlice( this )
 {
     setName(newName);
@@ -196,6 +196,8 @@ void IAPrinter::saveSettings()
     Fl_Preferences output(prefs, "output");
     output.set("lastFilename", outputPath());
 
+    if (pIsPrototype) return;
+
     const char *path = Iota.gPreferences.printerDefinitionsPath();
     Fl_Preferences printerProperties(path, "Iota Printer Properties", uuid());
     for (auto &s: pPrinterSettingList) {
@@ -243,7 +245,7 @@ void IAPrinter::buildPrinterSettings(Fl_Tree *treeWidget)
 
 
 /**
- * Change the printer name and save the new settings.
+ * Change the printer name.
  */
 void IAPrinter::setName(const char *name)
 {
@@ -252,7 +254,6 @@ void IAPrinter::setName(const char *name)
     pName = nullptr;
     if (name)
         pName = (char*)::strdup(name);
-    saveSettings();
 }
 
 
@@ -267,9 +268,6 @@ const char *IAPrinter::name()
 
 /**
  * Set the ouput filename.
- *
- * The filename will be saved for each named printer and restored when Iota
- * is started again.
  */
 void IAPrinter::setOutputPath(const char *name)
 {
@@ -278,7 +276,6 @@ void IAPrinter::setOutputPath(const char *name)
     pOutputPath = nullptr;
     if (name)
         pOutputPath = (char*)::strdup(name);
-    saveSettings();
 }
 
 
