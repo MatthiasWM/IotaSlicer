@@ -116,18 +116,25 @@ void IAPrinterList::loadCustomPrinters(IAPrinter *(&currentPrinter))
         }
     } while(0);
     if (pPrinterList.size()==0) {
-        IAPrinter *printer = Iota.pPrinterPrototypeList.pPrinterList[0]->clone();
-        printer->setNewUUID();
-        char *newName = makeUniqueName(printer->name());
-        printer->setName(newName);
-        printer->initializePrinterProperties();
-        printer->initializeSceneSettings();
-        ::free((void*)newName);
-        add(printer);
-        saveCustomPrinters();
-        printer->saveProperties();
+        cloneAndAdd(Iota.pPrinterPrototypeList.pPrinterList[0]);
     }
     currentPrinter = pPrinterList[0];
+}
+
+
+IAPrinter *IAPrinterList::cloneAndAdd(IAPrinter *p)
+{
+    IAPrinter *printer = p->clone();
+    printer->setNewUUID();
+    char *newName = makeUniqueName(printer->name());
+    printer->setName(newName);
+    printer->initializePrinterProperties();
+    printer->initializeSceneSettings();
+    ::free((void*)newName);
+    add(printer);
+    saveCustomPrinters();
+    printer->saveProperties();
+    return printer;
 }
 
 
@@ -210,13 +217,24 @@ void IAPrinterList::saveCustomPrinters()
 
 
 /**
- * Add a printer to the list and rebuild the menu item list.
+ * Add a printer to the list.
  */
 bool IAPrinterList::add(IAPrinter *printer)
 {
     pPrinterList.push_back(printer);
-//    buildMenuArray();
     return true;
+}
+
+
+/**
+ * Remove a printer from the list.
+ */
+void IAPrinterList::remove(IAPrinter *printer)
+{
+    auto it = std::find(pPrinterList.begin(), pPrinterList.end(), printer);
+    if (it!=pPrinterList.end()) {
+        pPrinterList.erase( it );
+    }
 }
 
 
@@ -230,7 +248,7 @@ Fl_Menu_Item *IAPrinterList::createPrinterAddMenu()
 {
     int n = (int)pPrinterList.size();
     Fl_Menu_Item *mi = (Fl_Menu_Item*)calloc(n+3, sizeof(Fl_Menu_Item));
-    mi[0].label("Duplicate selected"); // FIXME: put the name of the selected printer here!
+    mi[0].label("Duplicate selected");
     mi[0].flags |= FL_MENU_DIVIDER;
     mi[1].label("Duplicate Prototype:");
     mi[1].flags |= FL_MENU_INACTIVE;

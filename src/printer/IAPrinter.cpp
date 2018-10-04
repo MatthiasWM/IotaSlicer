@@ -195,6 +195,16 @@ void IAPrinter::saveProperties()
 }
 
 
+void IAPrinter::removeProperties()
+{
+    char buf[FL_PATH_MAX];
+    strcpy(buf, Iota.gPreferences.printerDefinitionsPath());
+    strcat(buf, uuid());
+    strcat(buf, ".prefs");
+    fl_unlink(buf);
+}
+
+
 /**
  * Create the Treeview items for setting up the printout for this session.
  */

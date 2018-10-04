@@ -28,7 +28,7 @@ IAPrinterLasercutter::IAPrinterLasercutter()
 
 
 IAPrinterLasercutter::IAPrinterLasercutter(IAPrinterLasercutter const& src)
-:   IAPrinterLasercutter()
+:   super(src)
 {
     // nothing to copy
 }

@@ -25,6 +25,7 @@ public:
     IAPrinterList();
     ~IAPrinterList();
     bool add(IAPrinter *printer);
+    void remove(IAPrinter *printer);
 //    IAPrinter *defaultPrinter();
 //    void userSelectsPrinter(IAPrinter *p);
 
@@ -32,6 +33,7 @@ public:
     void loadCustomPrinters(IAPrinter *(&p));
     void saveCustomPrinters();
 
+    IAPrinter *cloneAndAdd(IAPrinter *p);
     char *makeUniqueName(char const* name) const;
 
     Fl_Menu_Item *createPrinterAddMenu();

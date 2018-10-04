@@ -57,6 +57,7 @@ public:
     void buildPropertiesUI(Fl_Tree*);
     void loadProperties();
     void saveProperties();
+    void removeProperties();
     void setName(const char *name);
     const char *name() const;
     void setOutputPath(const char *name);

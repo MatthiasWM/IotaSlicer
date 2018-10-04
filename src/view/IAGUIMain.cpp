@@ -499,7 +499,7 @@ static void cb_wSettingPrinterAdd(Fl_Button*, void*) {
 }
 
 static void cb_9(Fl_Button*, void*) {
-  Iota.userDialogSettingPrinterAdd();
+  Iota.userDialogSettingPrinterRemove();
 }
 
 Fl_Tree *wSettingsPrinterProperties=(Fl_Tree *)0;

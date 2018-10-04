@@ -408,7 +408,7 @@ o->hide();}
         Fl_Button {} {
           label {@filesaveas}
           callback {Iota.userDialogSettingPrinterDeselect();}
-          comment {TODO: find a new icon} selected
+          comment {TODO: find a new icon}
           xywh {0 2 50 36} box NO_BOX labelsize 20 labelcolor 40 align 16
         }
       }
@@ -462,7 +462,7 @@ Iota.userDialogSettingPrinterSelect();}
           }
           Fl_Button {} {
             label {-}
-            callback {Iota.userDialogSettingPrinterAdd();}
+            callback {Iota.userDialogSettingPrinterRemove();} selected
             xywh {30 370 18 18} box NO_BOX color 52
           }
           Fl_Button {} {

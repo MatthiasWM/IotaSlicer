@@ -306,20 +306,28 @@ void IAIota::userDialogSettingPrinterDeselect()
  */
 void IAIota::userDialogSettingPrinterAdd()
 {
+    char buf[FL_PATH_MAX];
     Fl_Menu_Item *menu = pPrinterPrototypeList.createPrinterAddMenu();
+    IAPrinter *p = nullptr;
+    int line = wSettingsPrinterList->value();
+    pUserDialogSettingsSelectedPrinterIndex = line;
+    if (line) p = (IAPrinter*)wSettingsPrinterList->data(line);
+    if (p) {
+        snprintf(buf, sizeof(buf), "Duplicate \"%s\"", p->name());
+        menu[0].label(buf);
+        menu[0].activate();
+        menu[0].user_data(p);
+    } else {
+        strcpy(buf, "Duplicate selected");
+        menu[0].label(buf);
+        menu[0].deactivate();
+    }
     const Fl_Menu_Item *m = menu->popup(wSettingPrinterAdd->x(), wSettingPrinterAdd->y()+wSettingPrinterAdd->h());
     if (m) {
         IAPrinter *p = (IAPrinter*)m->user_data();
-        if (!p) {
-            int line = wSettingsPrinterList->value();
-            if (line) p = (IAPrinter*)wSettingsPrinterList->data(line);
-        }
         if (p) {
-            IAPrinter *pNew = p->clone();
-            pCustomPrinterList.add(pNew);
-            pCustomPrinterList.fillBrowserWidget(wSettingsPrinterList, pNew);
-            wSettingsPrinterList->do_callback();
-            pCustomPrinterList.saveCustomPrinters();
+            pCustomPrinterList.cloneAndAdd(p);
+            pCustomPrinterList.fillBrowserWidget(wSettingsPrinterList, p);
         }
     }
     ::free((void*)menu);
@@ -331,11 +339,27 @@ void IAIota::userDialogSettingPrinterAdd()
  *
  * If a printer is selected, this pops up a warning dialog to confirm the
  * deletion of a printer, and deletes the printer if confirmed.
- *
- * \todo implement printer [-] callback
  */
 void IAIota::userDialogSettingPrinterRemove()
 {
+    IAPrinter *p = nullptr;
+    int line = wSettingsPrinterList->value();
+    if (line) p = (IAPrinter*)wSettingsPrinterList->data(line);
+    if (p) {
+        int ret = fl_choice("This will permanently delete all setting\n"
+                            "for the printer named\n\"%s\"",
+                            nullptr, "Cancel Operation", "Delete Printer",
+                            p->name());
+        if (ret==2) {
+            pCustomPrinterList.remove(p);
+            pCustomPrinterList.fillBrowserWidget(wSettingsPrinterList, 0);
+            pUserDialogSettingsSelectedPrinterIndex = 0;
+            p->removeProperties();
+            pCustomPrinterList.saveCustomPrinters();
+            wSettingsPrinterList->do_callback();
+            delete p; p = nullptr;
+        }
+    }
 }
 
 

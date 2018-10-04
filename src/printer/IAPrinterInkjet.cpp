@@ -29,7 +29,7 @@ IAPrinterInkjet::IAPrinterInkjet()
 
 
 IAPrinterInkjet::IAPrinterInkjet(IAPrinterInkjet const& src)
-:   IAPrinterInkjet()
+:   super(src)
 {
     // nothing to copy
 }
