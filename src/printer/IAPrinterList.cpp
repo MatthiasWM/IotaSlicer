@@ -56,14 +56,27 @@ IAPrinterList::~IAPrinterList()
 
 /**
  * Create an entry for every supported type of printer.
+ *
+ * By not assigning a UUID, it is clear that these printers are prototypes.
  */
 void IAPrinterList::generatePrototypes()
 {
-    add(new IAPrinterFDM("Generic FDM Printer"));
-//  add(new IAPrinterFDMBelt("Generic FDM Belt Printer"));
-    add(new IAPrinterInkjet("Generic Inkjet Printer"));
-    add(new IAPrinterLasercutter("Generic Laser Cutter"));
-//  add(new IAPrinterSLS("Generic SLS Printer"));
+    IAPrinter *p;
+
+    // add an FDM printer prototype
+    p = new IAPrinterFDM();
+    p->setName("Generic FDM Printer");
+    add(p);
+
+    // add an inkjet printer prototype
+    p = new IAPrinterInkjet();
+    p->setName("Generic Inkjet Printer");
+    add(p);
+
+    // add a lasercutter printer prototype
+    p = new IAPrinterLasercutter();
+    p->setName("Generic Laser Cutter");
+    add(p);
 }
 
 
@@ -75,33 +88,84 @@ void IAPrinterList::generatePrototypes()
 void IAPrinterList::loadCustomPrinters(IAPrinter *(&currentPrinter))
 {
     const char *path = Iota.gPreferences.printerDefinitionsPath();
-    Fl_Preferences customPrinterList(path, "Iota Printer List", "customPrinters");
-    Fl_Preferences printers(customPrinterList, "Printers");
-    int i, n = printers.groups();
-    for (i=0; i<n; i++) {
-        Fl_Preferences printerRef(printers, printers.group(i));
-        char uuid[128], name[128], type[128];
-        printerRef.get("uuid", uuid, "", 128);
-        printerRef.get("name", name, "", 128);
-        printerRef.get("type", type, "", 128);
-        IAPrinter *printer = nullptr;
-        if (strcmp(type, "IAPrinterFDM")==0) {
-            printer = new IAPrinterFDM(name);
-        } else if (strcmp(type, "IAPrinterInkjet")==0) {
-            printer = new IAPrinterInkjet(name);
-        } else if (strcmp(type, "IAPrinterLasercutter")==0) {
-            printer = new IAPrinterLasercutter(name);
+    do {
+        Fl_Preferences customPrinterList(path, "Iota Printer List", "customPrinters");
+        Fl_Preferences printers(customPrinterList, "Printers");
+        int i, n = printers.groups();
+        for (i=0; i<n; i++) {
+            Fl_Preferences printerRef(printers, printers.group(i));
+            char uuid[128], name[128], type[128];
+            printerRef.get("uuid", uuid, "", 128);
+            printerRef.get("name", name, "", 128);
+            printerRef.get("type", type, "", 128);
+            IAPrinter *printer = nullptr;
+            if (strcmp(type, "IAPrinterFDM")==0) {
+                printer = new IAPrinterFDM();
+            } else if (strcmp(type, "IAPrinterInkjet")==0) {
+                printer = new IAPrinterInkjet();
+            } else if (strcmp(type, "IAPrinterLasercutter")==0) {
+                printer = new IAPrinterLasercutter();
+            }
+            if (printer) {
+                printer->setUUID(uuid);
+                printer->initializePrinterProperties();
+                printer->initializeSceneSettings();
+                printer->loadSettings();
+                add(printer);
+            }
         }
-        if (printer) {
-            // FIXME: read printer configuration from preferences file
-            add(printer);
-        }
-    }
+    } while(0);
     if (pPrinterList.size()==0) {
-        add(Iota.pPrinterPrototypeList.pPrinterList[0]->clone());
-        // FIXME: saveCustomPrinters();
+        IAPrinter *printer = Iota.pPrinterPrototypeList.pPrinterList[0]->clone();
+        printer->setNewUUID();
+        char *newName = makeUniqueName(printer->name());
+        printer->setName(newName);
+        printer->initializePrinterProperties();
+        printer->initializeSceneSettings();
+        ::free((void*)newName);
+        add(printer);
+        saveCustomPrinters();
+        printer->saveSettings();
     }
     currentPrinter = pPrinterList[0];
+}
+
+
+/**
+ * Modify the given name to make it unique in the printer list.
+ *
+ * \return a string that must be free'd.
+ */
+char *IAPrinterList::makeUniqueName(char const* name) const
+{
+    // copy or create a valid name
+    char buf[FL_PATH_MAX];
+    if (name && name[0]) {
+        strcpy(buf, name);
+    } else {
+        strcpy(buf, "new Printer");
+    }
+    // does that name exist already?
+    bool dup = false;
+    for (auto &p: pPrinterList) {
+        if (strcmp(p->name(), buf)==0) { dup = true; break; }
+    }
+    // it's unique! Return it.
+    if (!dup) return strdup(buf);
+    // try other names by using a number as an extension
+    fl_filename_setext(buf, sizeof(buf), ".%d");
+    char buf2[FL_PATH_MAX];
+    int i, n = (int)pPrinterList.size()+2;
+    for (i=1; i<n; ++i) {
+        snprintf(buf2, sizeof(buf2), buf, i);
+        dup = false;
+        for (auto &p: pPrinterList) {
+            if (strcmp(p->name(), buf2)==0) { dup = true; break; }
+        }
+        // it's unique! Return it.
+        if (!dup) return strdup(buf2);
+    }
+    return strdup("unnamed");
 }
 
 

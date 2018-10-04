@@ -35,12 +35,12 @@ class IAPrinter
 {
 public:
     // ---- constructor, destructor
-    IAPrinter(const char *name);
+    IAPrinter();
+    IAPrinter(IAPrinter const& src);
     virtual ~IAPrinter();
-    virtual IAPrinter *clone() = 0;
-    void operator=(const IAPrinter&);
-    virtual const char *type() = 0;
-    void makePrototype() { pIsPrototype = true; }
+    IAPrinter &operator=(IAPrinter&) = delete;
+    virtual IAPrinter *clone() const = 0;
+    virtual const char *type() const = 0;
 
     // ---- direct user interaction
     virtual void userSliceSave() = 0;
@@ -58,28 +58,32 @@ public:
     double layerHeight() { return pLayerHeight; } // Session Setting
     
     void setName(const char *name);
-    const char *name();
+    const char *name() const;
     void setOutputPath(const char *name);
-    const char *outputPath();
-    const char *uuid() { return pUUID; }
+    const char *outputPath() const;
+    const char *uuid() const { return pUUID; }
+    void setNewUUID();
+    void setUUID(const char *uuid);
 
+    virtual void initializePrinterProperties();
+    virtual void initializeSceneSettings();
     void buildPrinterSettings(Fl_Tree*);
     void buildSessionSettings(Fl_Tree*);
 
 
     /// This is the current slice that contains the entire scene at a give z.
-    IASlice gSlice;
+    IASlice gSlice = IASlice(this);
 
 protected:
+
     bool queryOutputFilename(const char *title,
                              const char *filter,
                              const char *extension);
 
     bool pFirstWrite = true;
-    bool pIsPrototype = false;
 
-    IASettingList pPrinterSettingList;
-    IASettingList pSceneSettingList;
+    IASettingList pPrinterProperties;
+    IASettingList pSceneSettings;
 
 private:
     void userChangedLayerHeight();

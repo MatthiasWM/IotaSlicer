@@ -51,12 +51,10 @@ const int kFramebufferSize = 4096;
 
 
 /**
- * Creat the Iota Slicer application.
+ * Create the Iota Slicer application.
  */
 IAIota::IAIota()
 {
-    pPrinterPrototypeList.generatePrototypes();
-    pCustomPrinterList.loadCustomPrinters(pCurrentPrinter);
 }
 
 
@@ -477,6 +475,9 @@ int main (int argc, char **argv)
 	Fl::args(argc, argv);
     Fl::set_color(FL_BACKGROUND_COLOR, 0xeeeeee00);
     Fl::use_high_res_GL(1);
+    
+    Iota.pPrinterPrototypeList.generatePrototypes();
+    Iota.pCustomPrinterList.loadCustomPrinters(Iota.pCurrentPrinter);
 
     Iota.gMainWindow = createIotaAppWindow();
     {

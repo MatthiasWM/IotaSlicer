@@ -175,6 +175,15 @@ void IASettingFloat::wCallback(IAFLFloat *w, IASettingFloat *d)
 }
 
 
+void IASettingFloat::read(Fl_Preferences &p)
+{
+    p.get(pPath, pValue, pValue);
+    if (pWidget) {
+        pWidget->value(pValue);
+    }
+}
+
+
 void IASettingFloat::build(Fl_Tree *treeWidget, Type t)
 {
     if (!pWidget) {
@@ -254,6 +263,23 @@ void IASettingText::wCallback(IAFLText *w, IASettingText *d)
     if (d->pValue) ::free((void*)d->pValue);
     d->pValue = strdup( w->value() );
     if (d->pCallback) d->pCallback();
+}
+
+
+void IASettingText::read(Fl_Preferences &p)
+{
+    char dst[FL_PATH_MAX], src[FL_PATH_MAX];
+    if (pValue) {
+        strcpy(src, pValue);
+    } else {
+        strcpy(src, "");
+    }
+    p.get(pPath, dst, pValue, sizeof(dst));
+    if (strcmp(src, dst)!=0) {
+        if (pValue) ::free((void*)pValue);
+        pValue = strdup(dst);
+    }
+    if (pWidget) pWidget->value(pValue);
 }
 
 
@@ -343,6 +369,15 @@ void IASettingFloatChoice::wCallback(IAFLFloatChoice *w, IASettingFloatChoice *d
 }
 
 
+void IASettingFloatChoice::read(Fl_Preferences &p)
+{
+    p.get(pPath, pValue, pValue);
+    if (pWidget) {
+        pWidget->value(pValue);
+    }
+}
+
+
 void IASettingFloatChoice::build(Fl_Tree *treeWidget, Type t)
 {
     if (!pWidget) {
@@ -427,11 +462,21 @@ void IASettingChoice::wCallback(IAFLChoice *w, IASettingChoice *d)
 }
 
 
+void IASettingChoice::read(Fl_Preferences &p)
+{
+    // FIXME: compare to user_data() in the menu list to find the right entry
+    p.get(pPath, pValue, pValue);
+    pWidget->value(pValue);
+}
+
+
+
 void IASettingChoice::build(Fl_Tree *treeWidget, Type)
 {
     if (!pWidget) {
         pWidget = new IAFLChoice(0, 0, 200, 13, pLabel);
         pWidget->pChoice->menu(pMenu);
+        // FIXME: compare to user_data() in the menu list to find the right entry
         pWidget->value(pValue);
         pWidget->callback((Fl_Callback*)wCallback, this);
     }

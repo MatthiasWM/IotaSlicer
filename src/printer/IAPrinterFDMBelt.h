@@ -16,11 +16,11 @@
  *
  * This printer driver writes GCode files.
  */
-class IAPrinterFDMBelt : public IAPrinterFDM
-{
-public:
-    IAPrinterFDMBelt(const char *name) : IAPrinterFDM(name) { }
-};
+//class IAPrinterFDMBelt : public IAPrinterFDM
+//{
+//public:
+//    IAPrinterFDMBelt() : IAPrinterFDM() { }
+//};
 
 
 #endif /* IA_PRINTER_FDM_BELT_H */

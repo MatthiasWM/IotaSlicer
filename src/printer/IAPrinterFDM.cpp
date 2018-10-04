@@ -66,91 +66,125 @@
 
 typedef Fl_Menu_Item Fl_Menu_Item_List[];
 
-static Fl_Menu_Item numShellsMenu[] = {
-    { "0*", 0, nullptr, (void*)0, 0, 0, 0, 11 },
-    { "1", 0, nullptr, (void*)1, 0, 0, 0, 11 },
-    { "2", 0, nullptr, (void*)2, 0, 0, 0, 11 },
-    { "3", 0, nullptr, (void*)3, 0, 0, 0, 11 },
-    { nullptr } };
-
-static Fl_Menu_Item numLidsMenu[] = {
-    { "0*", 0, nullptr, (void*)0, 0, 0, 0, 11 },
-    { "1", 0, nullptr, (void*)1, 0, 0, 0, 11 },
-    { "2", 0, nullptr, (void*)2, 0, 0, 0, 11 },
-    { nullptr } };
-
-static Fl_Menu_Item lidTypeMenu[] = {
-    { "zigzag", 0, nullptr, (void*)0, 0, 0, 0, 11 },
-    { "concentric", 0, nullptr, (void*)1, 0, 0, 0, 11 },
-    { nullptr } };
-
-static Fl_Menu_Item infillDensityMenuMenu[] = {
-    { "0", 0, nullptr, (void*)0, 0, 0, 0, 11 },
-    { "5", 0, nullptr, (void*)0, 0, 0, 0, 11 },
-    { "10", 0, nullptr, (void*)0, 0, 0, 0, 11 },
-    { "20", 0, nullptr, (void*)0, 0, 0, 0, 11 },
-    { "30", 0, nullptr, (void*)0, 0, 0, 0, 11 },
-    { "50", 0, nullptr, (void*)0, 0, 0, 0, 11 },
-    { "100", 0, nullptr, (void*)0, 0, 0, 0, 11 },
-    { nullptr } };
-
-static Fl_Menu_Item skirtMenu[] = {
-    { "no", 0, nullptr, (void*)0, 0, 0, 0, 11 },
-    { "yes", 0, nullptr, (void*)1, 0, 0, 0, 11 },
-    { nullptr } };
-
-static Fl_Menu_Item nozzleDiameterMenu[] = {
-    { "0.40", 0, nullptr, (void*)0, 0, 0, 0, 11 },
-    { "0.35", 0, nullptr, (void*)0, 0, 0, 0, 11 },
-    { nullptr } };
 
 
-IAPrinterFDM::IAPrinterFDM(const char *name)
-:   super(name),
-    pMachineToolpath( this )
+IAPrinterFDM::IAPrinterFDM()
+:   super()
 {
-    pSceneSettingList.push_back(
-        new IASettingChoice(
-            "NPerimiter", "# of perimeters: ", pNumShells,
-            [this]{userChangedNumShells();}, numShellsMenu ) );
+}
 
-    pSceneSettingList.push_back(
-        new IASettingChoice(
-            "NLids", "# of lids: ", pNumLids,
-            [this]{userChangedNumLids();}, numLidsMenu ) );
 
-    pSceneSettingList.push_back(
-        new IASettingChoice(
-            "lidType", "lid type: ", pLidType,
-            [this]{userChangedLidType();}, lidTypeMenu ) );
+IAPrinterFDM::IAPrinterFDM(IAPrinterFDM const& src)
+:   super(src)
+{
+    pNozzleDiameter = src.pNozzleDiameter;
+    pColorMode = src.pColorMode;
+    pNumShells = src.pNumShells;
+    pNumLids = src.pNumLids;
+    pLidType = src.pLidType;
+    pInfillDensity = src.pInfillDensity;
+    pHasSkirt = src.pHasSkirt;
+}
 
-    pSceneSettingList.push_back(
-        new IASettingFloatChoice(
-            "infillDensity", "infill density: ", pInfillDensity, "%",
-            [this]{userChangedInfillDensity();}, infillDensityMenuMenu ) );
 
-    pSceneSettingList.push_back(
-        new IASettingChoice(
-            "skirt", "skirt: ", pHasSkirt,
-            [this]{userChangedSkirt();}, skirtMenu ) );
+IAPrinterFDM::~IAPrinterFDM()
+{
+    // nothing to delete
+}
 
-    pSceneSettingList.push_back(
-        new IASettingFloatChoice(
-            "nozzleDiameter", "nozzle diameter: ", pNozzleDiameter, "mm",
-            [this]{userChangedNozzleDiameter();}, nozzleDiameterMenu ) );
+
+IAPrinter *IAPrinterFDM::clone() const
+{
+    IAPrinterFDM *p = new IAPrinterFDM(*this);
+    return p;
+}
+
+
+void IAPrinterFDM::initializePrinterProperties()
+{
+    super::initializePrinterProperties();
+}
+
+
+void IAPrinterFDM::initializeSceneSettings()
+{
+    static Fl_Menu_Item numShellsMenu[] = {
+        { "0*", 0, nullptr, (void*)0, 0, 0, 0, 11 },
+        { "1", 0, nullptr, (void*)1, 0, 0, 0, 11 },
+        { "2", 0, nullptr, (void*)2, 0, 0, 0, 11 },
+        { "3", 0, nullptr, (void*)3, 0, 0, 0, 11 },
+        { nullptr } };
+
+    static Fl_Menu_Item numLidsMenu[] = {
+        { "0*", 0, nullptr, (void*)0, 0, 0, 0, 11 },
+        { "1", 0, nullptr, (void*)1, 0, 0, 0, 11 },
+        { "2", 0, nullptr, (void*)2, 0, 0, 0, 11 },
+        { nullptr } };
+
+    static Fl_Menu_Item lidTypeMenu[] = {
+        { "zigzag", 0, nullptr, (void*)0, 0, 0, 0, 11 },
+        { "concentric", 0, nullptr, (void*)1, 0, 0, 0, 11 },
+        { nullptr } };
+
+    static Fl_Menu_Item infillDensityMenuMenu[] = {
+        { "0", 0, nullptr, (void*)0, 0, 0, 0, 11 },
+        { "5", 0, nullptr, (void*)0, 0, 0, 0, 11 },
+        { "10", 0, nullptr, (void*)0, 0, 0, 0, 11 },
+        { "20", 0, nullptr, (void*)0, 0, 0, 0, 11 },
+        { "30", 0, nullptr, (void*)0, 0, 0, 0, 11 },
+        { "50", 0, nullptr, (void*)0, 0, 0, 0, 11 },
+        { "100", 0, nullptr, (void*)0, 0, 0, 0, 11 },
+        { nullptr } };
+
+    static Fl_Menu_Item skirtMenu[] = {
+        { "no", 0, nullptr, (void*)0, 0, 0, 0, 11 },
+        { "yes", 0, nullptr, (void*)1, 0, 0, 0, 11 },
+        { nullptr } };
+
+    static Fl_Menu_Item nozzleDiameterMenu[] = {
+        { "0.40", 0, nullptr, (void*)0, 0, 0, 0, 11 },
+        { "0.35", 0, nullptr, (void*)0, 0, 0, 0, 11 },
+        { nullptr } };
+    
+    super::initializeSceneSettings();
+    IASetting *s;
+    s = new IASettingChoice("NPerimiter", "# of perimeters: ", pNumShells,
+                            [this]{userChangedNumShells();}, numShellsMenu );
+    pSceneSettings.push_back(s);
+
+    s = new IASettingChoice("NLids", "# of lids: ", pNumLids,
+                            [this]{userChangedNumLids();}, numLidsMenu );
+
+    pSceneSettings.push_back(s);
+
+    s = new IASettingChoice("lidType", "lid type: ", pLidType,
+                            [this]{userChangedLidType();}, lidTypeMenu );
+    pSceneSettings.push_back(s);
+
+    s = new IASettingFloatChoice("infillDensity", "infill density: ", pInfillDensity, "%",
+                                 [this]{userChangedInfillDensity();}, infillDensityMenuMenu );
+    pSceneSettings.push_back(s);
+
+    s = new IASettingChoice("skirt", "skirt: ", pHasSkirt,
+                            [this]{userChangedSkirt();}, skirtMenu );
+    pSceneSettings.push_back(s);
+
+    s = new IASettingFloatChoice("nozzleDiameter", "nozzle diameter: ", pNozzleDiameter, "mm",
+                                 [this]{userChangedNozzleDiameter();}, nozzleDiameterMenu );
+    pSceneSettings.push_back(s);
 
     // Extrusion width
     // Extrusion speed
 
-//    static Fl_Menu_Item colorMenu[] = {
-//        { "monochrome", 0, nullptr, (void*)0, 0, 0, 0, 11 },
-//        { "dual color", 0, nullptr, (void*)1, 0, 0, 0, 11 },
-//        { nullptr } };
-//    pSettingList.push_back(
-//        new IASettingChoice("Color:", pColorMode, [this]{userChangedColorMode(); }, colorMenu));
-    
-//    pSettingList.push_back( new IASettingLabel( "test", "Test") );
-//    pSettingList.push_back( new IASettingLabel( "test/toast", "Whitebread") );
+    //    static Fl_Menu_Item colorMenu[] = {
+    //        { "monochrome", 0, nullptr, (void*)0, 0, 0, 0, 11 },
+    //        { "dual color", 0, nullptr, (void*)1, 0, 0, 0, 11 },
+    //        { nullptr } };
+    //    pSettingList.push_back(
+    //        new IASettingChoice("Color:", pColorMode, [this]{userChangedColorMode(); }, colorMenu));
+
+    //    pSettingList.push_back( new IASettingLabel( "test", "Test") );
+    //    pSettingList.push_back( new IASettingLabel( "test/toast", "Whitebread") );
 }
 
 
@@ -159,41 +193,41 @@ IAPrinterFDM::IAPrinterFDM(const char *name)
  *
  * The printer name will be change to be unique by adding an index number.
  */
-IAPrinter *IAPrinterFDM::clone()
-{
-    char buf[FL_PATH_MAX];
-    strcpy(buf, name());
-    char *ext = (char*)fl_filename_ext(buf);
-    if (ext && isdigit(ext[1])) {
-        int v = atoi(ext+1);
-        sprintf(ext, ".%d", v+1);
-    } else {
-        fl_filename_setext(buf, sizeof(buf), ".1");
-    }
-    IAPrinterFDM *dst = new IAPrinterFDM(buf);
+//IAPrinter *IAPrinterFDM::clone()
+//{
+//    char buf[FL_PATH_MAX];
+//    strcpy(buf, name());
+//    char *ext = (char*)fl_filename_ext(buf);
+//    if (ext && isdigit(ext[1])) {
+//        int v = atoi(ext+1);
+//        sprintf(ext, ".%d", v+1);
+//    } else {
+//        fl_filename_setext(buf, sizeof(buf), ".1");
+//    }
+//    IAPrinterFDM *dst = new IAPrinterFDM(buf);
+//
+//    dst->pNozzleDiameter = pNozzleDiameter;
+//    dst->pColorMode = pColorMode;
+//    dst->pNumShells = pNumShells;
+//    dst->pNumLids = 2;
+//    dst->pLidType = pLidType;
+//    dst->pInfillDensity = pInfillDensity;
+//    dst->pHasSkirt = pHasSkirt;
+//    return dst;
+//}
 
-    dst->pNozzleDiameter = pNozzleDiameter;
-    dst->pColorMode = pColorMode;
-    dst->pNumShells = pNumShells;
-    dst->pNumLids = 2;
-    dst->pLidType = pLidType;
-    dst->pInfillDensity = pInfillDensity;
-    dst->pHasSkirt = pHasSkirt;
-    return dst;
-}
 
-
-void IAPrinterFDM::operator=(const IAPrinterFDM &rhs)
-{
-    super::operator=(rhs);
-    pNozzleDiameter = rhs.pNozzleDiameter;
-    pColorMode = rhs.pColorMode;
-    pNumShells = rhs.pNumShells;
-    pNumLids = rhs.pNumLids;
-    pLidType = rhs.pLidType;
-    pInfillDensity = rhs.pInfillDensity;
-    pHasSkirt = rhs.pHasSkirt;
-}
+//void IAPrinterFDM::operator=(const IAPrinterFDM &rhs)
+//{
+//    super::operator=(rhs);
+//    pNozzleDiameter = rhs.pNozzleDiameter;
+//    pColorMode = rhs.pColorMode;
+//    pNumShells = rhs.pNumShells;
+//    pNumLids = rhs.pNumLids;
+//    pLidType = rhs.pLidType;
+//    pInfillDensity = rhs.pInfillDensity;
+//    pHasSkirt = rhs.pHasSkirt;
+//}
 
 
 /**

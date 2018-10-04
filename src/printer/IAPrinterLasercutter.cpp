@@ -20,11 +20,33 @@
 #include <FL/filename.H>
 
 
-IAPrinter *IAPrinterLasercutter::clone()
+IAPrinterLasercutter::IAPrinterLasercutter()
+:   super()
 {
-    // write me
-    return new IAPrinterLasercutter(name());
+    // nothing to initialize
 }
+
+
+IAPrinterLasercutter::IAPrinterLasercutter(IAPrinterLasercutter const& src)
+:   IAPrinterLasercutter()
+{
+    // nothing to copy
+}
+
+
+IAPrinterLasercutter::~IAPrinterLasercutter()
+{
+    // nothing to delete
+}
+
+
+IAPrinter *IAPrinterLasercutter::clone() const
+{
+    IAPrinterLasercutter *p = new IAPrinterLasercutter(*this);
+    return p;
+}
+
+
 
 
 /**

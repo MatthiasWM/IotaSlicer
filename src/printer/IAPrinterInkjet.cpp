@@ -21,11 +21,32 @@
 
 
 
-IAPrinter *IAPrinterInkjet::clone()
+IAPrinterInkjet::IAPrinterInkjet()
+:   super()
 {
-    // write me
-    return new IAPrinterInkjet(name());
+    // nothing to initialize
 }
+
+
+IAPrinterInkjet::IAPrinterInkjet(IAPrinterInkjet const& src)
+:   IAPrinterInkjet()
+{
+    // nothing to copy
+}
+
+
+IAPrinterInkjet::~IAPrinterInkjet()
+{
+    // nothing to delete
+}
+
+
+IAPrinter *IAPrinterInkjet::clone() const
+{
+    IAPrinterInkjet *p = new IAPrinterInkjet(*this);
+    return p;
+}
+
 
 
 /**

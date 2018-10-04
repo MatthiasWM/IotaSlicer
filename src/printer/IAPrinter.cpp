@@ -30,15 +30,6 @@
 #include <FL/Fl_Tree_Item.H>
 
 
-static Fl_Menu_Item layerHeightMenu[] = {
-    { "0.1", 0, nullptr, nullptr, 0, 0, 0, 11 },
-    { "0.2", 0, nullptr, nullptr, 0, 0, 0, 11 },
-    { "0.3", 0, nullptr, nullptr, 0, 0, 0, 11 },
-    { "0.4", 0, nullptr, nullptr, 0, 0, 0, 11 },
-    { }
-};
-
-
 
 /**
  Create a default printer.
@@ -46,80 +37,23 @@ static Fl_Menu_Item layerHeightMenu[] = {
  For example, an M3D Crane:
     Build Volume: 214 X 214 X 230 mm, bottom front left is 0
     The Crane is designed to extrude at a rate of 5.7 mm^3/s
- Flow Rate (mm^3/s) = Feedrate (mm/s) (Filament Cross-section) (mm^2)*
- Filament Cross-section = pi ((Filament Diameter) / 2)^2 __Filament Cross-section for 1.75mm filament: 2.405 mm^2*
-
- For Example: You send the command G1 E100 F200, where you extrude 100mm of filament at 200 mm/min. You are using 1.75 mm filament.
-
- Flow Rate = 8 mm/s = pi (1.75 / 2)^2 (200 / 60) = 2.405 3.333*
-
- Remember that the G1 move command feedrate parameter, F, uses mm per minute. So divide the feedrate by 60 to obtain the feedrate in mm per second.
-
- Printing Flow Rate
-
- When printing, the flow rate depends on your layer height, nozzle diameter and print speed.
-
- Flow Rate (mm^3/s) = (Extrusion Width)(mm) (Layer Height)(mm) Print Speed (mm/s) Extrusion Width is ~120% of nozzle diameter
-
- For Example: You have a 0.5 mm nozzle mounted and you are printing at 0.25mm layer height at a print speed of 30 mm/s.
-
- Extrusion Width = 0.6 mm = 1.2 0.5 Flow Rate = 4.5 mm^3/s = 0.6 0.25 * 30
  */
-IAPrinter::IAPrinter(const char *newName)
-:   pUUID( strdup(Fl_Preferences::newUUID()) ), // FIXME: this does not work well at all!
-    gSlice( this )
+IAPrinter::IAPrinter()
 {
-    setName(newName);
-    loadSettings();
-
-    pPrinterSettingList.push_back( new IASettingLabel("uuid", "Printer ID:", uuid()) );
-    pPrinterSettingList.push_back( new IASettingText("name", "Printer Name:", pName, 32, "",
-                                                     [this]{ ; } ) );
-    pPrinterSettingList.push_back( new IASettingLabel("buildVolume", "Build Volume:"));
-    // bed shape (Choice, rect, round)
-    // printbed width, depth
-    pPrinterSettingList.push_back(new IASettingFloat("buildVolume/x", "X:",
-                                                     *(pBuildVolume.dataPointer()+0),
-                                                     "width in mm",
-                                                     [this]{ ; } ) );
-    pPrinterSettingList.push_back(new IASettingFloat("buildVolume/y", "Y:",
-                                                     *(pBuildVolume.dataPointer()+1),
-                                                     "depth in mm",
-                                                     [this]{ ; } ) );
-    pPrinterSettingList.push_back(new IASettingFloat("buildVolume/z", "Z:",
-                                                     *(pBuildVolume.dataPointer()+2),
-                                                     "height in mm",
-                                                     [this]{ ; } ) );
-
-    // build volume (x, y, z);
-    // coordinate zero (front left, back right)
-    // zero point offset (x, y, z)
-    // # extruders
-    //   extruder 1
-    //     type (single, changing, mixing)
-    //     nozzle diameter
-    //     # transports
-    //       transport 1
-    //
+}
 
 
-//    pPrinterSettingList.push_back( new IASettingLabel("buildVolume", "Buid Volume:") );
-//    pPrinterSettingList.push_back( new IASettingLabel("buildVolume/printable", "Printable Area:") );
-//    pPrinterSettingList.push_back( new IASettingFloat("buildVolume/printable/xMin", "Minimal X:", pLayerHeight, "mm",
-//                                  [this]{userChangedLayerHeight();} ) );
-//    pPrinterSettingList.push_back(
-//        new IASettingFloatChoice(
-//                                 "diagonal", "Build Volume Diagonal:", pLayerHeight, "mm",
-//                                  [this]{userChangedLayerHeight();},
-//                                  layerHeightMenu) );
-//
-    // TODO: add choice of profiles (and how to manage them)
-
-    pSceneSettingList.push_back(
-        new IASettingFloatChoice(
-            "layerHeight", "Layer Height:", pLayerHeight, "mm",
-            [this]{userChangedLayerHeight();},
-            layerHeightMenu) );
+IAPrinter::IAPrinter(IAPrinter const& src)
+:   IAPrinter()
+{
+    setUUID(src.uuid());
+    setName(src.name());
+    setOutputPath(src.outputPath());
+    pBuildVolumeMin = src.pBuildVolumeMin;
+    pBuildVolumeMax = src.pBuildVolumeMax;
+    pBuildVolume = src.pBuildVolume;
+    pBuildVolumeRadius = src.pBuildVolumeRadius;
+    pLayerHeight = src.pLayerHeight;
 }
 
 
@@ -134,27 +68,81 @@ IAPrinter::~IAPrinter()
         ::free((void*)pName);
     if (pOutputPath)
         ::free((void*)pOutputPath);
-    for (auto &s: pPrinterSettingList)
+    for (auto &s: pPrinterProperties)
         delete s;
-    for (auto &s: pSceneSettingList)
+    for (auto &s: pSceneSettings)
         delete s;
 }
+
+
+void IAPrinter::initializePrinterProperties()
+{
+    // build volume (x, y, z);
+    // coordinate zero (front left, back right)
+    // zero point offset (x, y, z)
+    // # extruders
+    //   extruder 1
+    //     type (single, changing, mixing)
+    //     nozzle diameter
+    //     # transports
+    //       transport 1
+    //
+    pPrinterProperties.push_back( new IASettingLabel("uuid", "Printer ID:", uuid()) );
+    pPrinterProperties.push_back( new IASettingText("name", "Printer Name:", pName, 32, "",
+                                                     [this]{ ; } ) );
+    pPrinterProperties.push_back( new IASettingLabel("buildVolume", "Build Volume:"));
+    // bed shape (Choice, rect, round)
+    // printbed width, depth
+    pPrinterProperties.push_back(new IASettingFloat("buildVolume/x", "X:",
+                                                     *(pBuildVolume.dataPointer()+0),
+                                                     "width in mm",
+                                                     [this]{ ; } ) );
+    pPrinterProperties.push_back(new IASettingFloat("buildVolume/y", "Y:",
+                                                     *(pBuildVolume.dataPointer()+1),
+                                                     "depth in mm",
+                                                     [this]{ ; } ) );
+    pPrinterProperties.push_back(new IASettingFloat("buildVolume/z", "Z:",
+                                                     *(pBuildVolume.dataPointer()+2),
+                                                     "height in mm",
+                                                     [this]{ ; } ) );
+}
+
+
+void IAPrinter::initializeSceneSettings()
+{
+    // TODO: add choice of profiles (and how to manage them)
+
+    static Fl_Menu_Item layerHeightMenu[] = {
+        { "0.1", 0, nullptr, nullptr, 0, 0, 0, 11 },
+        { "0.2", 0, nullptr, nullptr, 0, 0, 0, 11 },
+        { "0.3", 0, nullptr, nullptr, 0, 0, 0, 11 },
+        { "0.4", 0, nullptr, nullptr, 0, 0, 0, 11 },
+        { }
+    };
+
+    IASetting *s;
+    s = new IASettingFloatChoice("layerHeight", "Layer Height:", pLayerHeight, "mm",
+                                 [this]{userChangedLayerHeight();},
+                                 layerHeightMenu);
+    pSceneSettings.push_back(s);
+}
+
 
 
 /**
  * Copy properties from another printer.
  */
-void IAPrinter::operator=(const IAPrinter &rhs)
-{
-    pName = strdup(rhs.pName);
-    pOutputPath = rhs.pOutputPath ? strdup(rhs.pOutputPath) : nullptr;
-    pBuildVolumeMin = rhs.pBuildVolumeMin;
-    pBuildVolumeMax = rhs.pBuildVolumeMax;
-    pBuildVolume = rhs.pBuildVolume;
-    pBuildVolumeRadius = rhs.pBuildVolumeRadius;
-
-    pLayerHeight = rhs.pLayerHeight;
-}
+//void IAPrinter::operator=(const IAPrinter &rhs)
+//{
+//    pName = strdup(rhs.pName);
+//    pOutputPath = rhs.pOutputPath ? strdup(rhs.pOutputPath) : nullptr;
+//    pBuildVolumeMin = rhs.pBuildVolumeMin;
+//    pBuildVolumeMax = rhs.pBuildVolumeMax;
+//    pBuildVolume = rhs.pBuildVolume;
+//    pBuildVolumeRadius = rhs.pBuildVolumeRadius;
+//
+//    pLayerHeight = rhs.pLayerHeight;
+//}
 
 
 /**
@@ -175,13 +163,17 @@ void IAPrinter::purgeSlicesAndCaches()
  */
 void IAPrinter::loadSettings()
 {
-    if (name()==nullptr || *name()==0) return;
+//    char buf[FL_PATH_MAX];
+//    Fl_Preferences prefs(Fl_Preferences::USER, "com.matthiasm.iota.printer", name());
+//    Fl_Preferences output(prefs, "output");
+//    output.get("lastFilename", buf, "", sizeof(buf));
+//    setOutputPath( buf );
 
-    char buf[FL_PATH_MAX];
-    Fl_Preferences prefs(Fl_Preferences::USER, "com.matthiasm.iota.printer", name());
-    Fl_Preferences output(prefs, "output");
-    output.get("lastFilename", buf, "", sizeof(buf));
-    setOutputPath( buf );
+    const char *path = Iota.gPreferences.printerDefinitionsPath();
+    Fl_Preferences printerProperties(path, "Iota Printer Properties", uuid());
+    for (auto &s: pPrinterProperties) {
+        s->read(printerProperties);
+    }
 }
 
 
@@ -190,20 +182,15 @@ void IAPrinter::loadSettings()
  */
 void IAPrinter::saveSettings()
 {
-    if (name()==nullptr || *name()==0) return;
-
-    Fl_Preferences prefs(Fl_Preferences::USER, "com.matthiasm.iota.printer", name());
-    Fl_Preferences output(prefs, "output");
-    output.set("lastFilename", outputPath());
-
-    if (pIsPrototype) return;
+//    Fl_Preferences prefs(Fl_Preferences::USER, "com.matthiasm.iota.printer", name());
+//    Fl_Preferences output(prefs, "output");
+//    output.set("lastFilename", outputPath());
 
     const char *path = Iota.gPreferences.printerDefinitionsPath();
     Fl_Preferences printerProperties(path, "Iota Printer Properties", uuid());
-    for (auto &s: pPrinterSettingList) {
+    for (auto &s: pPrinterProperties) {
         s->write(printerProperties);
     }
-    printerProperties.set("name", name());
 }
 
 
@@ -219,7 +206,7 @@ void IAPrinter::buildSessionSettings(Fl_Tree *treeWidget)
     treeWidget->clear();
     treeWidget->begin();
     wSessionSettings->begin();
-    for (auto &s: pSceneSettingList) {
+    for (auto &s: pSceneSettings) {
         s->build(treeWidget, IASetting::kSetting);
     }
     treeWidget->end();
@@ -237,7 +224,7 @@ void IAPrinter::buildPrinterSettings(Fl_Tree *treeWidget)
     treeWidget->item_draw_mode(FL_TREE_ITEM_DRAW_DEFAULT);
     treeWidget->clear();
     treeWidget->begin();
-    for (auto &s: pPrinterSettingList) {
+    for (auto &s: pPrinterProperties) {
         s->build(treeWidget, IASetting::kProperty);
     }
     treeWidget->end();
@@ -260,7 +247,7 @@ void IAPrinter::setName(const char *name)
 /**
  * Return the name of the printer driver.
  */
-const char *IAPrinter::name()
+const char *IAPrinter::name() const
 {
     return pName;
 }
@@ -282,9 +269,31 @@ void IAPrinter::setOutputPath(const char *name)
 /**
  * Return the filename and path of the output file.
  */
-const char *IAPrinter::outputPath()
+const char *IAPrinter::outputPath() const
 {
     return pOutputPath;
+}
+
+
+/**
+ * Generate a new UUID.
+ */
+void IAPrinter::setNewUUID()
+{
+    setUUID( Fl_Preferences::newUUID() );
+}
+
+
+/**
+ * Set a new UUID.
+ */
+void IAPrinter::setUUID(const char *uuid)
+{
+    if (pUUID)
+        ::free((void*)pUUID);
+    pUUID = nullptr;
+    if (uuid)
+        pUUID = (char*)::strdup(uuid);
 }
 
 

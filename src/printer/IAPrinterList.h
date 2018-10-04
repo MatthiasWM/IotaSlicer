@@ -32,6 +32,8 @@ public:
     void loadCustomPrinters(IAPrinter *(&p));
     void saveCustomPrinters();
 
+    char *makeUniqueName(char const* name) const;
+
     Fl_Menu_Item *createPrinterAddMenu();
     void fillBrowserWidget(Fl_Browser*, IAPrinter *select=nullptr);
 

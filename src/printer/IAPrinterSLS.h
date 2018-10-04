@@ -19,17 +19,17 @@
  *
  * No color or multimaterial support.
  */
-class IAPrinterSLS : public IAPrinter
-{
-public:
-    IAPrinterSLS(const char *name) : IAPrinter(name) { }
-
-    // ---- direct user interaction
-    virtual void userSliceSave() override;
-    virtual void userSliceSaveAs() override;
-    virtual void userSliceGenerateAll() override;
-
-};
+//class IAPrinterSLS : public IAPrinter
+//{
+//public:
+//    IAPrinterSLS() : IAPrinter() { }
+//
+//    // ---- direct user interaction
+//    virtual void userSliceSave() override;
+//    virtual void userSliceSaveAs() override;
+//    virtual void userSliceGenerateAll() override;
+//
+//};
 
 
 #endif /* IA_PRINTER_SLS_H */

@@ -25,10 +25,12 @@ class IAPrinterFDM : public IAPrinter
     typedef IAPrinter super;
 public:
     // ---- constructor and destructor
-    IAPrinterFDM(const char *name);
-    virtual IAPrinter *clone() override;
-    void operator=(const IAPrinterFDM &rhs);
-    virtual const char *type() override { return "IAPrinterFDM"; }
+    IAPrinterFDM();
+    IAPrinterFDM(IAPrinterFDM const& src);
+    virtual ~IAPrinterFDM() override;
+    IAPrinterFDM &operator=(IAPrinterFDM&) = delete;
+    virtual IAPrinter *clone() const override;
+    virtual const char *type() const override { return "IAPrinterFDM"; }
 
     // ---- direct user interaction
     virtual void userSliceSave() override;
@@ -37,6 +39,9 @@ public:
 
     virtual void purgeSlicesAndCaches() override;
     virtual void drawPreview(double lo, double hi) override;
+    
+    virtual void initializePrinterProperties() override;
+    virtual void initializeSceneSettings() override;
 
     // ----
     void sliceAll();
@@ -58,7 +63,7 @@ protected:
 private:
 
     /// the toolpath for the entire scene for vector based machines
-    IAMachineToolpath pMachineToolpath;
+    IAMachineToolpath pMachineToolpath = IAMachineToolpath(this);
 
     // make sure that the values below are cloned!
     double pNozzleDiameter = 0.4;

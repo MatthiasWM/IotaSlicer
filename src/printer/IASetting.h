@@ -30,6 +30,7 @@ public:
     virtual ~IASetting();
     virtual void build(Fl_Tree*, Type) { }
     virtual void write(Fl_Preferences&) { }
+    virtual void read(Fl_Preferences&) { }
 
     // write to preferences
     // read from preferences
@@ -73,6 +74,7 @@ public:
     virtual ~IASettingFloat() override;
     virtual void build(Fl_Tree*, Type) override;
     virtual void write(Fl_Preferences &p) override { p.set(pPath, pValue); }
+    virtual void read(Fl_Preferences &p) override;
 
     static void wCallback(IAFLFloat *w, IASettingFloat *d);
 
@@ -96,6 +98,7 @@ public:
     virtual ~IASettingText() override;
     virtual void build(Fl_Tree*, Type) override;
     virtual void write(Fl_Preferences &p) override { p.set(pPath, pValue); }
+    virtual void read(Fl_Preferences &p) override;
 
     static void wCallback(IAFLText *w, IASettingText *d);
 
@@ -121,6 +124,7 @@ public:
     virtual ~IASettingFloatChoice() override;
     virtual void build(Fl_Tree*, Type) override;
     virtual void write(Fl_Preferences &p) override { p.set(pPath, pValue); }
+    virtual void read(Fl_Preferences &p) override;
 
     static void wCallback(IAFLFloatChoice *w, IASettingFloatChoice *d);
 
@@ -145,6 +149,7 @@ public:
     virtual ~IASettingChoice() override;
     virtual void build(Fl_Tree*, Type) override;
     virtual void write(Fl_Preferences &p) override { p.set(pPath, pValue); }
+    virtual void read(Fl_Preferences &p) override;
 
     static void wCallback(IAFLChoice *w, IASettingChoice *d);
 
