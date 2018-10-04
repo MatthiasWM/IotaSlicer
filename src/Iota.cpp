@@ -222,9 +222,7 @@ void IAIota::userMenuSettingsManagePrinter()
     }
     IAPrinter *p = pCurrentPrinter;
     pCustomPrinterList.fillBrowserWidget(wSettingsPrinterList, p);
-
-    /** \todo update the printer editor tree viw with all settings items. */
-    p->buildPropertiesUI(wSettingsPrinterProperties);
+    wSettingsPrinterList->do_callback();
 
     /** \todo choose printer teb */
     wSettingsWindow->show();
@@ -264,23 +262,37 @@ void IAIota::userMenuHelpAbout()
 /**
  * User clicked into the printer list and selected a printer to edit.
  *
- * This saves the current printer settings and fills the setting of another
- * printer into the preferences view.
- *
- * \todo implement printer select callback
+ * This fills the the preferences view with the properties of the newly
+ * selected printer.
  */
 void IAIota::userDialogSettingPrinterSelect()
 {
     IAPrinter *p = nullptr;
     int line = wSettingsPrinterList->value();
+    pUserDialogSettingsSelectedPrinterIndex = line;
     if (line) p = (IAPrinter*)wSettingsPrinterList->data(line);
     if (p) {
         p->buildPropertiesUI(wSettingsPrinterProperties);
-        p->saveProperties(); // FIXME:
     } else {
         wSettingsPrinterProperties->clear();
     }
     wSettingsPrinterProperties->redraw();
+}
+
+
+/**
+ * User interaction that ends editing the last selected printer.
+ *
+ * This saves the current printer settings/
+ */
+void IAIota::userDialogSettingPrinterDeselect()
+{
+    IAPrinter *p = nullptr;
+    int line = pUserDialogSettingsSelectedPrinterIndex;
+    if (line) p = (IAPrinter*)wSettingsPrinterList->data(line);
+    if (p) {
+        p->saveProperties();
+    }
 }
 
 
@@ -308,7 +320,6 @@ void IAIota::userDialogSettingPrinterAdd()
             pCustomPrinterList.fillBrowserWidget(wSettingsPrinterList, pNew);
             wSettingsPrinterList->do_callback();
             pCustomPrinterList.saveCustomPrinters();
-            p->saveProperties(); // FIXME:
         }
     }
     ::free((void*)menu);

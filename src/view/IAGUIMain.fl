@@ -391,7 +391,9 @@ Function {createSettingWindow()} {open
 } {
   Fl_Window wSettingsWindow {
     label Settings
-    comment {TODO: save position and size} open selected
+    callback {Iota.userDialogSettingPrinterDeselect();
+o->hide();}
+    comment {TODO: save position and size} open
     xywh {548 249 640 400} type Double resizable modal size_range {640 320 640 2048} visible
   } {
     Fl_Pack {} {
@@ -405,7 +407,8 @@ Function {createSettingWindow()} {open
       } {
         Fl_Button {} {
           label {@filesaveas}
-          comment {TODO: find a new icon}
+          callback {Iota.userDialogSettingPrinterDeselect();}
+          comment {TODO: find a new icon} selected
           xywh {0 2 50 36} box NO_BOX labelsize 20 labelcolor 40 align 16
         }
       }
@@ -425,6 +428,7 @@ Function {createSettingWindow()} {open
       } {
         Fl_Button {} {
           label {@circle}
+          callback {Iota.userDialogSettingPrinterDeselect();}
           comment {TODO: find a new icon}
           xywh {100 2 50 36} box NO_BOX labelsize 20 labelcolor 40 align 16
         }
@@ -444,7 +448,8 @@ Function {createSettingWindow()} {open
           xywh {11 63 148 20} box THIN_UP_BOX color 52 labelsize 13
         }
         Fl_Browser wSettingsPrinterList {
-          callback {Iota.userDialogSettingPrinterSelect();}
+          callback {Iota.userDialogSettingPrinterDeselect();
+Iota.userDialogSettingPrinterSelect();}
           xywh {11 83 148 286} type Hold box FLAT_BOX color 55 textsize 12 resizable
         }
         Fl_Group {} {open

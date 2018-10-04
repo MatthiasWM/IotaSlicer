@@ -472,10 +472,24 @@ Fl_Double_Window* createIotaAboutWindow() {
 
 Fl_Double_Window *wSettingsWindow=(Fl_Double_Window *)0;
 
+static void cb_wSettingsWindow(Fl_Double_Window* o, void*) {
+  Iota.userDialogSettingPrinterDeselect();
+o->hide();
+}
+
+static void cb_filesaveas(Fl_Button*, void*) {
+  Iota.userDialogSettingPrinterDeselect();
+}
+
+static void cb_circle(Fl_Button*, void*) {
+  Iota.userDialogSettingPrinterDeselect();
+}
+
 Fl_Browser *wSettingsPrinterList=(Fl_Browser *)0;
 
 static void cb_wSettingsPrinterList(Fl_Browser*, void*) {
-  Iota.userDialogSettingPrinterSelect();
+  Iota.userDialogSettingPrinterDeselect();
+Iota.userDialogSettingPrinterSelect();
 }
 
 Fl_Button *wSettingPrinterAdd=(Fl_Button *)0;
@@ -493,6 +507,7 @@ Fl_Tree *wSettingsPrinterProperties=(Fl_Tree *)0;
 Fl_Double_Window* createSettingWindow() {
   { // TODO: save position and size
     wSettingsWindow = new Fl_Double_Window(640, 400, "Settings");
+    wSettingsWindow->callback((Fl_Callback*)cb_wSettingsWindow);
     { // TODO: implement the tab style selection of panes
       Fl_Pack* o = new Fl_Pack(0, 0, 640, 48);
       o->type(1);
@@ -506,6 +521,7 @@ Fl_Double_Window* createSettingWindow() {
           o->box(FL_NO_BOX);
           o->labelsize(20);
           o->labelcolor((Fl_Color)40);
+          o->callback((Fl_Callback*)cb_filesaveas);
           o->align(Fl_Align(FL_ALIGN_CENTER|FL_ALIGN_INSIDE));
         } // Fl_Button* o
         o->end();
@@ -533,6 +549,7 @@ Fl_Double_Window* createSettingWindow() {
           o->box(FL_NO_BOX);
           o->labelsize(20);
           o->labelcolor((Fl_Color)40);
+          o->callback((Fl_Callback*)cb_circle);
           o->align(Fl_Align(FL_ALIGN_CENTER|FL_ALIGN_INSIDE));
         } // Fl_Button* o
         o->end();

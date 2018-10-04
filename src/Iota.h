@@ -102,6 +102,7 @@ public:
 
     // -------- settings dialog callbacks
     void userDialogSettingPrinterSelect();
+    void userDialogSettingPrinterDeselect();
     void userDialogSettingPrinterAdd();
     void userDialogSettingPrinterRemove();
 
@@ -142,6 +143,8 @@ public:
     bool gShowTexture;
     /// User settings for this app.
     IAPreferences gPreferences;
+
+    int pUserDialogSettingsSelectedPrinterIndex = 0;
 
 };
 

@@ -186,6 +186,7 @@ void IAPrinter::saveProperties()
 //    Fl_Preferences output(prefs, "output");
 //    output.set("lastFilename", outputPath());
 
+    printf("Saving properties %s\n", name());
     const char *path = Iota.gPreferences.printerDefinitionsPath();
     Fl_Preferences printerProperties(path, "Iota Printer Properties", uuid());
     for (auto &s: pPrinterProperties) {
