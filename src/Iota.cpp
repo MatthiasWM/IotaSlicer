@@ -224,7 +224,7 @@ void IAIota::userMenuSettingsManagePrinter()
     pCustomPrinterList.fillBrowserWidget(wSettingsPrinterList, p);
 
     /** \todo update the printer editor tree viw with all settings items. */
-    p->buildPrinterSettings(wSettingsPrinterProperties);
+    p->buildPropertiesUI(wSettingsPrinterProperties);
 
     /** \todo choose printer teb */
     wSettingsWindow->show();
@@ -275,8 +275,8 @@ void IAIota::userDialogSettingPrinterSelect()
     int line = wSettingsPrinterList->value();
     if (line) p = (IAPrinter*)wSettingsPrinterList->data(line);
     if (p) {
-        p->buildPrinterSettings(wSettingsPrinterProperties);
-        p->saveSettings(); // FIXME:
+        p->buildPropertiesUI(wSettingsPrinterProperties);
+        p->saveProperties(); // FIXME:
     } else {
         wSettingsPrinterProperties->clear();
     }
@@ -308,7 +308,7 @@ void IAIota::userDialogSettingPrinterAdd()
             pCustomPrinterList.fillBrowserWidget(wSettingsPrinterList, pNew);
             wSettingsPrinterList->do_callback();
             pCustomPrinterList.saveCustomPrinters();
-            p->saveSettings(); // FIXME:
+            p->saveProperties(); // FIXME:
         }
     }
     ::free((void*)menu);

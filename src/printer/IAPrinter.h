@@ -52,11 +52,11 @@ public:
     virtual void drawPreview(double lo, double hi);
     virtual void purgeSlicesAndCaches();
 
-    void loadSettings();
-    void saveSettings();
-
-    double layerHeight() { return pLayerHeight; } // Session Setting
-    
+    // ---- properties
+    virtual void initializePrinterProperties();
+    void buildPropertiesUI(Fl_Tree*);
+    void loadProperties();
+    void saveProperties();
     void setName(const char *name);
     const char *name() const;
     void setOutputPath(const char *name);
@@ -65,41 +65,37 @@ public:
     void setNewUUID();
     void setUUID(const char *uuid);
 
-    virtual void initializePrinterProperties();
-    virtual void initializeSceneSettings();
-    void buildPrinterSettings(Fl_Tree*);
-    void buildSessionSettings(Fl_Tree*);
-
-
-    /// This is the current slice that contains the entire scene at a give z.
-    IASlice gSlice = IASlice(this);
-
-protected:
-
-    bool queryOutputFilename(const char *title,
-                             const char *filter,
-                             const char *extension);
-
-    bool pFirstWrite = true;
-
     IASettingList pPrinterProperties;
-    IASettingList pSceneSettings;
-
-private:
-    void userChangedLayerHeight();
-
-public: // FIXME: should be at least protected
-    // properties, make sure to assign and clone
     char *pUUID = nullptr;
     char *pName = nullptr;
     char *pOutputPath = nullptr;
+    bool pFirstWrite = true;
     IAVector3d pBuildVolumeMin = { 0.0, 0.0, 0.0 };
     IAVector3d pBuildVolumeMax = { 214.0, 214.0, 230.0 };
     IAVector3d pBuildVolume = { 214.0, 214.0, 230.0 };
     double pBuildVolumeRadius = 200.0; // sphere that contains the entire centered build volume
 
-    // Scenen setting, should be in another class
+    // ---- scene settings
+    virtual void initializeSceneSettings();
+    void buildSessionSettings(Fl_Tree*);
+    double layerHeight() { return pLayerHeight; } // Session Setting
+
+    IASettingList pSceneSettings;
     double pLayerHeight = 0.3; // Session setting
+
+    // ----
+
+    /// This is the current slice that contains the entire scene at a give z.
+    IASlice gSlice = IASlice(this);
+
+protected:
+    bool queryOutputFilename(const char *title,
+                             const char *filter,
+                             const char *extension);
+
+private:
+    void userChangedLayerHeight();
+
 };
 
 

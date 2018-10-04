@@ -10,9 +10,11 @@
 
 #include "printer/IAPrinter.h"
 
+
 class Fl_Widget;
 class Fl_Choice;
 class Fl_Input_Choice;
+
 
 /**
  * FDM, Fused Deposition Modeling, describes printers that extrude filament
@@ -39,16 +41,27 @@ public:
 
     virtual void purgeSlicesAndCaches() override;
     virtual void drawPreview(double lo, double hi) override;
-    
+
+    // ---- properties
     virtual void initializePrinterProperties() override;
+
+    // ---- scene settings
     virtual void initializeSceneSettings() override;
+    double nozzleDiameter() { return pNozzleDiameter; }
+
+    double pNozzleDiameter = 0.4;
+    int pColorMode = 0;
+    int pNumShells = 3;
+    int pNumLids = 2;
+    int pLidType = 0; // 0=zigzag, 1=concentric
+    double pInfillDensity = 20.0; // %
+    int pHasSkirt = 1; // prime line around perimeter
 
     // ----
     void sliceAll();
     void saveToolpath(const char *filename = nullptr);
 
     int colorMode() { return pColorMode; }
-    double nozzleDiameter() { return pNozzleDiameter; }
     double filamentDiameter() { return 1.75; }
 
 protected:
@@ -64,15 +77,6 @@ private:
 
     /// the toolpath for the entire scene for vector based machines
     IAMachineToolpath pMachineToolpath = IAMachineToolpath(this);
-
-    // make sure that the values below are cloned!
-    double pNozzleDiameter = 0.4;
-    int pColorMode = 0;
-    int pNumShells = 3;
-    int pNumLids = 2;
-    int pLidType = 0; // 0=zigzag, 1=concentric
-    double pInfillDensity = 20.0; // %
-    int pHasSkirt = 1; // prime line around perimeter
 };
 
 

@@ -161,7 +161,7 @@ void IAPrinter::purgeSlicesAndCaches()
  * The file path is the general app data area for every platform, followed by
  * the vendor string. The filename is the name of the printer.
  */
-void IAPrinter::loadSettings()
+void IAPrinter::loadProperties()
 {
 //    char buf[FL_PATH_MAX];
 //    Fl_Preferences prefs(Fl_Preferences::USER, "com.matthiasm.iota.printer", name());
@@ -180,7 +180,7 @@ void IAPrinter::loadSettings()
 /**
  * Save all settings of this printer to a Preferences file.
  */
-void IAPrinter::saveSettings()
+void IAPrinter::saveProperties()
 {
 //    Fl_Preferences prefs(Fl_Preferences::USER, "com.matthiasm.iota.printer", name());
 //    Fl_Preferences output(prefs, "output");
@@ -216,7 +216,7 @@ void IAPrinter::buildSessionSettings(Fl_Tree *treeWidget)
 /**
  * Create the Treeview items for editing the printer properties.
  */
-void IAPrinter::buildPrinterSettings(Fl_Tree *treeWidget)
+void IAPrinter::buildPropertiesUI(Fl_Tree *treeWidget)
 {
     treeWidget->showroot(0);
     treeWidget->item_labelsize(13);
@@ -345,7 +345,7 @@ bool IAPrinter::queryOutputFilename(const char *title,
         fl_filename_setext(buf, sizeof(buf), extension);
     }
     setOutputPath(buf);
-    saveSettings();
+    saveProperties();
     pFirstWrite = false;
     return true;
 }

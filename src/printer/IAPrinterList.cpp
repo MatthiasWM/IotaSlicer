@@ -110,7 +110,7 @@ void IAPrinterList::loadCustomPrinters(IAPrinter *(&currentPrinter))
                 printer->setUUID(uuid);
                 printer->initializePrinterProperties();
                 printer->initializeSceneSettings();
-                printer->loadSettings();
+                printer->loadProperties();
                 add(printer);
             }
         }
@@ -125,7 +125,7 @@ void IAPrinterList::loadCustomPrinters(IAPrinter *(&currentPrinter))
         ::free((void*)newName);
         add(printer);
         saveCustomPrinters();
-        printer->saveSettings();
+        printer->saveProperties();
     }
     currentPrinter = pPrinterList[0];
 }
