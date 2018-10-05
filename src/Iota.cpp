@@ -253,6 +253,19 @@ void IAIota::userMenuHelpAbout()
 }
 
 
+// ---- main window ------------------------------------------------------------
+
+
+void IAIota::userMainSelectPrinter()
+{
+    Fl_Menu_Item const* m = wPrinterChoice->mvalue();
+    if (m) {
+        Iota.pCurrentPrinter = (IAPrinter*)m->user_data();
+        Iota.pCurrentPrinter->buildSessionSettings(wSessionSettings);
+    }
+}
+
+
 #ifdef __APPLE__
 #pragma mark -
 #endif
@@ -328,6 +341,7 @@ void IAIota::userDialogSettingPrinterAdd()
         if (p) {
             pCustomPrinterList.cloneAndAdd(p);
             pCustomPrinterList.fillBrowserWidget(wSettingsPrinterList, p);
+            pCustomPrinterList.updatePrinterSelectMenu();
         }
     }
     ::free((void*)menu);
@@ -342,6 +356,7 @@ void IAIota::userDialogSettingPrinterAdd()
  */
 void IAIota::userDialogSettingPrinterRemove()
 {
+    if (pCustomPrinterList.size()<=1) return;
     IAPrinter *p = nullptr;
     int line = wSettingsPrinterList->value();
     if (line) p = (IAPrinter*)wSettingsPrinterList->data(line);
@@ -353,10 +368,15 @@ void IAIota::userDialogSettingPrinterRemove()
         if (ret==2) {
             pCustomPrinterList.remove(p);
             pCustomPrinterList.fillBrowserWidget(wSettingsPrinterList, 0);
+            pCustomPrinterList.updatePrinterSelectMenu();
             pUserDialogSettingsSelectedPrinterIndex = 0;
             p->removeProperties();
             pCustomPrinterList.saveCustomPrinters();
             wSettingsPrinterList->do_callback();
+            if (pCurrentPrinter==p) {
+                wPrinterChoice->value(0);
+                wPrinterChoice->do_callback();
+            }
             delete p; p = nullptr;
         }
     }
@@ -529,7 +549,8 @@ int main (int argc, char **argv)
                                  Iota.gPreferences.pMainWindowW,
                                  Iota.gPreferences.pMainWindowH);
     }
-    wPrinterName->copy_label(Iota.pCurrentPrinter->name());
+    wPrinterChoice->value(0);
+    Iota.pCustomPrinterList.updatePrinterSelectMenu();
     Iota.pCurrentPrinter->buildSessionSettings(wSessionSettings);
     Iota.gMainWindow->show();
     Fl::flush();

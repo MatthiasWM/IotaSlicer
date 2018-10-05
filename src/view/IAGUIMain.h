@@ -27,7 +27,8 @@ extern Fl_Double_Window *wMainWindow;
 extern IASceneView *gSceneView;
 #include <FL/Fl_Box.H>
 extern IAGLRangeSlider *zRangeSlider;
-extern Fl_Box *wPrinterName;
+#include <FL/Fl_Choice.H>
+extern Fl_Choice *wPrinterChoice;
 #include <FL/Fl_Tree.H>
 extern Fl_Tree *wSessionSettings;
 Fl_Double_Window* createIotaAppWindow();

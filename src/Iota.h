@@ -100,6 +100,9 @@ public:
     void userMenuHelpVersioneer();
     void userMenuHelpAbout();
 
+    // ---- main window
+    void userMainSelectPrinter();
+
     // -------- settings dialog callbacks
     void userDialogSettingPrinterSelect();
     void userDialogSettingPrinterDeselect();

@@ -270,7 +270,12 @@ static void cb_zRangeSlider(IAGLRangeSlider*, void*) {
     gSceneView->redraw();
 }
 
-Fl_Box *wPrinterName=(Fl_Box *)0;
+Fl_Choice *wPrinterChoice=(Fl_Choice *)0;
+
+static void cb_wPrinterChoice(Fl_Choice* o, void*) {
+  Iota.userMainSelectPrinter();
+o->redraw();
+}
 
 Fl_Tree *wSessionSettings=(Fl_Tree *)0;
 
@@ -388,11 +393,15 @@ Fl_Double_Window* createIotaAppWindow() {
             Fl_Group* o = new Fl_Group(605, 33, 240, 562);
             o->labelsize(12);
             o->align(Fl_Align(FL_ALIGN_CENTER|FL_ALIGN_INSIDE));
-            { wPrinterName = new Fl_Box(605, 33, 240, 28);
-              wPrinterName->box(FL_THIN_UP_BOX);
-              wPrinterName->color(FL_DARK1);
-              wPrinterName->labelsize(12);
-            } // Fl_Box* wPrinterName
+            { wPrinterChoice = new Fl_Choice(605, 33, 240, 28);
+              wPrinterChoice->box(FL_UP_BOX);
+              wPrinterChoice->down_box(FL_DOWN_BOX);
+              wPrinterChoice->color(FL_DARK1);
+              wPrinterChoice->labelsize(12);
+              wPrinterChoice->textsize(12);
+              wPrinterChoice->callback((Fl_Callback*)cb_wPrinterChoice);
+              wPrinterChoice->align(Fl_Align(FL_ALIGN_CENTER));
+            } // Fl_Choice* wPrinterChoice
             { wSessionSettings = new Fl_Tree(605, 62, 240, 475);
               Fl_Group::current()->resizable(wSessionSettings);
             } // Fl_Tree* wSessionSettings

@@ -26,8 +26,7 @@ public:
     ~IAPrinterList();
     bool add(IAPrinter *printer);
     void remove(IAPrinter *printer);
-//    IAPrinter *defaultPrinter();
-//    void userSelectsPrinter(IAPrinter *p);
+    int size() { return (int)pPrinterList.size(); }
 
     void generatePrototypes();
     void loadCustomPrinters(IAPrinter *(&p));
@@ -37,15 +36,11 @@ public:
     char *makeUniqueName(char const* name) const;
 
     Fl_Menu_Item *createPrinterAddMenu();
+    Fl_Menu_Item *createPrinterSelectMenu();
+    void updatePrinterSelectMenu();
     void fillBrowserWidget(Fl_Browser*, IAPrinter *select=nullptr);
 
 private:
-//    void buildMenuArray();
-//    void buildSessionSettings(IAPrinter *p);
-//    static void userSelectsPrinterCB(Fl_Menu_Item*, void *p);
-
-//    Fl_Menu_Item *pMenuItem = nullptr;
-//    Fl_Menu_Item *pMenuArray = nullptr;
 
     std::vector<IAPrinter *> pPrinterList;
 };

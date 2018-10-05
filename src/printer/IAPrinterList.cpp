@@ -239,7 +239,7 @@ void IAPrinterList::remove(IAPrinter *printer)
 
 
 /**
- * Create a menuitem list that allows the used to duplicate printers in
+ * Create a menuitem list that allows the user to duplicate printers in
  * this list.
  *
  * \return a list of meu items that must be free'd by the caller.
@@ -250,79 +250,50 @@ Fl_Menu_Item *IAPrinterList::createPrinterAddMenu()
     Fl_Menu_Item *mi = (Fl_Menu_Item*)calloc(n+3, sizeof(Fl_Menu_Item));
     mi[0].label("Duplicate selected");
     mi[0].flags |= FL_MENU_DIVIDER;
+    mi[0].labelsize(12);
     mi[1].label("Duplicate Prototype:");
     mi[1].flags |= FL_MENU_INACTIVE;
+    mi[1].labelsize(12);
     for (int i=0; i<n; i++) {
         IAPrinter *p = pPrinterList[i];
         mi[i+2].label(p->name());
         mi[i+2].user_data(p);
+        mi[i+2].labelsize(12);
     }
     return mi;
 }
 
 
 /**
- * Buold a menu array and link it to the printer selection menu.
+ * Create a menuitem list that allows the used to select a printer from
+ * this list.
  *
- * \todo a checkmark at the selected printer would be nice
- * \todo just show customized printers, not the generic ones
- * \todo append menu item "Add new printer..."
- * \todo create a printer creation dialog
+ * \return a list of meu items that must be free'd by the caller.
  */
-//void IAPrinterList::buildMenuArray()
-//{
-//    if (pMenuArray) ::free((void*)pMenuArray);
-//
-//    pMenuArray = (Fl_Menu_Item*)::calloc( sizeof(Fl_Menu_Item),
-//                                         pPrinterList.size()+1);
-//    Fl_Menu_Item *m = pMenuArray;
-//    for (auto &p: pPrinterList) {
-//        m->label(p->name());
-//        m->callback((Fl_Callback*)userSelectsPrinterCB, p);
-//        m++;
-//    }
-//
-//    pMenuItem->flags |= FL_SUBMENU_POINTER;
-//    pMenuItem->user_data(pMenuArray);
-//}
+Fl_Menu_Item *IAPrinterList::createPrinterSelectMenu()
+{
+    int n = (int)pPrinterList.size();
+    Fl_Menu_Item *mi = (Fl_Menu_Item*)calloc(n+1, sizeof(Fl_Menu_Item));
+    for (int i=0; i<n; i++) {
+        IAPrinter *p = pPrinterList[i];
+        mi[i].label(p->name());
+        mi[i].user_data(p);
+        mi[i].labelsize(12);
+    }
+    return mi;
+}
 
 
-/**
- * Select another printer.
- *
- * \todo flush all kinds of things
- * \todo move this code into Iota class
- * \todo redraw the entire user interface
- */
-//void IAPrinterList::userSelectsPrinter(IAPrinter *p)
-//{
-//    Iota.pCurrentPrinter = p;
-//    Iota.gMainWindow->redraw();
-//    wPrinterName->copy_label(p->name());
-//    buildSessionSettings(p);
-//}
-
-
-//void IAPrinterList::buildSessionSettings(IAPrinter *p)
-//{
-//    wSessionSettings->showroot(0);
-//    wSessionSettings->item_labelsize(13);
-//    wSessionSettings->linespacing(3);
-//    wSessionSettings->item_draw_mode(FL_TREE_ITEM_DRAW_DEFAULT);
-//    wSessionSettings->clear();
-//    wSessionSettings->begin();
-//    p->buildSceneSettings(wSessionSettings);
-//    wSessionSettings->end();
-//}
-
-
-/**
- * User selected a printer from the menu item list.
- */
-//void IAPrinterList::userSelectsPrinterCB(Fl_Menu_Item*, void *p)
-//{
-//    Iota.pPrinterPrototypeList.userSelectsPrinter((IAPrinter*)p);
-//}
+void IAPrinterList::updatePrinterSelectMenu()
+{
+    if (wPrinterChoice) {
+        if (wPrinterChoice->menu()) {
+            ::free((void*)wPrinterChoice->menu());
+        }
+        Fl_Menu_Item *m = createPrinterSelectMenu();
+        wPrinterChoice->menu(m);
+    }
+}
 
 
 void IAPrinterList::fillBrowserWidget(Fl_Browser *browser, IAPrinter *select)

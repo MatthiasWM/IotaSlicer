@@ -128,23 +128,6 @@ void IAPrinter::initializeSceneSettings()
 }
 
 
-
-/**
- * Copy properties from another printer.
- */
-//void IAPrinter::operator=(const IAPrinter &rhs)
-//{
-//    pName = strdup(rhs.pName);
-//    pOutputPath = rhs.pOutputPath ? strdup(rhs.pOutputPath) : nullptr;
-//    pBuildVolumeMin = rhs.pBuildVolumeMin;
-//    pBuildVolumeMax = rhs.pBuildVolumeMax;
-//    pBuildVolume = rhs.pBuildVolume;
-//    pBuildVolumeRadius = rhs.pBuildVolumeRadius;
-//
-//    pLayerHeight = rhs.pLayerHeight;
-//}
-
-
 /**
  * Clear all buffered data and prepare for a modified scene.
  */
@@ -163,6 +146,7 @@ void IAPrinter::purgeSlicesAndCaches()
  */
 void IAPrinter::loadProperties()
 {
+    // FIXME: where do we save this?
 //    char buf[FL_PATH_MAX];
 //    Fl_Preferences prefs(Fl_Preferences::USER, "com.matthiasm.iota.printer", name());
 //    Fl_Preferences output(prefs, "output");
@@ -186,7 +170,6 @@ void IAPrinter::saveProperties()
 //    Fl_Preferences output(prefs, "output");
 //    output.set("lastFilename", outputPath());
 
-    printf("Saving properties %s\n", name());
     const char *path = Iota.gPreferences.printerDefinitionsPath();
     Fl_Preferences printerProperties(path, "Iota Printer Properties", uuid());
     for (auto &s: pPrinterProperties) {
