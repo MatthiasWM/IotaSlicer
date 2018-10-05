@@ -137,7 +137,7 @@ void IAPrinterInkjet::sliceAll()
 void IAPrinterInkjet::saveSlices(const char *filename)
 {
     if (!filename)
-        filename = outputPath();
+        filename = recentUploadFilename();
     char fn[FL_PATH_MAX];
     strcpy(fn, filename);
     char *a = (char*)fl_filename_ext(fn);

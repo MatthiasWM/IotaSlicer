@@ -427,7 +427,7 @@ void IAPrinterFDM::sliceAll()
 void IAPrinterFDM::saveToolpath(const char *filename)
 {
     if (!filename)
-        filename = outputPath();
+        filename = recentUploadFilename();
     pMachineToolpath.optimize();
     // generate Toolpath if it is not complete
     pMachineToolpath.saveGCode(filename);

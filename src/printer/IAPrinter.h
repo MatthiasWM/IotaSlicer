@@ -60,8 +60,8 @@ public:
     void removeProperties();
     void setName(const char *name);
     const char *name() const;
-    void setOutputPath(const char *name);
-    const char *outputPath() const;
+    void setRecentUploadFilename(const char *name);
+    const char *recentUploadFilename() const;
     const char *uuid() const { return pUUID; }
     void setNewUUID();
     void setUUID(const char *uuid);
@@ -69,7 +69,7 @@ public:
     IASettingList pPrinterProperties;
     char *pUUID = nullptr;
     char *pName = nullptr;
-    char *pOutputPath = nullptr;
+    char *pRecentUploadFilename = nullptr;
     bool pFirstWrite = true;
     IAVector3d pBuildVolumeMin = { 0.0, 0.0, 0.0 };
     IAVector3d pBuildVolumeMax = { 214.0, 214.0, 230.0 };
