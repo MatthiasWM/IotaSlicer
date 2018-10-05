@@ -87,9 +87,18 @@ void IAPrinter::initializePrinterProperties()
     //     # transports
     //       transport 1
     //
-    pPrinterProperties.push_back( new IASettingLabel("uuid", "Printer ID:", uuid()) );
-    pPrinterProperties.push_back( new IASettingText("name", "Printer Name:", pName, 32, "",
-                                                     [this]{ ; } ) );
+    IASetting *s;
+
+    // -- display the UUID (this is not really important for the user)
+    s = new IASettingLabel("uuid", "Printer ID:", uuid());
+    pPrinterProperties.push_back(s);
+
+    // -- editable name of this printer
+    s = new IASettingText("name", "Printer Name:", pName, 32, "",
+                          [this]{ Iota.pPrinterListController.preferencesNameChanged(); } );
+    pPrinterProperties.push_back(s);
+
+    // -- all printers have some kind of build platform
     pPrinterProperties.push_back( new IASettingLabel("buildVolume", "Build Volume:"));
     // bed shape (Choice, rect, round)
     // printbed width, depth

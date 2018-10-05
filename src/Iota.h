@@ -15,6 +15,7 @@
 #include "geometry/IASlice.h"
 #include "printer/IAPrinterList.h"
 #include "app/IAPreferences.h"
+#include "controller/IAPrinterListController.h"
 
 
 class IAGeometryReader;
@@ -148,6 +149,8 @@ public:
     IAPreferences gPreferences;
 
     int pUserDialogSettingsSelectedPrinterIndex = 0;
+
+    IAPrinterListController pPrinterListController;
 
 };
 

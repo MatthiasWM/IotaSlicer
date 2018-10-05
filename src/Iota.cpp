@@ -280,16 +280,7 @@ void IAIota::userMainSelectPrinter()
  */
 void IAIota::userDialogSettingPrinterSelect()
 {
-    IAPrinter *p = nullptr;
-    int line = wSettingsPrinterList->value();
-    pUserDialogSettingsSelectedPrinterIndex = line;
-    if (line) p = (IAPrinter*)wSettingsPrinterList->data(line);
-    if (p) {
-        p->buildPropertiesUI(wSettingsPrinterProperties);
-    } else {
-        wSettingsPrinterProperties->clear();
-    }
-    wSettingsPrinterProperties->redraw();
+    pPrinterListController.preferencesPrinterSeleted();
 }
 
 
@@ -300,12 +291,7 @@ void IAIota::userDialogSettingPrinterSelect()
  */
 void IAIota::userDialogSettingPrinterDeselect()
 {
-    IAPrinter *p = nullptr;
-    int line = pUserDialogSettingsSelectedPrinterIndex;
-    if (line) p = (IAPrinter*)wSettingsPrinterList->data(line);
-    if (p) {
-        p->saveProperties();
-    }
+    pPrinterListController.preferencesPrinterDeseleted();
 }
 
 
