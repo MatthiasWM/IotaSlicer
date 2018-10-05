@@ -320,11 +320,11 @@ void IAPrinterFDM::sliceAll()
         if (pSupport) {
             IAFramebuffer support(this, IAFramebuffer::RGBAZ);
             support.bindForRendering();
-            support.clipAboveZ(z);
+            support.clipAboveZ(z); // FIXME: add a value in mm to create a space between support and triangles
             Iota.pMesh->drawAngledFaces(180.0-45.0);
             glDisable(GL_CLIP_PLANE0);
             support.unbindFromRendering();
-            support.overlayInfillPattern(0, 2*pNozzleDiameter * (100.0 / pInfillDensity) - pNozzleDiameter);
+            support.overlayInfillPattern(0, 2*pNozzleDiameter * (100.0 / 30.0 /* density */) - pNozzleDiameter);
             auto supportPath = support.toolpathFromLasso(z);
             if (supportPath) tp->add(supportPath.get(), 60, 0);
             // FIXME: don't draw anything we will draw otherwise

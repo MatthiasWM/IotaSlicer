@@ -1241,7 +1241,7 @@ void IAFramebuffer::addGap()
 
 void IAFramebuffer::clipAboveZ(double z)
 {
-    GLdouble equationUpperHalf[4] = { 0.0, 0.0, 1.0, -z+0.05 };
+    GLdouble equationUpperHalf[4] = { 0.0, 0.0, 1.0, -z };
     glClipPlane(GL_CLIP_PLANE0, equationUpperHalf);
     glEnable(GL_CLIP_PLANE0);
 }
