@@ -48,7 +48,7 @@ public:
     void setEdges(IAHalfEdge *e0, IAHalfEdge *e1, IAHalfEdge *e2) {
         pEdge[0] = e0; pEdge[1] = e1; pEdge[2] = e2; }
 
-    /** Triangle face normal. */
+    /** Triangle face normal, length is 1. */
     IAVector3d pNormal;
 
     /** Universal user flag, used to help find the slice circumference. */

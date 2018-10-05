@@ -56,6 +56,7 @@ public:
     int pLidType = 0; // 0=zigzag, 1=concentric
     double pInfillDensity = 20.0; // %
     int pHasSkirt = 1; // prime line around perimeter
+    int pSupport = 1;
 
     // ----
     void sliceAll();

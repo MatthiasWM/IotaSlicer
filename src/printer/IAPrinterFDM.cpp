@@ -173,6 +173,15 @@ void IAPrinterFDM::initializeSceneSettings()
                                  [this]{userChangedNozzleDiameter();}, nozzleDiameterMenu );
     pSceneSettings.push_back(s);
 
+    static Fl_Menu_Item supportMenu[] = {
+        { "no", 0, nullptr, (void*)0, 0, 0, 0, 11 },
+        { "yes", 0, nullptr, (void*)1, 0, 0, 0, 11 },
+        { nullptr } };
+    s = new IASettingChoice("support", "support: ", pSupport,
+                            [this]{ ; }, supportMenu ); // FIXME: recache all
+    pSceneSettings.push_back(s);
+
+
     // Extrusion width
     // Extrusion speed
 
@@ -186,48 +195,6 @@ void IAPrinterFDM::initializeSceneSettings()
     //    pSettingList.push_back( new IASettingLabel( "test", "Test") );
     //    pSettingList.push_back( new IASettingLabel( "test/toast", "Whitebread") );
 }
-
-
-/**
- * Create a new printer that is a clone of this printer.
- *
- * The printer name will be change to be unique by adding an index number.
- */
-//IAPrinter *IAPrinterFDM::clone()
-//{
-//    char buf[FL_PATH_MAX];
-//    strcpy(buf, name());
-//    char *ext = (char*)fl_filename_ext(buf);
-//    if (ext && isdigit(ext[1])) {
-//        int v = atoi(ext+1);
-//        sprintf(ext, ".%d", v+1);
-//    } else {
-//        fl_filename_setext(buf, sizeof(buf), ".1");
-//    }
-//    IAPrinterFDM *dst = new IAPrinterFDM(buf);
-//
-//    dst->pNozzleDiameter = pNozzleDiameter;
-//    dst->pColorMode = pColorMode;
-//    dst->pNumShells = pNumShells;
-//    dst->pNumLids = 2;
-//    dst->pLidType = pLidType;
-//    dst->pInfillDensity = pInfillDensity;
-//    dst->pHasSkirt = pHasSkirt;
-//    return dst;
-//}
-
-
-//void IAPrinterFDM::operator=(const IAPrinterFDM &rhs)
-//{
-//    super::operator=(rhs);
-//    pNozzleDiameter = rhs.pNozzleDiameter;
-//    pColorMode = rhs.pColorMode;
-//    pNumShells = rhs.pNumShells;
-//    pNumLids = rhs.pNumLids;
-//    pLidType = rhs.pLidType;
-//    pInfillDensity = rhs.pInfillDensity;
-//    pHasSkirt = rhs.pHasSkirt;
-//}
 
 
 /**
@@ -348,6 +315,26 @@ void IAPrinterFDM::sliceAll()
 
         IAToolpathList *tp = pMachineToolpath.findLayer(z);
         IASlice *slc = sliceList[i];
+
+        // --- support structures
+        if (pSupport) {
+            IAFramebuffer support(this, IAFramebuffer::RGBAZ);
+            support.bindForRendering();
+            support.clipAboveZ(z);
+            Iota.pMesh->drawAngledFaces(180.0-45.0);
+            glDisable(GL_CLIP_PLANE0);
+            support.unbindFromRendering();
+            support.overlayInfillPattern(0, 2*pNozzleDiameter * (100.0 / pInfillDensity) - pNozzleDiameter);
+            auto supportPath = support.toolpathFromLasso(z);
+            if (supportPath) tp->add(supportPath.get(), 60, 0);
+            // FIXME: don't draw anything we will draw otherwise
+            // FIXME: leave one (or two) layers empty, so that the support will stick less
+            // FIXME: don't draw support through geometry below!
+            // FIXME: find icicles and draw support for those
+            // FIXME: avoid support outlines that merge with vertical neighbor surfaces
+        }
+
+        // --- infill, lids, bottoms
 
         IAFramebuffer infill(slc->pFramebuffer);
 

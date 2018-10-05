@@ -42,6 +42,7 @@ public:
     double normalize();
     IAVector3d normalized();
     void setZero();
+    double dot(const IAVector3d&) const;
     void read(float*);
     void read(double*);
     double length() const;

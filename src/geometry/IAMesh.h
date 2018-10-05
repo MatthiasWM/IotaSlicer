@@ -43,6 +43,7 @@ public:
     bool validate();
     void drawGouraud();
     void drawFlat(bool textured=false, float r=0.6f, float g=0.6, float b=0.6, float a=1.0);
+    void drawAngledFaces(double a);
 //    void drawShrunk(unsigned int, double);
     void drawEdges();
     void drawSliced(double z);

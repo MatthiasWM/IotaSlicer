@@ -320,4 +320,9 @@ bool IAVector3d::operator==(const IAVector3d &rhs) const
 }
 
 
+double IAVector3d::dot(const IAVector3d &rhs) const
+{
+    return x()*rhs.x() + y()*rhs.y() + z()*rhs.z();
+}
+
 

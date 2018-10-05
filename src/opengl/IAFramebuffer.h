@@ -120,6 +120,8 @@ public:
     void addPoint(double x, double y);
     void addGap();
 
+    void clipAboveZ(double z);
+
 protected:
     bool hasFBO();
     void activateFBO();

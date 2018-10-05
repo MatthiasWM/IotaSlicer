@@ -427,6 +427,32 @@ void IAMesh::drawFlat(bool textured, float r, float g, float b, float a)
 }
 
 
+void IAMesh::drawAngledFaces(double a)
+{
+    glDisable(GL_TEXTURE_2D);
+    glDisable(GL_LIGHTING);
+    glColor3f(1.0, 1.0, 1.0);
+
+    IAVector3d zVec = { 0.0, 0.0, 1.0 };
+    double ref = cos(a/180.0*M_PI);
+
+    glBegin(GL_TRIANGLES);
+    for (auto &t: triangleList) {
+        double na = t->pNormal.dot(zVec);
+        if (na<ref) {
+            glNormal3dv(t->pNormal.dataPointer()); // FIXME: global normal!
+            for (int j = 0; j < 3; ++j) {
+                IAVertex *v = t->vertex(j);
+//                glVertex3dv(v->pLocalPosition.dataPointer());
+                glVertex3dv(v->pGlobalPosition.dataPointer());
+            }
+        }
+    }
+    glEnd();
+
+}
+
+
 /**
  * Draw all the edges in the mesh.
  */
