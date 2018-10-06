@@ -30,6 +30,7 @@ void IAProgressDialog::createProgressDialog()
     if (wDialog) return;
 
     wDialog = new Fl_Double_Window(436, 102, "Progress");
+    wDialog->callback((Fl_Callback*)cb_Abort);
     wProgress = new Fl_Progress(24, 37, 388, 20);
     Fl_Button* o = new Fl_Button(320, 67, 92, 24, "Abort");
     o->callback((Fl_Callback*)cb_Abort);

@@ -372,41 +372,29 @@ void IAMesh::calculateVertexNormals()
 
 
 /**
- * Draw the mesh using the vertex normals to create Gouraud shading.
- *
- * If textures are diabled, the drawing is white. If textures are enabled,
- * the model will be dran textured.
- */
-void IAMesh::drawGouraud()
-{
-    glColor3f(1.0f, 1.0f, 1.0f);
-    glBegin(GL_TRIANGLES);
-    for (auto &t: triangleList) {
-        for (int j = 0; j < 3; ++j) {
-            IAVertex *v = t->vertex(j);
-            glNormal3dv(v->pNormal.dataPointer());
-            glTexCoord2dv(v->pTex.dataPointer());
-            glVertex3dv(v->pLocalPosition.dataPointer());
-        }
-    }
-    glEnd();
-}
-
-
-/**
  * Draw the mesh using the face normals to create flat shading.
  *
  * \param textured if true, activate OpenGL texture rendering
  * \param r, g, b, a the base color of the meshes, or white if the textures
  *      are enabled
  */
-void IAMesh::drawFlat(bool textured, float r, float g, float b, float a)
+void IAMesh::draw(Shader s, float r, float g, float b, float a)
 {
-    if (textured) {
-        glEnable(GL_TEXTURE_2D);
-        r = g = b = 1.0;
-    } else {
-        glDisable(GL_TEXTURE_2D);
+    glPushAttrib(GL_ENABLE_BIT);
+    switch (s) {
+        case kTEXTURED:
+            glEnable(GL_TEXTURE_2D);
+            glEnable(GL_LIGHTING);
+            r = g = b = 1.0;
+            break;
+        case kFLAT:
+            glDisable(GL_TEXTURE_2D);
+            glEnable(GL_LIGHTING);
+            break;
+        case kMASK:
+            glDisable(GL_TEXTURE_2D);
+            glDisable(GL_LIGHTING);
+            break;
     }
 
     glColor4f(r, g, b, a);
@@ -415,15 +403,13 @@ void IAMesh::drawFlat(bool textured, float r, float g, float b, float a)
         glNormal3dv(t->pNormal.dataPointer());
         for (int j = 0; j < 3; ++j) {
             IAVertex *v = t->vertex(j);
-            glTexCoord2dv(v->pTex.dataPointer());
+            if (s==kTEXTURED) glTexCoord2dv(v->pTex.dataPointer());
             glVertex3dv(v->pLocalPosition.dataPointer());
         }
     }
     glEnd();
 
-    if (textured) {
-        glDisable(GL_TEXTURE_2D);
-    }
+    glPopAttrib();
 }
 
 
@@ -588,7 +574,7 @@ void IAMesh::drawSliced(double zPlane)
     // restore the matrix for this mesh
     glPopMatrix();
     // draw the model in any shader we like
-    drawFlat(Iota.gShowTexture);
+    draw(IAMesh::kFLAT);
     // disable the clipping plane
     glDisable(GL_CLIP_PLANE0);
 
@@ -597,20 +583,6 @@ void IAMesh::drawSliced(double zPlane)
     Iota.gMeshSlice.drawFlat(1.0, 0.9, 0.9);
     // to draw the voxel version of the slice, use (in global space)
     // Iota.gMeshSlice.drawFramebuffer();
-#endif
-
-#if 0
-    // draw a ghoste upper half of the model
-    // This may or may not hel orientation. It's currently disabled because
-    // it messes up the depth buffer for later slice drawing operations.
-    // To fix that, we'd have to add functions drawSlicedLower and
-    // drawSlicedUpper, which we call late.
-    glEnable(GL_CLIP_PLANE1);
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    glEnable(GL_CULL_FACE);
-    Iota.pMesh->drawFlat(false, 0.6, 0.6, 0.6, 0.1);
-    glDisable(GL_CLIP_PLANE1);
 #endif
 
     glDisable(GL_CULL_FACE);
@@ -648,7 +620,7 @@ void IAMesh::drawSlicedGhost(double zPlane)
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glEnable(GL_CULL_FACE);
-    Iota.pMesh->drawFlat(false, 0.6, 0.6, 0.6, 0.1);
+    Iota.pMesh->draw(IAMesh::kFLAT, 0.6, 0.6, 0.6, 0.1);
     glDisable(GL_CLIP_PLANE1);
 
     glDisable(GL_CULL_FACE);

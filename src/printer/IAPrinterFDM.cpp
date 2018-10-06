@@ -276,7 +276,14 @@ void IAPrinterFDM::sliceAll()
         IAToolpathList *tp = pMachineToolpath.createLayer(z);
 
         if (pHasSkirt && z==zMin) {
-            IAFramebuffer skirt = slc->pFramebuffer;
+            IAFramebuffer skirt(this, IAFramebuffer::RGBA);
+            skirt.bindForRendering();
+            glPushMatrix();
+            glTranslated(Iota.pMesh->position().x(), Iota.pMesh->position().y(), Iota.pMesh->position().z());
+            Iota.pMesh->draw(IAMesh::kMASK, 1.0, 1.0, 1.0);
+            glPopMatrix();
+            skirt.unbindFromRendering();
+            skirt.saveAsJpeg("/Users/matt/aaa.jpg");
             skirt.toolpathFromLassoAndExpand(z, 3);  // 3mm, should probably be more if the extrusion is 1mm or more
             IAToolpathListSP tpSkirt1 = skirt.toolpathFromLassoAndContract(z, pNozzleDiameter);
             tp->add(tpSkirt1.get(), 5, 0);
@@ -319,17 +326,38 @@ void IAPrinterFDM::sliceAll()
         // --- support structures
         if (pSupport) {
             IAFramebuffer support(this, IAFramebuffer::RGBAZ);
+
             support.bindForRendering();
-            support.clipAboveZ(z); // FIXME: add a value in mm to create a space between support and triangles
-            Iota.pMesh->drawAngledFaces(180.0-45.0);
-            glDisable(GL_CLIP_PLANE0);
+
+            glEnable(GL_DEPTH_TEST);
+            glDepthFunc(GL_GREATER);
+
+            glClearDepth(0.0);
+            glClear(GL_DEPTH_BUFFER_BIT);
+
+            support.beginClipBelowZ(z);
+
+            Iota.pMesh->drawAngledFaces(180.0-40.0);
+
+            glPushMatrix();
+            glTranslated(Iota.pMesh->position().x(), Iota.pMesh->position().y(), Iota.pMesh->position().z());
+            Iota.pMesh->draw(IAMesh::kMASK, 0.0, 0.0, 0.0);
+            glPopMatrix();
+
+            support.endClip();
+
+            glDepthFunc(GL_LESS);
+            glClearDepth(1.0);
+
             support.unbindFromRendering();
+            
+            // FIXME: change to bitmap mode
+            // FIXME: shrink!
             support.overlayInfillPattern(0, 2*pNozzleDiameter * (100.0 / 30.0 /* density */) - pNozzleDiameter);
             auto supportPath = support.toolpathFromLasso(z);
             if (supportPath) tp->add(supportPath.get(), 60, 0);
             // FIXME: don't draw anything we will draw otherwise
             // FIXME: leave one (or two) layers empty, so that the support will stick less
-            // FIXME: don't draw support through geometry below!
             // FIXME: find icicles and draw support for those
             // FIXME: avoid support outlines that merge with vertical neighbor surfaces
         }

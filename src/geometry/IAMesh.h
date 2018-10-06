@@ -37,12 +37,12 @@ typedef std::multimap<double, IAHalfEdge*> IAHalfEdgeMap;
 class IAMesh
 {
 public:
+    typedef enum { kFLAT, kTEXTURED, kMASK } Shader;
     IAMesh();
     virtual ~IAMesh() { clear(); }
     virtual void clear();
     bool validate();
-    void drawGouraud();
-    void drawFlat(bool textured=false, float r=0.6f, float g=0.6, float b=0.6, float a=1.0);
+    void draw(Shader s=kFLAT, float r=0.6f, float g=0.6, float b=0.6, float a=1.0);
     void drawAngledFaces(double a);
 //    void drawShrunk(unsigned int, double);
     void drawEdges();

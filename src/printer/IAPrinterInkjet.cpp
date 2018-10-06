@@ -166,7 +166,7 @@ void IAPrinterInkjet::saveSlices(const char *filename)
         gSlice.clear();
         gSlice.generateRim(Iota.pMesh);
         gSlice.tesselateLidFromRim();
-        gSlice.drawFlat(false, 1, 1, 1);
+        gSlice.draw(IAMesh::kMASK, 1, 1, 1);
 
         uint8_t *alpha = gSlice.pFramebuffer->getRawImageRGB();
         uint8_t *rgb = gSlice.pColorbuffer->getRawImageRGBA();

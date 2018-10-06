@@ -120,7 +120,9 @@ public:
     void addPoint(double x, double y);
     void addGap();
 
-    void clipAboveZ(double z);
+    void beginClipAboveZ(double z);
+    void beginClipBelowZ(double z);
+    void endClip();
 
 protected:
     bool hasFBO();

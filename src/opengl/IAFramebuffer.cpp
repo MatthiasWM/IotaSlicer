@@ -31,81 +31,6 @@ const char *glIAErrorString(int err)
 #endif
 }
 
-#if 0
-// VMWareDetector.cpp : Defines the entry point for the console application.
-//
-
-#include "stdafx.h"
-#include "windows.h"
-#include <conio.h>
-void CheckVM(void);
-int main()
-{
-    CheckVM();
-    _getch();
-    return 0;
-}
-
-void CheckVM(void)
-{
-    unsigned int    a, b;
-
-    __try {
-        __asm {
-
-            // save register values on the stack
-            push eax
-            push ebx
-            push ecx
-            push edx
-
-            // perform fingerprint
-            mov eax, 'VMXh' // VMware magic value (0x564D5868)
-            mov ecx, 0Ah // special version cmd (0x0a)
-            mov dx, 'VX' // special VMware I/O port (0x5658)
-
-            in eax, dx // special I/O cmd
-
-            mov a, ebx // data
-            mov b, ecx // data (eax gets also modified
-            // but will not be evaluated)
-
-            // restore register values from the stack
-            pop edx
-            pop ecx
-            pop ebx
-            pop eax
-        }
-    }
-    __except (EXCEPTION_EXECUTE_HANDLER) {}
-    printf("\n[+] Debug : [ a=%x ; b=%d ]\n\n", a, b);
-    if (a == 'VMXh') { // is the value equal to the VMware magic value?
-        printf("Result  : VMware detected\nVersion : ");
-        if (b == 1)
-            printf("Express\n\n");
-        else if (b == 2)
-            printf("ESX\n\n");
-        else if (b == 3)
-            printf("GSX\n\n");
-        else if (b == 4)
-            printf("Workstation\n\n");
-        else
-            printf("unknown version\n\n");
-    }
-    else
-        printf("Result  : Not Detected\n\n");
-}
-
-#include <intrin.h>
-
-bool isGuestOSVM()
-{
-    unsigned int cpuInfo[4];
-    __cpuid((int*)cpuInfo,1);
-    return ((cpuInfo[2] >> 31) & 1) == 1;
-}
-
-#endif
 
 
 #ifdef __LINUX__
@@ -127,42 +52,7 @@ PFNGLDELETERENDERBUFFERSEXTPROC glDeleteRenderbuffersEXT;
 PFNGLBLENDEQUATIONEXTPROC glBlendEquationEXT;
 PFNGLBLITFRAMEBUFFEREXTPROC glBlitFramebufferEXT;
 #endif
-/*
- glColorMask(bool r, bool g, bool b, bool a);
- glLogicOp(x);
 
- glDepthMask(bool z);
- glDepthFunc();
- glDepthTest();
-
- glBlendFunc();
- glBlendColor();
- glBlendEquation();
-
- glStencilMask(uint bits);
- glStencilOp(a, b, c);
- glStencilFunc(a, b, c);
-
- Voxels are represented as multiple layers of RGBA image maps. R, G, and B
- represent the color of the object in 8 bits per component.
-
- The alpha channel uses bits to represent the property of the voxel.
- - bit 7: inside of the model
- - bit 6: infill or shell
- - bit 5: lid/bottom or shell
- - bit 4: external support structure
- - bit 3: contact to build platform
- ...
-
- The RGBA buffer usually comes with a depth buffer. We can use D24S8, which
- generates a 24 bit depth buffer and an 8 bit stencil buffer. We can use
- the stencil buffer to mark a mesh ID.
-
- https://www.khronos.org/opengl/wiki/Framebuffer_Object#Feedback_Loops
- https://www.khronos.org/opengl/wiki/Framebuffer_Object_Extension_Examples#Color_texture.2C_Depth_texture
- http://www.songho.ca/opengl/gl_fbo.html
- https://www.opengl.org/archives/resources/features/KilgardTechniques/oglpitfall/
- */
 
 int isExtensionSupported(const char *extension)
 {
@@ -242,6 +132,9 @@ if (!a##EXT) { Iota.Error.set("Initializing OpenGL", IAError::OpenGLFeatureNotSu
  * with a color buffer with RGBA8 and a depth buffer of 24 bits.
  *
  * Creating the buffers is deferred until they are actually needed.
+ *
+ * \param printer used for scaling GL to build volume
+ * \param buffers request a certain type of buffers
  */
 IAFramebuffer::IAFramebuffer(IAPrinter *printer, Buffers buffers)
 :   pBuffers( buffers ),
@@ -253,6 +146,8 @@ IAFramebuffer::IAFramebuffer(IAPrinter *printer, Buffers buffers)
 
 /**
  * Create a framebuffer by copying another framebuffer including contents.
+ *
+ * \param src copy the parameters and content from this buffer
  */
 IAFramebuffer::IAFramebuffer(IAFramebuffer *src)
 :   pBuffers( src->pBuffers ),
@@ -436,7 +331,7 @@ IAFramebuffer::~IAFramebuffer()
 
 
 /**
- * Clear the framebuffer object for next use.
+ * Draw a black framebuffer with a depth of 0.
  *
  * This call does not delete any resources.
  */
@@ -484,7 +379,6 @@ void IAFramebuffer::bindForRendering()
         glMatrixMode(GL_MODELVIEW);
         glLoadIdentity();
 
-        // draw a aquare, just to see if this works at all
         glEnable(GL_COLOR_MATERIAL);
         glDisable(GL_TEXTURE_2D);
         glDisable(GL_BLEND);
@@ -1239,11 +1133,22 @@ void IAFramebuffer::addGap()
 }
 
 
-void IAFramebuffer::clipAboveZ(double z)
+void IAFramebuffer::beginClipAboveZ(double z)
+{
+    GLdouble equationUpperHalf[4] = { 0.0, 0.0, -1.0, z };
+    glClipPlane(GL_CLIP_PLANE0, equationUpperHalf);
+    glEnable(GL_CLIP_PLANE0);
+}
+
+void IAFramebuffer::beginClipBelowZ(double z)
 {
     GLdouble equationUpperHalf[4] = { 0.0, 0.0, 1.0, -z };
     glClipPlane(GL_CLIP_PLANE0, equationUpperHalf);
     glEnable(GL_CLIP_PLANE0);
 }
 
+void IAFramebuffer::endClip()
+{
+    glDisable(GL_CLIP_PLANE0);
+}
 
