@@ -57,6 +57,11 @@ public:
     double pInfillDensity = 20.0; // %
     int pHasSkirt = 1; // prime line around perimeter
     int pSupport = 1;
+    double pSupportAngle = 50.0;
+    double pSupportDensity = 40.0;
+    double pSupportTopGap = 1.0;
+    double pSupportSideGap = 0.2;
+    double pSupportBottomGap = 1.0;
 
     // ----
     void sliceAll();

@@ -127,13 +127,13 @@ void IAPrinterFDM::initializeSceneSettings()
         { nullptr } };
 
     static Fl_Menu_Item infillDensityMenuMenu[] = {
-        { "0", 0, nullptr, (void*)0, 0, 0, 0, 11 },
-        { "5", 0, nullptr, (void*)0, 0, 0, 0, 11 },
-        { "10", 0, nullptr, (void*)0, 0, 0, 0, 11 },
-        { "20", 0, nullptr, (void*)0, 0, 0, 0, 11 },
-        { "30", 0, nullptr, (void*)0, 0, 0, 0, 11 },
-        { "50", 0, nullptr, (void*)0, 0, 0, 0, 11 },
-        { "100", 0, nullptr, (void*)0, 0, 0, 0, 11 },
+        { "0%", 0, nullptr, (void*)0, 0, 0, 0, 11 },
+        { "5%", 0, nullptr, (void*)0, 0, 0, 0, 11 },
+        { "10%", 0, nullptr, (void*)0, 0, 0, 0, 11 },
+        { "20%", 0, nullptr, (void*)0, 0, 0, 0, 11 },
+        { "30%", 0, nullptr, (void*)0, 0, 0, 0, 11 },
+        { "50%", 0, nullptr, (void*)0, 0, 0, 0, 11 },
+        { "100%", 0, nullptr, (void*)0, 0, 0, 0, 11 },
         { nullptr } };
 
     static Fl_Menu_Item skirtMenu[] = {
@@ -179,6 +179,58 @@ void IAPrinterFDM::initializeSceneSettings()
         { nullptr } };
     s = new IASettingChoice("support", "support: ", pSupport,
                             [this]{ ; }, supportMenu ); // FIXME: recache all
+    pSceneSettings.push_back(s);
+
+    static Fl_Menu_Item supportAngleMenu[] = {
+        { "45.0\xC2\xB0", 0, nullptr, (void*)0, 0, 0, 0, 11 },
+        { "50.0\xC2\xB0", 0, nullptr, (void*)1, 0, 0, 0, 11 },
+        { "55.0\xC2\xB0", 0, nullptr, (void*)2, 0, 0, 0, 11 },
+        { "60.0\xC2\xB0", 0, nullptr, (void*)3, 0, 0, 0, 11 },
+        { nullptr } };
+    s = new IASettingFloatChoice("support/angle", "angle: ", pSupportAngle, "deg",
+                                 [this]{ ; }, supportAngleMenu );
+    pSceneSettings.push_back(s);
+
+    static Fl_Menu_Item supportDensityMenu[] = {
+        { "20.0%", 0, nullptr, (void*)0, 0, 0, 0, 11 },
+        { "30.0%", 0, nullptr, (void*)1, 0, 0, 0, 11 },
+        { "40.0%", 0, nullptr, (void*)2, 0, 0, 0, 11 },
+        { "45.0%", 0, nullptr, (void*)2, 0, 0, 0, 11 },
+        { "50.0%", 0, nullptr, (void*)3, 0, 0, 0, 11 },
+        { nullptr } };
+    s = new IASettingFloatChoice("support/density", "density: ", pSupportDensity, "%",
+                                 [this]{ ; }, supportDensityMenu );
+    pSceneSettings.push_back(s);
+
+    static Fl_Menu_Item topGapMenu[] = {
+        { "0 layers", 0, nullptr, (void*)0, 0, 0, 0, 11 },
+        { "1 layer",  0, nullptr, (void*)1, 0, 0, 0, 11 },
+        { "2 layers", 0, nullptr, (void*)2, 0, 0, 0, 11 },
+        { "3 layers", 0, nullptr, (void*)3, 0, 0, 0, 11 },
+        { nullptr } };
+    s = new IASettingFloatChoice("support/topGap", "top gap: ", pSupportTopGap, "layers",
+                                 [this]{ ; }, topGapMenu );
+    pSceneSettings.push_back(s);
+
+    static Fl_Menu_Item sideGapMenu[] = {
+        { "0.0mm", 0, nullptr, (void*)0, 0, 0, 0, 11 },
+        { "0.1mm", 0, nullptr, (void*)0, 0, 0, 0, 11 },
+        { "0.2mm", 0, nullptr, (void*)0, 0, 0, 0, 11 },
+        { "0.3mm", 0, nullptr, (void*)0, 0, 0, 0, 11 },
+        { "0.4mm", 0, nullptr, (void*)0, 0, 0, 0, 11 },
+        { nullptr } };
+    s = new IASettingFloatChoice("support/sideGap", "side gap: ", pSupportSideGap, "mm",
+                                 [this]{ ; }, sideGapMenu );
+    pSceneSettings.push_back(s);
+
+    static Fl_Menu_Item bottomGapMenu[] = {
+        { "0 layers", 0, nullptr, (void*)0, 0, 0, 0, 11 },
+        { "1 layer",  0, nullptr, (void*)1, 0, 0, 0, 11 },
+        { "2 layers", 0, nullptr, (void*)2, 0, 0, 0, 11 },
+        { "3 layers", 0, nullptr, (void*)3, 0, 0, 0, 11 },
+        { nullptr } };
+    s = new IASettingFloatChoice("support/bottomGap", "bottom gap: ", pSupportBottomGap, "layers",
+                                 [this]{ ; }, bottomGapMenu );
     pSceneSettings.push_back(s);
 
 
@@ -335,12 +387,20 @@ void IAPrinterFDM::sliceAll()
             glClearDepth(0.0);
             glClear(GL_DEPTH_BUFFER_BIT);
 
-            support.beginClipBelowZ(z);
+            // Draw only what is above the current z plane, but leave a little
+            // space between the model and the support to reduce stickyness
+            support.beginClipBelowZ(z + pSupportTopGap*layerHeight());
 
-            Iota.pMesh->drawAngledFaces(180.0-40.0);
+            Iota.pMesh->drawAngledFaces(90.0+pSupportAngle);
 
             glPushMatrix();
-            glTranslated(Iota.pMesh->position().x(), Iota.pMesh->position().y(), Iota.pMesh->position().z());
+            // Draw the upper part of the model, so that the support will not
+            // protrude through it. Leave a little gap so that the support
+            // sticks less to the model.
+            glTranslated(Iota.pMesh->position().x(),
+                         Iota.pMesh->position().y(),
+                         Iota.pMesh->position().z()
+                         + (pSupportBottomGap+pSupportTopGap)*layerHeight());
             Iota.pMesh->draw(IAMesh::kMASK, 0.0, 0.0, 0.0);
             glPopMatrix();
 
@@ -350,16 +410,19 @@ void IAPrinterFDM::sliceAll()
             glClearDepth(1.0);
 
             support.unbindFromRendering();
-            
             // FIXME: change to bitmap mode
-            // FIXME: shrink!
-            support.overlayInfillPattern(0, 2*pNozzleDiameter * (100.0 / 30.0 /* density */) - pNozzleDiameter);
+
+            // reduce the size of the mask to leave room for the filament, plus
+            // a little gap so that the support tower sides do not stick to
+            // the model.
+            support.toolpathFromLassoAndContract(z, pNozzleDiameter/2.0 + pSupportSideGap);
+
+            // Fill it.
+            support.overlayInfillPattern(0, 2*pNozzleDiameter * (100.0 / pSupportDensity) - pNozzleDiameter);
             auto supportPath = support.toolpathFromLasso(z);
             if (supportPath) tp->add(supportPath.get(), 60, 0);
             // FIXME: don't draw anything we will draw otherwise
-            // FIXME: leave one (or two) layers empty, so that the support will stick less
             // FIXME: find icicles and draw support for those
-            // FIXME: avoid support outlines that merge with vertical neighbor surfaces
         }
 
         // --- infill, lids, bottoms

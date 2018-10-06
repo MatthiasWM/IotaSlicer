@@ -100,6 +100,7 @@ void IASettingLabel::build(Fl_Tree *treeWidget, Type t)
         if (pText) pWidget->pText->label(pText);
     }
     pTreeItem = treeWidget->add(pPath);
+    pTreeItem->close();
     pTreeItem->widget(pWidget);
 }
 
@@ -193,6 +194,7 @@ void IASettingFloat::build(Fl_Tree *treeWidget, Type t)
         pWidget->callback((Fl_Callback*)wCallback, this);
     }
     pTreeItem = treeWidget->add(pPath);
+    pTreeItem->close();
     pTreeItem->widget(pWidget);
 }
 
@@ -292,6 +294,7 @@ void IASettingText::build(Fl_Tree *treeWidget, Type t)
         pWidget->callback((Fl_Callback*)wCallback, this);
     }
     pTreeItem = treeWidget->add(pPath);
+    pTreeItem->close();
     pTreeItem->widget(pWidget);
 }
 
@@ -334,7 +337,9 @@ public:
         pChoice->value(buf);
     }
     static void choice_cb(Fl_Input_Choice *w, void *u) {
-        w->parent()->do_callback();
+        IAFLFloatChoice *c = (IAFLFloatChoice*)w->parent();
+        c->value( c->value() ); // reinterprete the string that was set by the pulldown
+        c->do_callback();
     }
     Fl_Box *pLabel = nullptr;
     Fl_Input_Choice *pChoice = nullptr;
@@ -388,6 +393,7 @@ void IASettingFloatChoice::build(Fl_Tree *treeWidget, Type t)
         pWidget->callback((Fl_Callback*)wCallback, this);
     }
     pTreeItem = treeWidget->add(pPath);
+    pTreeItem->close();
     pTreeItem->widget(pWidget);
 }
 
@@ -481,6 +487,7 @@ void IASettingChoice::build(Fl_Tree *treeWidget, Type)
         pWidget->callback((Fl_Callback*)wCallback, this);
     }
     pTreeItem = treeWidget->add(pPath);
+    pTreeItem->close();
     pTreeItem->widget(pWidget);
 }
 
