@@ -181,6 +181,8 @@ void IAPrinterFDM::initializeSceneSettings()
                             [this]{ ; }, supportMenu ); // FIXME: recache all
     pSceneSettings.push_back(s);
 
+    // TODO: support material
+
     static Fl_Menu_Item supportAngleMenu[] = {
         { "45.0\xC2\xB0", 0, nullptr, (void*)0, 0, 0, 0, 11 },
         { "50.0\xC2\xB0", 0, nullptr, (void*)1, 0, 0, 0, 11 },
@@ -391,11 +393,15 @@ void IAPrinterFDM::sliceAll()
             // space between the model and the support to reduce stickyness
             support.beginClipBelowZ(z + pSupportTopGap*layerHeight());
 
+            // FIXME: don;t do this for every layer!
+            // mark all triangles that need support first, then render only those
+            // mark all vertices that need support, then render them here
             Iota.pMesh->drawAngledFaces(90.0+pSupportAngle);
 
             glPushMatrix();
             // Draw the upper part of the model, so that the support will not
             // protrude through it. Leave a little gap so that the support
+            // Also, remember if we need support at all.
             // sticks less to the model.
             glTranslated(Iota.pMesh->position().x(),
                          Iota.pMesh->position().y(),
@@ -421,8 +427,9 @@ void IAPrinterFDM::sliceAll()
             support.overlayInfillPattern(0, 2*pNozzleDiameter * (100.0 / pSupportDensity) - pNozzleDiameter);
             auto supportPath = support.toolpathFromLasso(z);
             if (supportPath) tp->add(supportPath.get(), 60, 0);
-            // FIXME: don't draw anything we will draw otherwise
+            // TODO: don't draw anything we will draw otherwise
             // FIXME: find icicles and draw support for those
+            // FIXME: find and exclude bridges
         }
 
         // --- infill, lids, bottoms
@@ -463,7 +470,7 @@ void IAPrinterFDM::sliceAll()
                     tp->add(tp1.get(), 20, k);
                 }
                 if (k==300) {
-                    //            assert(0);
+                    // assert(0);
                 }
             }
         }

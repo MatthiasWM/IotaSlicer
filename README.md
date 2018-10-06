@@ -33,7 +33,7 @@ Iota currently generates G-Code files for DaVinci Duo printers with Repetier fir
 If will probably run with little or no modifications on other FDM printers as well.
 
 * v0.2.2b
-  * ...
+  * implemented support structures for overhangs including parameters
 * v0.2.1b
   * adding dialog to create, edit, and remove custom printers
 * v0.2.0b
