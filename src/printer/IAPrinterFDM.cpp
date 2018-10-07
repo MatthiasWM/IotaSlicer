@@ -64,6 +64,76 @@
  tracing and filling.
  */
 
+/*
+ FDM Printer properties:
+
+ controller
+    port type (USB, TCP/IP, OctoPrint)
+    port name
+    dialect
+ buildvolume
+    printbed type (rect, round)
+    printbed width, depth
+    voulme height (can be infinite...)
+    origin (front left, back right)
+    origin offset (x, y, z)
+    heated bed
+    heated case
+    fan number
+ # of hotends
+    hotend# (heater number)
+        hotend type (mono, color switching, color mixing)
+        filament diameter
+        nozzle diameter
+        fan number
+        feed type (direct, bowden)
+        # of feeds
+            feed# (extruder number)
+                default filament
+                extruder compensation
+                fan?
+                filament diameter?
+                drive type?
+        position of waste station (x, y, x2, y2)
+        position of wipe, direction of wipe (x, y, dx, dy)
+
+
+ FDM Print Settings:
+
+ preset Machine
+    hotend#: nozzle diameter
+    feed#.#: filament
+ preset Quality (fast, good, high, custom...)
+    layer height
+    number of shells
+        speed factor outer shell
+    infille density
+        infill pattern (plus more settings related to the pattern)
+    number of lids
+        lid infill pattern
+    nuber of bottoms
+        lid infill pattern
+        bridge settings
+ preset Support:
+    density
+    pattern
+    gaps
+    material
+ preset Material:
+    color type (per mesh, texture, rainbow)
+    virtual color (preset for mixing extruder)
+    ...
+ Mesh List:
+    mesh# name
+        override
+            Quality preset: (default, by name)
+            Support preset: (default, by name)
+            Material preset: (default, by name)
+        color (if preset is "color per mesh")
+    ...
+
+ */
+
 typedef Fl_Menu_Item Fl_Menu_Item_List[];
 
 
