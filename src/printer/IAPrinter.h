@@ -12,6 +12,7 @@
 #include "geometry/IASlice.h"
 #include "toolpath/IAToolpath.h"
 #include "IASetting.h"
+#include "property/IAProperty.h"
 
 
 /**
@@ -96,6 +97,10 @@ protected:
 
 private:
     void userChangedLayerHeight();
+
+
+protected:
+    IAPropertyDouble pTest = IAPropertyDouble("toast", 1.0);
 
 };
 

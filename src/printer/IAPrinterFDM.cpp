@@ -65,12 +65,20 @@
  */
 
 /*
+ Material Propertis
+
+ Chemistry (ABS, PLA, ...)
+ Build temperature
+
+
  FDM Printer properties:
 
  controller
     port type (USB, TCP/IP, OctoPrint)
     port name
     dialect
+    GCode: start (call an editor window)
+    GCode: end, ...
  buildvolume
     printbed type (rect, round)
     printbed width, depth
@@ -80,6 +88,13 @@
     heated bed
     heated case
     fan number
+    motion
+        build speed (x, y, z)
+        travel speed (x, y, z)
+        acceleration (x, y, z)
+        endstop (+ or -) (x, y, z)
+        backlash?
+        head weight, vibration frequency, ...
  # of hotends
     hotend# (heater number)
         hotend type (mono, color switching, color mixing)
@@ -109,6 +124,7 @@
         speed factor outer shell
     infille density
         infill pattern (plus more settings related to the pattern)
+        filament
     number of lids
         lid infill pattern
     nuber of bottoms
@@ -463,7 +479,7 @@ void IAPrinterFDM::sliceAll()
             // space between the model and the support to reduce stickyness
             support.beginClipBelowZ(z + pSupportTopGap*layerHeight());
 
-            // FIXME: don;t do this for every layer!
+            // FIXME: don't do this for every layer!
             // mark all triangles that need support first, then render only those
             // mark all vertices that need support, then render them here
             Iota.pMesh->drawAngledFaces(90.0+pSupportAngle);
@@ -494,10 +510,16 @@ void IAPrinterFDM::sliceAll()
             support.toolpathFromLassoAndContract(z, pNozzleDiameter/2.0 + pSupportSideGap);
 
             // Fill it.
-            support.overlayInfillPattern(0, 2*pNozzleDiameter * (100.0 / pSupportDensity) - pNozzleDiameter);
+            if (i==0) {
+                // layer 0 must be filled 100% to give good adhesion
+                support.overlayInfillPattern(0, pNozzleDiameter);
+            } else {
+                // other layers use the set density
+                support.overlayInfillPattern(0, 2*pNozzleDiameter * (100.0 / pSupportDensity) - pNozzleDiameter);
+            }
             auto supportPath = support.toolpathFromLasso(z);
             if (supportPath) tp->add(supportPath.get(), 60, 0);
-            // TODO: don't draw anything we will draw otherwise
+            // TODO: don't draw anything here which we will draw otherwise later
             // FIXME: find icicles and draw support for those
             // FIXME: find and exclude bridges
         }
