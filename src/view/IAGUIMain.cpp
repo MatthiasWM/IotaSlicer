@@ -7,9 +7,9 @@
 #endif
 #ifdef _WIN32
 #endif
-static char *sHelpAbout = /* text inlined from ../../html/helpAbout.html */
+static const char *sHelpAbout = /* text inlined from ../../html/helpAbout.html */
 "<html>\n    <body>\n        <font face=\"sans\">\n            <p>&nbsp;</p>\n\
-            <p><center><font size=8><b>Iota <!--[ver-->v0.2.2b<!--]--></b></fo\
+            <p><center><font size=8><b>Iota <!--[ver-->v0.3.0b<!--]--></b></fo\
 nt></center></p>\n            <p><center><font size=5><b>Voxel based Mesh Slic\
 er for Color 3D Printing</b></font></center></p>\n            \n            <p\
 >\n            Iota is a voxel based slicer that can handle textured meshes fo\
@@ -22,85 +22,88 @@ le extruders and mixing extruders, and DXF files for creating stacked\n       \
 thub.com/MatthiasWM/IotaSlicer\">Source code</a> on GitHub</li>\n             \
    <li>Pre-alpha testing <a href=\"https://youtu.be/VXX4sS26Q60\">video</a></l\
 i>\n            </ul>\n\n            <p>Milestones:</p>\n            <ul>\n   \
-             <li>v0.1: successful generation of GCode for single nozzle single\
- color printer\n                    with shells, lids, and infills</li>\n     \
-           <li>v0.2: settings UI for build parameters and basic printer settin\
-gs</li>\n                <li>v0.3: automatic generation of support for flat tr\
-iangles and icicles</li>\n                <li>v0.4: material selection for sup\
-port structures and body (dual extruder)</li>\n                <li>v0.5: code \
-generation for belt printers (BlackBelt)</li>\n                <li>v0.6: load \
-textured models (obj), render projected texture rim, seams</li>\n             \
-   <li>v0.7: sort toolpath segments by color and print in dual hotend dual col\
-or</li>\n                <li>v0.8: support for mixing extruders and virtual ex\
-truders and waste columns</li>\n                <li>v0.9: dialogs to generate \
-new printers</li>\n                <li>v0.10: multiple meshes per session, mov\
-e, scale, and rotate meshes</li>\n                <li>....</li>\n             \
-   <li>v1.0: load colored and textured STL and OBJ files, new printers, printe\
-r\n                    settings, build settings, reliable and repeatable print\
-outs, documentation,\n                    web page, user managment, forum, aut\
-omated builds and releases, etc. </li>\n                <li> new infills, more\
- color mixing, material mixing, multi-mesh color, etc. etc.</li>\n            \
-</ul>\n        </font>\n    </body>\n</html>\n";
-static char *sHelpLicenses = /* text inlined from ../../html/helpLicenses.html */
+             <li><b>v0.1</b>: successful generation of GCode for single nozzle\
+ single color printer\n                    with shells, lids, and infills</li>\
+\n                <li><b>v0.2</b>: settings UI for build parameters and basic \
+printer settings</li>\n                <li><b>v0.3</b>: automatic generation o\
+f support for flat triangles</li>\n                <li>v0.4: material selectio\
+n for support structures and body (dual extruder)</li>\n                <li>v0\
+.5: code generation for belt printers (BlackBelt)</li>\n                <li>v0\
+.6: load textured models (obj), render projected texture rim, seams</li>\n    \
+            <li>v0.7: sort toolpath segments by color and print in dual hotend\
+ dual color</li>\n                <li>v0.8: support for mixing extruders and v\
+irtual extruders and waste columns</li>\n                <li>v0.9: dialogs to \
+generate new printers</li>\n                <li>v0.10: multiple meshes per ses\
+sion, move, scale, and rotate meshes</li>\n                <li>....</li>\n    \
+            <li>v1.0: load colored and textured STL and OBJ files, new printer\
+s, printer\n                    settings, build settings, reliable and repeata\
+ble printouts, documentation,\n                    web page, user managment, f\
+orum, automated builds and releases, etc. </li>\n                <li> new infi\
+lls, more color mixing, material mixing, multi-mesh color, etc. etc.</li>\n   \
+         </ul>\n        </font>\n    </body>\n</html>\n";
+static const char *sHelpLicenses = /* text inlined from ../../html/helpLicenses.html */
 "<html>\n    <body>\n        <font face=\"sans\">\n            <p>&nbsp;</p>\n\
-            <p><center><font size=8><b>Iota <!--[ver-->v0.2.2b<!--]--></b></fo\
+            <p><center><font size=8><b>Iota <!--[ver-->v0.3.0b<!--]--></b></fo\
 nt></center></p>\n            <p><center><font size=5><b>Voxel based Mesh Slic\
 er for Color 3D Printing</b></font></center></p>\n\n            <h3>Iota uses \
-<a href=\"http://www.fltk.org/\">FLTK</a></h3>\n            <p>\n            F\
-LTK (pronounced \"fulltick\") is a cross-platform C++ GUI toolkit for\n       \
-     UNIX(r)/Linux(r) (X11), Microsoft(r) Windows(r), and MacOS(r) X. FLTK\n  \
-          provides modern GUI functionality without the bloat and supports 3D\
-\n            graphics via OpenGL(r) and its built-in GLUT emulation.\n       \
-     </p>\n            <p>\n            FLTK is provided under the terms of th\
-e\n            <a href=\"http://www.fltk.org/COPYING.php\">GNU Library Public \
-License</a>,\n            Version 2 with exceptions that allow for static link\
-ing.\n            </p>\n\n            <h3>Iota uses <a href=\"https://www.open\
-gl.org\">OpenGL</a></h3>\n            <p>\n            OpenGL is the premier e\
-nvironment for developing portable, interactive\n            2D and 3D graphic\
-s applications. Since its introduction in 1992, OpenGL\n            has become\
- the industry\'s most widely used and supported 2D and 3D\n            graphic\
-s application programming interface (API), bringing thousands of\n            \
-applications to a wide variety of computer platforms. OpenGL fosters\n        \
-    innovation and speeds application development by incorporating a broad\n  \
-          set of rendering, texture mapping, special effects, and other powerf\
-ul\n            visualization functions. Developers can leverage the power of \
-OpenGL\n            across all popular desktop and workstation platforms, ensu\
-ring wide\n            application deployment.\n            </p>\n            \
-<p>\n            End users, independent software vendors, and others writing c\
-ode based\n            on the OpenGL API are free from licensing requirements.\
-\n            </p>\n\n            <h3>Iota uses <a href=\"https://code.google.\
-com/archive/p/lib3ds/\">lib3ds</a></h3>\n            <p>\n            lib3ds i\
-s an overall software library for managing 3D-Studio Release 3\n            an\
-d 4 \".3DS\" files. It is a free alternative to Autodesk\'s 3DS File\n        \
-    Toolkit for managing 3DS files.\n            </p>\n            <p>\n      \
-      License: <a href=\"https://www.gnu.org/licenses/lgpl.html\">GNU Lesser G\
-PL</a>\n            </p>\n\n            <h3>Iota uses <a href=\"http://potrace\
-.sourceforge.net/\">potrace</a> by Peter Selinger</h3>\n            <p>\n     \
-       Potrace(TM) is a tool for tracing a bitmap, which means, transforming\n\
-            a bitmap into a smooth, scalable image.\n            </p>\n       \
-     <p>\n            This program is free software; you can redistribute it a\
-nd/or modify\n            it under the terms of the GNU General Public License\
- as published by\n            the Free Software Foundation; either version 2, \
-or (at your option)\n            any later version.\n            </p>\n\n     \
-       <h3>Iota uses <a href=\"http://www.antigrain.com/research/adaptive_bezi\
-er/index.html\">Adaptive Subdivision of Bezier Curves</a> by Maxim Shemanarev<\
-/h3>\n            <p>\n            An attempt to achieve perfect result in Bez\
-ier curve approximation.\n            </p>\n            <p>\n            AGG i\
-s free software; you can redistribute it and/or\n            modify it under t\
-he terms of the GNU General Public License\n            as published by the Fr\
-ee Software Foundation; either version 2\n            of the License, or (at y\
-our option) any later version.</p>\n\n            <h3>Iota uses <a href=\"http\
-s://www.thingiverse.com/thing:2906756\">Hex surface vase</a> by <a href=\"http\
-s://www.dr-lex.be\">DrLex</a></h3>\n            <p>\n            Hex surface v\
-ase (spiral print) by DrLex is licensed under the Creative\n            Common\
-s - Attribution license.</p>\n\n\n        </font>\n\n        <!--\n\n         \
-Julia Vase #002 - Yin Yang by virtox is licensed under the Creative Commons - \
-Attribution - Non-Commercial - No Derivatives license.\n         https://www.t\
-hingiverse.com/thing:28202\n\n         Vase by Achim is licensed under the Cre\
-ative Commons - Attribution license.\n         https://www.thingiverse.com/thi\
-ng:81566\n\n         Hex surface vase (spiral print) by DrLex is licensed unde\
-r the Creative Commons - Attribution license.\n         https://www.thingivers\
-e.com/thing:2906756\n         -->\n\n    </body>\n</html>\n";
+<a href=\"http://www.fltk.org/\">FLTK</a></h3>\n            <p>\n            \
+\"FLTK (pronounced \"fulltick\") is a cross-platform C++ GUI toolkit for\n    \
+        UNIX(r)/Linux(r) (X11), Microsoft(r) Windows(r), and MacOS(r) X. FLTK\
+\n            provides modern GUI functionality without the bloat and supports\
+ 3D\n            graphics via OpenGL(r) and its built-in GLUT emulation.\"\n  \
+          </p>\n            <p>\n            FLTK is provided under the terms \
+of the\n            <a href=\"http://www.fltk.org/COPYING.php\">GNU Library Pu\
+blic License</a>,\n            Version 2 with exceptions that allow for static\
+ linking.\n            </p>\n\n            <h3>Iota uses <a href=\"https://www\
+.opengl.org\">OpenGL</a></h3>\n            <p>\n            \"OpenGL is the pr\
+emier environment for developing portable, interactive\n            2D and 3D \
+graphics applications. Since its introduction in 1992, OpenGL\n            has\
+ become the industry\'s most widely used and supported 2D and 3D\n            \
+graphics application programming interface (API), bringing thousands of\n     \
+       applications to a wide variety of computer platforms. OpenGL fosters\n \
+           innovation and speeds application development by incorporating a br\
+oad\n            set of rendering, texture mapping, special effects, and other\
+ powerful\n            visualization functions. Developers can leverage the po\
+wer of OpenGL\n            across all popular desktop and workstation platform\
+s, ensuring wide\n            application deployment.\"\n            </p>\n   \
+         <p>\n            End users, independent software vendors, and others \
+writing code based\n            on the OpenGL API are free from licensing requ\
+irements.\n            </p>\n\n            <h3>Iota uses <a href=\"https://cod\
+e.google.com/archive/p/lib3ds/\">lib3ds</a></h3>\n            <p>\n           \
+ lib3ds is an overall software library for managing 3D-Studio Release 3\n     \
+       and 4 \".3DS\" files. It is a free alternative to Autodesk\'s 3DS File\
+\n            Toolkit for managing 3DS files.\n            </p>\n            <\
+p>\n            License: <a href=\"https://www.gnu.org/licenses/lgpl.html\">GN\
+U Lesser GPL</a>\n            </p>\n\n            <h3>Iota uses <a href=\"http\
+://potrace.sourceforge.net/\">potrace</a> by Peter Selinger</h3>\n            \
+<p>\n            \"Potrace(TM) is a tool for tracing a bitmap, which means, tr\
+ansforming\n            a bitmap into a smooth, scalable image.\"\n           \
+ </p>\n            <p>\n            This program is free software; you can red\
+istribute it and/or modify\n            it under the terms of the GNU General \
+Public License as published by\n            the Free Software Foundation; eith\
+er version 2, or (at your option)\n            any later version.\n           \
+ </p>\n\n            <h3>Iota uses <a href=\"http://www.antigrain.com/research\
+/adaptive_bezier/index.html\">Adaptive Subdivision of Bezier Curves</a> by Max\
+im Shemanarev</h3>\n            <p>\n            \"An attempt to achieve perfe\
+ct result in Bezier curve approximation.\"\n            </p>\n            <p>\
+\n            AGG is free software; you can redistribute it and/or\n          \
+  modify it under the terms of the GNU General Public License\n            as \
+published by the Free Software Foundation; either version 2\n            of th\
+e License, or (at your option) any later version.</p>\n\n<h3>Iota includes <a \
+href=\"https://www.thingiverse.com/thing:2906756\">Hex surface vase</a> by <a \
+href=\"https://www.dr-lex.be\">DrLex</a></h3>\n<p>\nHex surface vase (spiral p\
+rint) by DrLex is licensed under the Creative\nCommons - Attribution license.<\
+/p>\n\n<!--\n            <h3>Iota includes <a href=\"http://www.3dbenchy.com\"\
+>#3DBenchy</a></h3>\n            <p>\n            \"#3DBenchy is a 3D model sp\
+ecifically designed for testing and\n            benchmarking 3D printers.\"</\
+p>\n            <p>\n            <a href=\"http://www.3dbenchy.com/license/\">\
+#3DBenchy</a> by\n            Creative-Tools.com is licensed under a Creative \
+Commons\n            Attribution-NoDerivatives 4.0 International License. Perm\
+issions\n            beyond the scope and typical usage examples are explained\
+ below.</p>\n            <p>\n            Feel free to redistribute the unmodi\
+fied #3DBenchy STL file as you\n            please. Such as ... bundling the S\
+TL or pre-sliced print file with\n            3D printer kits, etc.</p>\n-->\n\
+        </font>\n\n    </body>\n</html>\n";
 
 Fl_Double_Window *wMainWindow=(Fl_Double_Window *)0;
 
