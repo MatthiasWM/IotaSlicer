@@ -152,7 +152,7 @@ void IAVersioneer::updateFLTK()
                   "Cancel", "Continue", nullptr) == 0)
         return;
 
-    chdir(wBasePath->value());
+    fl_chdir(wBasePath->value());
 #ifdef __APPLE__
     system("mkdir platforms");
     system("mkdir platforms/MacOS");

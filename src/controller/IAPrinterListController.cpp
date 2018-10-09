@@ -8,12 +8,12 @@
 #include "IAPrinterListController.h"
 
 #include "Iota.h"
-#include "IAPrinter.h"
-#include "IAPrinterFDM.h"
-#include "IAPrinterFDMBelt.h"
-#include "IAPrinterInkjet.h"
-#include "IAPrinterLasercutter.h"
-#include "IAPrinterSLS.h"
+#include "printer/IAPrinter.h"
+#include "printer/IAPrinterFDM.h"
+#include "printer/IAPrinterFDMBelt.h"
+#include "printer/IAPrinterInkjet.h"
+#include "printer/IAPrinterLasercutter.h"
+#include "printer/IAPrinterSLS.h"
 #include "view/IAGUIMain.h"
 
 #include <FL/Fl_Menu_Item.H>

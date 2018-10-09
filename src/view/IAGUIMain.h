@@ -4,9 +4,9 @@
 #define IAGUIMain_h
 #include <FL/Fl.H>
 #include "Iota.h"
-#include "IASceneView.h"
-#include "IAGLButton.h"
-#include "IAGLRangeSlider.h"
+#include "widget/IASceneView.h"
+#include "widget/IAGLButton.h"
+#include "widget/IAGLRangeSlider.h"
 #include <FL/Fl_File_Chooser.H>
 #include <FL/Fl_Simple_Terminal.H>
 #ifdef __APPLE__
