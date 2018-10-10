@@ -31,7 +31,7 @@ endif()
 
 
 function(FLTK_RUN_FLUID TARGET SOURCES)
-    set (CXX_FILES)
+    set (FLUID_FILES ${${TARGET}})
     foreach(src ${SOURCES})
         if ("${src}" MATCHES "\\.fl$")
             string(REGEX REPLACE "(.*).fl" \\1 basename ${src})
@@ -39,22 +39,23 @@ function(FLTK_RUN_FLUID TARGET SOURCES)
             get_filename_component (src_absolute ${src} ABSOLUTE)
             get_filename_component (srcdir_absolute ${src_absolute} DIRECTORY)
             add_custom_command(
-                OUTPUT "${basename}.cxx" "${basename}.h"
+                OUTPUT "${basename}.cpp" "${basename}.h"
                 COMMAND
                     cd ${srcdir_absolute} &&
                     ${PROJECT_SOURCE_DIR}/${PLATFORM_DIR}/bin/fluid -c ${src_name}
                 DEPENDS ${src}
                 MAIN_DEPENDENCY ${src}
             )
-            list(APPEND CXX_FILES "${basename}.cxx")
+            list(APPEND FLUID_FILES "${PROJECT_SOURCE_DIR}/${basename}.cpp")
+            list(APPEND FLUID_FILES "${PROJECT_SOURCE_DIR}/${basename}.h")
+            list(APPEND FLUID_FILES "${PROJECT_SOURCE_DIR}/${basename}.fl")
         endif ("${src}" MATCHES "\\.fl$")
-        set (${TARGET} ${CXX_FILES} PARENT_SCOPE)
+        set (${TARGET} ${FLUID_FILES} PARENT_SCOPE)
     endforeach(src)
 endfunction(FLTK_RUN_FLUID TARGET SOURCES)
 
-FLTK_RUN_FLUID (IotaSlicer "src/view/IAGUIMain.fl")
-
-# message (${CXX_FILES})
+FLTK_RUN_FLUID (FLUID_VIEWS src/view/IAGUIMain.fl)
+FLTK_RUN_FLUID (FLUID_DATA src/data/binaryData.fl)
 
 link_directories (
 	${PLATFORM_DIR}/lib/
@@ -79,8 +80,7 @@ add_executable (IotaSlicer MACOSX_BUNDLE
 	src/controller/IAController.h
 	src/controller/IAPrinterListController.cpp
 	src/controller/IAPrinterListController.h
-	src/data/binaryData.cpp
-	src/data/binaryData.h
+    ${FLUID_DATA}
 	src/fileformats/IAFmtObj3ds.cpp
 	src/fileformats/IAFmtObj3ds.h
 	src/fileformats/IAFmtTexJpeg.cpp
@@ -147,8 +147,7 @@ add_executable (IotaSlicer MACOSX_BUNDLE
 	src/toolpath/IAGcodeWriter.h
 	src/toolpath/IAToolpath.cpp
 	src/toolpath/IAToolpath.h
-	src/view/IAGUIMain.cpp
-	src/view/IAGUIMain.h
+    ${FLUID_VIEWS}
 	src/view/IAProgressDialog.cpp
 	src/view/IAProgressDialog.h
 	src/widget/IACamera.cpp
