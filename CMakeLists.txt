@@ -20,6 +20,10 @@ set (CMAKE_OSX_ARCHITECTURES=i386;x86_64)
 if (APPLE)
 	set (PLATFORM_DIR platforms/MacOS)
 endif()
+if (WIN32)
+	set (PLATFORM_DIR platforms/MSWindows)
+	add_compile_definitions(_USE_MATH_DEFINES)
+endif()
 
 if (MSVC)
 #	set(CMAKE_CXX_FLAGS_DEBUG_INIT "/D_DEBUG /MTd /Zi /Ob0 /Od /RTC1")
@@ -181,8 +185,6 @@ target_link_libraries(IotaSlicer ${OPENGL_LIBRARIES})
 # APPLE WIN32 MSVC UNIX
 if (APPLE)
 #   set( OSX_ICON_FILES vvv.icns vvv-document.icns )
-#	set_target_properties(IotaSlicer PROPERTIES BUNDLE TRUE)
-#    set (MACOSX_BUNDLE_INFO_PLIST ${PLATFORM_DIR}/Info.plist)
     set_target_properties( IotaSlicer PROPERTIES MACOSX_BUNDLE_INFO_PLIST ${PROJECT_SOURCE_DIR}/${PLATFORM_DIR}/Info.plist)
 	target_link_libraries (IotaSlicer
 		"-framework AppKit"
@@ -191,9 +193,24 @@ if (APPLE)
 		"-framework CoreFoundation"
 		"-framework OpenGL"
 	)
-#   set_target_properties( vvv PROPERTIES MACOSX_BUNDLE_INFO_PLIST ${PROJECT_SOURCE_DIR}/vvv-Info.plist )
 endif()
 if (UNIX AND NOT APPLE)
+endif()
+if(WIN32)
+	target_link_libraries(IotaSlicer ws2_32)
+	target_link_libraries(IotaSlicer kernel32)
+	target_link_libraries(IotaSlicer user32)
+	target_link_libraries(IotaSlicer gdi32)
+	target_link_libraries(IotaSlicer winspool)
+	target_link_libraries(IotaSlicer comdlg32)
+	target_link_libraries(IotaSlicer advapi32)
+	target_link_libraries(IotaSlicer shell32)
+	target_link_libraries(IotaSlicer ole32)
+	target_link_libraries(IotaSlicer oleaut32)
+	target_link_libraries(IotaSlicer uuid)
+	target_link_libraries(IotaSlicer odbc32)
+	target_link_libraries(IotaSlicer odbccp32)
+	target_link_libraries(IotaSlicer comctl32)
 endif()
 
 target_link_libraries (IotaSlicer 
@@ -203,7 +220,7 @@ target_link_libraries (IotaSlicer
 	fltk_jpeg
 	fltk_png
 	fltk_z
-	3ds
+#	3ds
 )
 
 #add_custom_command (
