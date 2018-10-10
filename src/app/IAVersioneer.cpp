@@ -17,6 +17,197 @@ FILE *popen(const char *name, const char *mode) {
 void pclose(FILE *f) {
 	_pclose(f);
 }
+
+#include <windows.h> 
+#include <stdio.h>
+#include <malloc.h>
+
+#ifdef __cplusplus
+#define BEGIN_C extern "C" {
+#define END_C } // extern "C"
+#define null nullptr
+#else
+#define BEGIN_C
+#define END_C
+#define null ((void*)0)
+#endif
+
+
+int system_np(const char* command, int timeout_milliseconds,
+	char* stdout_data, int stdout_data_size,
+	char* stderr_data, int stderr_data_size, int* exit_code);
+
+typedef struct system_np_s {
+	HANDLE child_stdout_read;
+	HANDLE child_stderr_read;
+	HANDLE reader;
+	PROCESS_INFORMATION pi;
+	const char* command;
+	char* stdout_data;
+	int   stdout_data_size;
+	char* stderr_data;
+	int   stderr_data_size;
+	int*  exit_code;
+	int   timeout; // timeout in milliseconds or -1 for INIFINTE
+} system_np_t;
+
+static char stdout_data[16 * 1024 * 1024];
+static char stderr_data[16 * 1024 * 1024];
+
+int prun(const char *cmd) {
+	stdout_data[0] = 0;
+	stderr_data[0] = 0;
+	char* command = strdup(cmd);
+	int exit_code = 0;
+	int r = system_np(command, 5 * 1000, stdout_data, sizeof(stdout_data), stderr_data, sizeof(stderr_data), &exit_code);
+	if (r != 0) {
+		fprintf(stderr, "system_np failed: %d 0x%08x %s", r, r, strerror(r));
+		return r;
+	}
+	else {
+		fwrite(stdout_data, strlen(stdout_data), 1, stdout);
+		fwrite(stderr_data, strlen(stderr_data), 1, stderr);
+		return exit_code;
+	}
+}
+
+static int peek_pipe(HANDLE pipe, char* data, int size) {
+	char buffer[4 * 1024];
+	DWORD read = 0;
+	DWORD available = 0;
+	bool b = PeekNamedPipe(pipe, null, sizeof(data), null, &available, null);
+	if (!b) {
+		return -1;
+	}
+	else if (available > 0) {
+		int bytes = min(sizeof(buffer), available);
+		b = ReadFile(pipe, buffer, bytes, &read, null);
+		if (!b) {
+			return -1;
+		}
+		if (data != null && size > 0) {
+			int n = min(size - 1, (int)read);
+			memcpy(data, buffer, n);
+			data[n + 1] = 0; // always zero terminated
+			return n;
+		}
+	}
+	return 0;
+}
+
+static DWORD WINAPI read_from_all_pipes_fully(void* p) {
+	system_np_t* system = (system_np_t*)p;
+	unsigned long long milliseconds = GetTickCount64(); // since boot time
+	char* out = system->stdout_data != null && system->stdout_data_size > 0 ? system->stdout_data : null;
+	char* err = system->stderr_data != null && system->stderr_data_size > 0 ? system->stderr_data : null;
+	int out_bytes = system->stdout_data != null && system->stdout_data_size > 0 ? system->stdout_data_size - 1 : 0;
+	int err_bytes = system->stderr_data != null && system->stderr_data_size > 0 ? system->stderr_data_size - 1 : 0;
+	for (;;) {
+		int read_stdout = peek_pipe(system->child_stdout_read, out, out_bytes);
+		if (read_stdout > 0 && out != null) { out += read_stdout; out_bytes -= read_stdout; }
+		int read_stderr = peek_pipe(system->child_stderr_read, err, err_bytes);
+		if (read_stderr > 0 && err != null) { err += read_stderr; err_bytes -= read_stderr; }
+		if (read_stdout < 0 && read_stderr < 0) { break; } // both pipes are closed
+		unsigned long long time_spent_in_milliseconds = GetTickCount64() - milliseconds;
+		if (system->timeout > 0 && time_spent_in_milliseconds > system->timeout) { break; }
+		if (read_stdout == 0 && read_stderr == 0) { // nothing has been read from both pipes
+			HANDLE handles[2] = { system->child_stdout_read, system->child_stderr_read };
+			WaitForMultipleObjects(2, handles, false, 1); // wait for at least 1 millisecond (more likely 16)
+		}
+	}
+	if (out != null) { *out = 0; }
+	if (err != null) { *err = 0; }
+	return 0;
+}
+
+static int create_child_process(system_np_t* system) {
+	SECURITY_ATTRIBUTES sa = { 0 };
+	sa.nLength = sizeof(SECURITY_ATTRIBUTES);
+	sa.bInheritHandle = true;
+	sa.lpSecurityDescriptor = null;
+	HANDLE child_stdout_write = INVALID_HANDLE_VALUE;
+	HANDLE child_stderr_write = INVALID_HANDLE_VALUE;
+	if (!CreatePipe(&system->child_stderr_read, &child_stderr_write, &sa, 0)) {
+		return GetLastError();
+	}
+	if (!SetHandleInformation(system->child_stderr_read, HANDLE_FLAG_INHERIT, 0)) {
+		return GetLastError();
+	}
+	if (!CreatePipe(&system->child_stdout_read, &child_stdout_write, &sa, 0)) {
+		return GetLastError();
+	}
+	if (!SetHandleInformation(system->child_stdout_read, HANDLE_FLAG_INHERIT, 0)) {
+		return GetLastError();
+	}
+	// Set the text I want to run
+	STARTUPINFOA siStartInfo = { 0 };
+	siStartInfo.cb = sizeof(STARTUPINFO);
+	siStartInfo.hStdError = child_stderr_write;
+	siStartInfo.hStdOutput = child_stdout_write;
+	siStartInfo.dwFlags |= STARTF_USESTDHANDLES | STARTF_USESHOWWINDOW;
+	siStartInfo.wShowWindow = SW_HIDE;
+	bool b = CreateProcessA(null,
+		(char*)system->command,
+		null,               // process security attributes 
+		null,               // primary thread security attributes 
+		true,               // handles are inherited 
+		CREATE_NO_WINDOW,   // creation flags 
+		null,               // use parent's environment 
+		null,               // use parent's current directory 
+		&siStartInfo,       // STARTUPINFO pointer 
+		&system->pi);       // receives PROCESS_INFORMATION
+	int err = GetLastError();
+	CloseHandle(child_stderr_write);
+	CloseHandle(child_stdout_write);
+	if (!b) {
+		CloseHandle(system->child_stdout_read); system->child_stdout_read = INVALID_HANDLE_VALUE;
+		CloseHandle(system->child_stderr_read); system->child_stderr_read = INVALID_HANDLE_VALUE;
+	}
+	return b ? 0 : err;
+}
+
+int system_np(const char* command, int timeout_milliseconds,
+	char* stdout_data, int stdout_data_size,
+	char* stderr_data, int stderr_data_size, int* exit_code) {
+	system_np_t system = { 0 };
+	if (exit_code != null) { *exit_code = 0; }
+	if (stdout_data != null && stdout_data_size > 0) { stdout_data[0] = 0; }
+	if (stderr_data != null && stderr_data_size > 0) { stderr_data[0] = 0; }
+	system.timeout = timeout_milliseconds > 0 ? timeout_milliseconds : -1;
+	system.command = command;
+	system.stdout_data = stdout_data;
+	system.stderr_data = stderr_data;
+	system.stdout_data_size = stdout_data_size;
+	system.stderr_data_size = stderr_data_size;
+	int r = create_child_process(&system);
+	if (r == 0) {
+		system.reader = CreateThread(null, 0, read_from_all_pipes_fully, &system, 0, null);
+		if (system.reader == null) { // in theory should rarely happen only when system super low on resources
+			r = GetLastError();
+			TerminateProcess(system.pi.hProcess, ECANCELED);
+		}
+		else {
+			bool thread_done = WaitForSingleObject(system.pi.hThread, timeout_milliseconds) == 0;
+			bool process_done = WaitForSingleObject(system.pi.hProcess, timeout_milliseconds) == 0;
+			if (!thread_done || !process_done) {
+				TerminateProcess(system.pi.hProcess, ETIME);
+			}
+			if (exit_code != null) {
+				GetExitCodeProcess(system.pi.hProcess, (DWORD*)exit_code);
+			}
+			CloseHandle(system.pi.hThread);
+			CloseHandle(system.pi.hProcess);
+			CloseHandle(system.child_stdout_read); system.child_stdout_read = INVALID_HANDLE_VALUE;
+			CloseHandle(system.child_stderr_read); system.child_stderr_read = INVALID_HANDLE_VALUE;
+			WaitForSingleObject(system.reader, INFINITE); // join thread
+			CloseHandle(system.reader);
+		}
+	}
+	if (stdout_data != null && stdout_data_size > 0) { stdout_data[stdout_data_size - 1] = 0; }
+	if (stderr_data != null && stderr_data_size > 0) { stderr_data[stderr_data_size - 1] = 0; }
+	return r;
+}
+
 #endif
 
 
@@ -152,7 +343,7 @@ void IAVersioneer::updateFLTK()
                   "Cancel", "Continue", nullptr) == 0)
         return;
 
-    chdir(wBasePath->value());
+    fl_chdir(wBasePath->value());
 #ifdef __APPLE__
     system("mkdir platforms");
     system("mkdir platforms/MacOS");
@@ -172,6 +363,25 @@ void IAVersioneer::updateFLTK()
     systemf("cp %s/png/*.h include/libpng/", wFLTKPath->value());
 #endif
 #ifdef _WIN32
+	system("cmd \\c echo \"Not implemented on MSWindows\"");
+#if 0
+	system("cmd \\c md platforms");
+	system("cmd \\c md platforms/MSWindows");
+	system("cmd \\c md platforms/MSWindows/bin");
+	systemf("xcopy %s/build/VisualC/bin/Debug/fluid.exe platforms/MSWindows/bin",
+		wFLTKPath->value());
+	// TODO: separate debug and release builds
+	systemf("xcopy %s/build/VisualC/lib/Release/lib* platforms/MSWindows/lib \\s \\e \\y",
+		wFLTKPath->value());
+	system("cmd \\c md include");
+	systemf("xcopy %s/FL include \\s \\e \\y", wFLTKPath->value());
+	systemf("xcopy %s/build/VisualC/FL/abi-version.h include/FL \\s \\e \\y", wFLTKPath->value());
+	system("cmd \\c md include/libjpeg");
+	system("cmd \\c md include/libpng");
+	systemf("xcopy %s/jpeg/*.h include/libjpeg/ \\s \\e \\y", wFLTKPath->value());
+	systemf("xcopy %s/jpeg/*.h include/libjpeg/ \\s \\e \\y", wFLTKPath->value());
+	systemf("xcopy %s/png/*.h include/libpng/ \\s \\e \\y", wFLTKPath->value());
+#endif
 #endif
 #ifdef __LINUX__
 #endif
@@ -211,7 +421,7 @@ void IAVersioneer::createArchive()
 	{
 		char buf[4096];
 		sprintf(buf,
-			"cd %s/platforms/MSWindows/VisualStudio/Release && "
+			"cmd \\c cd %s/platforms/MSWindows/VisualStudio/Release && "
 			"powershell Compress-Archive "
 				"-Path IotaSlicer.exe "
 				"-DestinationPath %s/IotaSlicer_%d.%d.%d%s_MSWindows.zip "
@@ -469,7 +679,10 @@ void IAVersioneer::applySettings()
 
 void IAVersioneer::gitTag()
 {
-    char buf[2048];
+#ifdef _WIN32
+	system("echo \"Iota gitTag not available on MSWindows");
+#else
+	char buf[2048];
     sprintf(buf, "cd %s; /usr/bin/git tag v%d.%d.%d%s",
             wBasePath->value(),
             atoi(wMajor->value()),
@@ -480,6 +693,7 @@ void IAVersioneer::gitTag()
     sprintf(buf, "cd %s; /usr/bin/git push --tags",
             wBasePath->value());
     system(buf);
+#endif
 }
 
 
@@ -506,6 +720,20 @@ void IAVersioneer::systemf(const char *fmt, ...)
 void IAVersioneer::system(const char *cmd)
 {
     wTerminal->printf("> %s\n", cmd);
+#ifdef _WIN32
+	char *cmdDOS = strdup(cmd);
+	char *p = cmdDOS;
+	while (*p) {
+		if (*p == '/') *p = '\\';
+		else if (*p == '\\') *p = '/';
+		p++;
+	}
+	int ret = prun(cmdDOS);
+	wTerminal->printf("Returned: %d\n", ret);
+	wTerminal->printf("%s", stdout_data);
+	wTerminal->printf("%s", stderr_data);
+	free(cmdDOS);
+#else
     FILE *f = ::popen(cmd, "r");
     if (f) {
         while (!::feof(f)) {
@@ -518,6 +746,7 @@ void IAVersioneer::system(const char *cmd)
     } else {
         wTerminal->printf("Failed: %s\n", strerror(errno));
     }
+#endif
 }
 
 

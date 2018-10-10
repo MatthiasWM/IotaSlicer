@@ -18,9 +18,6 @@
     <Filter Include="src\data">
       <UniqueIdentifier>{9b69a912-73df-403e-832c-c5951991b3d8}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\userInterface">
-      <UniqueIdentifier>{5d7f4986-bd29-4117-9b74-1432a7b61d38}</UniqueIdentifier>
-    </Filter>
     <Filter Include="libs">
       <UniqueIdentifier>{2f67ad00-e7bd-467f-b0b2-acedc3ff11c0}</UniqueIdentifier>
     </Filter>
@@ -41,6 +38,18 @@
     </Filter>
     <Filter Include="src\app">
       <UniqueIdentifier>{f4f8196a-295c-4f84-8580-03cc1890a12e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\controller">
+      <UniqueIdentifier>{c1c9487f-2608-4f01-9a6c-b09415547fc4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\property">
+      <UniqueIdentifier>{f6392eb2-f6a2-455f-beb3-f348c6c33caa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\view">
+      <UniqueIdentifier>{8ae4971f-1597-42e1-9865-7de290ad2cf1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\widget">
+      <UniqueIdentifier>{7d61ce84-a653-45bb-8fa5-566de432efbe}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -71,20 +80,11 @@
     <ClCompile Include="..\..\..\src\printer\IAPrinter.cpp">
       <Filter>src\printer</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\userinterface\IACamera.cpp">
-      <Filter>src\userInterface</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\src\data\binaryData.cpp">
       <Filter>src\data</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\userinterface\IAGUIMain.cpp">
-      <Filter>src\userInterface</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\src\Iota.cpp">
       <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\userinterface\IAGLButton.cpp">
-      <Filter>src\userInterface</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\fileformats\IAGeometryReader.cxx">
       <Filter>src\fileformats</Filter>
@@ -94,9 +94,6 @@
     </ClCompile>
     <ClCompile Include="..\..\..\src\fileformats\IAGeometryReaderTextStl.cxx">
       <Filter>src\fileformats</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\userinterface\IASceneView.cpp">
-      <Filter>src\userInterface</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\opengl\IAFramebuffer.cpp">
       <Filter>src\opengl</Filter>
@@ -143,12 +140,6 @@
     <ClCompile Include="..\..\..\src\printer\IAPrinterSLS.cpp">
       <Filter>src\printer</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\userinterface\IAProgressDialog.cpp">
-      <Filter>src\userInterface</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\userinterface\IAGLRangeSlider.cxx">
-      <Filter>src\userInterface</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\src\app\IAError.cpp">
       <Filter>src\app</Filter>
     </ClCompile>
@@ -163,6 +154,33 @@
     </ClCompile>
     <ClCompile Include="..\..\..\src\printer\IASetting.cpp">
       <Filter>src\printer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\controller\IAController.cpp">
+      <Filter>src\controller</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\controller\IAPrinterListController.cpp">
+      <Filter>src\controller</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\property\IAProperty.cpp">
+      <Filter>src\property</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\view\IAGUIMain.cpp">
+      <Filter>src\view</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\view\IAProgressDialog.cpp">
+      <Filter>src\view</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\widget\IACamera.cpp">
+      <Filter>src\widget</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\widget\IAGLButton.cpp">
+      <Filter>src\widget</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\widget\IAGLRangeSlider.cxx">
+      <Filter>src\widget</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\widget\IASceneView.cpp">
+      <Filter>src\widget</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -196,20 +214,11 @@
     <ClInclude Include="..\..\..\src\printer\IAPrinter.h">
       <Filter>src\printer</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\src\userinterface\IACamera.h">
-      <Filter>src\userInterface</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\src\data\binaryData.h">
       <Filter>src\data</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\src\userinterface\IAGUIMain.h">
-      <Filter>src\userInterface</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\src\Iota.h">
       <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\userinterface\IAGLButton.h">
-      <Filter>src\userInterface</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\fileformats\IAGeometryReader.h">
       <Filter>src\fileformats</Filter>
@@ -219,9 +228,6 @@
     </ClInclude>
     <ClInclude Include="..\..\..\src\fileformats\IAGeometryReaderTextStl.h">
       <Filter>src\fileformats</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\userinterface\IASceneView.h">
-      <Filter>src\userInterface</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\opengl\IAFramebuffer.h">
       <Filter>src\opengl</Filter>
@@ -286,12 +292,6 @@
     <ClInclude Include="..\..\..\src\printer\IAPrinterSLS.h">
       <Filter>src\printer</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\src\userinterface\IAProgressDialog.h">
-      <Filter>src\userInterface</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\userinterface\IAGLRangeSlider.h">
-      <Filter>src\userInterface</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\src\app\IAError.h">
       <Filter>src\app</Filter>
     </ClInclude>
@@ -309,6 +309,33 @@
     </ClInclude>
     <ClInclude Include="..\..\..\src\printer\IASetting.h">
       <Filter>src\printer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\controller\IAController.h">
+      <Filter>src\controller</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\controller\IAPrinterListController.h">
+      <Filter>src\controller</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\property\IAProperty.h">
+      <Filter>src\property</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\view\IAGUIMain.h">
+      <Filter>src\view</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\view\IAProgressDialog.h">
+      <Filter>src\view</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\widget\IACamera.h">
+      <Filter>src\widget</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\widget\IAGLButton.h">
+      <Filter>src\widget</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\widget\IAGLRangeSlider.h">
+      <Filter>src\widget</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\widget\IASceneView.h">
+      <Filter>src\widget</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -358,8 +385,8 @@
     <CustomBuild Include="..\..\..\src\data\binaryData.fl">
       <Filter>src\data</Filter>
     </CustomBuild>
-    <CustomBuild Include="..\..\..\src\userinterface\IAGUIMain.fl">
-      <Filter>src\userInterface</Filter>
+    <CustomBuild Include="..\..\..\src\view\IAGUIMain.fl">
+      <Filter>src\view</Filter>
     </CustomBuild>
   </ItemGroup>
 </Project>
