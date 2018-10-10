@@ -6,13 +6,13 @@ code_name {.cpp}
 decl {\#include "Iota.h"} {public global
 }
 
-decl {\#include "IASceneView.h"} {public global
+decl {\#include "widget/IASceneView.h"} {public global
 }
 
-decl {\#include "IAGLButton.h"} {public global
+decl {\#include "widget/IAGLButton.h"} {public global
 }
 
-decl {\#include "IAGLRangeSlider.h"} {public global
+decl {\#include "widget/IAGLRangeSlider.h"} {public global
 }
 
 decl {\#include <FL/Fl_File_Chooser.H>} {public global

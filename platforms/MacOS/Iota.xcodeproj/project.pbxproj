@@ -18,8 +18,8 @@
 		C934EADA215806C90086C36D /* IAVersioneer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C934EAD7215806C80086C36D /* IAVersioneer.cpp */; };
 		C934EADB215806C90086C36D /* IAError.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C934EAD8215806C80086C36D /* IAError.cpp */; };
 		C938CC152124D51200BAC374 /* IAGLButton.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C938CC142124D51200BAC374 /* IAGLButton.cpp */; };
-		C938CC182125CFB100BAC374 /* IAGeometryReader.cxx in Sources */ = {isa = PBXBuildFile; fileRef = C938CC162125CFB100BAC374 /* IAGeometryReader.cxx */; };
-		C938CC20212602F600BAC374 /* IAGeometryReaderBinaryStl.cxx in Sources */ = {isa = PBXBuildFile; fileRef = C938CC1F212602F600BAC374 /* IAGeometryReaderBinaryStl.cxx */; };
+		C938CC182125CFB100BAC374 /* IAGeometryReader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C938CC162125CFB100BAC374 /* IAGeometryReader.cpp */; };
+		C938CC20212602F600BAC374 /* IAGeometryReaderBinaryStl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C938CC1F212602F600BAC374 /* IAGeometryReaderBinaryStl.cpp */; };
 		C938CC232126E67700BAC374 /* IAMath.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C938CC212126E67600BAC374 /* IAMath.cpp */; };
 		C960ED512143B64D007FC037 /* Doxyfile in Sources */ = {isa = PBXBuildFile; fileRef = C960ED4F2143B62C007FC037 /* Doxyfile */; };
 		C96B1434211A3E9F00978AC7 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C96B1433211A3E9F00978AC7 /* Assets.xcassets */; };
@@ -34,9 +34,9 @@
 		C97632E0211E395200D9D4B5 /* lib3ds.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C97632DF211E395200D9D4B5 /* lib3ds.a */; };
 		C97632EB211F685100D9D4B5 /* binaryData.fl in Sources */ = {isa = PBXBuildFile; fileRef = C97632EA211F685100D9D4B5 /* binaryData.fl */; };
 		C97632EF211FA7CC00D9D4B5 /* IAPrinter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C97632ED211FA7CC00D9D4B5 /* IAPrinter.cpp */; };
-		C98C66B721205D1D00BD3ACE /* IAFmtTexJpeg.cxx in Sources */ = {isa = PBXBuildFile; fileRef = C98C66B621205D1D00BD3ACE /* IAFmtTexJpeg.cxx */; };
-		C98C66BC21205D3C00BD3ACE /* IAGeometryReaderTextStl.cxx in Sources */ = {isa = PBXBuildFile; fileRef = C98C66B921205D3C00BD3ACE /* IAGeometryReaderTextStl.cxx */; };
-		C98C66BD21205D3C00BD3ACE /* IAFmtObj3ds.cxx in Sources */ = {isa = PBXBuildFile; fileRef = C98C66BA21205D3C00BD3ACE /* IAFmtObj3ds.cxx */; };
+		C98C66B721205D1D00BD3ACE /* IAFmtTexJpeg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C98C66B621205D1D00BD3ACE /* IAFmtTexJpeg.cpp */; };
+		C98C66BC21205D3C00BD3ACE /* IAGeometryReaderTextStl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C98C66B921205D3C00BD3ACE /* IAGeometryReaderTextStl.cpp */; };
+		C98C66BD21205D3C00BD3ACE /* IAFmtObj3ds.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C98C66BA21205D3C00BD3ACE /* IAFmtObj3ds.cpp */; };
 		C98C66C321208C6400BD3ACE /* IACamera.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C98C66C121208C6300BD3ACE /* IACamera.cpp */; };
 		C99331E62123068F00629BE1 /* helpAbout.html in Resources */ = {isa = PBXBuildFile; fileRef = C99331E52123068E00629BE1 /* helpAbout.html */; };
 		C99331E821230BDB00629BE1 /* helpLicenses.html in Resources */ = {isa = PBXBuildFile; fileRef = C99331E721230BDB00629BE1 /* helpLicenses.html */; };
@@ -46,7 +46,7 @@
 		C993323C21238A7200629BE1 /* potracelib.c in Sources */ = {isa = PBXBuildFile; fileRef = C993321A2123881800629BE1 /* potracelib.c */; };
 		C993323D21238A9700629BE1 /* IAPotrace.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C99332052123881800629BE1 /* IAPotrace.cpp */; };
 		C9A67731214862D800B3031E /* IAProgressDialog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C9A6772F214862D800B3031E /* IAProgressDialog.cpp */; };
-		C9A67734214AA16900B3031E /* IAGLRangeSlider.cxx in Sources */ = {isa = PBXBuildFile; fileRef = C9A67732214AA16800B3031E /* IAGLRangeSlider.cxx */; };
+		C9A67734214AA16900B3031E /* IAGLRangeSlider.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C9A67732214AA16800B3031E /* IAGLRangeSlider.cpp */; };
 		C9A76C1B21614ACF004F89BF /* IAPrinterListController.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C9A76C1921614ACF004F89BF /* IAPrinterListController.cpp */; };
 		C9BC92442138692F00991240 /* IADxfWriter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C9BC92432138692F00991240 /* IADxfWriter.cpp */; };
 		C9CD015A21204C2700713CAF /* IASceneView.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C9CD015921204C2600713CAF /* IASceneView.cpp */; };
@@ -121,14 +121,14 @@
 		C934EAD8215806C80086C36D /* IAError.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = IAError.cpp; sourceTree = "<group>"; };
 		C938CC132124D51200BAC374 /* IAGLButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IAGLButton.h; sourceTree = "<group>"; };
 		C938CC142124D51200BAC374 /* IAGLButton.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = IAGLButton.cpp; sourceTree = "<group>"; };
-		C938CC162125CFB100BAC374 /* IAGeometryReader.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = IAGeometryReader.cxx; sourceTree = "<group>"; };
+		C938CC162125CFB100BAC374 /* IAGeometryReader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = IAGeometryReader.cpp; sourceTree = "<group>"; };
 		C938CC172125CFB100BAC374 /* IAGeometryReader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IAGeometryReader.h; sourceTree = "<group>"; };
 		C938CC192125EF7000BAC374 /* auxiliary.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = auxiliary.h; sourceTree = "<group>"; };
 		C938CC1B2125F00700BAC374 /* bitmap.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = bitmap.h; sourceTree = "<group>"; };
 		C938CC1C2125F05500BAC374 /* lists.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = lists.h; sourceTree = "<group>"; };
 		C938CC1D2125F08B00BAC374 /* progress.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = progress.h; sourceTree = "<group>"; };
 		C938CC1E212602F600BAC374 /* IAGeometryReaderBinaryStl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IAGeometryReaderBinaryStl.h; sourceTree = "<group>"; };
-		C938CC1F212602F600BAC374 /* IAGeometryReaderBinaryStl.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = IAGeometryReaderBinaryStl.cxx; sourceTree = "<group>"; };
+		C938CC1F212602F600BAC374 /* IAGeometryReaderBinaryStl.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = IAGeometryReaderBinaryStl.cpp; sourceTree = "<group>"; };
 		C938CC212126E67600BAC374 /* IAMath.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = IAMath.cpp; sourceTree = "<group>"; };
 		C938CC222126E67700BAC374 /* IAMath.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IAMath.h; sourceTree = "<group>"; };
 		C960ED492143B10C007FC037 /* libIota Developer Docs.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libIota Developer Docs.a"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -159,10 +159,10 @@
 		C97632ED211FA7CC00D9D4B5 /* IAPrinter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = IAPrinter.cpp; sourceTree = "<group>"; };
 		C97632EE211FA7CC00D9D4B5 /* IAPrinter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IAPrinter.h; sourceTree = "<group>"; };
 		C98C66B521205D1D00BD3ACE /* IAFmtTexJpeg.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IAFmtTexJpeg.h; sourceTree = "<group>"; };
-		C98C66B621205D1D00BD3ACE /* IAFmtTexJpeg.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = IAFmtTexJpeg.cxx; sourceTree = "<group>"; };
+		C98C66B621205D1D00BD3ACE /* IAFmtTexJpeg.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = IAFmtTexJpeg.cpp; sourceTree = "<group>"; };
 		C98C66B821205D3C00BD3ACE /* IAGeometryReaderTextStl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IAGeometryReaderTextStl.h; sourceTree = "<group>"; };
-		C98C66B921205D3C00BD3ACE /* IAGeometryReaderTextStl.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = IAGeometryReaderTextStl.cxx; sourceTree = "<group>"; };
-		C98C66BA21205D3C00BD3ACE /* IAFmtObj3ds.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = IAFmtObj3ds.cxx; sourceTree = "<group>"; };
+		C98C66B921205D3C00BD3ACE /* IAGeometryReaderTextStl.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = IAGeometryReaderTextStl.cpp; sourceTree = "<group>"; };
+		C98C66BA21205D3C00BD3ACE /* IAFmtObj3ds.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = IAFmtObj3ds.cpp; sourceTree = "<group>"; };
 		C98C66BB21205D3C00BD3ACE /* IAFmtObj3ds.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IAFmtObj3ds.h; sourceTree = "<group>"; };
 		C98C66BF212060EE00BD3ACE /* updateFLTK.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = updateFLTK.txt; sourceTree = "<group>"; };
 		C98C66C02120610B00BD3ACE /* slicer.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = slicer.txt; sourceTree = "<group>"; };
@@ -183,7 +183,7 @@
 		C993321C2123881800629BE1 /* platform.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = platform.h; sourceTree = "<group>"; };
 		C9A6772F214862D800B3031E /* IAProgressDialog.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = IAProgressDialog.cpp; sourceTree = "<group>"; };
 		C9A67730214862D800B3031E /* IAProgressDialog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IAProgressDialog.h; sourceTree = "<group>"; };
-		C9A67732214AA16800B3031E /* IAGLRangeSlider.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = IAGLRangeSlider.cxx; sourceTree = "<group>"; };
+		C9A67732214AA16800B3031E /* IAGLRangeSlider.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = IAGLRangeSlider.cpp; sourceTree = "<group>"; };
 		C9A67733214AA16900B3031E /* IAGLRangeSlider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IAGLRangeSlider.h; sourceTree = "<group>"; };
 		C9A76C1921614ACF004F89BF /* IAPrinterListController.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = IAPrinterListController.cpp; sourceTree = "<group>"; };
 		C9A76C1A21614ACF004F89BF /* IAPrinterListController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IAPrinterListController.h; sourceTree = "<group>"; };
@@ -399,15 +399,15 @@
 		C98C66B421205D1D00BD3ACE /* fileformats */ = {
 			isa = PBXGroup;
 			children = (
-				C938CC162125CFB100BAC374 /* IAGeometryReader.cxx */,
+				C938CC162125CFB100BAC374 /* IAGeometryReader.cpp */,
 				C938CC172125CFB100BAC374 /* IAGeometryReader.h */,
-				C98C66B921205D3C00BD3ACE /* IAGeometryReaderTextStl.cxx */,
+				C98C66B921205D3C00BD3ACE /* IAGeometryReaderTextStl.cpp */,
 				C98C66B821205D3C00BD3ACE /* IAGeometryReaderTextStl.h */,
-				C938CC1F212602F600BAC374 /* IAGeometryReaderBinaryStl.cxx */,
+				C938CC1F212602F600BAC374 /* IAGeometryReaderBinaryStl.cpp */,
 				C938CC1E212602F600BAC374 /* IAGeometryReaderBinaryStl.h */,
-				C98C66BA21205D3C00BD3ACE /* IAFmtObj3ds.cxx */,
+				C98C66BA21205D3C00BD3ACE /* IAFmtObj3ds.cpp */,
 				C98C66BB21205D3C00BD3ACE /* IAFmtObj3ds.h */,
-				C98C66B621205D1D00BD3ACE /* IAFmtTexJpeg.cxx */,
+				C98C66B621205D1D00BD3ACE /* IAFmtTexJpeg.cpp */,
 				C98C66B521205D1D00BD3ACE /* IAFmtTexJpeg.h */,
 			);
 			path = fileformats;
@@ -466,7 +466,7 @@
 				C98C66C221208C6300BD3ACE /* IACamera.h */,
 				C938CC142124D51200BAC374 /* IAGLButton.cpp */,
 				C938CC132124D51200BAC374 /* IAGLButton.h */,
-				C9A67732214AA16800B3031E /* IAGLRangeSlider.cxx */,
+				C9A67732214AA16800B3031E /* IAGLRangeSlider.cpp */,
 				C9A67733214AA16900B3031E /* IAGLRangeSlider.h */,
 			);
 			path = widget;
@@ -661,19 +661,19 @@
 				C9A67731214862D800B3031E /* IAProgressDialog.cpp in Sources */,
 				C97632D1211E317F00D9D4B5 /* IAVertex.cpp in Sources */,
 				C97632CB211E2DD000D9D4B5 /* IAGUIMain.fl in Sources */,
-				C938CC20212602F600BAC374 /* IAGeometryReaderBinaryStl.cxx in Sources */,
+				C938CC20212602F600BAC374 /* IAGeometryReaderBinaryStl.cpp in Sources */,
 				C9E4C3192130311F004ED18C /* IAGcodeWriter.cpp in Sources */,
 				C9163EBA213EA6A700876F17 /* IAPrinterSLS.cpp in Sources */,
 				C9BC92442138692F00991240 /* IADxfWriter.cpp in Sources */,
-				C98C66BD21205D3C00BD3ACE /* IAFmtObj3ds.cxx in Sources */,
+				C98C66BD21205D3C00BD3ACE /* IAFmtObj3ds.cpp in Sources */,
 				C9E4C31121285AFB004ED18C /* IAFramebuffer.cpp in Sources */,
-				C98C66B721205D1D00BD3ACE /* IAFmtTexJpeg.cxx in Sources */,
+				C98C66B721205D1D00BD3ACE /* IAFmtTexJpeg.cpp in Sources */,
 				C921E711216D4094007E1100 /* IAProperty.cpp in Sources */,
 				C97632EB211F685100D9D4B5 /* binaryData.fl in Sources */,
 				C938CC232126E67700BAC374 /* IAMath.cpp in Sources */,
 				C97632D4211E325C00D9D4B5 /* IAEdge.cpp in Sources */,
 				C9CD015A21204C2700713CAF /* IASceneView.cpp in Sources */,
-				C98C66BC21205D3C00BD3ACE /* IAGeometryReaderTextStl.cxx in Sources */,
+				C98C66BC21205D3C00BD3ACE /* IAGeometryReaderTextStl.cpp in Sources */,
 				C9E4C31521299385004ED18C /* IAToolpath.cpp in Sources */,
 				C97632CA211E2DD000D9D4B5 /* Iota.cpp in Sources */,
 				C9E5885921544A8600C4B64D /* IASetting.cpp in Sources */,
@@ -682,9 +682,9 @@
 				C97632EF211FA7CC00D9D4B5 /* IAPrinter.cpp in Sources */,
 				C9163EC0213EAA4300876F17 /* IAPrinterFDMBelt.cpp in Sources */,
 				C938CC152124D51200BAC374 /* IAGLButton.cpp in Sources */,
-				C938CC182125CFB100BAC374 /* IAGeometryReader.cxx in Sources */,
+				C938CC182125CFB100BAC374 /* IAGeometryReader.cpp in Sources */,
 				C97632DD211E357500D9D4B5 /* IASlice.cpp in Sources */,
-				C9A67734214AA16900B3031E /* IAGLRangeSlider.cxx in Sources */,
+				C9A67734214AA16900B3031E /* IAGLRangeSlider.cpp in Sources */,
 				C97632D7211E33B000D9D4B5 /* IAMesh.cpp in Sources */,
 				C9163EBC213EA6A700876F17 /* IAPrinterInkjet.cpp in Sources */,
 				C934EAD9215806C90086C36D /* IAPreferences.cpp in Sources */,
