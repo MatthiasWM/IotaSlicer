@@ -363,6 +363,8 @@ void IAVersioneer::updateFLTK()
     systemf("cp %s/png/*.h include/libpng/", wFLTKPath->value());
 #endif
 #ifdef _WIN32
+	system("cmd \\c echo \"Not implemented on MSWindows\"");
+#if 0
 	system("cmd \\c md platforms");
 	system("cmd \\c md platforms/MSWindows");
 	system("cmd \\c md platforms/MSWindows/bin");
@@ -379,6 +381,7 @@ void IAVersioneer::updateFLTK()
 	systemf("xcopy %s/jpeg/*.h include/libjpeg/ \\s \\e \\y", wFLTKPath->value());
 	systemf("xcopy %s/jpeg/*.h include/libjpeg/ \\s \\e \\y", wFLTKPath->value());
 	systemf("xcopy %s/png/*.h include/libpng/ \\s \\e \\y", wFLTKPath->value());
+#endif
 #endif
 #ifdef __LINUX__
 #endif
@@ -418,7 +421,7 @@ void IAVersioneer::createArchive()
 	{
 		char buf[4096];
 		sprintf(buf,
-			"cd %s/platforms/MSWindows/VisualStudio/Release && "
+			"cmd \\c cd %s/platforms/MSWindows/VisualStudio/Release && "
 			"powershell Compress-Archive "
 				"-Path IotaSlicer.exe "
 				"-DestinationPath %s/IotaSlicer_%d.%d.%d%s_MSWindows.zip "
