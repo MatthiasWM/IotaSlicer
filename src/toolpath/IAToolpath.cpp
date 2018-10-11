@@ -492,9 +492,9 @@ void IAToolpathList::optimize()
  * Manage a single toolpath.
  */
 IAToolpath::IAToolpath(double z)
-:   pZ( z ),
-    tFirst( 0.0, 0.0, z ),
-    tPrev( 0.0, 0.0, z )
+:   tFirst( 0.0, 0.0, z ),
+    tPrev( 0.0, 0.0, z ),
+    pZ( z )
 {
 }
 

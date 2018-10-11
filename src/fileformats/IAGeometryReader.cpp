@@ -125,10 +125,10 @@ IAGeometryReader::IAGeometryReader(const char *filename)
  * \param size number of bytes in that memory block
  */
 IAGeometryReader::IAGeometryReader(const char *name, uint8_t *data, size_t size)
-:   pData( data ),
+:   pMustUnmapOnDelete( false ),
+    pData( data ),
     pCurrData( data ),
     pSize( size ),
-    pMustUnmapOnDelete( false ),
     pName(strdup(name))
 {
 }

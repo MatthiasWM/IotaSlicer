@@ -447,10 +447,10 @@ IASettingChoice::IASettingChoice(
                                  const char *path, const char *label, int &value,
                                  std::function<void()>&& cb, Fl_Menu_Item *menu)
 :   IASetting(path, label),
-pValue(value),
-pCallback(cb),
-pMenu(dup(menu)),
-pWidget(nullptr)
+    pValue(value),
+    pMenu(dup(menu)),
+    pCallback(cb),
+    pWidget(nullptr)
 {
 }
 

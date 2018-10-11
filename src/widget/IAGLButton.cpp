@@ -71,19 +71,19 @@ static void flgl_frame2(const char* s, int x, int y, int w, int h)
     uchar *g = flgl_gray_ramp();
     if (h > 0 && w > 0) for (;*s;) {
         // draw bottom line:
-        gl_color((Fl_Color)g[*s++]);
+        gl_color((Fl_Color)g[(unsigned int)(*s++)]);
         flgl_xyline(x, y+h-1, x+w-1);
         if (--h <= 0) break;
         // draw right line:
-        gl_color((Fl_Color)g[*s++]);
+        gl_color((Fl_Color)g[(unsigned int)(*s++)]);
         flgl_yxline(x+w-1, y+h-1, y);
         if (--w <= 0) break;
         // draw top line:
-        gl_color((Fl_Color)g[*s++]);
+        gl_color((Fl_Color)g[(unsigned int)(*s++)]);
         flgl_xyline(x, y, x+w-1);
         y++; if (--h <= 0) break;
         // draw left line:
-        gl_color((Fl_Color)g[*s++]);
+        gl_color((Fl_Color)g[(unsigned int)(*s++)]);
         flgl_yxline(x, y+h-1, y);
         x++; if (--w <= 0) break;
     }
