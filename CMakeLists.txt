@@ -64,6 +64,27 @@ endfunction(FLTK_RUN_FLUID TARGET SOURCES)
 FLTK_RUN_FLUID (FLUID_VIEWS src/view/IAGUIMain.fl)
 FLTK_RUN_FLUID (FLUID_DATA src/data/binaryData.fl)
 
+# http://lists.qt-project.org/pipermail/qt-creator/2012-August/001191.html [^]
+function(collect_info_files)
+    list(APPEND _all_found)
+    foreach(_it ${ARGN})
+        if(NOT IS_DIRECTORY ${_it})
+            get_filename_component(_path ${_it} ABSOLUTE)
+            if(EXISTS ${_path})
+                list(APPEND _all_found ${_it})
+                if(NOT ${_it} MATCHES "^/\\\\..*$;~$")
+                    set_source_files_properties(${_it} PROPERTIES HEADER_FILE_ONLY TRUE)
+                endif()
+            endif()
+        endif()
+    endforeach()
+    set(INFO_FILES ${_all_found} PARENT_SCOPE)
+endfunction()
+
+set(other_files README.md Doxyfile html/index.html html/helpAbout.html html/helpLicenses.html)
+collect_info_files(${other_files})
+add_custom_target(docs SOURCES ${INFO_FILES})
+
 link_directories (
 	${PLATFORM_DIR}/lib/
 )
@@ -180,6 +201,7 @@ source_group(src\\property src/property)
 source_group(src\\toolpath src/toolpath)
 source_group(src\\view src/view)
 source_group(src\\widget src/widget)
+source_group(html\\ html/)
 
 find_package(OpenGL REQUIRED)
 include_directories(${OPENGL_INCLUDE_DIR})
