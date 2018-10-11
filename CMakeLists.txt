@@ -83,7 +83,22 @@ endfunction()
 
 set(other_files README.md Doxyfile html/index.html html/helpAbout.html html/helpLicenses.html)
 collect_info_files(${other_files})
-add_custom_target(docs SOURCES ${INFO_FILES})
+# add_custom_target(docs SOURCES ${INFO_FILES})
+
+
+find_package(Doxygen)
+if (DOXYGEN_FOUND)
+    add_custom_target( docs ALL
+        COMMAND ${DOXYGEN_EXECUTABLE} ${PROJECT_SOURCE_DIR}/Doxyfile
+        WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+#${CMAKE_CURRENT_BINARY_DIR}
+        COMMENT "Generating API documentation with Doxygen"
+        VERBATIM
+    )
+else (DOXYGEN_FOUND)
+    message("Doxygen need to be installed to generate the doxygen documentation")
+endif (DOXYGEN_FOUND)
+
 
 link_directories (
 	${PLATFORM_DIR}/lib/
@@ -186,6 +201,7 @@ add_executable (IotaSlicer MACOSX_BUNDLE
 	src/widget/IAGLRangeSlider.h
 	src/widget/IASceneView.cpp
 	src/widget/IASceneView.h
+    ${INFO_FILES}
 )
 
 source_group(src\\ src/)
