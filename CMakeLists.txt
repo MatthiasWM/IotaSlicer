@@ -20,6 +20,9 @@ set (CMAKE_OSX_ARCHITECTURES=i386;x86_64)
 if (APPLE)
 	set (PLATFORM_DIR platforms/MacOS)
 endif()
+if (UNIX AND NOT APPLE)
+	set (PLATFORM_DIR platforms/Linux)
+endif()
 if (WIN32)
 	set (PLATFORM_DIR platforms/MSWindows)
 	add_compile_definitions(_USE_MATH_DEFINES)
@@ -182,6 +185,17 @@ find_package(OpenGL REQUIRED)
 include_directories(${OPENGL_INCLUDE_DIR})
 target_link_libraries(IotaSlicer ${OPENGL_LIBRARIES})
 
+target_link_libraries (IotaSlicer 
+	fltk
+	fltk_gl
+	fltk_images
+	fltk_jpeg
+	fltk_png
+	fltk_z
+#	3ds
+)
+
+
 # APPLE WIN32 MSVC UNIX
 if (APPLE)
 #   set( OSX_ICON_FILES vvv.icns vvv-document.icns )
@@ -195,6 +209,21 @@ if (APPLE)
 	)
 endif()
 if (UNIX AND NOT APPLE)
+	target_compile_definitions(IotaSlicer PUBLIC __LINUX__)
+	target_compile_definitions(IotaSlicer PUBLIC GL_GLEXT_PROTOTYPES)
+	find_package(X11 REQUIRED)
+	include_directories(${X11_INCLUDE_DIR})
+	link_directories(${X11_LIBRARIES})
+	target_link_libraries(IotaSlicer ${X11_LIBRARIES})
+	target_link_libraries(IotaSlicer X11)
+	target_link_libraries(IotaSlicer Xext)
+	target_link_libraries(IotaSlicer pthread)
+	target_link_libraries(IotaSlicer Xfixes)
+	target_link_libraries(IotaSlicer Xft)
+	target_link_libraries(IotaSlicer Xrender)
+	target_link_libraries(IotaSlicer m)
+	target_link_libraries(IotaSlicer fontconfig)
+	target_link_libraries(IotaSlicer dl)
 endif()
 if(WIN32)
 	target_link_libraries(IotaSlicer ws2_32)
@@ -213,21 +242,6 @@ if(WIN32)
 	target_link_libraries(IotaSlicer comctl32)
 endif()
 
-target_link_libraries (IotaSlicer 
-	fltk
-	fltk_gl
-	fltk_images
-	fltk_jpeg
-	fltk_png
-	fltk_z
-#	3ds
-)
-
-#add_custom_command (
-#	OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/Table.h
-#	COMMAND MakeTable ${CMAKE_CURRENT_BINARY_DIR}/Table.h
-#	DEPENDS MakeTable
-#)
 
 
 

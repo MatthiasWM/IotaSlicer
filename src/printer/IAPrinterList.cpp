@@ -18,6 +18,8 @@
 #include <FL/Fl_Menu_Item.H>
 #include <FL/Fl_Window.H>
 
+#include <algorithm>
+
 
 /**
  * Manage a number of printers.

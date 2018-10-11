@@ -9,6 +9,11 @@
 
 #include <errno.h>
 
+#ifdef __LINUX__
+#include <sys/types.h>
+#include <utime.h>
+#endif
+
 
 #ifdef _WIN32
 FILE *popen(const char *name, const char *mode) {

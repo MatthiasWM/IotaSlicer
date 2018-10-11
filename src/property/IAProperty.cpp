@@ -9,6 +9,8 @@
 
 #include "controller/IAController.h"
 
+#include <algorithm>
+
 
 IAPropertyList::IAPropertyList()
 {
