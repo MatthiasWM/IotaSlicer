@@ -142,7 +142,7 @@ public:
         snprintf(buf, 80, "%.2f", v);
         pInput->value(buf);
     }
-    static void choice_cb(Fl_Input_Choice *w, void *u) {
+    static void choice_cb(Fl_Float_Input *w, void *u) {
         w->parent()->do_callback();
     }
     Fl_Box *pLabel = nullptr;

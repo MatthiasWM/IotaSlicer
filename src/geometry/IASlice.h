@@ -49,7 +49,7 @@ private:
     /// current Z layer of the entire slice
     double pCurrentZ = -1e9;
     /// link back to the printer that created the slice, so we can retreive the build volume
-    IAPrinter *pPrinter = nullptr;
+    //IAPrinter *pPrinter = nullptr;
 
 public:
     IAFramebuffer *pFramebuffer = nullptr;

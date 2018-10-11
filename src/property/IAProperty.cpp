@@ -56,25 +56,25 @@ void IAProperty::remove(IAController* ctrl)
 
 
 
-IAPropertyDouble::IAPropertyDouble(const char *name, double value)
+IAPropertyFloat::IAPropertyFloat(const char *name, double value)
 :   IAProperty(name),
     pValue(value)
 {
 }
 
 
-IAPropertyDouble::~IAPropertyDouble()
+IAPropertyFloat::~IAPropertyFloat()
 {
 }
 
 
-double IAPropertyDouble::operator()() const
+double IAPropertyFloat::operator()() const
 {
     return pValue;
 }
 
 
-void IAPropertyDouble::set(double v, IAController *ctrl)
+void IAPropertyFloat::set(double v, IAController *ctrl)
 {
     pValue = v;
     for (auto &c: pControlerList) {

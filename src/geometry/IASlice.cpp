@@ -29,7 +29,7 @@ GLUtesselator *gGluTess = nullptr;
  Create an emoty slice.
  */
 IASlice::IASlice(IAPrinter *printer)
-:   pPrinter( printer )
+//:   pPrinter( printer )
 {
 #if 0
     pFramebuffer = new IAFramebuffer(printer, IAFramebuffer::RGBA);

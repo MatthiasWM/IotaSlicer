@@ -30,7 +30,7 @@ public:
 
 private:
     FILE *pFile = nullptr;
-    int pHandle = 0x3C;
+    //int pHandle = 0x3C;
 };
 
 

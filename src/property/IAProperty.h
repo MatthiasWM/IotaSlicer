@@ -41,11 +41,18 @@ protected:
 };
 
 
-class IAPropertyDouble : public IAProperty
+/**
+ * A Property can store one or more values, and set and get from Fl_Preferences.
+ *
+ * Any number of controllers can connect to a property. If the property value
+ * changes, all controllers are sent a notification. The controller that changes
+ * the value of the property should not be notified.
+ */
+class IAPropertyFloat : public IAProperty
 {
 public:
-    IAPropertyDouble(const char *name, double value=0.0);
-    virtual ~IAPropertyDouble() override;
+    IAPropertyFloat(const char *name, double value=0.0);
+    virtual ~IAPropertyFloat() override;
     double operator()() const;
     void set(double v, IAController *ctrl=nullptr);
 protected:

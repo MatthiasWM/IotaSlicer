@@ -34,6 +34,7 @@ IAIota Iota;
 
 IAVersioneer gVersioneer;
 
+// Composition
 
 /* Do not change the somewhat funky [ver stuff below. It is used for automated
  * version number updates.

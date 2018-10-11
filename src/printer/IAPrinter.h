@@ -14,6 +14,8 @@
 #include "IASetting.h"
 #include "property/IAProperty.h"
 
+#include "controller/IAController.h"
+
 
 /**
  * Base class to manage different types of 3D printers.
@@ -100,7 +102,8 @@ private:
 
 
 protected:
-    IAPropertyDouble pTest = IAPropertyDouble("toast", 1.0);
+    IACtrlTreeItemFloat *testCtrl = nullptr;
+    IAPropertyFloat test = IAPropertyFloat("test", 1.0);
 
 };
 

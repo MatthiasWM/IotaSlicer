@@ -62,7 +62,7 @@ private:
     IAHalfEdge *pEdge[3] = { nullptr, nullptr, nullptr };
 
     /** This mesh manages this triangle. */
-    IAMesh *pMesh = nullptr;
+    //IAMesh *pMesh = nullptr;
 };
 
 typedef IATriangle *IATrianglePtr;

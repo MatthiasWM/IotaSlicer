@@ -197,8 +197,10 @@ add_executable (IotaSlicer MACOSX_BUNDLE
 	src/widget/IACamera.h
 	src/widget/IAGLButton.cpp
 	src/widget/IAGLButton.h
-	src/widget/IAGLRangeSlider.cpp
-	src/widget/IAGLRangeSlider.h
+    src/widget/IAGLRangeSlider.cpp
+    src/widget/IAGLRangeSlider.h
+    src/widget/IAFLTreeItemFloat.cpp
+    src/widget/IAFLTreeItemFloat.h
 	src/widget/IASceneView.cpp
 	src/widget/IASceneView.h
     ${INFO_FILES}

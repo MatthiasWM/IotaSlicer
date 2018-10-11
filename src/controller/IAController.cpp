@@ -23,17 +23,17 @@ void IAController::propertyValueChanged()
 
 
 
-IAControllerDouble::IAControllerDouble()
+IACtrlTreeItemFloat::IACtrlTreeItemFloat()
 {
 }
 
 
-IAControllerDouble::~IAControllerDouble()
+IACtrlTreeItemFloat::~IACtrlTreeItemFloat()
 {
 }
 
 
-void IAControllerDouble::propertyValueChanged()
+void IACtrlTreeItemFloat::propertyValueChanged()
 {
 }
 

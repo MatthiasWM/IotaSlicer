@@ -16,7 +16,7 @@
  Create an emoty triangle.
  */
 IATriangle::IATriangle(IAMesh *m)
-:   pMesh(m)
+//:   pMesh(m)
 {
 }
 

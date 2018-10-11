@@ -11,7 +11,8 @@
 #include <vector>
 
 
-class IAPropertyDouble;
+class IACtrlTreeItemFloat;
+class IAPropertyFloat;
 
 
 class IAController
@@ -24,16 +25,21 @@ public:
 };
 
 
-class IAControllerDouble : public IAController
+/**
+ * This controller manages the connection between a Floating Point Property
+ * and a Floating Point Tree View.
+ */
+class IACtrlTreeItemFloat : public IAController
 {
 public:
-    IAControllerDouble();
-    virtual ~IAControllerDouble() override;
+    IACtrlTreeItemFloat();
+    virtual ~IACtrlTreeItemFloat() override;
 
     virtual void propertyValueChanged() override;
 
 protected:
-    IAPropertyDouble *pProperty = nullptr;
+    IAPropertyFloat *pProperty = nullptr;
+    IACtrlTreeItemFloat *pView = nullptr;
 };
 
 
