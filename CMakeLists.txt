@@ -232,6 +232,7 @@ target_link_libraries (IotaSlicer
 	fltk_jpeg
 	fltk_png
 	fltk_z
+    lua53
 #	3ds
 )
 
