@@ -47,6 +47,7 @@ public:
 
     // ---- scene settings
     virtual void initializeSceneSettings() override;
+
     double nozzleDiameter() { return pNozzleDiameter; }
 
     double pNozzleDiameter = 0.4;

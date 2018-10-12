@@ -35,6 +35,7 @@ IAIota Iota;
 IAVersioneer gVersioneer;
 
 // Composition
+// 35/18mm, 10/34/34mm, 3x12mm
 
 
 /* Do not change the somewhat funky [ver stuff below. It is used for automated
@@ -517,7 +518,7 @@ int main (int argc, char **argv)
 	Fl::args(argc, argv);
     Fl::set_color(FL_BACKGROUND_COLOR, 0xeeeeee00);
     Fl::use_high_res_GL(1);
-    
+
     Iota.pPrinterPrototypeList.generatePrototypes();
     Iota.pCustomPrinterList.loadCustomPrinters(Iota.pCurrentPrinter);
 

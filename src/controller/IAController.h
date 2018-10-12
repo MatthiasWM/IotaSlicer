@@ -8,11 +8,14 @@
 #define IA_CONTROLLER_H
 
 
+#include "Iota.h"
+
 #include <vector>
 
 
 class IACtrlTreeItemFloat;
 class IAPropertyFloat;
+struct Fl_Menu_Item;
 
 
 class IAController
@@ -22,6 +25,18 @@ public:
     virtual ~IAController();
 
     virtual void propertyValueChanged();
+};
+
+
+class IAMenuItemEventController : public IAController
+{
+public:
+    IAMenuItemEventController(IAPropertyEvent &p) : pProperty( p ) { }
+    virtual void propertyValueChanged() override;
+    void trigger();
+protected:
+    IAPropertyEvent &pProperty;
+    Fl_Menu_Item *pView = nullptr;
 };
 
 
@@ -40,6 +55,17 @@ public:
 protected:
     IAPropertyFloat *pProperty = nullptr;
     IACtrlTreeItemFloat *pView = nullptr;
+};
+
+
+class IAAppController : public IAController
+{
+    IAAppController() = delete;
+public:
+    IAAppController(IAIota &app) : pApp( app ) { }
+    IAMenuItemEventController quit { pApp.propQuit };
+protected:
+    IAIota &pApp;
 };
 
 

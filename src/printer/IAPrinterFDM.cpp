@@ -194,6 +194,9 @@ void IAPrinterFDM::initializePrinterProperties()
 
 void IAPrinterFDM::initializeSceneSettings()
 {
+    super::initializeSceneSettings();
+    IASetting *s;
+
     static Fl_Menu_Item numShellsMenu[] = {
         { "0*", 0, nullptr, (void*)0, 0, 0, 0, 11 },
         { "1", 0, nullptr, (void*)1, 0, 0, 0, 11 },
@@ -201,16 +204,29 @@ void IAPrinterFDM::initializeSceneSettings()
         { "3", 0, nullptr, (void*)3, 0, 0, 0, 11 },
         { nullptr } };
 
+    s = new IASettingChoice("NPerimiter", "# of perimeters: ", pNumShells,
+                            [this]{userChangedNumShells();}, numShellsMenu );
+    pSceneSettings.push_back(s);
+
     static Fl_Menu_Item numLidsMenu[] = {
         { "0*", 0, nullptr, (void*)0, 0, 0, 0, 11 },
         { "1", 0, nullptr, (void*)1, 0, 0, 0, 11 },
         { "2", 0, nullptr, (void*)2, 0, 0, 0, 11 },
         { nullptr } };
 
+    s = new IASettingChoice("NLids", "# of lids: ", pNumLids,
+                            [this]{userChangedNumLids();}, numLidsMenu );
+
+    pSceneSettings.push_back(s);
+
     static Fl_Menu_Item lidTypeMenu[] = {
         { "zigzag", 0, nullptr, (void*)0, 0, 0, 0, 11 },
         { "concentric", 0, nullptr, (void*)1, 0, 0, 0, 11 },
         { nullptr } };
+
+    s = new IASettingChoice("lidType", "lid type: ", pLidType,
+                            [this]{userChangedLidType();}, lidTypeMenu );
+    pSceneSettings.push_back(s);
 
     static Fl_Menu_Item infillDensityMenuMenu[] = {
         { "0%", 0, nullptr, (void*)0, 0, 0, 0, 11 },
@@ -222,38 +238,23 @@ void IAPrinterFDM::initializeSceneSettings()
         { "100%", 0, nullptr, (void*)0, 0, 0, 0, 11 },
         { nullptr } };
 
+    s = new IASettingFloatChoice("infillDensity", "infill density: ", pInfillDensity, "%",
+                                 [this]{userChangedInfillDensity();}, infillDensityMenuMenu );
+    pSceneSettings.push_back(s);
+
     static Fl_Menu_Item skirtMenu[] = {
         { "no", 0, nullptr, (void*)0, 0, 0, 0, 11 },
         { "yes", 0, nullptr, (void*)1, 0, 0, 0, 11 },
         { nullptr } };
 
+    s = new IASettingChoice("skirt", "skirt: ", pHasSkirt,
+                            [this]{userChangedSkirt();}, skirtMenu );
+    pSceneSettings.push_back(s);
+
     static Fl_Menu_Item nozzleDiameterMenu[] = {
         { "0.40", 0, nullptr, (void*)0, 0, 0, 0, 11 },
         { "0.35", 0, nullptr, (void*)0, 0, 0, 0, 11 },
         { nullptr } };
-    
-    super::initializeSceneSettings();
-    IASetting *s;
-    s = new IASettingChoice("NPerimiter", "# of perimeters: ", pNumShells,
-                            [this]{userChangedNumShells();}, numShellsMenu );
-    pSceneSettings.push_back(s);
-
-    s = new IASettingChoice("NLids", "# of lids: ", pNumLids,
-                            [this]{userChangedNumLids();}, numLidsMenu );
-
-    pSceneSettings.push_back(s);
-
-    s = new IASettingChoice("lidType", "lid type: ", pLidType,
-                            [this]{userChangedLidType();}, lidTypeMenu );
-    pSceneSettings.push_back(s);
-
-    s = new IASettingFloatChoice("infillDensity", "infill density: ", pInfillDensity, "%",
-                                 [this]{userChangedInfillDensity();}, infillDensityMenuMenu );
-    pSceneSettings.push_back(s);
-
-    s = new IASettingChoice("skirt", "skirt: ", pHasSkirt,
-                            [this]{userChangedSkirt();}, skirtMenu );
-    pSceneSettings.push_back(s);
 
     s = new IASettingFloatChoice("nozzleDiameter", "nozzle diameter: ", pNozzleDiameter, "mm",
                                  [this]{userChangedNozzleDiameter();}, nozzleDiameterMenu );
