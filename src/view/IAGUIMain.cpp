@@ -54,56 +54,67 @@ er for Color 3D Printing</b></font></center></p>\n\n            <h3>Iota uses \
           </p>\n            <p>\n            FLTK is provided under the terms \
 of the\n            <a href=\"http://www.fltk.org/COPYING.php\">GNU Library Pu\
 blic License</a>,\n            Version 2 with exceptions that allow for static\
- linking.\n            </p>\n\n            <h3>Iota uses <a href=\"https://www\
-.opengl.org\">OpenGL</a></h3>\n            <p>\n            \"OpenGL is the pr\
-emier environment for developing portable, interactive\n            2D and 3D \
-graphics applications. Since its introduction in 1992, OpenGL\n            has\
- become the industry\'s most widely used and supported 2D and 3D\n            \
-graphics application programming interface (API), bringing thousands of\n     \
-       applications to a wide variety of computer platforms. OpenGL fosters\n \
-           innovation and speeds application development by incorporating a br\
-oad\n            set of rendering, texture mapping, special effects, and other\
- powerful\n            visualization functions. Developers can leverage the po\
-wer of OpenGL\n            across all popular desktop and workstation platform\
-s, ensuring wide\n            application deployment.\"\n            </p>\n   \
-         <p>\n            End users, independent software vendors, and others \
-writing code based\n            on the OpenGL API are free from licensing requ\
-irements.\n            </p>\n\n            <h3>Iota uses <a href=\"https://cod\
-e.google.com/archive/p/lib3ds/\">lib3ds</a></h3>\n            <p>\n           \
- lib3ds is an overall software library for managing 3D-Studio Release 3\n     \
-       and 4 \".3DS\" files. It is a free alternative to Autodesk\'s 3DS File\
-\n            Toolkit for managing 3DS files.\n            </p>\n            <\
-p>\n            License: <a href=\"https://www.gnu.org/licenses/lgpl.html\">GN\
-U Lesser GPL</a>\n            </p>\n\n            <h3>Iota uses <a href=\"http\
-://potrace.sourceforge.net/\">potrace</a> by Peter Selinger</h3>\n            \
-<p>\n            \"Potrace(TM) is a tool for tracing a bitmap, which means, tr\
-ansforming\n            a bitmap into a smooth, scalable image.\"\n           \
- </p>\n            <p>\n            This program is free software; you can red\
-istribute it and/or modify\n            it under the terms of the GNU General \
-Public License as published by\n            the Free Software Foundation; eith\
-er version 2, or (at your option)\n            any later version.\n           \
- </p>\n\n            <h3>Iota uses <a href=\"http://www.antigrain.com/research\
-/adaptive_bezier/index.html\">Adaptive Subdivision of Bezier Curves</a> by Max\
-im Shemanarev</h3>\n            <p>\n            \"An attempt to achieve perfe\
-ct result in Bezier curve approximation.\"\n            </p>\n            <p>\
-\n            AGG is free software; you can redistribute it and/or\n          \
-  modify it under the terms of the GNU General Public License\n            as \
-published by the Free Software Foundation; either version 2\n            of th\
-e License, or (at your option) any later version.</p>\n\n<h3>Iota includes <a \
-href=\"https://www.thingiverse.com/thing:2906756\">Hex surface vase</a> by <a \
-href=\"https://www.dr-lex.be\">DrLex</a></h3>\n<p>\nHex surface vase (spiral p\
-rint) by DrLex is licensed under the Creative\nCommons - Attribution license.<\
-/p>\n\n<!--\n            <h3>Iota includes <a href=\"http://www.3dbenchy.com\"\
->#3DBenchy</a></h3>\n            <p>\n            \"#3DBenchy is a 3D model sp\
-ecifically designed for testing and\n            benchmarking 3D printers.\"</\
-p>\n            <p>\n            <a href=\"http://www.3dbenchy.com/license/\">\
-#3DBenchy</a> by\n            Creative-Tools.com is licensed under a Creative \
-Commons\n            Attribution-NoDerivatives 4.0 International License. Perm\
-issions\n            beyond the scope and typical usage examples are explained\
- below.</p>\n            <p>\n            Feel free to redistribute the unmodi\
-fied #3DBenchy STL file as you\n            please. Such as ... bundling the S\
-TL or pre-sliced print file with\n            3D printer kits, etc.</p>\n-->\n\
-        </font>\n\n    </body>\n</html>\n";
+ linking.\n            </p>\n\n            <h3>Iota uses <a href=\"http://www.\
+lua.org/home.html\">Lua</a></h3>\n            <p>\n            \"Lua is a powe\
+rful, efficient, lightweight, embeddable scripting\n            language. It s\
+upports procedural programming, object-oriented\n            programming, func\
+tional programming, data-driven programming,\n            and data description\
+.\"\n            </p>\n            <p>\n            <a href=\"http://www.lua.o\
+rg/license.html\">Lua</a>\n            is free software distributed under the \
+terms of the MIT license\n            reproduced here. Lua may be used for any\
+ purpose, including\n            commercial purposes, at absolutely no cost. N\
+o paperwork, no\n            royalties, no GNU-like \"copyleft\" restrictions,\
+ either. Just\n            download it and use it.\n            </p>\n\n      \
+      <h3>Iota uses <a href=\"https://www.opengl.org\">OpenGL</a></h3>\n      \
+      <p>\n            \"OpenGL is the premier environment for developing port\
+able, interactive\n            2D and 3D graphics applications. Since its intr\
+oduction in 1992, OpenGL\n            has become the industry\'s most widely u\
+sed and supported 2D and 3D\n            graphics application programming inte\
+rface (API), bringing thousands of\n            applications to a wide variety\
+ of computer platforms. OpenGL fosters\n            innovation and speeds appl\
+ication development by incorporating a broad\n            set of rendering, te\
+xture mapping, special effects, and other powerful\n            visualization \
+functions. Developers can leverage the power of OpenGL\n            across all\
+ popular desktop and workstation platforms, ensuring wide\n            applica\
+tion deployment.\"\n            </p>\n            <p>\n            End users, \
+independent software vendors, and others writing code based\n            on th\
+e OpenGL API are free from licensing requirements.\n            </p>\n\n      \
+      <h3>Iota uses <a href=\"https://code.google.com/archive/p/lib3ds/\">lib3\
+ds</a></h3>\n            <p>\n            lib3ds is an overall software librar\
+y for managing 3D-Studio Release 3\n            and 4 \".3DS\" files. It is a \
+free alternative to Autodesk\'s 3DS File\n            Toolkit for managing 3DS\
+ files.\n            </p>\n            <p>\n            License: <a href=\"htt\
+ps://www.gnu.org/licenses/lgpl.html\">GNU Lesser GPL</a>\n            </p>\n\n\
+            <h3>Iota uses <a href=\"http://potrace.sourceforge.net/\">potrace<\
+/a> by Peter Selinger</h3>\n            <p>\n            \"Potrace(TM) is a to\
+ol for tracing a bitmap, which means, transforming\n            a bitmap into \
+a smooth, scalable image.\"\n            </p>\n            <p>\n            Th\
+is program is free software; you can redistribute it and/or modify\n          \
+  it under the terms of the GNU General Public License as published by\n      \
+      the Free Software Foundation; either version 2, or (at your option)\n   \
+         any later version.\n            </p>\n\n            <h3>Iota uses <a \
+href=\"http://www.antigrain.com/research/adaptive_bezier/index.html\">Adaptive\
+ Subdivision of Bezier Curves</a> by Maxim Shemanarev</h3>\n            <p>\n \
+           \"An attempt to achieve perfect result in Bezier curve approximatio\
+n.\"\n            </p>\n            <p>\n            AGG is free software; you\
+ can redistribute it and/or\n            modify it under the terms of the GNU \
+General Public License\n            as published by the Free Software Foundati\
+on; either version 2\n            of the License, or (at your option) any late\
+r version.</p>\n\n            <h3>Iota includes <a href=\"https://www.thingive\
+rse.com/thing:2906756\">Hex surface vase</a> by <a href=\"https://www.dr-lex.b\
+e\">DrLex</a></h3>\n            <p>\n            Hex surface vase (spiral prin\
+t) by DrLex is licensed under the Creative\n            Commons - Attribution \
+license.</p>\n\n<!--\n            <h3>Iota includes <a href=\"http://www.3dben\
+chy.com\">#3DBenchy</a></h3>\n            <p>\n            \"#3DBenchy is a 3D\
+ model specifically designed for testing and\n            benchmarking 3D prin\
+ters.\"</p>\n            <p>\n            <a href=\"http://www.3dbenchy.com/li\
+cense/\">#3DBenchy</a> by\n            Creative-Tools.com is licensed under a \
+Creative Commons\n            Attribution-NoDerivatives 4.0 International Lice\
+nse. Permissions\n            beyond the scope and typical usage examples are \
+explained below.</p>\n            <p>\n            Feel free to redistribute t\
+he unmodified #3DBenchy STL file as you\n            please. Such as ... bundl\
+ing the STL or pre-sliced print file with\n            3D printer kits, etc.</\
+p>\n-->\n        </font>\n\n    </body>\n</html>\n";
 
 Fl_Double_Window *wMainWindow=(Fl_Double_Window *)0;
 
@@ -183,6 +194,10 @@ static void cb_Manage(Fl_Menu_*, void*) {
   Iota.userMenuSettingsManagePrinter();
 }
 
+static void cb_Test(Fl_Menu_*, void*) {
+  Iota.lua.dostring("Iota:quit()");
+}
+
 static void cb_Versioneer(Fl_Menu_*, void*) {
   Iota.userMenuHelpVersioneer();
 }
@@ -238,6 +253,7 @@ Fl_Menu_Item menu_[] = {
  {"Manage Materials...", 0,  0, 0, 1, (uchar)FL_NORMAL_LABEL, 0, 14, 0},
  {0,0,0,0,0,0,0,0,0},
  {"Help", 0,  0, 0, 64, (uchar)FL_NORMAL_LABEL, 0, 14, 0},
+ {"Test Lua", 0,  (Fl_Callback*)cb_Test, 0, 0, (uchar)FL_NORMAL_LABEL, 0, 14, 0},
  {"Versioneer...", 0,  (Fl_Callback*)cb_Versioneer, 0, 128, (uchar)FL_NORMAL_LABEL, 0, 14, 0},
  {"About...", 0,  (Fl_Callback*)cb_About, 0, 0, (uchar)FL_NORMAL_LABEL, 0, 14, 0},
  {0,0,0,0,0,0,0,0,0},

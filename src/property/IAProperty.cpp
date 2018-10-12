@@ -55,6 +55,16 @@ void IAProperty::remove(IAController* ctrl)
 
 
 
+void IAPropertyEvent::trigger(IAController *ctrl)
+{
+    for (auto &c: pControlerList) {
+        if (c!=ctrl)
+            c->propertyValueChanged();
+    }
+    if (pCallback) pCallback();
+}
+
+
 
 IAPropertyFloat::IAPropertyFloat(const char *name, double value)
 :   IAProperty(name),

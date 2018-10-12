@@ -234,6 +234,11 @@ Function {createIotaAppWindow()} {open
         xywh {0 0 100 20}
       } {
         MenuItem {} {
+          label {Test Lua}
+          callback {Iota.lua.dostring("Iota:quit()");} selected
+          xywh {16 16 100 20}
+        }
+        MenuItem {} {
           label {Versioneer...}
           callback {Iota.userMenuHelpVersioneer();}
           xywh {4 4 100 20} divider
@@ -326,7 +331,7 @@ gSceneView->redraw();}
           } {
             Fl_Choice wPrinterChoice {
               callback {Iota.userMainSelectPrinter();
-o->redraw();} open selected
+o->redraw();} open
               xywh {605 33 240 28} box UP_BOX down_box DOWN_BOX color 47 labelsize 12 align 0 textsize 12
             } {}
             Fl_Tree wSessionSettings {

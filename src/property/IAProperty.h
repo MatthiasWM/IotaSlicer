@@ -9,6 +9,7 @@
 
 
 #include <vector>
+#include <functional>
 
 
 class IAController;
@@ -38,6 +39,16 @@ public:
 protected:
     const char *pName;
     std::vector<IAController*> pControlerList;
+};
+
+
+class IAPropertyEvent : public IAProperty
+{
+public:
+    IAPropertyEvent(std::function<void()>&& cb)
+    : IAProperty("event"), pCallback(cb) { }
+    void trigger(IAController *ctrl=nullptr);
+    std::function<void()> pCallback;
 };
 
 

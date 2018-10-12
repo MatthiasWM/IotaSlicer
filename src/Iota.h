@@ -16,6 +16,8 @@
 #include "printer/IAPrinterList.h"
 #include "app/IAPreferences.h"
 #include "controller/IAPrinterListController.h"
+#include "lua/IALua.h"
+#include "property/IAProperty.h"
 
 
 class IAGeometryReader;
@@ -152,6 +154,9 @@ public:
 
     IAPrinterListController pPrinterListController;
 
+    IALua lua;
+
+    IAPropertyEvent propQuit = IAPropertyEvent( [this] { userMenuFileQuit(); } );
 };
 
 

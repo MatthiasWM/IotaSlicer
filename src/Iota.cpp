@@ -36,14 +36,6 @@ IAVersioneer gVersioneer;
 
 // Composition
 
-#if 0
-extern "C" {
-#include <lua/lua.h>
-#include <lua/lualib.h>
-#include <lua/lauxlib.h>
-}
-#endif
-
 
 /* Do not change the somewhat funky [ver stuff below. It is used for automated
  * version number updates.
@@ -521,22 +513,6 @@ void IAIota::loadDemoFiles()
  */
 int main (int argc, char **argv)
 {
-
-#if 0
-    int error;
-    lua_State *L = luaL_newstate();   /* opens Lua */
-    luaL_openlibs(L);
-    const char *buff = "print(1+1)";
-    error = luaL_loadbuffer(L, buff, strlen(buff), "line") ||
-    lua_pcall(L, 0, 0, 0);
-    if (error) {
-        fprintf(stderr, "%s", lua_tostring(L, -1));
-        lua_pop(L, 1);  /* pop error message from the stack */
-    }
-    lua_close(L);
-    return 0;
-#endif
-
     Fl::scheme("gtk+");
 	Fl::args(argc, argv);
     Fl::set_color(FL_BACKGROUND_COLOR, 0xeeeeee00);

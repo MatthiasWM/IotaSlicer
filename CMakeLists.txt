@@ -148,6 +148,8 @@ add_executable (IotaSlicer MACOSX_BUNDLE
 	src/geometry/IAVector3d.h
 	src/geometry/IAVertex.cpp
 	src/geometry/IAVertex.h
+    src/lua/IALua.cpp
+    src/lua/IALua.h
 	src/opengl/IAFramebuffer.cpp
 	src/opengl/IAFramebuffer.h
 	src/potrace/IAPotrace.cpp
@@ -212,6 +214,7 @@ source_group(src\\controller src/controller)
 source_group(src\\data src/data)
 source_group(src\\fileformats src/fileformats)
 source_group(src\\geometry src/geometry)
+source_group(src\\lua src/lua)
 source_group(src\\opengl src/opengl)
 source_group(src\\potrace src/potrace)
 source_group(src\\printer src/printer)
