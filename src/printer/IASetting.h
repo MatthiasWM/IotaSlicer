@@ -8,6 +8,8 @@
 #define IA_SETTING_H
 
 
+#include "controller/IAController.h"
+
 #include <vector>
 #include <functional>
 
@@ -22,7 +24,9 @@ class Fl_Tree_Item;
 class Fl_Preferences;
 
 
-class IASetting
+// FIXME: deriving from IAController is an awful hack to transition from
+// IASettings into IAProperty and IAController (and IAView)
+class IASetting : public IAController
 {
 public:
     typedef enum { kProperty, kSetting } Type;
@@ -154,6 +158,25 @@ public:
     static void wCallback(IAFLChoice *w, IASettingChoice *d);
 
     int &pValue;
+    Fl_Menu_Item *pMenu = nullptr;
+    std::function<void()> pCallback;
+    IAFLChoice *pWidget = nullptr;
+};
+
+
+class IAIntProperty;
+
+class IAChoiceView : public IASetting
+{
+public:
+    IAChoiceView(const char *path, const char *label, IAIntProperty &prop,
+                    std::function<void()>&& cb, Fl_Menu_Item *menu);
+    virtual ~IAChoiceView() override;
+    virtual void build(Fl_Tree*, Type) override;
+
+    static void wCallback(IAFLChoice *w, IAChoiceView *d);
+
+    IAIntProperty &pProperty;
     Fl_Menu_Item *pMenu = nullptr;
     std::function<void()> pCallback;
     IAFLChoice *pWidget = nullptr;

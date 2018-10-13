@@ -8,6 +8,7 @@
 #include "IASetting.h"
 
 #include "view/IAGUIMain.h"
+#include "property/IAProperty.h"
 
 #include <FL/Fl_Menu_Item.H>
 #include <FL/Fl_Preferences.H>
@@ -484,6 +485,54 @@ void IASettingChoice::build(Fl_Tree *treeWidget, Type)
         pWidget->pChoice->menu(pMenu);
         // FIXME: compare to user_data() in the menu list to find the right entry
         pWidget->value(pValue);
+        pWidget->callback((Fl_Callback*)wCallback, this);
+    }
+    pTreeItem = treeWidget->add(pPath);
+    pTreeItem->close();
+    pTreeItem->widget(pWidget);
+}
+
+#ifdef __APPLE__
+#pragma mark -
+#endif
+//============================================================================//
+
+
+IAChoiceView::IAChoiceView(
+                           const char *path, const char *label, IAIntProperty &prop,
+                           std::function<void()>&& cb, Fl_Menu_Item *menu)
+:   IASetting(path, label),
+    pProperty(prop),
+    pMenu(dup(menu)),
+    pCallback(cb),
+    pWidget(nullptr)
+{
+    pProperty.attach(this);
+}
+
+
+IAChoiceView::~IAChoiceView()
+{
+    pProperty.detach(this);
+    if (pMenu) ::free((void*)pMenu);
+    if (pWidget) delete pWidget;
+}
+
+
+void IAChoiceView::wCallback(IAFLChoice *w, IAChoiceView *d)
+{
+    d->pProperty.set( w->value(), d );
+    if (d->pCallback) d->pCallback();
+}
+
+
+void IAChoiceView::build(Fl_Tree *treeWidget, Type)
+{
+    if (!pWidget) {
+        pWidget = new IAFLChoice(0, 0, 200, 13, pLabel);
+        pWidget->pChoice->menu(pMenu);
+        // FIXME: compare to user_data() in the menu list to find the right entry
+        pWidget->value(pProperty());
         pWidget->callback((Fl_Callback*)wCallback, this);
     }
     pTreeItem = treeWidget->add(pPath);

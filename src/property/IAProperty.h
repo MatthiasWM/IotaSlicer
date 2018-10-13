@@ -14,6 +14,7 @@
 
 class IAController;
 class IAProperty;
+class Fl_Preferences;
 
 
 class IAPropertyList
@@ -34,8 +35,10 @@ class IAProperty
 public:
     IAProperty(const char *name);
     virtual ~IAProperty();
-    void add(IAController *ctr);
-    void remove(IAController *ctr);
+    void attach(IAController *ctr);
+    void detach(IAController *ctr);
+    virtual void read(Fl_Preferences&) { }
+    virtual void write(Fl_Preferences&) { }
 protected:
     const char *pName;
     std::vector<IAController*> pControlerList;
@@ -68,6 +71,20 @@ public:
     void set(double v, IAController *ctrl=nullptr);
 protected:
     double pValue = 0.0;
+};
+
+
+class IAIntProperty : public IAProperty
+{
+public:
+    IAIntProperty(const char *name, int value=0);
+    virtual ~IAIntProperty() override;
+    int operator()() const { return pValue; }
+    void set(int v, IAController *ctrl=nullptr);
+    virtual void read(Fl_Preferences&) override;
+    virtual void write(Fl_Preferences&) override;
+protected:
+    int pValue = 0;
 };
 
 

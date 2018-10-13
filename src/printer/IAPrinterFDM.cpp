@@ -115,10 +115,10 @@
 
  FDM Print Settings:
 
- preset Machine
+ preset Machine overrides
     hotend#: nozzle diameter
     feed#.#: filament
- preset Quality (fast, good, high, custom...)
+ preset Construction (fast, good, high, custom...)
     layer height
     number of shells
         speed factor outer shell
@@ -206,6 +206,10 @@ void IAPrinterFDM::initializeSceneSettings()
 
     s = new IASettingChoice("NPerimiter", "# of perimeters: ", pNumShells,
                             [this]{userChangedNumShells();}, numShellsMenu );
+    pSceneSettings.push_back(s);
+
+    s = new IAChoiceView("NPerimiter2", "Test # of Perim: ", numShells,
+                            [this]{;}, numShellsMenu );
     pSceneSettings.push_back(s);
 
     static Fl_Menu_Item numLidsMenu[] = {

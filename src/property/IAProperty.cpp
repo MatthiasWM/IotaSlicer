@@ -9,6 +9,8 @@
 
 #include "controller/IAController.h"
 
+#include <FL/Fl_Preferences.H>
+
 #include <algorithm>
 
 
@@ -40,13 +42,13 @@ IAProperty::~IAProperty()
 }
 
 
-void IAProperty::add(IAController *ctrl)
+void IAProperty::attach(IAController *ctrl)
 {
     pControlerList.push_back(ctrl);
 }
 
 
-void IAProperty::remove(IAController* ctrl)
+void IAProperty::detach(IAController* ctrl)
 {
     auto c = std::find(pControlerList.begin(), pControlerList.end(), ctrl);
     if (c!=pControlerList.end())
@@ -92,6 +94,46 @@ void IAPropertyFloat::set(double v, IAController *ctrl)
             c->propertyValueChanged();
     }
 }
+
+
+
+IAIntProperty::IAIntProperty(const char *name, int value)
+:   IAProperty(name),
+    pValue(value)
+{
+}
+
+
+IAIntProperty::~IAIntProperty()
+{
+}
+
+
+void IAIntProperty::set(int v, IAController *ctrl)
+{
+    if (pValue!=v) {
+        pValue = v;
+        for (auto &c: pControlerList) {
+            if (c!=ctrl)
+                c->propertyValueChanged();
+        }
+    }
+}
+
+void IAIntProperty::read(Fl_Preferences &prefs)
+{
+    int v;
+    prefs.get(pName, v, pValue);
+    set(v);
+}
+
+void IAIntProperty::write(Fl_Preferences &prefs)
+{
+    prefs.set(pName, pValue);
+}
+
+
+
 
 
 
