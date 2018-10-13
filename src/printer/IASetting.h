@@ -114,25 +114,24 @@ public:
 };
 
 
+class IAFloatProperty;
 class IAFLFloatChoice;
 
 /**
  * Manage a setting that appears in a tree view.
  */
-class IASettingFloatChoice : public IASetting
+class IAFloatChoiceView : public IASetting
 {
 public:
-    IASettingFloatChoice(const char *path, const char *label, double &value,
+    IAFloatChoiceView(const char *path, const char *label, IAFloatProperty &prop,
                          const char *unit, std::function<void()>&& cb,
                          Fl_Menu_Item *menu);
-    virtual ~IASettingFloatChoice() override;
+    virtual ~IAFloatChoiceView() override;
     virtual void build(Fl_Tree*, Type) override;
-    virtual void write(Fl_Preferences &p) override { p.set(pPath, pValue); }
-    virtual void read(Fl_Preferences &p) override;
 
-    static void wCallback(IAFLFloatChoice *w, IASettingFloatChoice *d);
+    static void wCallback(IAFLFloatChoice *w, IAFloatChoiceView *d);
 
-    double &pValue;
+    IAFloatProperty &pProperty;
     char *pUnit = nullptr;
     std::function<void()> pCallback;
     Fl_Menu_Item *pMenu = nullptr;

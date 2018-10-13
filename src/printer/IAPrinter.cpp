@@ -53,7 +53,7 @@ IAPrinter::IAPrinter(IAPrinter const& src)
     pBuildVolumeMax = src.pBuildVolumeMax;
     pBuildVolume = src.pBuildVolume;
     pBuildVolumeRadius = src.pBuildVolumeRadius;
-    pLayerHeight = src.pLayerHeight;
+    layerHeight.set( src.layerHeight() );
 }
 
 
@@ -130,9 +130,9 @@ void IAPrinter::initializeSceneSettings()
     };
 
     IASetting *s;
-    s = new IASettingFloatChoice("layerHeight", "Layer Height:", pLayerHeight, "mm",
-                                 [this]{userChangedLayerHeight();},
-                                 layerHeightMenu);
+    s = new IAFloatChoiceView("layerHeight", "Layer Height:", layerHeight, "mm",
+                              [this]{userChangedLayerHeight();},
+                              layerHeightMenu);
     pSceneSettings.push_back(s);
 }
 
@@ -478,7 +478,7 @@ void IAPrinter::drawPreview(double lo, double hi)
 
 void IAPrinter::userChangedLayerHeight()
 {
-    printf("New layer height is %f\n", pLayerHeight);
+    printf("New layer height is %f\n", layerHeight());
 }
 
 

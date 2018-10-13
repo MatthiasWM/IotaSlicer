@@ -30,6 +30,13 @@ protected:
 };
 
 
+/**
+ * A Property can store one or more values, and set and get from Fl_Preferences.
+ *
+ * Any number of controllers can connect to a property. If the property value
+ * changes, all controllers are sent a notification. The controller that changes
+ * the value of the property should not be notified.
+ */
 class IAProperty
 {
 public:
@@ -55,20 +62,15 @@ public:
 };
 
 
-/**
- * A Property can store one or more values, and set and get from Fl_Preferences.
- *
- * Any number of controllers can connect to a property. If the property value
- * changes, all controllers are sent a notification. The controller that changes
- * the value of the property should not be notified.
- */
-class IAPropertyFloat : public IAProperty
+class IAFloatProperty : public IAProperty
 {
 public:
-    IAPropertyFloat(const char *name, double value=0.0);
-    virtual ~IAPropertyFloat() override;
-    double operator()() const;
+    IAFloatProperty(const char *name, double value=0.0);
+    virtual ~IAFloatProperty() override;
+    double operator()() const { return pValue; }
     void set(double v, IAController *ctrl=nullptr);
+    virtual void read(Fl_Preferences&) override;
+    virtual void write(Fl_Preferences&) override;
 protected:
     double pValue = 0.0;
 };

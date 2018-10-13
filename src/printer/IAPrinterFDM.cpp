@@ -163,12 +163,11 @@ IAPrinterFDM::IAPrinterFDM()
 IAPrinterFDM::IAPrinterFDM(IAPrinterFDM const& src)
 :   super(src)
 {
-    pNozzleDiameter = src.pNozzleDiameter;
-    pColorMode = src.pColorMode;
+    nozzleDiameter = src.nozzleDiameter;
     numShells.set( src.numShells() );
     numLids.set( src.numLids() );
     lidType.set( src.lidType() );
-    pInfillDensity = src.pInfillDensity;
+    infillDensity = src.infillDensity;
     hasSkirt.set( src.hasSkirt() );
 }
 
@@ -237,7 +236,7 @@ void IAPrinterFDM::initializeSceneSettings()
         { "100%", 0, nullptr, (void*)0, 0, 0, 0, 11 },
         { nullptr } };
 
-    s = new IASettingFloatChoice("infillDensity", "infill density: ", pInfillDensity, "%",
+    s = new IAFloatChoiceView("infillDensity", "infill density: ", infillDensity, "%",
                                  [this]{userChangedInfillDensity();}, infillDensityMenuMenu );
     pSceneSettings.push_back(s);
 
@@ -255,7 +254,7 @@ void IAPrinterFDM::initializeSceneSettings()
         { "0.35", 0, nullptr, (void*)0, 0, 0, 0, 11 },
         { nullptr } };
 
-    s = new IASettingFloatChoice("nozzleDiameter", "nozzle diameter: ", pNozzleDiameter, "mm",
+    s = new IAFloatChoiceView("nozzleDiameter", "nozzle diameter: ", nozzleDiameter, "mm",
                                  [this]{userChangedNozzleDiameter();}, nozzleDiameterMenu );
     pSceneSettings.push_back(s);
 
@@ -275,7 +274,7 @@ void IAPrinterFDM::initializeSceneSettings()
         { "55.0\xC2\xB0", 0, nullptr, (void*)2, 0, 0, 0, 11 },
         { "60.0\xC2\xB0", 0, nullptr, (void*)3, 0, 0, 0, 11 },
         { nullptr } };
-    s = new IASettingFloatChoice("support/angle", "angle: ", pSupportAngle, "deg",
+    s = new IAFloatChoiceView("support/angle", "angle: ", supportAngle, "deg",
                                  [this]{ ; }, supportAngleMenu );
     pSceneSettings.push_back(s);
 
@@ -286,7 +285,7 @@ void IAPrinterFDM::initializeSceneSettings()
         { "45.0%", 0, nullptr, (void*)2, 0, 0, 0, 11 },
         { "50.0%", 0, nullptr, (void*)3, 0, 0, 0, 11 },
         { nullptr } };
-    s = new IASettingFloatChoice("support/density", "density: ", pSupportDensity, "%",
+    s = new IAFloatChoiceView("support/density", "density: ", supportDensity, "%",
                                  [this]{ ; }, supportDensityMenu );
     pSceneSettings.push_back(s);
 
@@ -296,7 +295,7 @@ void IAPrinterFDM::initializeSceneSettings()
         { "2 layers", 0, nullptr, (void*)2, 0, 0, 0, 11 },
         { "3 layers", 0, nullptr, (void*)3, 0, 0, 0, 11 },
         { nullptr } };
-    s = new IASettingFloatChoice("support/topGap", "top gap: ", pSupportTopGap, "layers",
+    s = new IAFloatChoiceView("support/topGap", "top gap: ", supportTopGap, "layers",
                                  [this]{ ; }, topGapMenu );
     pSceneSettings.push_back(s);
 
@@ -307,7 +306,7 @@ void IAPrinterFDM::initializeSceneSettings()
         { "0.3mm", 0, nullptr, (void*)0, 0, 0, 0, 11 },
         { "0.4mm", 0, nullptr, (void*)0, 0, 0, 0, 11 },
         { nullptr } };
-    s = new IASettingFloatChoice("support/sideGap", "side gap: ", pSupportSideGap, "mm",
+    s = new IAFloatChoiceView("support/sideGap", "side gap: ", supportSideGap, "mm",
                                  [this]{ ; }, sideGapMenu );
     pSceneSettings.push_back(s);
 
@@ -317,7 +316,7 @@ void IAPrinterFDM::initializeSceneSettings()
         { "2 layers", 0, nullptr, (void*)2, 0, 0, 0, 11 },
         { "3 layers", 0, nullptr, (void*)3, 0, 0, 0, 11 },
         { nullptr } };
-    s = new IASettingFloatChoice("support/bottomGap", "bottom gap: ", pSupportBottomGap, "layers",
+    s = new IAFloatChoiceView("support/bottomGap", "bottom gap: ", supportBottomGap, "layers",
                                  [this]{ ; }, bottomGapMenu );
     pSceneSettings.push_back(s);
 
@@ -425,22 +424,22 @@ void IAPrinterFDM::sliceAll()
             skirt.unbindFromRendering();
             skirt.saveAsJpeg("/Users/matt/aaa.jpg");
             skirt.toolpathFromLassoAndExpand(z, 3);  // 3mm, should probably be more if the extrusion is 1mm or more
-            IAToolpathListSP tpSkirt1 = skirt.toolpathFromLassoAndContract(z, pNozzleDiameter);
+            IAToolpathListSP tpSkirt1 = skirt.toolpathFromLassoAndContract(z, nozzleDiameter());
             tp->add(tpSkirt1.get(), 5, 0);
-            IAToolpathListSP tpSkirt2 = skirt.toolpathFromLassoAndContract(z, pNozzleDiameter);
+            IAToolpathListSP tpSkirt2 = skirt.toolpathFromLassoAndContract(z, nozzleDiameter());
             tp->add(tpSkirt2.get(), 5, 1);
         }
 
         IAToolpathListSP tp0 = nullptr, tp1 = nullptr, tp2 = nullptr, tp3 = nullptr;
         if (numShells()>0) {
-            tp0 = slc->pFramebuffer->toolpathFromLassoAndContract(z, 0.5 * pNozzleDiameter);
-            tp1 = tp0 ? slc->pFramebuffer->toolpathFromLassoAndContract(z, pNozzleDiameter) : nullptr;
+            tp0 = slc->pFramebuffer->toolpathFromLassoAndContract(z, 0.5 * nozzleDiameter());
+            tp1 = tp0 ? slc->pFramebuffer->toolpathFromLassoAndContract(z, nozzleDiameter()) : nullptr;
         }
         if (numShells()>1) {
-            tp2 = tp1 ? slc->pFramebuffer->toolpathFromLassoAndContract(z, pNozzleDiameter) : nullptr;
+            tp2 = tp1 ? slc->pFramebuffer->toolpathFromLassoAndContract(z, nozzleDiameter()) : nullptr;
         }
         if (numShells()>2) {
-            tp3 = tp2 ? slc->pFramebuffer->toolpathFromLassoAndContract(z, pNozzleDiameter) : nullptr;
+            tp3 = tp2 ? slc->pFramebuffer->toolpathFromLassoAndContract(z, nozzleDiameter()) : nullptr;
         }
         /** \todo We can create an overlap between the infill and the shell by
          *      reducing the second parameter of toolpathFromLassoAndContract
@@ -477,12 +476,12 @@ void IAPrinterFDM::sliceAll()
 
             // Draw only what is above the current z plane, but leave a little
             // space between the model and the support to reduce stickyness
-            support.beginClipBelowZ(z + pSupportTopGap*layerHeight());
+            support.beginClipBelowZ(z + supportTopGap()*layerHeight());
 
             // FIXME: don't do this for every layer!
             // mark all triangles that need support first, then render only those
             // mark all vertices that need support, then render them here
-            Iota.pMesh->drawAngledFaces(90.0+pSupportAngle);
+            Iota.pMesh->drawAngledFaces(90.0+supportAngle());
 
             glPushMatrix();
             // Draw the upper part of the model, so that the support will not
@@ -492,7 +491,7 @@ void IAPrinterFDM::sliceAll()
             glTranslated(Iota.pMesh->position().x(),
                          Iota.pMesh->position().y(),
                          Iota.pMesh->position().z()
-                         + (pSupportBottomGap+pSupportTopGap)*layerHeight());
+                         + (supportBottomGap()+supportTopGap())*layerHeight());
             Iota.pMesh->draw(IAMesh::kMASK, 0.0, 0.0, 0.0);
             glPopMatrix();
 
@@ -507,15 +506,15 @@ void IAPrinterFDM::sliceAll()
             // reduce the size of the mask to leave room for the filament, plus
             // a little gap so that the support tower sides do not stick to
             // the model.
-            support.toolpathFromLassoAndContract(z, pNozzleDiameter/2.0 + pSupportSideGap);
+            support.toolpathFromLassoAndContract(z, nozzleDiameter()/2.0 + supportSideGap());
 
             // Fill it.
             if (i==0) {
                 // layer 0 must be filled 100% to give good adhesion
-                support.overlayInfillPattern(0, pNozzleDiameter);
+                support.overlayInfillPattern(0, nozzleDiameter());
             } else {
                 // other layers use the set density
-                support.overlayInfillPattern(0, 2*pNozzleDiameter * (100.0 / pSupportDensity) - pNozzleDiameter);
+                support.overlayInfillPattern(0, 2*nozzleDiameter() * (100.0 / supportDensity()) - nozzleDiameter());
             }
             auto supportPath = support.toolpathFromLasso(z);
             if (supportPath) tp->add(supportPath.get(), 60, 0);
@@ -548,7 +547,7 @@ void IAPrinterFDM::sliceAll()
 
             if (lidType()==0) {
                 // ZIGZAG (could do bridging if used in the correct direction!)
-                lid.overlayInfillPattern(i, pNozzleDiameter);
+                lid.overlayInfillPattern(i, nozzleDiameter());
                 auto lidPath = lid.toolpathFromLasso(z);
                 if (lidPath) tp->add(lidPath.get(), 20, 0);
             } else {
@@ -556,9 +555,9 @@ void IAPrinterFDM::sliceAll()
                 /** \bug limit this to the width and hight of the build platform divided by the extrsuion width */
                 int k;
                 for (k=0;k<300;k++) { // FIXME
-                    auto tp1 = lid.toolpathFromLassoAndContract(z, pNozzleDiameter);
+                    auto tp1 = lid.toolpathFromLassoAndContract(z, nozzleDiameter());
                     if (!tp1) break;
-                    infill.subtract(tp1, pNozzleDiameter);
+                    infill.subtract(tp1, nozzleDiameter());
                     tp->add(tp1.get(), 20, k);
                 }
                 if (k==300) {
@@ -571,11 +570,11 @@ void IAPrinterFDM::sliceAll()
         /** \todo We are actually filling the areas where the lids and the infill touch twice! */
         /** \todo remove material that we generated in the lid already */
 
-        if (pInfillDensity>0.0001) {
+        if (infillDensity()>0.0001) {
             // pNozzleDiameter = 100%
             // pNozzleDiameter*2 = 50%
             // pNozzleDiameter*4 = 25%
-            infill.overlayInfillPattern(i, 2*pNozzleDiameter * (100.0 / pInfillDensity) - pNozzleDiameter);
+            infill.overlayInfillPattern(i, 2*nozzleDiameter() * (100.0 / infillDensity()) - nozzleDiameter());
             auto infillPath = infill.toolpathFromLasso(z);
             if (infillPath) tp->add(infillPath.get(), 30, 0);
         }
@@ -634,7 +633,6 @@ void IAPrinterFDM::drawPreview(double lo, double hi)
 
 void IAPrinterFDM::userChangedColorMode()
 {
-    printf("Colormode is now %d\n", pColorMode);
     // TODO: clear toolpath and slice cache
 }
 

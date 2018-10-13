@@ -48,27 +48,23 @@ public:
     // ---- scene settings
     virtual void initializeSceneSettings() override;
 
-    double nozzleDiameter() { return pNozzleDiameter; }
-
-    double pNozzleDiameter = 0.4;
-    int pColorMode = 0;
+    IAFloatProperty nozzleDiameter { "nozzleDiameter", 0.4 };
     IAIntProperty numShells { "numShells", 3 };
     IAIntProperty numLids { "numLids", 2 };
     IAIntProperty lidType { "lidType", 0 }; // 0=zigzag, 1=concentric
-    double pInfillDensity = 20.0; // %
+    IAFloatProperty infillDensity { "infillDensity", 20.0 }; // %
     IAIntProperty hasSkirt { "hasSkirt",  1 }; // prime line around perimeter
     IAIntProperty hasSupport { "hasSupport", 1 };
-    double pSupportAngle = 50.0;
-    double pSupportDensity = 40.0;
-    double pSupportTopGap = 1.0;
-    double pSupportSideGap = 0.2;
-    double pSupportBottomGap = 1.0;
+    IAFloatProperty supportAngle { "supportAngle", 50.0 };
+    IAFloatProperty supportDensity { "supportDensity", 40.0 };
+    IAFloatProperty supportTopGap { "supportTopGap", 1.0 };
+    IAFloatProperty supportSideGap { "supportSideGap", 0.2 };
+    IAFloatProperty supportBottomGap { "supportBottomGap", 1.0 };
 
     // ----
     void sliceAll();
     void saveToolpath(const char *filename = nullptr);
 
-    int colorMode() { return pColorMode; }
     double filamentDiameter() { return 1.75; }
 
 protected:

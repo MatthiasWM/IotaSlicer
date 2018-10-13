@@ -82,10 +82,9 @@ public:
     // ---- scene settings
     virtual void initializeSceneSettings();
     void buildSessionSettings(Fl_Tree*);
-    double layerHeight() { return pLayerHeight; } // Session Setting
 
     IASettingList pSceneSettings;
-    double pLayerHeight = 0.3; // Session setting
+    IAFloatProperty layerHeight { "layerHeight", 0.3 };
 
     // ----
 
@@ -99,11 +98,6 @@ protected:
 
 private:
     void userChangedLayerHeight();
-
-
-protected:
-    IACtrlTreeItemFloat *testCtrl = nullptr;
-    IAPropertyFloat test = IAPropertyFloat("test", 1.0);
 
 };
 

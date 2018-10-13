@@ -339,7 +339,7 @@ public:
     }
     static void choice_cb(Fl_Input_Choice *w, void *u) {
         IAFLFloatChoice *c = (IAFLFloatChoice*)w->parent();
-        c->value( c->value() ); // reinterprete the string that was set by the pulldown
+        //c->value( c->value() ); // reinterprete the string that was set by the pulldown
         c->do_callback();
     }
     Fl_Box *pLabel = nullptr;
@@ -347,50 +347,42 @@ public:
 };
 
 
-IASettingFloatChoice::IASettingFloatChoice(
-    const char *path, const char *label, double &value, const char *unit,
-    std::function<void()>&& cb, Fl_Menu_Item *menu)
+IAFloatChoiceView::IAFloatChoiceView(const char *path, const char *label, IAFloatProperty &prop, const char *unit,
+                                     std::function<void()>&& cb, Fl_Menu_Item *menu)
 :   IASetting(path, label),
-    pValue(value),
+    pProperty(prop),
     pUnit(strdup(unit)),
     pCallback(cb),
     pMenu(dup(menu)),
     pWidget(nullptr)
 {
+    pProperty.attach(this);
 }
 
 
-IASettingFloatChoice::~IASettingFloatChoice()
+IAFloatChoiceView::~IAFloatChoiceView()
 {
+    pProperty.detach(this);
     if (pUnit) ::free((void*)pUnit);
     if (pMenu) ::free((void*)pMenu);
     if (pWidget) delete pWidget;
 }
 
 
-void IASettingFloatChoice::wCallback(IAFLFloatChoice *w, IASettingFloatChoice *d)
+void IAFloatChoiceView::wCallback(IAFLFloatChoice *w, IAFloatChoiceView *d)
 {
-    d->pValue = w->value();
+    d->pProperty.set( w->value(), d );
     if (d->pCallback) d->pCallback();
 }
 
 
-void IASettingFloatChoice::read(Fl_Preferences &p)
-{
-    p.get(pPath, pValue, pValue);
-    if (pWidget) {
-        pWidget->value(pValue);
-    }
-}
-
-
-void IASettingFloatChoice::build(Fl_Tree *treeWidget, Type t)
+void IAFloatChoiceView::build(Fl_Tree *treeWidget, Type t)
 {
     if (!pWidget) {
         pWidget = new IAFLFloatChoice(t, treeWidget->w()-40, pLabel);
         pWidget->pChoice->menu(pMenu);
         pWidget->pChoice->label(pUnit);
-        pWidget->value(pValue);
+        pWidget->value( pProperty() );
         pWidget->callback((Fl_Callback*)wCallback, this);
     }
     pTreeItem = treeWidget->add(pPath);

@@ -68,32 +68,42 @@ void IAPropertyEvent::trigger(IAController *ctrl)
 
 
 
-IAPropertyFloat::IAPropertyFloat(const char *name, double value)
+IAFloatProperty::IAFloatProperty(const char *name, double value)
 :   IAProperty(name),
     pValue(value)
 {
 }
 
 
-IAPropertyFloat::~IAPropertyFloat()
+IAFloatProperty::~IAFloatProperty()
 {
 }
 
 
-double IAPropertyFloat::operator()() const
+void IAFloatProperty::set(double v, IAController *ctrl)
 {
-    return pValue;
-}
-
-
-void IAPropertyFloat::set(double v, IAController *ctrl)
-{
-    pValue = v;
-    for (auto &c: pControlerList) {
-        if (c!=ctrl)
-            c->propertyValueChanged();
+    if (pValue!=v) {
+        pValue = v;
+        for (auto &c: pControlerList) {
+            if (c!=ctrl)
+                c->propertyValueChanged();
+        }
     }
 }
+
+void IAFloatProperty::read(Fl_Preferences &prefs)
+{
+    double v;
+    prefs.get(pName, v, pValue);
+    set(v);
+}
+
+void IAFloatProperty::write(Fl_Preferences &prefs)
+{
+    prefs.set(pName, pValue);
+}
+
+
 
 
 
