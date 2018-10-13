@@ -165,7 +165,7 @@ IAPrinterFDM::IAPrinterFDM(IAPrinterFDM const& src)
 {
     pNozzleDiameter = src.pNozzleDiameter;
     pColorMode = src.pColorMode;
-    pNumShells = src.pNumShells;
+    numShells.set( src.numShells() );
     pNumLids = src.pNumLids;
     pLidType = src.pLidType;
     pInfillDensity = src.pInfillDensity;
@@ -204,11 +204,7 @@ void IAPrinterFDM::initializeSceneSettings()
         { "3", 0, nullptr, (void*)3, 0, 0, 0, 11 },
         { nullptr } };
 
-    s = new IASettingChoice("NPerimiter", "# of perimeters: ", pNumShells,
-                            [this]{userChangedNumShells();}, numShellsMenu );
-    pSceneSettings.push_back(s);
-
-    s = new IAChoiceView("NPerimiter2", "Test # of Perim: ", numShells,
+    s = new IAChoiceView("NPerimiter", "# of perimeters: ", numShells,
                             [this]{;}, numShellsMenu );
     pSceneSettings.push_back(s);
 
@@ -437,14 +433,14 @@ void IAPrinterFDM::sliceAll()
         }
 
         IAToolpathListSP tp0 = nullptr, tp1 = nullptr, tp2 = nullptr, tp3 = nullptr;
-        if (pNumShells>0) {
+        if (numShells()>0) {
             tp0 = slc->pFramebuffer->toolpathFromLassoAndContract(z, 0.5 * pNozzleDiameter);
             tp1 = tp0 ? slc->pFramebuffer->toolpathFromLassoAndContract(z, pNozzleDiameter) : nullptr;
         }
-        if (pNumShells>1) {
+        if (numShells()>1) {
             tp2 = tp1 ? slc->pFramebuffer->toolpathFromLassoAndContract(z, pNozzleDiameter) : nullptr;
         }
-        if (pNumShells>2) {
+        if (numShells()>2) {
             tp3 = tp2 ? slc->pFramebuffer->toolpathFromLassoAndContract(z, pNozzleDiameter) : nullptr;
         }
         /** \todo We can create an overlap between the infill and the shell by

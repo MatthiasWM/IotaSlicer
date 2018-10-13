@@ -52,7 +52,6 @@ public:
 
     double pNozzleDiameter = 0.4;
     int pColorMode = 0;
-    int pNumShells = 3;
     IAIntProperty numShells { "numShells", 3 };
     int pNumLids = 2;
     int pLidType = 0; // 0=zigzag, 1=concentric

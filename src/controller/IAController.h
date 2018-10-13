@@ -58,15 +58,6 @@ protected:
 };
 
 
-class IAAppController : public IAController
-{
-    IAAppController() = delete;
-public:
-    IAAppController(IAIota &app) : pApp( app ) { }
-    IAMenuItemEventController quit { pApp.propQuit };
-protected:
-    IAIota &pApp;
-};
 
 
 #endif /* IA_PRINTER_LIST_CONTROLLER_H */
