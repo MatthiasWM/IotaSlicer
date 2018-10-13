@@ -132,6 +132,66 @@ void IAIntProperty::write(Fl_Preferences &prefs)
 }
 
 
+IATextProperty::IATextProperty(char const* name, char const* value)
+:   IAProperty(name),
+    pValue(nullptr)
+{
+    _set(value);
+}
+
+IATextProperty::~IATextProperty()
+{
+    if (pValue)
+        ::free((void*)pValue);
+}
+
+void IATextProperty::set(char const* value, IAController *ctrl)
+{
+    if (!_sameAs(value)) {
+        _set(value);
+        for (auto &c: pControlerList) {
+            if (c!=ctrl)
+                c->propertyValueChanged();
+        }
+    }
+}
+
+void IATextProperty::_set(char const* value)
+{
+    if (_sameAs(value)) return;
+    if (pValue)
+        ::free((void*)pValue);
+    if (value)
+        pValue = ::strdup(value);
+    else
+        pValue = nullptr;
+}
+
+bool IATextProperty::_sameAs(char const* value)
+{
+    if (pValue==nullptr) {
+        return (value==nullptr);
+    } else {
+        if (value==nullptr)
+            return false;
+        return (strcmp(pValue, value)==0);
+    }
+}
+
+void IATextProperty::read(Fl_Preferences &prefs)
+{
+    char *v = nullptr;
+    prefs.get(pName, v, pValue);
+    set(v);
+    if (v)
+        ::free(v);
+}
+
+void IATextProperty::write(Fl_Preferences &prefs)
+{
+    prefs.set(pName, pValue);
+}
+
 
 
 

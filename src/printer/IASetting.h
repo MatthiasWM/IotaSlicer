@@ -26,6 +26,7 @@ class Fl_Preferences;
 
 // FIXME: deriving from IAController is an awful hack to transition from
 // IASettings into IAProperty and IAController (and IAView)
+// FIXME: what actually happens whe the tree is cleared? Tree-Items deletd? Widget stay in Group? ???
 class IASetting : public IAController
 {
 public:
@@ -33,12 +34,6 @@ public:
     IASetting(const char *path, const char *label);
     virtual ~IASetting();
     virtual void build(Fl_Tree*, Type) { }
-    virtual void write(Fl_Preferences&) { }
-    virtual void read(Fl_Preferences&) { }
-
-    // write to preferences
-    // read from preferences
-    // FIXME: what actually happens whe the tree is cleared? Tree-Items deletd? Widget stay in Group? ???
 
     Fl_Menu_Item *dup(Fl_Menu_Item const*);
 
@@ -48,69 +43,67 @@ public:
 };
 
 
-class IAFLLabel;
+class IALabelView;
 
 /**
  * Manage a setting that appears in a tree view.
  */
-class IASettingLabel : public IASetting
+class IALabelController : public IASetting
 {
 public:
-    IASettingLabel(const char *path, const char *label, const char *text=nullptr);
-    virtual ~IASettingLabel() override;
+    IALabelController(const char *path, const char *label, const char *text=nullptr);
+    virtual ~IALabelController() override;
     virtual void build(Fl_Tree*, Type) override;
 
     char *pText = nullptr;
-    IAFLLabel *pWidget = nullptr;
+    IALabelView *pWidget = nullptr;
 };
 
 
-class IAFLFloat;
+class IAFloatView;
 
 /**
  * Manage a setting that appears in a tree view.
  */
-class IASettingFloat : public IASetting
+class IAFloatController : public IASetting
 {
 public:
-    IASettingFloat(const char *path, const char *label, double &value,
-                   const char *unit, std::function<void()>&& cb);
-    virtual ~IASettingFloat() override;
+    IAFloatController(const char *path, const char *label, IAFloatProperty &prop,
+                      const char *unit, std::function<void()>&& cb);
+    virtual ~IAFloatController() override;
     virtual void build(Fl_Tree*, Type) override;
-    virtual void write(Fl_Preferences &p) override { p.set(pPath, pValue); }
-    virtual void read(Fl_Preferences &p) override;
+    virtual void propertyValueChanged() override;
 
-    static void wCallback(IAFLFloat *w, IASettingFloat *d);
+    static void wCallback(IAFloatView *w, IAFloatController *d);
 
-    double &pValue;
+    IAFloatProperty &pProperty;
     char *pUnit = nullptr;
     std::function<void()> pCallback;
-    IAFLFloat *pWidget = nullptr;
+    IAFloatView *pWidget = nullptr;
 };
 
 
-class IAFLText;
+class IATextView;
 
 /**
  * Manage a setting that appears in a tree view.
  */
-class IASettingText : public IASetting
+class IATextController : public IASetting
 {
 public:
-    IASettingText(const char *path, const char *label, char *(&value), int wdt,
+    IATextController(const char *path, const char *label, IATextProperty &prop, int wdt,
                   const char *unit, std::function<void()>&& cb);
-    virtual ~IASettingText() override;
+    virtual ~IATextController() override;
     virtual void build(Fl_Tree*, Type) override;
-    virtual void write(Fl_Preferences &p) override { p.set(pPath, pValue); }
-    virtual void read(Fl_Preferences &p) override;
+    virtual void propertyValueChanged() override;
 
-    static void wCallback(IAFLText *w, IASettingText *d);
+    static void wCallback(IATextView *w, IATextController *d);
 
-    char *(&pValue);
+    IATextProperty &pProperty;
     int pWdt;
     char *pUnit = nullptr;
     std::function<void()> pCallback;
-    IAFLText *pWidget = nullptr;
+    IATextView *pWidget = nullptr;
 };
 
 
@@ -128,6 +121,7 @@ public:
                          Fl_Menu_Item *menu);
     virtual ~IAFloatChoiceController() override;
     virtual void build(Fl_Tree*, Type) override;
+    virtual void propertyValueChanged() override;
 
     static void wCallback(IAFloatChoiceView *w, IAFloatChoiceController *d);
 
@@ -152,6 +146,7 @@ public:
                     std::function<void()>&& cb, Fl_Menu_Item *menu);
     virtual ~IAChoiceController() override;
     virtual void build(Fl_Tree*, Type) override;
+    virtual void propertyValueChanged() override;
 
     static void wCallback(IAChoiceView *w, IAChoiceController *d);
 

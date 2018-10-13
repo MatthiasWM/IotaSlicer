@@ -80,6 +80,22 @@ protected:
 };
 
 
+class IATextProperty : public IAProperty
+{
+public:
+    IATextProperty(char const* name, char const* value=nullptr);
+    virtual ~IATextProperty() override;
+    char const* operator()() const { return pValue; }
+    void set(char const* value, IAController *ctrl=nullptr);
+    virtual void read(Fl_Preferences&) override;
+    virtual void write(Fl_Preferences&) override;
+protected:
+    void _set(char const* value);
+    bool _sameAs(char const* value);
+    char *pValue = nullptr;
+};
+
+
 #endif /* IA_PROPERTY_H */
 
 

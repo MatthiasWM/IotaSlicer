@@ -46,9 +46,9 @@ IAPrinter::IAPrinter()
 IAPrinter::IAPrinter(IAPrinter const& src)
 :   IAPrinter()
 {
-    setUUID(src.uuid());
-    setName(src.name());
-    setRecentUploadFilename(src.recentUploadFilename());
+    setUUID( src.uuid() );
+    name.set( src.name() );
+    setRecentUploadFilename( src.recentUploadFilename() );
     pBuildVolumeMin = src.pBuildVolumeMin;
     pBuildVolumeMax = src.pBuildVolumeMax;
     pBuildVolume = src.pBuildVolume;
@@ -64,8 +64,6 @@ IAPrinter::~IAPrinter()
 {
     if (pUUID)
         ::free((void*)pUUID);
-    if (pName)
-        ::free((void*)pName);
     if (pRecentUploadFilename)
         ::free((void*)pRecentUploadFilename);
     for (auto &s: pPrinterProperties)
@@ -90,30 +88,54 @@ void IAPrinter::initializePrinterProperties()
     IASetting *s;
 
     // -- display the UUID (this is not really important for the user)
-    s = new IASettingLabel("uuid", "Printer ID:", uuid());
+    s = new IALabelController("uuid", "Printer ID:", uuid());
     pPrinterProperties.push_back(s);
 
     // -- editable name of this printer
-    s = new IASettingText("name", "Printer Name:", pName, 32, "",
-                          [this]{ Iota.pPrinterListController.preferencesNameChanged(); } );
+    s = new IATextController("name", "Printer Name:", name, 32, "",
+                             [this]{ Iota.pPrinterListController.preferencesNameChanged(); } );
     pPrinterProperties.push_back(s);
 
     // -- all printers have some kind of build platform
-    pPrinterProperties.push_back( new IASettingLabel("buildVolume", "Build Volume:"));
+    pPrinterProperties.push_back( new IALabelController("buildVolume", "Build Volume:"));
     // bed shape (Choice, rect, round)
     // printbed width, depth
-    pPrinterProperties.push_back(new IASettingFloat("buildVolume/x", "X:",
+
+    /*
+    pPrinterProperties.push_back(new IAFloatController("buildVolume/x", "X:",
+                                                       test,
+                                                       "width in mm",
+                                                       [this]{ ; } ) );
+    pPrinterProperties.push_back(new IAFloatController("buildVolume/y", "X, too:",
+                                                       test,
+                                                       "width in mm",
+                                                       [this]{ ; } ) );
+    static Fl_Menu_Item sideGapMenu[] = {
+        { "0.0mm", 0, nullptr, (void*)0, 0, 0, 0, 11 },
+        { "0.1mm", 0, nullptr, (void*)0, 0, 0, 0, 11 },
+        { "0.2mm", 0, nullptr, (void*)0, 0, 0, 0, 11 },
+        { "0.3mm", 0, nullptr, (void*)0, 0, 0, 0, 11 },
+        { "0.4mm", 0, nullptr, (void*)0, 0, 0, 0, 11 },
+        { nullptr } };
+    s = new IAFloatChoiceController("buildVolume/z", "X, again: ", test, "mm",
+                                    [this]{ ; }, sideGapMenu );
+    pPrinterProperties  .push_back(s);
+     */
+
+    /*
+    pPrinterProperties.push_back(new IAFloatController("buildVolume/x", "X:",
                                                      *(pBuildVolume.dataPointer()+0),
                                                      "width in mm",
                                                      [this]{ ; } ) );
-    pPrinterProperties.push_back(new IASettingFloat("buildVolume/y", "Y:",
+    pPrinterProperties.push_back(new IAFloatController("buildVolume/y", "Y:",
                                                      *(pBuildVolume.dataPointer()+1),
                                                      "depth in mm",
                                                      [this]{ ; } ) );
-    pPrinterProperties.push_back(new IASettingFloat("buildVolume/z", "Z:",
+    pPrinterProperties.push_back(new IAFloatController("buildVolume/z", "Z:",
                                                      *(pBuildVolume.dataPointer()+2),
                                                      "height in mm",
                                                      [this]{ ; } ) );
+     */
 }
 
 
@@ -170,9 +192,7 @@ void IAPrinter::loadProperties()
     pRecentUploadFilename = strdup(buf);
 
     Fl_Preferences properties(printerProperties, "properties");
-    for (auto &s: pPrinterProperties) {
-        s->read(properties);
-    }
+    name.read(properties);
 }
 
 
@@ -185,9 +205,7 @@ void IAPrinter::saveProperties()
     Fl_Preferences printerProperties(path, "Iota Printer Properties", uuid());
     // "recentUpload will be saved via "setRecentUpload"
     Fl_Preferences properties(printerProperties, "properties");
-    for (auto &s: pPrinterProperties) {
-        s->write(properties);
-    }
+    name.write(properties);
 }
 
 
@@ -235,28 +253,6 @@ void IAPrinter::buildPropertiesUI(Fl_Tree *treeWidget)
         s->build(treeWidget, IASetting::kProperty);
     }
     treeWidget->end();
-}
-
-
-/**
- * Change the printer name.
- */
-void IAPrinter::setName(const char *name)
-{
-    if (pName)
-        ::free((void*)pName);
-    pName = nullptr;
-    if (name)
-        pName = (char*)::strdup(name);
-}
-
-
-/**
- * Return the name of the printer driver.
- */
-const char *IAPrinter::name() const
-{
-    return pName;
 }
 
 

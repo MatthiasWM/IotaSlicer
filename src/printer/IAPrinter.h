@@ -61,8 +61,6 @@ public:
     void loadProperties();
     void saveProperties();
     void removeProperties();
-    void setName(const char *name);
-    const char *name() const;
     void setRecentUploadFilename(const char *name);
     const char *recentUploadFilename() const;
     const char *uuid() const { return pUUID; }
@@ -71,7 +69,7 @@ public:
 
     IASettingList pPrinterProperties;
     char *pUUID = nullptr;
-    char *pName = nullptr;
+    IATextProperty name { "name", nullptr };
     char *pRecentUploadFilename = nullptr;
     bool pFirstWrite = true;
     IAVector3d pBuildVolumeMin = { 0.0, 0.0, 0.0 };

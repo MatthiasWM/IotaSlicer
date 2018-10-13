@@ -67,17 +67,17 @@ void IAPrinterList::generatePrototypes()
 
     // add an FDM printer prototype
     p = new IAPrinterFDM();
-    p->setName("Generic FDM Printer");
+    p->name.set("Generic FDM Printer");
     add(p);
 
     // add an inkjet printer prototype
     p = new IAPrinterInkjet();
-    p->setName("Generic Inkjet Printer");
+    p->name.set("Generic Inkjet Printer");
     add(p);
 
     // add a lasercutter printer prototype
     p = new IAPrinterLasercutter();
-    p->setName("Generic Laser Cutter");
+    p->name.set("Generic Laser Cutter");
     add(p);
 }
 
@@ -129,7 +129,7 @@ IAPrinter *IAPrinterList::cloneAndAdd(IAPrinter *p)
     IAPrinter *printer = p->clone();
     printer->setNewUUID();
     char *newName = makeUniqueName(printer->name());
-    printer->setName(newName);
+    printer->name.set(newName);
     printer->initializePrinterProperties();
     printer->initializeSceneSettings();
     ::free((void*)newName);

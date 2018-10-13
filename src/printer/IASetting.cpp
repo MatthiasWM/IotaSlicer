@@ -53,10 +53,10 @@ Fl_Menu_Item *IASetting::dup(Fl_Menu_Item const *src)
 //============================================================================//
 
 
-class IAFLLabel : public Fl_Group
+class IALabelView : public Fl_Group
 {
 public:
-    IAFLLabel(IASetting::Type t, int w, const char *label=nullptr)
+    IALabelView(IASetting::Type t, int w, const char *label=nullptr)
     :   Fl_Group(0, 0, w, t==IASetting::kSetting?13:15) {
         box(FL_FLAT_BOX);
         begin();
@@ -75,29 +75,29 @@ public:
         }
         end();
     }
-    ~IAFLLabel() { }
+    ~IALabelView() { }
     Fl_Box *pLabel;
     Fl_Box *pText;
 };
 
 
-IASettingLabel::IASettingLabel(const char *path, const char *label, const char *text)
+IALabelController::IALabelController(const char *path, const char *label, const char *text)
 :   IASetting(path, label)
 {
     if (text) pText = strdup(text);
 }
 
 
-IASettingLabel::~IASettingLabel()
+IALabelController::~IALabelController()
 {
     if (pText) ::free((void*)pText);
 }
 
 
-void IASettingLabel::build(Fl_Tree *treeWidget, Type t)
+void IALabelController::build(Fl_Tree *treeWidget, Type t)
 {
     if (!pWidget) {
-        pWidget = new IAFLLabel(t, treeWidget->w()-40, pLabel);
+        pWidget = new IALabelView(t, treeWidget->w()-40, pLabel);
         if (pText) pWidget->pText->label(pText);
     }
     pTreeItem = treeWidget->add(pPath);
@@ -111,10 +111,10 @@ void IASettingLabel::build(Fl_Tree *treeWidget, Type t)
 #endif
 //============================================================================//
 
-class IAFLFloat : public Fl_Group
+class IAFloatView : public Fl_Group
 {
 public:
-    IAFLFloat(IASetting::Type t, int w, const char *label=nullptr)
+    IAFloatView(IASetting::Type t, int w, const char *label=nullptr)
     :   Fl_Group(0, 0, w, t==IASetting::kSetting?13:15) {
         box(FL_FLAT_BOX);
         begin();
@@ -136,7 +136,7 @@ public:
         }
         end();
     }
-    ~IAFLFloat() { }
+    ~IAFloatView() { }
     double value() { return atof(pInput->value()); }
     void value(double v) {
         char buf[80];
@@ -151,52 +151,52 @@ public:
 };
 
 
-IASettingFloat::IASettingFloat(
-                               const char *path, const char *label, double &value, const char *unit,
-                               std::function<void()>&& cb)
+IAFloatController::IAFloatController(const char *path, const char *label,
+                                     IAFloatProperty &prop, const char *unit,
+                                     std::function<void()>&& cb)
 :   IASetting(path, label),
-    pValue(value),
+    pProperty(prop),
     pUnit(strdup(unit)),
     pCallback(cb),
     pWidget(nullptr)
 {
+    pProperty.attach(this);
 }
 
 
-IASettingFloat::~IASettingFloat()
+IAFloatController::~IAFloatController()
 {
+    pProperty.detach(this);
     if (pUnit) ::free((void*)pUnit);
     if (pWidget) delete pWidget;
 }
 
 
-void IASettingFloat::wCallback(IAFLFloat *w, IASettingFloat *d)
+void IAFloatController::wCallback(IAFloatView *w, IAFloatController *d)
 {
-    d->pValue = w->value();
-    if (d->pCallback) d->pCallback();
+    d->pProperty.set( w->value(), d );
+    if (d->pCallback)
+        d->pCallback();
 }
 
 
-void IASettingFloat::read(Fl_Preferences &p)
-{
-    p.get(pPath, pValue, pValue);
-    if (pWidget) {
-        pWidget->value(pValue);
-    }
-}
-
-
-void IASettingFloat::build(Fl_Tree *treeWidget, Type t)
+void IAFloatController::build(Fl_Tree *treeWidget, Type t)
 {
     if (!pWidget) {
-        pWidget = new IAFLFloat(t, treeWidget->w()-40, pLabel);
+        pWidget = new IAFloatView(t, treeWidget->w()-40, pLabel);
         pWidget->pInput->label(pUnit);
-        pWidget->value(pValue);
+        pWidget->value(pProperty());
         pWidget->callback((Fl_Callback*)wCallback, this);
     }
     pTreeItem = treeWidget->add(pPath);
     pTreeItem->close();
     pTreeItem->widget(pWidget);
+}
+
+void IAFloatController::propertyValueChanged()
+{
+    if (pWidget)
+        pWidget->value(pProperty());
 }
 
 
@@ -205,10 +205,10 @@ void IASettingFloat::build(Fl_Tree *treeWidget, Type t)
 #endif
 //============================================================================//
 
-class IAFLText : public Fl_Group
+class IATextView : public Fl_Group
 {
 public:
-    IAFLText(IASetting::Type t, int w, const char *label=nullptr)
+    IATextView(IASetting::Type t, int w, const char *label=nullptr)
     :   Fl_Group(0, 0, w, t==IASetting::kSetting?13:15) {
         box(FL_FLAT_BOX);
         begin();
@@ -230,9 +230,9 @@ public:
         }
         end();
     }
-    ~IAFLText() { }
+    ~IATextView() { }
     const char *value() { return pInput->value(); }
-    void value(char *v) { pInput->value(v); }
+    void value(char const* v) { pInput->value(v); }
     static void choice_cb(Fl_Choice *w, void *u) {
         w->parent()->do_callback();
     }
@@ -241,62 +241,53 @@ public:
 };
 
 
-IASettingText::IASettingText(const char *path, const char *label, char *(&value),
-                              int wdt, const char *unit,
-                              std::function<void()>&& cb)
+IATextController::IATextController(const char *path, const char *label, IATextProperty &prop,
+                                   int wdt, const char *unit,
+                                   std::function<void()>&& cb)
 :   IASetting(path, label),
-    pValue(value),
+    pProperty(prop),
     pWdt(wdt),
     pUnit(strdup(unit)),
     pCallback(cb),
     pWidget(nullptr)
 {
+    pProperty.attach(this);
 }
 
 
-IASettingText::~IASettingText()
+IATextController::~IATextController()
 {
+    pProperty.detach(this);
     if (pUnit) ::free((void*)pUnit);
     if (pWidget) delete pWidget;
 }
 
 
-void IASettingText::wCallback(IAFLText *w, IASettingText *d)
+void IATextController::wCallback(IATextView *w, IATextController *d)
 {
-    if (d->pValue) ::free((void*)d->pValue);
-    d->pValue = strdup( w->value() );
-    if (d->pCallback) d->pCallback();
+    d->pProperty.set( w->value(), d );
+    if (d->pCallback)
+        d->pCallback();
 }
 
 
-void IASettingText::read(Fl_Preferences &p)
-{
-    char dst[FL_PATH_MAX], src[FL_PATH_MAX];
-    if (pValue) {
-        strcpy(src, pValue);
-    } else {
-        strcpy(src, "");
-    }
-    p.get(pPath, dst, pValue, sizeof(dst));
-    if (strcmp(src, dst)!=0) {
-        if (pValue) ::free((void*)pValue);
-        pValue = strdup(dst);
-    }
-    if (pWidget) pWidget->value(pValue);
-}
-
-
-void IASettingText::build(Fl_Tree *treeWidget, Type t)
+void IATextController::build(Fl_Tree *treeWidget, Type t)
 {
     if (!pWidget) {
-        pWidget = new IAFLText(t, treeWidget->w()-40, pLabel);
+        pWidget = new IATextView(t, treeWidget->w()-40, pLabel);
         pWidget->pInput->label(pUnit);
-        pWidget->value(pValue);
+        pWidget->value(pProperty());
         pWidget->callback((Fl_Callback*)wCallback, this);
     }
     pTreeItem = treeWidget->add(pPath);
     pTreeItem->close();
     pTreeItem->widget(pWidget);
+}
+
+void IATextController::propertyValueChanged()
+{
+    if (pWidget)
+        pWidget->value(pProperty());
 }
 
 
@@ -372,7 +363,8 @@ IAFloatChoiceController::~IAFloatChoiceController()
 void IAFloatChoiceController::wCallback(IAFloatChoiceView *w, IAFloatChoiceController *d)
 {
     d->pProperty.set( w->value(), d );
-    if (d->pCallback) d->pCallback();
+    if (d->pCallback)
+        d->pCallback();
 }
 
 
@@ -389,6 +381,13 @@ void IAFloatChoiceController::build(Fl_Tree *treeWidget, Type t)
     pTreeItem->close();
     pTreeItem->widget(pWidget);
 }
+
+void IAFloatChoiceController::propertyValueChanged()
+{
+    if (pWidget)
+        pWidget->value(pProperty());
+}
+
 
 
 #ifdef __APPLE__
@@ -462,7 +461,8 @@ IAChoiceController::~IAChoiceController()
 void IAChoiceController::wCallback(IAChoiceView *w, IAChoiceController *d)
 {
     d->pProperty.set( w->value(), d );
-    if (d->pCallback) d->pCallback();
+    if (d->pCallback)
+        d->pCallback();
 }
 
 
@@ -479,6 +479,15 @@ void IAChoiceController::build(Fl_Tree *treeWidget, Type)
     pTreeItem->close();
     pTreeItem->widget(pWidget);
 }
+
+
+void IAChoiceController::propertyValueChanged()
+{
+    if (pWidget)
+        pWidget->value(pProperty());
+}
+
+
 
 
 
