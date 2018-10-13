@@ -444,58 +444,6 @@ public:
 };
 
 
-IASettingChoice::IASettingChoice(
-                                 const char *path, const char *label, int &value,
-                                 std::function<void()>&& cb, Fl_Menu_Item *menu)
-:   IASetting(path, label),
-    pValue(value),
-    pMenu(dup(menu)),
-    pCallback(cb),
-    pWidget(nullptr)
-{
-}
-
-
-IASettingChoice::~IASettingChoice()
-{
-    if (pMenu) ::free((void*)pMenu);
-    if (pWidget) delete pWidget;
-}
-
-void IASettingChoice::wCallback(IAFLChoice *w, IASettingChoice *d)
-{
-    d->pValue = w->value();
-    if (d->pCallback) d->pCallback();
-}
-
-
-void IASettingChoice::read(Fl_Preferences &p)
-{
-    // FIXME: compare to user_data() in the menu list to find the right entry
-    p.get(pPath, pValue, pValue);
-    pWidget->value(pValue);
-}
-
-
-
-void IASettingChoice::build(Fl_Tree *treeWidget, Type)
-{
-    if (!pWidget) {
-        pWidget = new IAFLChoice(0, 0, 200, 13, pLabel);
-        pWidget->pChoice->menu(pMenu);
-        // FIXME: compare to user_data() in the menu list to find the right entry
-        pWidget->value(pValue);
-        pWidget->callback((Fl_Callback*)wCallback, this);
-    }
-    pTreeItem = treeWidget->add(pPath);
-    pTreeItem->close();
-    pTreeItem->widget(pWidget);
-}
-
-#ifdef __APPLE__
-#pragma mark -
-#endif
-//============================================================================//
 
 
 IAChoiceView::IAChoiceView(

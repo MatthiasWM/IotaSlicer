@@ -140,32 +140,12 @@ public:
 };
 
 
+class IAIntProperty;
 class IAFLChoice;
 
 /**
  * Manage a setting that appears in a tree view.
  */
-class IASettingChoice : public IASetting
-{
-public:
-    IASettingChoice(const char *path, const char *label, int &value,
-                    std::function<void()>&& cb, Fl_Menu_Item *menu);
-    virtual ~IASettingChoice() override;
-    virtual void build(Fl_Tree*, Type) override;
-    virtual void write(Fl_Preferences &p) override { p.set(pPath, pValue); }
-    virtual void read(Fl_Preferences &p) override;
-
-    static void wCallback(IAFLChoice *w, IASettingChoice *d);
-
-    int &pValue;
-    Fl_Menu_Item *pMenu = nullptr;
-    std::function<void()> pCallback;
-    IAFLChoice *pWidget = nullptr;
-};
-
-
-class IAIntProperty;
-
 class IAChoiceView : public IASetting
 {
 public:

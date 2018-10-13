@@ -166,10 +166,10 @@ IAPrinterFDM::IAPrinterFDM(IAPrinterFDM const& src)
     pNozzleDiameter = src.pNozzleDiameter;
     pColorMode = src.pColorMode;
     numShells.set( src.numShells() );
-    pNumLids = src.pNumLids;
-    pLidType = src.pLidType;
+    numLids.set( src.numLids() );
+    lidType.set( src.lidType() );
     pInfillDensity = src.pInfillDensity;
-    pHasSkirt = src.pHasSkirt;
+    hasSkirt.set( src.hasSkirt() );
 }
 
 
@@ -205,7 +205,7 @@ void IAPrinterFDM::initializeSceneSettings()
         { nullptr } };
 
     s = new IAChoiceView("NPerimiter", "# of perimeters: ", numShells,
-                            [this]{;}, numShellsMenu );
+                         [this]{;}, numShellsMenu );
     pSceneSettings.push_back(s);
 
     static Fl_Menu_Item numLidsMenu[] = {
@@ -214,9 +214,8 @@ void IAPrinterFDM::initializeSceneSettings()
         { "2", 0, nullptr, (void*)2, 0, 0, 0, 11 },
         { nullptr } };
 
-    s = new IASettingChoice("NLids", "# of lids: ", pNumLids,
-                            [this]{userChangedNumLids();}, numLidsMenu );
-
+    s = new IAChoiceView("NLids", "# of lids: ", numLids,
+                         [this]{userChangedNumLids();}, numLidsMenu );
     pSceneSettings.push_back(s);
 
     static Fl_Menu_Item lidTypeMenu[] = {
@@ -224,7 +223,7 @@ void IAPrinterFDM::initializeSceneSettings()
         { "concentric", 0, nullptr, (void*)1, 0, 0, 0, 11 },
         { nullptr } };
 
-    s = new IASettingChoice("lidType", "lid type: ", pLidType,
+    s = new IAChoiceView("lidType", "lid type: ", lidType,
                             [this]{userChangedLidType();}, lidTypeMenu );
     pSceneSettings.push_back(s);
 
@@ -247,7 +246,7 @@ void IAPrinterFDM::initializeSceneSettings()
         { "yes", 0, nullptr, (void*)1, 0, 0, 0, 11 },
         { nullptr } };
 
-    s = new IASettingChoice("skirt", "skirt: ", pHasSkirt,
+    s = new IAChoiceView("skirt", "skirt: ", hasSkirt,
                             [this]{userChangedSkirt();}, skirtMenu );
     pSceneSettings.push_back(s);
 
@@ -264,8 +263,8 @@ void IAPrinterFDM::initializeSceneSettings()
         { "no", 0, nullptr, (void*)0, 0, 0, 0, 11 },
         { "yes", 0, nullptr, (void*)1, 0, 0, 0, 11 },
         { nullptr } };
-    s = new IASettingChoice("support", "support: ", pSupport,
-                            [this]{ ; }, supportMenu ); // FIXME: recache all
+    s = new IAChoiceView("support", "support: ", hasSupport,
+                         [this]{ ; }, supportMenu ); // FIXME: recache all
     pSceneSettings.push_back(s);
 
     // TODO: support material
@@ -416,7 +415,7 @@ void IAPrinterFDM::sliceAll()
         slc->tesselateAndDrawLid();
         IAToolpathList *tp = pMachineToolpath.createLayer(z);
 
-        if (pHasSkirt && z==zMin) {
+        if (hasSkirt() && z==zMin) {
             IAFramebuffer skirt(this, IAFramebuffer::RGBA);
             skirt.bindForRendering();
             glPushMatrix();
@@ -465,7 +464,7 @@ void IAPrinterFDM::sliceAll()
         IASlice *slc = sliceList[i];
 
         // --- support structures
-        if (pSupport) {
+        if (hasSupport()) {
             IAFramebuffer support(this, IAFramebuffer::RGBAZ);
 
             support.bindForRendering();
@@ -530,16 +529,16 @@ void IAPrinterFDM::sliceAll()
         IAFramebuffer infill(slc->pFramebuffer);
 
         // build lids and bottoms
-        if (pNumLids>0) {
+        if (numLids()>0) {
             IAFramebuffer mask(sliceList[i+1]->pFramebuffer);
-            if (pNumLids>1) {
+            if (numLids()>1) {
                 if (sliceList[i+2] && sliceList[i+2]->pFramebuffer)
                     mask.logicAnd(sliceList[i+2]->pFramebuffer);
                 else
                     mask.clear();
             }
             mask.logicAnd((i>0) ? sliceList[i-1]->pFramebuffer : nullptr);
-            if (pNumLids>1) {
+            if (numLids()>1) {
                 mask.logicAnd((i>1) ? sliceList[i-2]->pFramebuffer : nullptr);
             }
 
@@ -547,7 +546,7 @@ void IAPrinterFDM::sliceAll()
             lid.logicAndNot(&mask);
             infill.logicAnd(&mask);
 
-            if (pLidType==0) {
+            if (lidType()==0) {
                 // ZIGZAG (could do bridging if used in the correct direction!)
                 lid.overlayInfillPattern(i, pNozzleDiameter);
                 auto lidPath = lid.toolpathFromLasso(z);

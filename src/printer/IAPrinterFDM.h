@@ -53,11 +53,11 @@ public:
     double pNozzleDiameter = 0.4;
     int pColorMode = 0;
     IAIntProperty numShells { "numShells", 3 };
-    int pNumLids = 2;
-    int pLidType = 0; // 0=zigzag, 1=concentric
+    IAIntProperty numLids { "numLids", 2 };
+    IAIntProperty lidType { "lidType", 0 }; // 0=zigzag, 1=concentric
     double pInfillDensity = 20.0; // %
-    int pHasSkirt = 1; // prime line around perimeter
-    int pSupport = 1;
+    IAIntProperty hasSkirt { "hasSkirt",  1 }; // prime line around perimeter
+    IAIntProperty hasSupport { "hasSupport", 1 };
     double pSupportAngle = 50.0;
     double pSupportDensity = 40.0;
     double pSupportTopGap = 1.0;
