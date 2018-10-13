@@ -182,8 +182,6 @@ add_executable (IotaSlicer MACOSX_BUNDLE
 	src/printer/IAPrinterList.h
 	src/printer/IAPrinterSLS.cpp
 	src/printer/IAPrinterSLS.h
-	src/printer/IASetting.cpp
-	src/printer/IASetting.h
 	src/property/IAProperty.cpp
 	src/property/IAProperty.h
 	src/toolpath/IADxfWriter.cpp
@@ -195,14 +193,14 @@ add_executable (IotaSlicer MACOSX_BUNDLE
     ${FLUID_VIEWS}
 	src/view/IAProgressDialog.cpp
 	src/view/IAProgressDialog.h
+    src/view/IATreeView.cpp
+    src/view/IATreeView.h
 	src/widget/IACamera.cpp
 	src/widget/IACamera.h
 	src/widget/IAGLButton.cpp
 	src/widget/IAGLButton.h
     src/widget/IAGLRangeSlider.cpp
     src/widget/IAGLRangeSlider.h
-    src/widget/IAFLTreeItemFloat.cpp
-    src/widget/IAFLTreeItemFloat.h
 	src/widget/IASceneView.cpp
 	src/widget/IASceneView.h
     ${INFO_FILES}

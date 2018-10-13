@@ -11,9 +11,8 @@
 #include "geometry/IAVector3d.h"
 #include "geometry/IASlice.h"
 #include "toolpath/IAToolpath.h"
-#include "IASetting.h"
 #include "property/IAProperty.h"
-
+#include "view/IATreeView.h"
 #include "controller/IAController.h"
 
 

@@ -194,7 +194,7 @@ void IAPrinterFDM::initializePrinterProperties()
 void IAPrinterFDM::initializeSceneSettings()
 {
     super::initializeSceneSettings();
-    IASetting *s;
+    IATreeViewController *s;
 
     static Fl_Menu_Item numShellsMenu[] = {
         { "0*", 0, nullptr, (void*)0, 0, 0, 0, 11 },

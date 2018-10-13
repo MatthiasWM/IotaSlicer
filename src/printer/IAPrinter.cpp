@@ -85,7 +85,7 @@ void IAPrinter::initializePrinterProperties()
     //     # transports
     //       transport 1
     //
-    IASetting *s;
+    IATreeViewController *s;
 
     // -- display the UUID (this is not really important for the user)
     s = new IALabelController("uuid", "Printer ID:", uuid());
@@ -151,7 +151,7 @@ void IAPrinter::initializeSceneSettings()
         { }
     };
 
-    IASetting *s;
+    IATreeViewController *s;
     s = new IAFloatChoiceController("layerHeight", "Layer Height:", layerHeight, "mm",
                               [this]{userChangedLayerHeight();},
                               layerHeightMenu);
@@ -232,7 +232,7 @@ void IAPrinter::buildSessionSettings(Fl_Tree *treeWidget)
     treeWidget->begin();
     wSessionSettings->begin();
     for (auto &s: pSceneSettings) {
-        s->build(treeWidget, IASetting::kSetting);
+        s->build(treeWidget, IATreeViewController::kSetting);
     }
     treeWidget->end();
 }
@@ -250,7 +250,7 @@ void IAPrinter::buildPropertiesUI(Fl_Tree *treeWidget)
     treeWidget->clear();
     treeWidget->begin();
     for (auto &s: pPrinterProperties) {
-        s->build(treeWidget, IASetting::kProperty);
+        s->build(treeWidget, IATreeViewController::kProperty);
     }
     treeWidget->end();
 }
