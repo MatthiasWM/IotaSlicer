@@ -57,17 +57,6 @@ void IAProperty::detach(IAController* ctrl)
 
 
 
-void IAPropertyEvent::trigger(IAController *ctrl)
-{
-    for (auto &c: pControlerList) {
-        if (c!=ctrl)
-            c->propertyValueChanged();
-    }
-    if (pCallback) pCallback();
-}
-
-
-
 IAFloatProperty::IAFloatProperty(const char *name, double value)
 :   IAProperty(name),
     pValue(value)

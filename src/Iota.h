@@ -155,8 +155,6 @@ public:
     IAPrinterListController pPrinterListController;
 
     IALua lua;
-
-    IAPropertyEvent propQuit = IAPropertyEvent( [this] { userMenuFileQuit(); } );
 };
 
 

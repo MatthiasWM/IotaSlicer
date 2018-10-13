@@ -52,16 +52,6 @@ protected:
 };
 
 
-class IAPropertyEvent : public IAProperty
-{
-public:
-    IAPropertyEvent(std::function<void()>&& cb)
-    : IAProperty("event"), pCallback(cb) { }
-    void trigger(IAController *ctrl=nullptr);
-    std::function<void()> pCallback;
-};
-
-
 class IAFloatProperty : public IAProperty
 {
 public:

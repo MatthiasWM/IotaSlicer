@@ -115,50 +115,50 @@ public:
 
 
 class IAFloatProperty;
-class IAFLFloatChoice;
+class IAFloatChoiceView;
 
 /**
  * Manage a setting that appears in a tree view.
  */
-class IAFloatChoiceView : public IASetting
+class IAFloatChoiceController : public IASetting
 {
 public:
-    IAFloatChoiceView(const char *path, const char *label, IAFloatProperty &prop,
+    IAFloatChoiceController(const char *path, const char *label, IAFloatProperty &prop,
                          const char *unit, std::function<void()>&& cb,
                          Fl_Menu_Item *menu);
-    virtual ~IAFloatChoiceView() override;
+    virtual ~IAFloatChoiceController() override;
     virtual void build(Fl_Tree*, Type) override;
 
-    static void wCallback(IAFLFloatChoice *w, IAFloatChoiceView *d);
+    static void wCallback(IAFloatChoiceView *w, IAFloatChoiceController *d);
 
     IAFloatProperty &pProperty;
     char *pUnit = nullptr;
     std::function<void()> pCallback;
     Fl_Menu_Item *pMenu = nullptr;
-    IAFLFloatChoice *pWidget = nullptr;
+    IAFloatChoiceView *pWidget = nullptr;
 };
 
 
 class IAIntProperty;
-class IAFLChoice;
+class IAChoiceView;
 
 /**
  * Manage a setting that appears in a tree view.
  */
-class IAChoiceView : public IASetting
+class IAChoiceController : public IASetting
 {
 public:
-    IAChoiceView(const char *path, const char *label, IAIntProperty &prop,
+    IAChoiceController(const char *path, const char *label, IAIntProperty &prop,
                     std::function<void()>&& cb, Fl_Menu_Item *menu);
-    virtual ~IAChoiceView() override;
+    virtual ~IAChoiceController() override;
     virtual void build(Fl_Tree*, Type) override;
 
-    static void wCallback(IAFLChoice *w, IAChoiceView *d);
+    static void wCallback(IAChoiceView *w, IAChoiceController *d);
 
     IAIntProperty &pProperty;
     Fl_Menu_Item *pMenu = nullptr;
     std::function<void()> pCallback;
-    IAFLChoice *pWidget = nullptr;
+    IAChoiceView *pWidget = nullptr;
 };
 
 

@@ -28,18 +28,6 @@ public:
 };
 
 
-class IAMenuItemEventController : public IAController
-{
-public:
-    IAMenuItemEventController(IAPropertyEvent &p) : pProperty( p ) { }
-    virtual void propertyValueChanged() override;
-    void trigger();
-protected:
-    IAPropertyEvent &pProperty;
-    Fl_Menu_Item *pView = nullptr;
-};
-
-
 /**
  * This controller manages the connection between a Floating Point Property
  * and a Floating Point Tree View.

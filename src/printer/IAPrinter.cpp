@@ -130,7 +130,7 @@ void IAPrinter::initializeSceneSettings()
     };
 
     IASetting *s;
-    s = new IAFloatChoiceView("layerHeight", "Layer Height:", layerHeight, "mm",
+    s = new IAFloatChoiceController("layerHeight", "Layer Height:", layerHeight, "mm",
                               [this]{userChangedLayerHeight();},
                               layerHeightMenu);
     pSceneSettings.push_back(s);

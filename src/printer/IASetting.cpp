@@ -305,10 +305,10 @@ void IASettingText::build(Fl_Tree *treeWidget, Type t)
 #endif
 //============================================================================//
 
-class IAFLFloatChoice : public Fl_Group
+class IAFloatChoiceView : public Fl_Group
 {
 public:
-    IAFLFloatChoice(IASetting::Type t, int w, const char *label=nullptr)
+    IAFloatChoiceView(IASetting::Type t, int w, const char *label=nullptr)
     :   Fl_Group(0, 0, w, t==IASetting::kSetting?13:15) {
         box(FL_FLAT_BOX);
         begin();
@@ -330,7 +330,7 @@ public:
         }
         end();
     }
-    ~IAFLFloatChoice() { }
+    ~IAFloatChoiceView() { }
     double value() { return atof(pChoice->value()); }
     void value(double v) {
         char buf[80];
@@ -338,7 +338,7 @@ public:
         pChoice->value(buf);
     }
     static void choice_cb(Fl_Input_Choice *w, void *u) {
-        IAFLFloatChoice *c = (IAFLFloatChoice*)w->parent();
+        IAFloatChoiceView *c = (IAFloatChoiceView*)w->parent();
         //c->value( c->value() ); // reinterprete the string that was set by the pulldown
         c->do_callback();
     }
@@ -347,7 +347,7 @@ public:
 };
 
 
-IAFloatChoiceView::IAFloatChoiceView(const char *path, const char *label, IAFloatProperty &prop, const char *unit,
+IAFloatChoiceController::IAFloatChoiceController(const char *path, const char *label, IAFloatProperty &prop, const char *unit,
                                      std::function<void()>&& cb, Fl_Menu_Item *menu)
 :   IASetting(path, label),
     pProperty(prop),
@@ -360,7 +360,7 @@ IAFloatChoiceView::IAFloatChoiceView(const char *path, const char *label, IAFloa
 }
 
 
-IAFloatChoiceView::~IAFloatChoiceView()
+IAFloatChoiceController::~IAFloatChoiceController()
 {
     pProperty.detach(this);
     if (pUnit) ::free((void*)pUnit);
@@ -369,17 +369,17 @@ IAFloatChoiceView::~IAFloatChoiceView()
 }
 
 
-void IAFloatChoiceView::wCallback(IAFLFloatChoice *w, IAFloatChoiceView *d)
+void IAFloatChoiceController::wCallback(IAFloatChoiceView *w, IAFloatChoiceController *d)
 {
     d->pProperty.set( w->value(), d );
     if (d->pCallback) d->pCallback();
 }
 
 
-void IAFloatChoiceView::build(Fl_Tree *treeWidget, Type t)
+void IAFloatChoiceController::build(Fl_Tree *treeWidget, Type t)
 {
     if (!pWidget) {
-        pWidget = new IAFLFloatChoice(t, treeWidget->w()-40, pLabel);
+        pWidget = new IAFloatChoiceView(t, treeWidget->w()-40, pLabel);
         pWidget->pChoice->menu(pMenu);
         pWidget->pChoice->label(pUnit);
         pWidget->value( pProperty() );
@@ -397,10 +397,10 @@ void IAFloatChoiceView::build(Fl_Tree *treeWidget, Type t)
 //============================================================================//
 
 
-class IAFLChoice : public Fl_Group
+class IAChoiceView : public Fl_Group
 {
 public:
-    IAFLChoice(int x, int y, int w, int h, const char *label=nullptr)
+    IAChoiceView(int x, int y, int w, int h, const char *label=nullptr)
     :   Fl_Group(x, y, w, h, label) {
         begin();
         align(FL_ALIGN_INSIDE|FL_ALIGN_LEFT);
@@ -414,7 +414,7 @@ public:
         pChoice->callback((Fl_Callback*)choice_cb);
         end();
     }
-    ~IAFLChoice() { }
+    ~IAChoiceView() { }
     Fl_Choice *pChoice = nullptr;
     int value() {
         return (int)(fl_intptr_t)(pChoice->mvalue()->user_data());
@@ -438,7 +438,7 @@ public:
 
 
 
-IAChoiceView::IAChoiceView(
+IAChoiceController::IAChoiceController(
                            const char *path, const char *label, IAIntProperty &prop,
                            std::function<void()>&& cb, Fl_Menu_Item *menu)
 :   IASetting(path, label),
@@ -451,7 +451,7 @@ IAChoiceView::IAChoiceView(
 }
 
 
-IAChoiceView::~IAChoiceView()
+IAChoiceController::~IAChoiceController()
 {
     pProperty.detach(this);
     if (pMenu) ::free((void*)pMenu);
@@ -459,17 +459,17 @@ IAChoiceView::~IAChoiceView()
 }
 
 
-void IAChoiceView::wCallback(IAFLChoice *w, IAChoiceView *d)
+void IAChoiceController::wCallback(IAChoiceView *w, IAChoiceController *d)
 {
     d->pProperty.set( w->value(), d );
     if (d->pCallback) d->pCallback();
 }
 
 
-void IAChoiceView::build(Fl_Tree *treeWidget, Type)
+void IAChoiceController::build(Fl_Tree *treeWidget, Type)
 {
     if (!pWidget) {
-        pWidget = new IAFLChoice(0, 0, 200, 13, pLabel);
+        pWidget = new IAChoiceView(0, 0, 200, 13, pLabel);
         pWidget->pChoice->menu(pMenu);
         // FIXME: compare to user_data() in the menu list to find the right entry
         pWidget->value(pProperty());

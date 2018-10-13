@@ -203,7 +203,7 @@ void IAPrinterFDM::initializeSceneSettings()
         { "3", 0, nullptr, (void*)3, 0, 0, 0, 11 },
         { nullptr } };
 
-    s = new IAChoiceView("NPerimiter", "# of perimeters: ", numShells,
+    s = new IAChoiceController("NPerimiter", "# of perimeters: ", numShells,
                          [this]{;}, numShellsMenu );
     pSceneSettings.push_back(s);
 
@@ -213,7 +213,7 @@ void IAPrinterFDM::initializeSceneSettings()
         { "2", 0, nullptr, (void*)2, 0, 0, 0, 11 },
         { nullptr } };
 
-    s = new IAChoiceView("NLids", "# of lids: ", numLids,
+    s = new IAChoiceController("NLids", "# of lids: ", numLids,
                          [this]{userChangedNumLids();}, numLidsMenu );
     pSceneSettings.push_back(s);
 
@@ -222,7 +222,7 @@ void IAPrinterFDM::initializeSceneSettings()
         { "concentric", 0, nullptr, (void*)1, 0, 0, 0, 11 },
         { nullptr } };
 
-    s = new IAChoiceView("lidType", "lid type: ", lidType,
+    s = new IAChoiceController("lidType", "lid type: ", lidType,
                             [this]{userChangedLidType();}, lidTypeMenu );
     pSceneSettings.push_back(s);
 
@@ -236,7 +236,7 @@ void IAPrinterFDM::initializeSceneSettings()
         { "100%", 0, nullptr, (void*)0, 0, 0, 0, 11 },
         { nullptr } };
 
-    s = new IAFloatChoiceView("infillDensity", "infill density: ", infillDensity, "%",
+    s = new IAFloatChoiceController("infillDensity", "infill density: ", infillDensity, "%",
                                  [this]{userChangedInfillDensity();}, infillDensityMenuMenu );
     pSceneSettings.push_back(s);
 
@@ -245,7 +245,7 @@ void IAPrinterFDM::initializeSceneSettings()
         { "yes", 0, nullptr, (void*)1, 0, 0, 0, 11 },
         { nullptr } };
 
-    s = new IAChoiceView("skirt", "skirt: ", hasSkirt,
+    s = new IAChoiceController("skirt", "skirt: ", hasSkirt,
                             [this]{userChangedSkirt();}, skirtMenu );
     pSceneSettings.push_back(s);
 
@@ -254,7 +254,7 @@ void IAPrinterFDM::initializeSceneSettings()
         { "0.35", 0, nullptr, (void*)0, 0, 0, 0, 11 },
         { nullptr } };
 
-    s = new IAFloatChoiceView("nozzleDiameter", "nozzle diameter: ", nozzleDiameter, "mm",
+    s = new IAFloatChoiceController("nozzleDiameter", "nozzle diameter: ", nozzleDiameter, "mm",
                                  [this]{userChangedNozzleDiameter();}, nozzleDiameterMenu );
     pSceneSettings.push_back(s);
 
@@ -262,7 +262,7 @@ void IAPrinterFDM::initializeSceneSettings()
         { "no", 0, nullptr, (void*)0, 0, 0, 0, 11 },
         { "yes", 0, nullptr, (void*)1, 0, 0, 0, 11 },
         { nullptr } };
-    s = new IAChoiceView("support", "support: ", hasSupport,
+    s = new IAChoiceController("support", "support: ", hasSupport,
                          [this]{ ; }, supportMenu ); // FIXME: recache all
     pSceneSettings.push_back(s);
 
@@ -274,7 +274,7 @@ void IAPrinterFDM::initializeSceneSettings()
         { "55.0\xC2\xB0", 0, nullptr, (void*)2, 0, 0, 0, 11 },
         { "60.0\xC2\xB0", 0, nullptr, (void*)3, 0, 0, 0, 11 },
         { nullptr } };
-    s = new IAFloatChoiceView("support/angle", "angle: ", supportAngle, "deg",
+    s = new IAFloatChoiceController("support/angle", "angle: ", supportAngle, "deg",
                                  [this]{ ; }, supportAngleMenu );
     pSceneSettings.push_back(s);
 
@@ -285,7 +285,7 @@ void IAPrinterFDM::initializeSceneSettings()
         { "45.0%", 0, nullptr, (void*)2, 0, 0, 0, 11 },
         { "50.0%", 0, nullptr, (void*)3, 0, 0, 0, 11 },
         { nullptr } };
-    s = new IAFloatChoiceView("support/density", "density: ", supportDensity, "%",
+    s = new IAFloatChoiceController("support/density", "density: ", supportDensity, "%",
                                  [this]{ ; }, supportDensityMenu );
     pSceneSettings.push_back(s);
 
@@ -295,7 +295,7 @@ void IAPrinterFDM::initializeSceneSettings()
         { "2 layers", 0, nullptr, (void*)2, 0, 0, 0, 11 },
         { "3 layers", 0, nullptr, (void*)3, 0, 0, 0, 11 },
         { nullptr } };
-    s = new IAFloatChoiceView("support/topGap", "top gap: ", supportTopGap, "layers",
+    s = new IAFloatChoiceController("support/topGap", "top gap: ", supportTopGap, "layers",
                                  [this]{ ; }, topGapMenu );
     pSceneSettings.push_back(s);
 
@@ -306,7 +306,7 @@ void IAPrinterFDM::initializeSceneSettings()
         { "0.3mm", 0, nullptr, (void*)0, 0, 0, 0, 11 },
         { "0.4mm", 0, nullptr, (void*)0, 0, 0, 0, 11 },
         { nullptr } };
-    s = new IAFloatChoiceView("support/sideGap", "side gap: ", supportSideGap, "mm",
+    s = new IAFloatChoiceController("support/sideGap", "side gap: ", supportSideGap, "mm",
                                  [this]{ ; }, sideGapMenu );
     pSceneSettings.push_back(s);
 
@@ -316,7 +316,7 @@ void IAPrinterFDM::initializeSceneSettings()
         { "2 layers", 0, nullptr, (void*)2, 0, 0, 0, 11 },
         { "3 layers", 0, nullptr, (void*)3, 0, 0, 0, 11 },
         { nullptr } };
-    s = new IAFloatChoiceView("support/bottomGap", "bottom gap: ", supportBottomGap, "layers",
+    s = new IAFloatChoiceController("support/bottomGap", "bottom gap: ", supportBottomGap, "layers",
                                  [this]{ ; }, bottomGapMenu );
     pSceneSettings.push_back(s);
 

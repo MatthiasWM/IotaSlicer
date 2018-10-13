@@ -32,8 +32,7 @@ int IALua::quit(lua_State *L)
         luaL_checktype(L, 2, LUA_TBOOLEAN);
         forceQuit = lua_toboolean(L, 2);
     }
-//    Iota.userMenuFileQuit();
-    Iota.propQuit.trigger();
+    Iota.userMenuFileQuit();
     // FIXME: call via AppController and use a property to genearte notifications?
     lua_pushnumber(L, 1);
     return 1;
