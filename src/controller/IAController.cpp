@@ -353,6 +353,10 @@ IAVectorController::~IAVectorController()
     if (pXWidget) delete pXWidget;
     if (pYWidget) delete pYWidget;
     if (pZWidget) delete pZWidget;
+    if (pText) ::free((void*)pText);
+    if (pXPath) ::free((void*)pXPath);
+    if (pYPath) ::free((void*)pYPath);
+    if (pZPath) ::free((void*)pZPath);
 }
 
 
@@ -366,16 +370,41 @@ void IAVectorController::build(Fl_Tree *treeWidget, Type t)
     pTreeItem->close();
     pTreeItem->widget(pLabelWidget);
 
-    if (!pWidget) {
-        pWidget = new IAFloatView(t, treeWidget->w()-40, pLabel);
-        pWidget->pInput->label(pUnit);
-        pWidget->value(pProperty());
-        pWidget->callback((Fl_Callback*)wCallback, this);
+    if (pXLabel && !pXWidget) {
+        pXWidget = new IAFloatView(t, treeWidget->w()-40, pXLabel);
+        pXWidget->pInput->label(pXUnits);
+        pXWidget->value(pProperty().x());
+        pXWidget->callback((Fl_Callback*)wCallback, this);
     }
-    pTreeItem = treeWidget->add(pPath);
-    pTreeItem->close();
-    pTreeItem->widget(pWidget);
-    // add x, y, and z
+    if (pXWidget) {
+        if (!pXPath) pXPath = strdup(Fl_Preferences::Name("%s/x", pPath));
+        pTreeItem = treeWidget->add(pXPath);
+        pTreeItem->widget(pXWidget);
+    }
+
+    if (pYLabel && !pYWidget) {
+        pYWidget = new IAFloatView(t, treeWidget->w()-40, pYLabel);
+        pYWidget->pInput->label(pYUnits);
+        pYWidget->value(pProperty().y());
+        pYWidget->callback((Fl_Callback*)wCallback, this);
+    }
+    if (pYWidget) {
+        if (!pYPath) pYPath = strdup(Fl_Preferences::Name("%s/y", pPath));
+        pTreeItem = treeWidget->add(pYPath);
+        pTreeItem->widget(pYWidget);
+    }
+
+    if (pZLabel && !pZWidget) {
+        pZWidget = new IAFloatView(t, treeWidget->w()-40, pZLabel);
+        pZWidget->pInput->label(pZUnits);
+        pZWidget->value(pProperty().z());
+        pZWidget->callback((Fl_Callback*)wCallback, this);
+    }
+    if (pZWidget) {
+        if (!pZPath) pZPath = strdup(Fl_Preferences::Name("%s/z", pPath));
+        pTreeItem = treeWidget->add(pZPath);
+        pTreeItem->widget(pZWidget);
+    }
 }
 
 

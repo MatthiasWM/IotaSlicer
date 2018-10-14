@@ -189,6 +189,9 @@ public:
     IAFloatView *pYWidget = nullptr;
     IAFloatView *pZWidget = nullptr;
     char* pText = nullptr;
+    char* pXPath = nullptr;
+    char* pYPath = nullptr;
+    char* pZPath = nullptr;
     char const* pXLabel = nullptr;
     char const* pXUnits = nullptr;
     char const* pYLabel = nullptr;
