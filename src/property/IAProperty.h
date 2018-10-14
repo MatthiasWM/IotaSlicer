@@ -8,6 +8,8 @@
 #define IA_PROPERTY_H
 
 
+#include "geometry/IAVector3d.h"
+
 #include <vector>
 #include <functional>
 
@@ -91,8 +93,22 @@ public:
     virtual void write(Fl_Preferences&) override;
 protected:
     void _set(char const* value);
-    bool _sameAs(char const* value);
+    bool _equals(char const* value);
     char *pValue = nullptr;
+};
+
+
+class IAVectorProperty : public IAProperty
+{
+public:
+    IAVectorProperty(char const* name, IAVector3d const& value);
+    virtual ~IAVectorProperty() override;
+    IAVector3d const& operator()() const { return pValue; }
+    void set(IAVector3d const& value, IAController *ctrl=nullptr);
+    virtual void read(Fl_Preferences&) override;
+    virtual void write(Fl_Preferences&) override;
+protected:
+    IAVector3d pValue;
 };
 
 

@@ -69,6 +69,7 @@ public:
     IASettingList pPrinterProperties;
     char *pUUID = nullptr;
     IATextProperty name { "name", nullptr };
+    IAVectorProperty buildVolume { "buildVolume", { 214.0, 214.0, 230.0 } };
     char *pRecentUploadFilename = nullptr;
     bool pFirstWrite = true;
     IAVector3d pBuildVolumeMin = { 0.0, 0.0, 0.0 };

@@ -167,6 +167,36 @@ public:
     IAChoiceView *pWidget = nullptr;
 };
 
+class IAVectorController : public IATreeViewController
+{
+public:
+    IAVectorController(const char *path, const char *label, const char *text,
+                       IAVectorProperty &prop,
+                       char const* xLabel, char const* xUnits,
+                       char const* yLabel, char const* yUnits,
+                       char const* zLabel, char const* zUnits,
+                       std::function<void()>&& cb);
+    virtual ~IAVectorController() override;
+    virtual void build(Fl_Tree*, Type) override;
+    virtual void propertyValueChanged() override;
+
+    static void wCallback(IAFloatView *w, IAVectorController *d);
+
+    IAVectorProperty &pProperty;
+    std::function<void()> pCallback;
+    IALabelView *pLabelWidget = nullptr;
+    IAFloatView *pXWidget = nullptr;
+    IAFloatView *pYWidget = nullptr;
+    IAFloatView *pZWidget = nullptr;
+    char* pText = nullptr;
+    char const* pXLabel = nullptr;
+    char const* pXUnits = nullptr;
+    char const* pYLabel = nullptr;
+    char const* pYUnits = nullptr;
+    char const* pZLabel = nullptr;
+    char const* pZUnits = nullptr;
+};
+
 
 typedef std::vector<IATreeViewController*> IASettingList;
 

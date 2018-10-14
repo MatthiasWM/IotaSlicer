@@ -275,10 +275,10 @@ IAChoiceController::IAChoiceController(
                                        const char *path, const char *label, IAIntProperty &prop,
                                        std::function<void()>&& cb, Fl_Menu_Item *menu)
 :   IATreeViewController(path, label),
-pProperty(prop),
-pMenu(dup(menu)),
-pCallback(cb),
-pWidget(nullptr)
+    pProperty(prop),
+    pMenu(dup(menu)),
+    pCallback(cb),
+    pWidget(nullptr)
 {
     pProperty.attach(this);
 }
@@ -322,5 +322,80 @@ void IAChoiceController::propertyValueChanged()
 }
 
 
+#ifdef __APPLE__
+#pragma mark -
+#endif
+//============================================================================//
+
+
+IAVectorController::IAVectorController(const char *path, const char *label, const char *text,
+                                       IAVectorProperty &prop,
+                                       char const* xLabel, char const* xUnits,
+                                       char const* yLabel, char const* yUnits,
+                                       char const* zLabel, char const* zUnits,
+                                       std::function<void()>&& cb)
+:   IATreeViewController(path, label),
+    pProperty(prop),
+    pCallback(cb),
+    pXLabel(xLabel), pXUnits(xUnits),
+    pYLabel(yLabel), pYUnits(yUnits),
+    pZLabel(zLabel), pZUnits(zUnits)
+{
+    if (text) pText = strdup(text);
+    pProperty.attach(this);
+}
+
+
+IAVectorController::~IAVectorController()
+{
+    pProperty.detach(this);
+    if (pLabelWidget) delete pLabelWidget;
+    if (pXWidget) delete pXWidget;
+    if (pYWidget) delete pYWidget;
+    if (pZWidget) delete pZWidget;
+}
+
+
+void IAVectorController::build(Fl_Tree *treeWidget, Type t)
+{
+    if (!pLabelWidget) {
+        pLabelWidget = new IALabelView(t, treeWidget->w()-40, pLabel);
+        if (pText) pLabelWidget->pText->label(pText);
+    }
+    pTreeItem = treeWidget->add(pPath);
+    pTreeItem->close();
+    pTreeItem->widget(pLabelWidget);
+
+    if (!pWidget) {
+        pWidget = new IAFloatView(t, treeWidget->w()-40, pLabel);
+        pWidget->pInput->label(pUnit);
+        pWidget->value(pProperty());
+        pWidget->callback((Fl_Callback*)wCallback, this);
+    }
+    pTreeItem = treeWidget->add(pPath);
+    pTreeItem->close();
+    pTreeItem->widget(pWidget);
+    // add x, y, and z
+}
+
+
+void IAVectorController::propertyValueChanged()
+{
+    if (pXWidget) pXWidget->value(pProperty().x());
+    if (pYWidget) pYWidget->value(pProperty().y());
+    if (pZWidget) pZWidget->value(pProperty().z());
+}
+
+
+void IAVectorController::wCallback(IAFloatView *w, IAVectorController *d)
+{
+    IAVector3d v;
+    if (d->pXWidget) v.x( d->pXWidget->value() );
+    if (d->pYWidget) v.y( d->pYWidget->value() );
+    if (d->pZWidget) v.z( d->pZWidget->value() );
+    d->pProperty.set( v, d );
+    if (d->pCallback)
+        d->pCallback();
+}
 
 

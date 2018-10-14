@@ -14,6 +14,12 @@
 #include <algorithm>
 
 
+#ifdef __APPLE__
+#pragma mark -
+#endif
+//============================================================================//
+
+
 IAPropertyList::IAPropertyList()
 {
 }
@@ -29,6 +35,12 @@ void IAPropertyList::add(IAProperty *prop)
     pList.push_back(prop);
 }
 
+
+
+#ifdef __APPLE__
+#pragma mark -
+#endif
+//============================================================================//
 
 
 IAProperty::IAProperty(const char *name)
@@ -55,6 +67,12 @@ void IAProperty::detach(IAController* ctrl)
         pControlerList.erase(c);
 }
 
+
+
+#ifdef __APPLE__
+#pragma mark -
+#endif
+//============================================================================//
 
 
 IAFloatProperty::IAFloatProperty(const char *name, double value)
@@ -93,7 +111,10 @@ void IAFloatProperty::write(Fl_Preferences &prefs)
 }
 
 
-
+#ifdef __APPLE__
+#pragma mark -
+#endif
+//============================================================================//
 
 
 IAIntProperty::IAIntProperty(const char *name, int value)
@@ -132,6 +153,12 @@ void IAIntProperty::write(Fl_Preferences &prefs)
 }
 
 
+#ifdef __APPLE__
+#pragma mark -
+#endif
+//============================================================================//
+
+
 IATextProperty::IATextProperty(char const* name, char const* value)
 :   IAProperty(name),
     pValue(nullptr)
@@ -147,7 +174,7 @@ IATextProperty::~IATextProperty()
 
 void IATextProperty::set(char const* value, IAController *ctrl)
 {
-    if (!_sameAs(value)) {
+    if (!_equals(value)) {
         _set(value);
         for (auto &c: pControlerList) {
             if (c!=ctrl)
@@ -158,7 +185,7 @@ void IATextProperty::set(char const* value, IAController *ctrl)
 
 void IATextProperty::_set(char const* value)
 {
-    if (_sameAs(value)) return;
+    if (_equals(value)) return;
     if (pValue)
         ::free((void*)pValue);
     if (value)
@@ -167,7 +194,7 @@ void IATextProperty::_set(char const* value)
         pValue = nullptr;
 }
 
-bool IATextProperty::_sameAs(char const* value)
+bool IATextProperty::_equals(char const* value)
 {
     if (pValue==nullptr) {
         return (value==nullptr);
@@ -191,6 +218,56 @@ void IATextProperty::write(Fl_Preferences &prefs)
 {
     prefs.set(pName, pValue);
 }
+
+#ifdef __APPLE__
+#pragma mark -
+#endif
+//============================================================================//
+
+
+IAVectorProperty::IAVectorProperty(const char *name, IAVector3d const& value)
+:   IAProperty(name),
+    pValue(value)
+{
+}
+
+
+IAVectorProperty::~IAVectorProperty()
+{
+}
+
+
+void IAVectorProperty::set(IAVector3d const& v, IAController *ctrl)
+{
+    if (pValue!=v) {
+        pValue = v;
+        for (auto &c: pControlerList) {
+            if (c!=ctrl)
+                c->propertyValueChanged();
+        }
+    }
+}
+
+
+void IAVectorProperty::read(Fl_Preferences &prefs)
+{
+    IAVector3d v;
+    prefs.get(Fl_Preferences::Name("%s.x", pName), v.dataPointer()[0], pValue.x());
+    prefs.get(Fl_Preferences::Name("%s.y", pName), v.dataPointer()[1], pValue.y());
+    prefs.get(Fl_Preferences::Name("%s.z", pName), v.dataPointer()[2], pValue.z());
+    set(v);
+}
+
+
+void IAVectorProperty::write(Fl_Preferences &prefs)
+{
+    prefs.set(Fl_Preferences::Name("%s.x", pName), pValue.x());
+    prefs.set(Fl_Preferences::Name("%s.y", pName), pValue.y());
+    prefs.set(Fl_Preferences::Name("%s.z", pName), pValue.z());
+}
+
+
+
 
 
 

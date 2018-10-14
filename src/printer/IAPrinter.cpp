@@ -96,8 +96,14 @@ void IAPrinter::initializePrinterProperties()
                              [this]{ Iota.pPrinterListController.preferencesNameChanged(); } );
     pPrinterProperties.push_back(s);
 
+    s = new IAVectorController("buildVolume", "Build Volume:", "", buildVolume,
+                               "Width (X):", "mm",
+                               "Depth (Y):", "mm",
+                               "Height (Z):", "mm", []{} );
+    pPrinterProperties.push_back(s);
+
     // -- all printers have some kind of build platform
-    pPrinterProperties.push_back( new IALabelController("buildVolume", "Build Volume:"));
+    //pPrinterProperties.push_back( new IALabelController("buildVolume", "Build Volume:"));
     // bed shape (Choice, rect, round)
     // printbed width, depth
 
@@ -193,6 +199,7 @@ void IAPrinter::loadProperties()
 
     Fl_Preferences properties(printerProperties, "properties");
     name.read(properties);
+    buildVolume.read(properties);
 }
 
 
@@ -206,6 +213,7 @@ void IAPrinter::saveProperties()
     // "recentUpload will be saved via "setRecentUpload"
     Fl_Preferences properties(printerProperties, "properties");
     name.write(properties);
+    buildVolume.write(properties);
 }
 
 
