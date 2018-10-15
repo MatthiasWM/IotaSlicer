@@ -219,6 +219,19 @@ void IATextProperty::write(Fl_Preferences &prefs)
     prefs.set(pName, pValue);
 }
 
+
+#ifdef __APPLE__
+#pragma mark -
+#endif
+//============================================================================//
+
+
+IAFilenameProperty::IAFilenameProperty(char const* name, char const* value)
+:   IATextProperty(name, value)
+{
+}
+
+
 #ifdef __APPLE__
 #pragma mark -
 #endif

@@ -75,16 +75,6 @@ IAPrinter::~IAPrinter()
 
 void IAPrinter::initializePrinterProperties()
 {
-    // build volume (x, y, z);
-    // coordinate zero (front left, back right)
-    // zero point offset (x, y, z)
-    // # extruders
-    //   extruder 1
-    //     type (single, changing, mixing)
-    //     nozzle diameter
-    //     # transports
-    //       transport 1
-    //
     IATreeViewController *s;
 
     // -- display the UUID (this is not really important for the user)
@@ -93,55 +83,17 @@ void IAPrinter::initializePrinterProperties()
 
     // -- editable name of this printer
     s = new IATextController("name", "Printer Name:", name, 32, "",
-                             [this]{ Iota.pPrinterListController.preferencesNameChanged(); } );
+                             []{ Iota.pPrinterListController.preferencesNameChanged(); } );
     pPrinterProperties.push_back(s);
 
+    // FIXME: we can actually leave the Attribute here, but put the Controller in
+    //        a derived class and give it more matching text labels.
     s = new IAVectorController("buildVolume", "Build Volume:", "", buildVolume,
                                "Width (X):", "mm",
                                "Depth (Y):", "mm",
                                "Height (Z):", "mm", []{} );
     pPrinterProperties.push_back(s);
 
-    // -- all printers have some kind of build platform
-    //pPrinterProperties.push_back( new IALabelController("buildVolume", "Build Volume:"));
-    // bed shape (Choice, rect, round)
-    // printbed width, depth
-
-    /*
-    pPrinterProperties.push_back(new IAFloatController("buildVolume/x", "X:",
-                                                       test,
-                                                       "width in mm",
-                                                       [this]{ ; } ) );
-    pPrinterProperties.push_back(new IAFloatController("buildVolume/y", "X, too:",
-                                                       test,
-                                                       "width in mm",
-                                                       [this]{ ; } ) );
-    static Fl_Menu_Item sideGapMenu[] = {
-        { "0.0mm", 0, nullptr, (void*)0, 0, 0, 0, 11 },
-        { "0.1mm", 0, nullptr, (void*)0, 0, 0, 0, 11 },
-        { "0.2mm", 0, nullptr, (void*)0, 0, 0, 0, 11 },
-        { "0.3mm", 0, nullptr, (void*)0, 0, 0, 0, 11 },
-        { "0.4mm", 0, nullptr, (void*)0, 0, 0, 0, 11 },
-        { nullptr } };
-    s = new IAFloatChoiceController("buildVolume/z", "X, again: ", test, "mm",
-                                    [this]{ ; }, sideGapMenu );
-    pPrinterProperties  .push_back(s);
-     */
-
-    /*
-    pPrinterProperties.push_back(new IAFloatController("buildVolume/x", "X:",
-                                                     *(pBuildVolume.dataPointer()+0),
-                                                     "width in mm",
-                                                     [this]{ ; } ) );
-    pPrinterProperties.push_back(new IAFloatController("buildVolume/y", "Y:",
-                                                     *(pBuildVolume.dataPointer()+1),
-                                                     "depth in mm",
-                                                     [this]{ ; } ) );
-    pPrinterProperties.push_back(new IAFloatController("buildVolume/z", "Z:",
-                                                     *(pBuildVolume.dataPointer()+2),
-                                                     "height in mm",
-                                                     [this]{ ; } ) );
-     */
 }
 
 

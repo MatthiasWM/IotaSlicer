@@ -185,6 +185,32 @@ IAPrinter *IAPrinterFDM::clone() const
 }
 
 
+//         printer name: WonkoPrinter
+//           connection: Disk/USB/Network/OctoPrint/Stick,SD
+//                 path: ...
+//                 test: [click]
+// range of motion from: x, y, z
+//                   to: x, y, z
+//          x direction: left to right/right to left
+//          y direction: front to back/back to front
+//          build plate: rectangular/round
+//  printable area from: x, y
+//                   to: x, y
+//       # of extruders: 2
+//             extruder 1:
+//                   offset: x, y
+//        filament diameter: 1.75
+//          nozzle diameter: 0.35
+//                     type: single/changing/mixing
+//               # of feeds: 4
+//     GCode start extruder: script or GCode
+//             end extruder: script or GCode
+//             extruder 2: ...
+//          GCode start: script or GCode
+//                  end: script or GCode
+//              dialect: Repetier
+
+
 void IAPrinterFDM::initializePrinterProperties()
 {
     super::initializePrinterProperties();

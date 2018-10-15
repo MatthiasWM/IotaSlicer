@@ -98,6 +98,13 @@ protected:
 };
 
 
+class IAFilenameProperty : public IATextProperty
+{
+public:
+    IAFilenameProperty(char const* name, char const* value=nullptr);
+};
+
+
 class IAVectorProperty : public IAProperty
 {
 public:
