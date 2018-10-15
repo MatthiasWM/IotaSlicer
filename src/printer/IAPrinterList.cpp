@@ -109,7 +109,7 @@ void IAPrinterList::loadCustomPrinters(IAPrinter *(&currentPrinter))
                 printer = new IAPrinterLasercutter();
             }
             if (printer) {
-                printer->setUUID(uuid);
+                printer->uuid.set( uuid );
                 printer->initializePrinterProperties();
                 printer->initializeSceneSettings();
                 printer->loadProperties();

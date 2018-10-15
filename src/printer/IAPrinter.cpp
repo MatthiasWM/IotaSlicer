@@ -46,9 +46,9 @@ IAPrinter::IAPrinter()
 IAPrinter::IAPrinter(IAPrinter const& src)
 :   IAPrinter()
 {
-    setUUID( src.uuid() );
+    uuid.set( src.uuid() );
     name.set( src.name() );
-    setRecentUploadFilename( src.recentUploadFilename() );
+    recentUpload.set( src.recentUpload() );
     buildVolume.set( src.buildVolume() );
     pBuildVolumeMin = src.pBuildVolumeMin;
     pBuildVolumeMax = src.pBuildVolumeMax;
@@ -63,10 +63,6 @@ IAPrinter::IAPrinter(IAPrinter const& src)
  */
 IAPrinter::~IAPrinter()
 {
-    if (pUUID)
-        ::free((void*)pUUID);
-    if (pRecentUploadFilename)
-        ::free((void*)pRecentUploadFilename);
     for (auto &s: pPrinterProperties)
         delete s;
     for (auto &s: pSceneSettings)
@@ -144,14 +140,13 @@ void IAPrinter::loadProperties()
 //    setOutputPath( buf );
 
     const char *path = Iota.gPreferences.printerDefinitionsPath();
-    Fl_Preferences printerProperties(path, "Iota Printer Properties", uuid());
+    Fl_Preferences printer(path, "Iota Printer Properties", uuid());
 
-    printerProperties.get("recentUploadFilename", buf, "", sizeof(buf));
-    if (pRecentUploadFilename) ::free((void*)pRecentUploadFilename);
-    pRecentUploadFilename = strdup(buf);
+    uuid.read(printer);
+    name.read(printer);
+    recentUpload.read(printer);
 
-    Fl_Preferences properties(printerProperties, "properties");
-    name.read(properties);
+    Fl_Preferences properties(printer, "properties");
     buildVolume.read(properties);
 }
 
@@ -162,10 +157,15 @@ void IAPrinter::loadProperties()
 void IAPrinter::saveProperties()
 {
     const char *path = Iota.gPreferences.printerDefinitionsPath();
-    Fl_Preferences printerProperties(path, "Iota Printer Properties", uuid());
+    Fl_Preferences printer(path, "Iota Printer Properties", uuid());
+
     // "recentUpload will be saved via "setRecentUpload"
-    Fl_Preferences properties(printerProperties, "properties");
-    name.write(properties);
+
+    uuid.write(printer);
+    name.write(printer);
+    recentUpload.write(printer);
+
+    Fl_Preferences properties(printer, "properties");
     buildVolume.write(properties);
 }
 
@@ -218,50 +218,11 @@ void IAPrinter::buildPropertiesUI(Fl_Tree *treeWidget)
 
 
 /**
- * Set the ouput filename.
- */
-void IAPrinter::setRecentUploadFilename(const char *name)
-{
-    if (pRecentUploadFilename)
-        ::free((void*)pRecentUploadFilename);
-    pRecentUploadFilename = nullptr;
-    if (name)
-        pRecentUploadFilename = (char*)::strdup(name);
-
-    const char *path = Iota.gPreferences.printerDefinitionsPath();
-    Fl_Preferences printerProperties(path, "Iota Printer Properties", uuid());
-    printerProperties.set("recentUploadFilename", recentUploadFilename());
-}
-
-
-/**
- * Return the filename and path of the output file.
- */
-const char *IAPrinter::recentUploadFilename() const
-{
-    return pRecentUploadFilename;
-}
-
-
-/**
  * Generate a new UUID.
  */
 void IAPrinter::setNewUUID()
 {
-    setUUID( Fl_Preferences::newUUID() );
-}
-
-
-/**
- * Set a new UUID.
- */
-void IAPrinter::setUUID(const char *uuid)
-{
-    if (pUUID)
-        ::free((void*)pUUID);
-    pUUID = nullptr;
-    if (uuid)
-        pUUID = (char*)::strdup(uuid);
+    uuid.set( Fl_Preferences::newUUID() );
 }
 
 
@@ -281,11 +242,17 @@ bool IAPrinter::queryOutputFilename(const char *title,
     char buf[FL_PATH_MAX];
 
     char *path = nullptr;
-    if (recentUploadFilename()) {
-        path = strdup(recentUploadFilename());
+    if (recentUpload()) {
+        path = strdup(recentUpload());
     } else {
         const char *home = fl_getenv("HOME");
-        path = strdup(home?home:".");
+        if (home) {
+            strcpy(buf, home);
+            strcat(buf, "/");
+        } else {
+            strcpy(buf, "./");
+        }
+        path = strdup(buf);
     }
 
 #ifdef __LINUX__
@@ -296,10 +263,10 @@ bool IAPrinter::queryOutputFilename(const char *title,
     fc.filter(filter);
 
     char *s = (char*)fl_filename_name(path);
-    if (s) *s = 0;
+    if (s) s[-1] = 0;
     fc.directory(path);
 
-    fc.preset_file(fl_filename_name(recentUploadFilename()));
+    if (s) fc.preset_file(s); else fc.preset_file("");
     fc.options(Fl_Native_File_Chooser::NEW_FOLDER |
                Fl_Native_File_Chooser::PREVIEW);
     switch (fc.show()) {
@@ -321,7 +288,7 @@ bool IAPrinter::queryOutputFilename(const char *title,
     if (!ext || !*ext) {
         fl_filename_setext(buf, sizeof(buf), extension);
     }
-    setRecentUploadFilename(buf);
+    recentUpload.set(buf);
     saveProperties();
     pFirstWrite = false;
     return true;
