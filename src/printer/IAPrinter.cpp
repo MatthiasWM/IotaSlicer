@@ -49,6 +49,7 @@ IAPrinter::IAPrinter(IAPrinter const& src)
     setUUID( src.uuid() );
     name.set( src.name() );
     setRecentUploadFilename( src.recentUploadFilename() );
+    buildVolume.set( src.buildVolume() );
     pBuildVolumeMin = src.pBuildVolumeMin;
     pBuildVolumeMax = src.pBuildVolumeMax;
     pBuildVolume = src.pBuildVolume;
