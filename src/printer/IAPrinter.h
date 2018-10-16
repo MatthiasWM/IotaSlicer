@@ -68,10 +68,10 @@ public:
     IAFilenameProperty recentUpload { "recentUpload", nullptr };
 
     void updateBuildVolume();
-    IAVectorProperty motionRangeMin { "motionRangeMin", { 0, 0, 0 } };
-    IAVectorProperty motionRangeMax { "motionRangeMin", { 214.0, 214.0, 230.0 } };
+    IAVectorProperty motionRangeMin { "motionRangeMin", { 0, 0, 0 }, [this]{updateBuildVolume();}  };
+    IAVectorProperty motionRangeMax { "motionRangeMax", { 214.0, 214.0, 230.0 }, [this]{updateBuildVolume();}  };
     IAVectorProperty printVolumeMin { "printVolumeMin", { 0, 0, 0 }, [this]{updateBuildVolume();} };
-    IAVectorProperty printVolumeMax { "printVolumeMin", { 214.0, 214.0, 230.0 }, [this]{updateBuildVolume();} };
+    IAVectorProperty printVolumeMax { "printVolumeMax", { 214.0, 214.0, 230.0 }, [this]{updateBuildVolume();} };
     IAVector3d pPrintVolume = { 214.0, 214.0, 230.0 };
     double pPrintVolumeRadius = 200.0; // sphere that contains the entire centered build volume
 

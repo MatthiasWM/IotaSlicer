@@ -54,8 +54,8 @@ IAPrinter::IAPrinter(IAPrinter const& src)
     recentUpload.set( src.recentUpload() );
     motionRangeMin.set( src.motionRangeMin() );
     motionRangeMax.set( src.motionRangeMax() );
-    printVolumeMin.set( printVolumeMin() );
-    printVolumeMax.set( printVolumeMax() );
+    printVolumeMin.set( src.printVolumeMin() );
+    printVolumeMax.set( src.printVolumeMax() );
     layerHeight.set( src.layerHeight() );
 }
 
@@ -416,6 +416,8 @@ void IAPrinter::userChangedLayerHeight()
 
 void IAPrinter::updateBuildVolume()
 {
+    printVolumeMin().z( motionRangeMin().z() );
+    printVolumeMax().z( motionRangeMax().z() );
     pPrintVolume = printVolumeMax() - printVolumeMin();
     pPrintVolumeRadius = pPrintVolume.length()*2.5;
 }

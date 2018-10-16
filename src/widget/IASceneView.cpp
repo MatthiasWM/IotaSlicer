@@ -91,7 +91,9 @@ int IASceneView::handle(int event)
             dy = py - Fl::event_y();
             px = Fl::event_x();
             py = Fl::event_y();
-            if ( (Fl::event_state()&(FL_SHIFT|FL_CTRL|FL_ALT|FL_META)) == FL_CTRL) {
+            if ( (Fl::event_state()&(FL_SHIFT|FL_CTRL|FL_ALT|FL_META)) == 0) {
+                pCurrentCamera->rotate(dx, dy);
+            } else if ( (Fl::event_state()&(FL_SHIFT|FL_CTRL|FL_ALT|FL_META)) == FL_CTRL) {
                 pCurrentCamera->rotate(dx, dy);
             } else if ( (Fl::event_state()&(FL_SHIFT|FL_CTRL|FL_ALT|FL_META)) == FL_SHIFT) {
                 pCurrentCamera->drag(dx, dy);

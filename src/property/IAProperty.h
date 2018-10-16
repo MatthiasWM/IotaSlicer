@@ -112,6 +112,7 @@ public:
     IAVectorProperty(char const* name, IAVector3d const& value);
     IAVectorProperty(char const* name, IAVector3d const& value, std::function<void()>&& cb);
     virtual ~IAVectorProperty() override;
+    IAVector3d& operator()() { return pValue; }
     IAVector3d const& operator()() const { return pValue; }
     void set(IAVector3d const& value, IAController *ctrl=nullptr);
     virtual void read(Fl_Preferences&) override;
