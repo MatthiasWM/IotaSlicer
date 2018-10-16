@@ -368,13 +368,13 @@ void IAFramebuffer::bindForRendering()
         glViewport(0, 0, pWidth, pHeight);
         glMatrixMode(GL_PROJECTION);
         glLoadIdentity();
-        IAVector3d vol = pPrinter->pBuildVolume;
+        IAVector3d vol = pPrinter->pPrintVolume;
         /** \todo why is the range below [vol.z(), 0] negative? I tested the
          slice, and it does draw at the correct (positive) Z. Maybe related: we set
          the z depth to 1.0 when clearing the buffers. Is the depth test flipped?
          Lastly, make sure that 0 is always within the z range. */
-        glOrtho(pPrinter->pBuildVolumeMin.x(), pPrinter->pBuildVolumeMax.x(),
-                pPrinter->pBuildVolumeMin.y(), pPrinter->pBuildVolumeMax.y(),
+        glOrtho(pPrinter->printVolumeMin().x(), pPrinter->printVolumeMax().x(),
+                pPrinter->printVolumeMin().y(), pPrinter->printVolumeMax().y(),
                 -vol.z()-1, 1);
         glMatrixMode(GL_MODELVIEW);
         glLoadIdentity();
@@ -640,13 +640,13 @@ void IAFramebuffer::draw(double z)
         glColor3f(1.0, 1.0, 1.0);
         glBegin(GL_POLYGON);
         glTexCoord2f(0.0, 0.0);
-        glVertex3d(pPrinter->pBuildVolumeMin.x(), pPrinter->pBuildVolumeMin.y(), z);
+        glVertex3d(pPrinter->printVolumeMin().x(), pPrinter->printVolumeMin().y(), z);
         glTexCoord2f(0.0, 1.0);
-        glVertex3d(pPrinter->pBuildVolumeMin.x(), pPrinter->pBuildVolumeMax.y(), z);
+        glVertex3d(pPrinter->printVolumeMin().x(), pPrinter->printVolumeMax().y(), z);
         glTexCoord2f(1.0, 1.0);
-        glVertex3d(pPrinter->pBuildVolumeMax.x(), pPrinter->pBuildVolumeMax.y(), z);
+        glVertex3d(pPrinter->printVolumeMax().x(), pPrinter->printVolumeMax().y(), z);
         glTexCoord2f(1.0, 0.0);
-        glVertex3d(pPrinter->pBuildVolumeMax.x(), pPrinter->pBuildVolumeMin.y(), z);
+        glVertex3d(pPrinter->printVolumeMax().x(), pPrinter->printVolumeMin().y(), z);
         glEnd();
         glDisable(GL_TEXTURE_2D);
         IA_HANDLE_GL_ERRORS();
@@ -905,11 +905,11 @@ void IAFramebuffer::overlayLidPattern(int i, double infillWdt)
     bindForRendering();
     // draw spaces so the infill gets spread out nicely
     /** \todo What if the printer has negative coordintes as well? */
-    double wdt = pPrinter->pBuildVolumeMax.x();
-    double hgt = pPrinter->pBuildVolumeMax.y();
+    double wdt = pPrinter->printVolumeMax().x();
+    double hgt = pPrinter->printVolumeMax().y();
     if (pBuffers==BITMAP) {
         if (i&1) {
-            int dx = infillWdt/pPrinter->pBuildVolume.x()*pWidth;
+            int dx = infillWdt/pPrinter->pPrintVolume.x()*pWidth;
             if (dx<1) dx = 1;
             for (int x=0; x<pWidth; x+=2*dx) {
                 for (int y=0; y<pHeight; y++) {
@@ -917,7 +917,7 @@ void IAFramebuffer::overlayLidPattern(int i, double infillWdt)
                 }
             }
         } else {
-            int dy = infillWdt/pPrinter->pBuildVolume.y()*pHeight;
+            int dy = infillWdt/pPrinter->pPrintVolume.y()*pHeight;
             if (dy<1) dy = 1;
             for (int y1=0; y1<pHeight; y1+=2*dy) {
                 for (int y2=0; y2<dy; y2++) {
@@ -959,7 +959,7 @@ void IAFramebuffer::overlayInfillPattern(int i, double infillWdt)
     bindForRendering();
     if (pBuffers==BITMAP) {
         infillWdt *= sqrt(2.0); // compensate that we draw at a 45 deg angle
-        int dx = infillWdt/pPrinter->pBuildVolume.x()*pWidth;
+        int dx = infillWdt/pPrinter->pPrintVolume.x()*pWidth;
         if (dx<1) dx = 1;
         if (i&1) {
             for (int x=-pWidth; x<pWidth; x+=2*dx) {
@@ -979,8 +979,8 @@ void IAFramebuffer::overlayInfillPattern(int i, double infillWdt)
         glColor3f(0.0, 0.0, 0.0);
         // draw spaces so the infill gets spread out nicely
         /** \todo What if the printer has negative coordinates as well? */
-        double wdt = pPrinter->pBuildVolumeMax.x();
-        double hgt = pPrinter->pBuildVolumeMax.y();
+        double wdt = pPrinter->printVolumeMax().x();
+        double hgt = pPrinter->printVolumeMax().y();
         glPushMatrix();
         if (i&1)
             glRotated(45, 0, 0, 1);
@@ -1108,15 +1108,15 @@ void IAFramebuffer::addPointRaw(float x, float y, bool gap)
 
 void IAFramebuffer::addPoint(double x, double y)
 {
-    addPointRaw(x/pPrinter->pBuildVolume.x()*pWidth,
-                y/pPrinter->pBuildVolume.y()*pHeight, false);
+    addPointRaw(x/pPrinter->pPrintVolume.x()*pWidth,
+                y/pPrinter->pPrintVolume.y()*pHeight, false);
 }
 
 
 void IAFramebuffer::addPoint(IAVector3d &v)
 {
-    addPointRaw(v.x()/pPrinter->pBuildVolume.x()*pWidth,
-             v.y()/pPrinter->pBuildVolume.y()*pHeight, false);
+    addPointRaw(v.x()/pPrinter->pPrintVolume.x()*pWidth,
+             v.y()/pPrinter->pPrintVolume.y()*pHeight, false);
 }
 
 

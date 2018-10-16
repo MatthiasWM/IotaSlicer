@@ -82,7 +82,7 @@ void IAPerspectiveCamera::drag(double dx, double dy)
     position.zRotate(pZRotation);
     position += pInterest;
 
-    IAVector3d printer = Iota.pCurrentPrinter->pBuildVolume;
+    IAVector3d printer = Iota.pCurrentPrinter->pPrintVolume;
     printer *= 0.5;
     printer -= position;
     double dist = printer.length();
@@ -142,13 +142,13 @@ void IAPerspectiveCamera::draw()
     position.zRotate(pZRotation);
     position += pInterest;
 
-    IAVector3d printer = Iota.pCurrentPrinter->pBuildVolume;
+    IAVector3d printer = Iota.pCurrentPrinter->pPrintVolume;
     printer *= 0.5;
     printer -= position;
     double dist = printer.length();
     double aspect = (double(pView->pixel_w()))/(double(pView->pixel_h()));
-    double nearPlane = ia_max(dist-2.0*Iota.pCurrentPrinter->pBuildVolumeRadius, 1.0);
-    double farPlane = dist+2.0*Iota.pCurrentPrinter->pBuildVolumeRadius;
+    double nearPlane = ia_max(dist-2.0*Iota.pCurrentPrinter->pPrintVolumeRadius, 1.0);
+    double farPlane = dist+2.0*Iota.pCurrentPrinter->pPrintVolumeRadius;
 
     //gluPerspective(50.0, aspect, nearPlane, farPlane);
     GLfloat fieldOfView = 50.0;
@@ -214,7 +214,7 @@ void IAOrthoCamera::dolly(double dx, double dy)
 {
     pZoom = pZoom * (1.0+0.01*dy);
     if (pZoom<1.0) pZoom = 1.0;
-    if (pZoom>4.0*Iota.pCurrentPrinter->pBuildVolumeRadius) pZoom = 4.0*Iota.pCurrentPrinter->pBuildVolumeRadius;
+    if (pZoom>4.0*Iota.pCurrentPrinter->pPrintVolumeRadius) pZoom = 4.0*Iota.pCurrentPrinter->pPrintVolumeRadius;
 }
 
 
@@ -226,7 +226,7 @@ void IAOrthoCamera::draw()
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     double aspect = (double(pView->pixel_w()))/(double(pView->pixel_h()));
-    glOrtho(-pZoom*aspect, pZoom*aspect, -pZoom, pZoom, -Iota.pCurrentPrinter->pBuildVolumeRadius, Iota.pCurrentPrinter->pBuildVolumeRadius);
+    glOrtho(-pZoom*aspect, pZoom*aspect, -pZoom, pZoom, -Iota.pCurrentPrinter->pPrintVolumeRadius, Iota.pCurrentPrinter->pPrintVolumeRadius);
     glMatrixMode (GL_MODELVIEW);
     glLoadIdentity();
     glTranslated(-pInterest.x(), -pInterest.y(), -pInterest.z());

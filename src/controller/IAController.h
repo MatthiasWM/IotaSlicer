@@ -38,9 +38,24 @@ class IAController
 public:
     IAController();
     virtual ~IAController();
-
     virtual void propertyValueChanged();
+    void autoDelete(bool v);
+    bool isAutoDelete() { return pAutoDelete; }
+private:
+    bool pAutoDelete = false;
 };
+
+
+class IACallbackController : public IAController
+{
+public:
+    IACallbackController(IAProperty &prop, std::function<void()>&& cb);
+    virtual ~IACallbackController();
+    virtual void propertyValueChanged() override;
+    IAProperty &pProperty;
+    std::function<void()> pCallback;
+};
+
 
 // FIXME: deriving from IAController is an awful hack to transition from
 // IASettings into IAProperty and IAController (and IAView)
@@ -50,7 +65,7 @@ class IATreeViewController : public IAController
 public:
     typedef enum { kProperty, kSetting } Type;
     IATreeViewController(const char *path, const char *label);
-    virtual ~IATreeViewController();
+    virtual ~IATreeViewController() override;
     virtual void build(Fl_Tree*, Type) { }
 
     Fl_Menu_Item *dup(Fl_Menu_Item const*);

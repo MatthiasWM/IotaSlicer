@@ -639,7 +639,7 @@ void IAMesh::drawSlicedGhost(double zPlane)
 void IAMesh::centerOnPrintbed(IAPrinter *printer)
 {
     IAVector3d p = ( (pMax - pMin) * -0.5 ) - pMin;
-    IAVector3d v = printer->pBuildVolume * 0.5;
+    IAVector3d v = printer->pPrintVolume * 0.5;
     p += v;
     p.z( -pMin.z() );
     position(p);

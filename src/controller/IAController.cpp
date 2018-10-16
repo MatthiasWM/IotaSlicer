@@ -34,6 +34,39 @@ void IAController::propertyValueChanged()
 }
 
 
+void IAController::autoDelete(bool v)
+{
+    pAutoDelete = v;
+}
+
+
+#ifdef __APPLE__
+#pragma mark -
+#endif
+//============================================================================//
+
+
+IACallbackController::IACallbackController(IAProperty &prop, std::function<void()>&& cb)
+:   pProperty( prop ),
+    pCallback( cb )
+{
+    pProperty.attach(this);
+}
+
+
+IACallbackController::~IACallbackController()
+{
+    pProperty.detach(this);
+}
+
+
+void IACallbackController::propertyValueChanged()
+{
+    if (pCallback)
+        pCallback();
+}
+
+
 #ifdef __APPLE__
 #pragma mark -
 #endif

@@ -37,9 +37,9 @@ IASceneView::IASceneView(int x, int y, int w, int h, const char *l)
     pCurrentCamera( pPerspectiveCamera )
 {
     IAVector3d interest = {
-        Iota.pCurrentPrinter->pBuildVolume.x() * 0.5,
-        Iota.pCurrentPrinter->pBuildVolume.y() * 0.5,
-        Iota.pCurrentPrinter->pBuildVolume.z() * 0.2
+        Iota.pCurrentPrinter->pPrintVolume.x() * 0.5,
+        Iota.pCurrentPrinter->pPrintVolume.y() * 0.5,
+        Iota.pCurrentPrinter->pPrintVolume.z() * 0.2
     };
     pPerspectiveCamera->setInterest(interest);
     pTopCamera->setInterest(interest);

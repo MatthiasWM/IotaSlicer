@@ -50,7 +50,8 @@ public:
     virtual void write(Fl_Preferences&) { }
 protected:
     const char *pName;
-    std::vector<IAController*> pControlerList;
+    std::vector<IAController*> pControllerList;
+    std::function<void()> pCallback;
 };
 
 
@@ -109,6 +110,7 @@ class IAVectorProperty : public IAProperty
 {
 public:
     IAVectorProperty(char const* name, IAVector3d const& value);
+    IAVectorProperty(char const* name, IAVector3d const& value, std::function<void()>&& cb);
     virtual ~IAVectorProperty() override;
     IAVector3d const& operator()() const { return pValue; }
     void set(IAVector3d const& value, IAController *ctrl=nullptr);

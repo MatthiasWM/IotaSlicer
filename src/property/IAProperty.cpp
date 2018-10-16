@@ -51,20 +51,29 @@ IAProperty::IAProperty(const char *name)
 
 IAProperty::~IAProperty()
 {
+    int i = (int)pControllerList.size();
+    while (i>0) {
+        // deleting c may remove c from the controller list, so use an index
+        // and not an iterator!
+        IAController *c = pControllerList[i-1];
+        if (c->isAutoDelete())
+            delete c;
+        --i;
+    }
 }
 
 
 void IAProperty::attach(IAController *ctrl)
 {
-    pControlerList.push_back(ctrl);
+    pControllerList.push_back(ctrl);
 }
 
 
 void IAProperty::detach(IAController* ctrl)
 {
-    auto c = std::find(pControlerList.begin(), pControlerList.end(), ctrl);
-    if (c!=pControlerList.end())
-        pControlerList.erase(c);
+    auto c = std::find(pControllerList.begin(), pControllerList.end(), ctrl);
+    if (c!=pControllerList.end())
+        pControllerList.erase(c);
 }
 
 
@@ -91,7 +100,7 @@ void IAFloatProperty::set(double v, IAController *ctrl)
 {
     if (pValue!=v) {
         pValue = v;
-        for (auto &c: pControlerList) {
+        for (auto &c: pControllerList) {
             if (c!=ctrl)
                 c->propertyValueChanged();
         }
@@ -133,7 +142,7 @@ void IAIntProperty::set(int v, IAController *ctrl)
 {
     if (pValue!=v) {
         pValue = v;
-        for (auto &c: pControlerList) {
+        for (auto &c: pControllerList) {
             if (c!=ctrl)
                 c->propertyValueChanged();
         }
@@ -176,7 +185,7 @@ void IATextProperty::set(char const* value, IAController *ctrl)
 {
     if (!_equals(value)) {
         _set(value);
-        for (auto &c: pControlerList) {
+        for (auto &c: pControllerList) {
             if (c!=ctrl)
                 c->propertyValueChanged();
         }
@@ -245,6 +254,13 @@ IAVectorProperty::IAVectorProperty(const char *name, IAVector3d const& value)
 }
 
 
+IAVectorProperty::IAVectorProperty(const char *name, IAVector3d const& value, std::function<void()>&& cb)
+:   IAVectorProperty(name, value)
+{
+    pCallback = cb;
+}
+
+
 IAVectorProperty::~IAVectorProperty()
 {
 }
@@ -254,7 +270,8 @@ void IAVectorProperty::set(IAVector3d const& v, IAController *ctrl)
 {
     if (pValue!=v) {
         pValue = v;
-        for (auto &c: pControlerList) {
+        if (pCallback) pCallback();
+        for (auto &c: pControllerList) {
             if (c!=ctrl)
                 c->propertyValueChanged();
         }

@@ -65,13 +65,17 @@ public:
     IASettingList pPrinterProperties;
     IATextProperty uuid { "UUID", nullptr };
     IATextProperty name { "name", nullptr };
-    IAVectorProperty buildVolume { "buildVolume", { 214.0, 214.0, 230.0 } };
     IAFilenameProperty recentUpload { "recentUpload", nullptr };
+
+    void updateBuildVolume();
+    IAVectorProperty motionRangeMin { "motionRangeMin", { 0, 0, 0 } };
+    IAVectorProperty motionRangeMax { "motionRangeMin", { 214.0, 214.0, 230.0 } };
+    IAVectorProperty printVolumeMin { "printVolumeMin", { 0, 0, 0 }, [this]{updateBuildVolume();} };
+    IAVectorProperty printVolumeMax { "printVolumeMin", { 214.0, 214.0, 230.0 }, [this]{updateBuildVolume();} };
+    IAVector3d pPrintVolume = { 214.0, 214.0, 230.0 };
+    double pPrintVolumeRadius = 200.0; // sphere that contains the entire centered build volume
+
     bool pFirstWrite = true;
-    IAVector3d pBuildVolumeMin = { 0.0, 0.0, 0.0 };
-    IAVector3d pBuildVolumeMax = { 214.0, 214.0, 230.0 };
-    IAVector3d pBuildVolume = { 214.0, 214.0, 230.0 };
-    double pBuildVolumeRadius = 200.0; // sphere that contains the entire centered build volume
 
     // ---- scene settings
     virtual void initializeSceneSettings();

@@ -91,7 +91,7 @@ int potrace(IAFramebuffer *framebuffer, IAToolpathList *toolpath, double z)
     int width = framebuffer->width();
     int height = framebuffer->height();
 
-    IAVector3d &printbed = Iota.pCurrentPrinter->pBuildVolume;
+    IAVector3d &printbed = Iota.pCurrentPrinter->pPrintVolume;
     double xScl = printbed.x()/width;
     double yScl = printbed.y()/height;
 
