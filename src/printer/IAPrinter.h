@@ -12,7 +12,7 @@
 #include "geometry/IASlice.h"
 #include "toolpath/IAToolpath.h"
 #include "property/IAProperty.h"
-#include "view/IATreeView.h"
+#include "view/IATreeItemView.h"
 #include "controller/IAController.h"
 
 
@@ -54,24 +54,33 @@ public:
     virtual void drawPreview(double lo, double hi);
     virtual void purgeSlicesAndCaches();
 
+    // ---- views
+    void createPropertiesViews(Fl_Tree*);
+
+    // ---- controllers
+    virtual void createPropertiesControls();
+    IAControllerList pPropertiesControllerList;
+
     // ---- properties
-    virtual void initializePrinterProperties();
-    void buildPropertiesUI(Fl_Tree*);
-    void loadProperties();
-    void saveProperties();
-    void removeProperties();
+    void readPropertiesFile();
+    void writePropertiesFile();
+    void deletePropertiesFile();
+
+    virtual void readProperties(Fl_Preferences &p);
+    virtual void writeProperties(Fl_Preferences &p);
+
     void setNewUUID();
 
-    IASettingList pPrinterProperties;
     IATextProperty uuid { "UUID", nullptr };
     IATextProperty name { "name", nullptr };
     IAFilenameProperty recentUpload { "recentUpload", nullptr };
 
-    void updateBuildVolume();
     IAVectorProperty motionRangeMin { "motionRangeMin", { 0, 0, 0 }, [this]{updateBuildVolume();}  };
     IAVectorProperty motionRangeMax { "motionRangeMax", { 214.0, 214.0, 230.0 }, [this]{updateBuildVolume();}  };
     IAVectorProperty printVolumeMin { "printVolumeMin", { 0, 0, 0 }, [this]{updateBuildVolume();} };
     IAVectorProperty printVolumeMax { "printVolumeMax", { 214.0, 214.0, 230.0 }, [this]{updateBuildVolume();} };
+
+    void updateBuildVolume();
     IAVector3d pPrintVolume = { 214.0, 214.0, 230.0 };
     double pPrintVolumeRadius = 200.0; // sphere that contains the entire centered build volume
 
@@ -81,7 +90,7 @@ public:
     virtual void initializeSceneSettings();
     void buildSessionSettings(Fl_Tree*);
 
-    IASettingList pSceneSettings;
+    IAControllerList pSceneSettings;
     IAFloatProperty layerHeight { "layerHeight", 0.3 };
 
     // ----

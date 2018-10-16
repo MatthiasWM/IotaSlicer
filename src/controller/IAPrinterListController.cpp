@@ -71,7 +71,7 @@ void IAPrinterListController::preferencesPrinterSeleted()
     if (line) p = (IAPrinter*)wSettingsPrinterList->data(line);
     if (p) {
         // update the properties tree widget
-        p->buildPropertiesUI(wSettingsPrinterProperties);
+        p->createPropertiesViews(wSettingsPrinterProperties);
     } else {
         // or clear the properties tree widget
         wSettingsPrinterProperties->clear();
@@ -90,7 +90,7 @@ void IAPrinterListController::preferencesPrinterDeseleted()
     if (line) p = (IAPrinter*)wSettingsPrinterList->data(line);
     if (p) {
         // deselecting a printer will save its properties
-        p->saveProperties();
+        p->writePropertiesFile();
     }
     wSettingsPrinterProperties->clear();
 }

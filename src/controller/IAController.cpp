@@ -8,7 +8,7 @@
 #include "IAController.h"
 
 #include "view/IAGUIMain.h"
-#include "view/IATreeView.h"
+#include "view/IATreeItemView.h"
 #include "property/IAProperty.h"
 
 #include <FL/Fl_Menu_Item.H>
@@ -120,11 +120,10 @@ IALabelController::~IALabelController()
 }
 
 
-void IALabelController::build(Fl_Tree *treeWidget, Type t)
+void IALabelController::build(Fl_Tree *treeWidget, Type t, int w)
 {
     if (!pWidget) {
-        pWidget = new IALabelView(t, treeWidget->w()-40, pLabel);
-        if (pText) pWidget->pText->label(pText);
+        pWidget = new IALabelView(t, w, pLabel, pText);
     }
     pTreeItem = treeWidget->add(pPath);
     pTreeItem->close();
@@ -166,11 +165,10 @@ void IAFloatController::wCallback(IAFloatView *w, IAFloatController *d)
 }
 
 
-void IAFloatController::build(Fl_Tree *treeWidget, Type t)
+void IAFloatController::build(Fl_Tree *treeWidget, Type t, int w)
 {
     if (!pWidget) {
-        pWidget = new IAFloatView(t, treeWidget->w()-40, pLabel);
-        pWidget->pInput->label(pUnit);
+        pWidget = new IAFloatView(t, w, pLabel, pUnit);
         pWidget->value(pProperty());
         pWidget->callback((Fl_Callback*)wCallback, this);
     }
@@ -221,11 +219,10 @@ void IATextController::wCallback(IATextView *w, IATextController *d)
 }
 
 
-void IATextController::build(Fl_Tree *treeWidget, Type t)
+void IATextController::build(Fl_Tree *treeWidget, Type t, int w)
 {
     if (!pWidget) {
-        pWidget = new IATextView(t, treeWidget->w()-40, pLabel);
-        pWidget->pInput->label(pUnit);
+        pWidget = new IATextView(t, w, pLabel, pUnit);
         pWidget->value(pProperty());
         pWidget->callback((Fl_Callback*)wCallback, this);
     }
@@ -276,12 +273,10 @@ void IAFloatChoiceController::wCallback(IAFloatChoiceView *w, IAFloatChoiceContr
 }
 
 
-void IAFloatChoiceController::build(Fl_Tree *treeWidget, Type t)
+void IAFloatChoiceController::build(Fl_Tree *treeWidget, Type t, int w)
 {
     if (!pWidget) {
-        pWidget = new IAFloatChoiceView(t, treeWidget->w()-40, pLabel);
-        pWidget->pChoice->menu(pMenu);
-        pWidget->pChoice->label(pUnit);
+        pWidget = new IAFloatChoiceView(t, w, pLabel, pMenu, pUnit);
         pWidget->value( pProperty() );
         pWidget->callback((Fl_Callback*)wCallback, this);
     }
@@ -304,8 +299,7 @@ void IAFloatChoiceController::propertyValueChanged()
 //============================================================================//
 
 
-IAChoiceController::IAChoiceController(
-                                       const char *path, const char *label, IAIntProperty &prop,
+IAChoiceController::IAChoiceController(const char *path, const char *label, IAIntProperty &prop,
                                        std::function<void()>&& cb, Fl_Menu_Item *menu)
 :   IATreeViewController(path, label),
     pProperty(prop),
@@ -333,11 +327,10 @@ void IAChoiceController::wCallback(IAChoiceView *w, IAChoiceController *d)
 }
 
 
-void IAChoiceController::build(Fl_Tree *treeWidget, Type)
+void IAChoiceController::build(Fl_Tree *treeWidget, Type t, int w)
 {
     if (!pWidget) {
-        pWidget = new IAChoiceView(0, 0, 200, 13, pLabel);
-        pWidget->pChoice->menu(pMenu);
+        pWidget = new IAChoiceView(t, w, pLabel, pMenu);
         // FIXME: compare to user_data() in the menu list to find the right entry
         pWidget->value(pProperty());
         pWidget->callback((Fl_Callback*)wCallback, this);
@@ -393,19 +386,17 @@ IAVectorController::~IAVectorController()
 }
 
 
-void IAVectorController::build(Fl_Tree *treeWidget, Type t)
+void IAVectorController::build(Fl_Tree *treeWidget, Type t, int w)
 {
     if (!pLabelWidget) {
-        pLabelWidget = new IALabelView(t, treeWidget->w()-40, pLabel);
-        if (pText) pLabelWidget->pText->label(pText);
+        pLabelWidget = new IALabelView(t, w, pLabel, pText);
     }
     pTreeItem = treeWidget->add(pPath);
     pTreeItem->close();
     pTreeItem->widget(pLabelWidget);
 
     if (pXLabel && !pXWidget) {
-        pXWidget = new IAFloatView(t, treeWidget->w()-40, pXLabel);
-        pXWidget->pInput->label(pXUnits);
+        pXWidget = new IAFloatView(t, w, pXLabel, pXUnits);
         pXWidget->value(pProperty().x());
         pXWidget->callback((Fl_Callback*)wCallback, this);
     }
@@ -416,8 +407,7 @@ void IAVectorController::build(Fl_Tree *treeWidget, Type t)
     }
 
     if (pYLabel && !pYWidget) {
-        pYWidget = new IAFloatView(t, treeWidget->w()-40, pYLabel);
-        pYWidget->pInput->label(pYUnits);
+        pYWidget = new IAFloatView(t, w, pYLabel, pYUnits);
         pYWidget->value(pProperty().y());
         pYWidget->callback((Fl_Callback*)wCallback, this);
     }
@@ -428,8 +418,7 @@ void IAVectorController::build(Fl_Tree *treeWidget, Type t)
     }
 
     if (pZLabel && !pZWidget) {
-        pZWidget = new IAFloatView(t, treeWidget->w()-40, pZLabel);
-        pZWidget->pInput->label(pZUnits);
+        pZWidget = new IAFloatView(t, w, pZLabel, pZUnits);
         pZWidget->value(pProperty().z());
         pZWidget->callback((Fl_Callback*)wCallback, this);
     }

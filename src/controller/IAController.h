@@ -66,7 +66,7 @@ public:
     typedef enum { kProperty, kSetting } Type;
     IATreeViewController(const char *path, const char *label);
     virtual ~IATreeViewController() override;
-    virtual void build(Fl_Tree*, Type) { }
+    virtual void build(Fl_Tree*, Type, int) { }
 
     Fl_Menu_Item *dup(Fl_Menu_Item const*);
 
@@ -85,7 +85,7 @@ class IALabelController : public IATreeViewController
 public:
     IALabelController(const char *path, const char *label, const char *text=nullptr);
     virtual ~IALabelController() override;
-    virtual void build(Fl_Tree*, Type) override;
+    virtual void build(Fl_Tree*, Type, int) override;
 
     char *pText = nullptr;
     IALabelView *pWidget = nullptr;
@@ -102,7 +102,7 @@ public:
     IAFloatController(const char *path, const char *label, IAFloatProperty &prop,
                       const char *unit, std::function<void()>&& cb);
     virtual ~IAFloatController() override;
-    virtual void build(Fl_Tree*, Type) override;
+    virtual void build(Fl_Tree*, Type, int) override;
     virtual void propertyValueChanged() override;
 
     static void wCallback(IAFloatView *w, IAFloatController *d);
@@ -124,7 +124,7 @@ public:
     IATextController(const char *path, const char *label, IATextProperty &prop, int wdt,
                      const char *unit, std::function<void()>&& cb);
     virtual ~IATextController() override;
-    virtual void build(Fl_Tree*, Type) override;
+    virtual void build(Fl_Tree*, Type, int) override;
     virtual void propertyValueChanged() override;
 
     static void wCallback(IATextView *w, IATextController *d);
@@ -149,7 +149,7 @@ public:
                             const char *unit, std::function<void()>&& cb,
                             Fl_Menu_Item *menu);
     virtual ~IAFloatChoiceController() override;
-    virtual void build(Fl_Tree*, Type) override;
+    virtual void build(Fl_Tree*, Type, int) override;
     virtual void propertyValueChanged() override;
 
     static void wCallback(IAFloatChoiceView *w, IAFloatChoiceController *d);
@@ -171,7 +171,7 @@ public:
     IAChoiceController(const char *path, const char *label, IAIntProperty &prop,
                        std::function<void()>&& cb, Fl_Menu_Item *menu);
     virtual ~IAChoiceController() override;
-    virtual void build(Fl_Tree*, Type) override;
+    virtual void build(Fl_Tree*, Type, int) override;
     virtual void propertyValueChanged() override;
 
     static void wCallback(IAChoiceView *w, IAChoiceController *d);
@@ -181,6 +181,7 @@ public:
     std::function<void()> pCallback;
     IAChoiceView *pWidget = nullptr;
 };
+
 
 class IAVectorController : public IATreeViewController
 {
@@ -192,7 +193,7 @@ public:
                        char const* zLabel, char const* zUnits,
                        std::function<void()>&& cb);
     virtual ~IAVectorController() override;
-    virtual void build(Fl_Tree*, Type) override;
+    virtual void build(Fl_Tree*, Type, int) override;
     virtual void propertyValueChanged() override;
 
     static void wCallback(IAFloatView *w, IAVectorController *d);
@@ -216,7 +217,7 @@ public:
 };
 
 
-typedef std::vector<IATreeViewController*> IASettingList;
+typedef std::vector<IATreeViewController*> IAControllerList;
 
 
 #endif /* IA_PRINTER_LIST_CONTROLLER_H */

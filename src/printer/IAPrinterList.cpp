@@ -110,9 +110,9 @@ void IAPrinterList::loadCustomPrinters(IAPrinter *(&currentPrinter))
             }
             if (printer) {
                 printer->uuid.set( uuid );
-                printer->initializePrinterProperties();
+                printer->createPropertiesControls();
                 printer->initializeSceneSettings();
-                printer->loadProperties();
+                printer->readPropertiesFile();
                 add(printer);
             }
         }
@@ -130,12 +130,12 @@ IAPrinter *IAPrinterList::cloneAndAdd(IAPrinter *p)
     printer->setNewUUID();
     char *newName = makeUniqueName(printer->name());
     printer->name.set(newName);
-    printer->initializePrinterProperties();
+    printer->createPropertiesControls();
     printer->initializeSceneSettings();
     ::free((void*)newName);
     add(printer);
     saveCustomPrinters();
-    printer->saveProperties();
+    printer->writePropertiesFile();
     return printer;
 }
 

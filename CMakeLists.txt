@@ -193,8 +193,8 @@ add_executable (IotaSlicer MACOSX_BUNDLE
     ${FLUID_VIEWS}
 	src/view/IAProgressDialog.cpp
 	src/view/IAProgressDialog.h
-    src/view/IATreeView.cpp
-    src/view/IATreeView.h
+    src/view/IATreeItemView.cpp
+    src/view/IATreeItemView.h
 	src/widget/IACamera.cpp
 	src/widget/IACamera.h
 	src/widget/IAGLButton.cpp

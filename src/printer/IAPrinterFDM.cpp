@@ -163,6 +163,8 @@ IAPrinterFDM::IAPrinterFDM()
 IAPrinterFDM::IAPrinterFDM(IAPrinterFDM const& src)
 :   super(src)
 {
+    numExtruders.set( src.numExtruders() );
+
     nozzleDiameter = src.nozzleDiameter;
     numShells.set( src.numShells() );
     numLids.set( src.numLids() );
@@ -185,35 +187,97 @@ IAPrinter *IAPrinterFDM::clone() const
 }
 
 
-//         printer name: WonkoPrinter
-//           connection: Disk/USB/Network/OctoPrint/Stick,SD
-//                 path: ...
-//                 test: [click]
-// range of motion from: x, y, z
-//                   to: x, y, z
-//          x direction: left to right/right to left
-//          y direction: front to back/back to front
-//          build plate: rectangular/round
-//  printable area from: x, y
-//                   to: x, y
-//       # of extruders: 2
-//             extruder 1:
-//                   offset: x, y
-//        filament diameter: 1.75
-//          nozzle diameter: 0.35
-//                     type: single/changing/mixing
-//               # of feeds: 4
-//     GCode start extruder: script or GCode
-//             end extruder: script or GCode
-//             extruder 2: ...
-//          GCode start: script or GCode
-//                  end: script or GCode
-//              dialect: Repetier
+//+         printer name: WonkoPrinter
+//            connection: Disk/USB/Network/OctoPrint/Stick,SD
+//                  path: ...
+//                  test: [click]
+//+ range of motion from: x, y, z
+//+                   to: x, y, z
+//           x direction: left to right/right to left
+//           y direction: front to back/back to front
+//           build plate: rectangular/round
+//+  printable area from: x, y
+//+                   to: x, y
+//            heated bed: (heater number)
+//           heated case: (heater number)
+//        # of extruders: 2
+//              extruder 1:
+//                    offset: x, y
+//         filament diameter: 1.75
+//           nozzle diameter: 0.35
+//                      type: single/changing/mixing
+//                # of feeds: 4
+//      GCode start extruder: script or GCode
+//              end extruder: script or GCode
+//              extruder 2: ...
+//           GCode start: script or GCode
+//                   end: script or GCode
+//               dialect: Repetier
 
 
-void IAPrinterFDM::initializePrinterProperties()
+void IAPrinterFDM::createPropertiesControls()
 {
-    super::initializePrinterProperties();
+    IATreeViewController *s;
+
+    super::createPropertiesControls();
+
+    s = new IALabelController("specs", "Specifications:");
+    pPropertiesControllerList.push_back(s);
+    s = new IAVectorController("specs/motionRangeMin", "Range of Motion, minimum:", "", motionRangeMin,
+                               "From X:", "mm",
+                               "Y:", "mm",
+                               "Z:", "mm", []{} );
+    pPropertiesControllerList.push_back(s);
+    s = new IAVectorController("specs/motionRangeMax", "maximum:", "", motionRangeMax,
+                               "To X:", "mm (Width)",
+                               "Y:", "mm (Depth)",
+                               "Z:", "mm (Height)", []{} );
+    pPropertiesControllerList.push_back(s);
+    s = new IAVectorController("specs/printVolumeMin", "Printable Area, minimum:", "", printVolumeMin,
+                               "From X:", "mm",
+                               "Y:", "mm",
+                               nullptr, nullptr, []{} );
+    pPropertiesControllerList.push_back(s);
+    s = new IAVectorController("specs/printVolumeMax", "maximum:", "", printVolumeMax,
+                               "To X:", "mm (Width)",
+                               "Y:", "mm (Depth)",
+                               nullptr, nullptr, []{} );
+    pPropertiesControllerList.push_back(s);
+    // travel speed, print speed, build plate fan, build plate heater, chamber heater
+    static Fl_Menu_Item numExtruderMenu[] = {
+        { "1", 0, nullptr, (void*)1, 0, 0, 0, 11 },
+        { "2", 0, nullptr, (void*)2, 0, 0, 0, 11 },
+        { nullptr } };
+    s = new IAChoiceController("specs/extruder", "Extruders:", numExtruders,
+                               []{}, numExtruderMenu );
+    pPropertiesControllerList.push_back(s);
+    s = new IALabelController("specs/extruder/0", "Extruder 0:");
+    pPropertiesControllerList.push_back(s);
+    s = new IALabelController("specs/extruder/0/offset", "Offset:");
+    pPropertiesControllerList.push_back(s);
+    s = new IALabelController("specs/extruder/0/offset/x", "X:", "mm");
+    pPropertiesControllerList.push_back(s);
+    s = new IALabelController("specs/extruder/0/offset/y", "Y:", "mm");
+    pPropertiesControllerList.push_back(s);
+    s = new IALabelController("specs/extruder/0/filamentDiameter", "Filament Diameter:", "mm");
+    pPropertiesControllerList.push_back(s);
+    s = new IALabelController("specs/extruder/0/nozzleDiameter", "Nozzle Diameter:", "mm");
+    pPropertiesControllerList.push_back(s);
+    s = new IALabelController("specs/extruder/0/feedrate", "Max. Feedrate:", "mm/min");
+    pPropertiesControllerList.push_back(s);
+    s = new IALabelController("specs/extruder/0/fan", "Fan ID:", "1");
+    pPropertiesControllerList.push_back(s);
+    s = new IALabelController("specs/extruder/0/feedType", "Feed Type:", "direct/bowden");
+    pPropertiesControllerList.push_back(s);
+    s = new IALabelController("specs/extruder/0/type", "Type:", "single/changeing/mixing");
+    pPropertiesControllerList.push_back(s);
+    s = new IALabelController("specs/extruder/0/feeds", "# of Feeds:", "4");
+    pPropertiesControllerList.push_back(s);
+    s = new IALabelController("specs/extruder/1", "Extruder 1:");
+    pPropertiesControllerList.push_back(s);
+    // :construction: = \xF0\x9F\x9A\xA7
+    // :warning: = E2 9A A0
+    // :stop: = F0 9F 9B 91
 }
 
 
@@ -695,6 +759,21 @@ void IAPrinterFDM::userChangedNozzleDiameter()
     // TODO: clear toolpath and slice cache
 }
 
+
+void IAPrinterFDM::readProperties(Fl_Preferences &printer)
+{
+    super::readProperties(printer);
+    Fl_Preferences properties(printer, "properties");
+    numExtruders.read(properties);
+}
+
+
+void IAPrinterFDM::writeProperties(Fl_Preferences &printer)
+{
+    super::writeProperties(printer);
+    Fl_Preferences properties(printer, "properties");
+    numExtruders.write(properties);
+}
 
 
 

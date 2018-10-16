@@ -65,34 +65,29 @@ IAPrinter::IAPrinter(IAPrinter const& src)
  */
 IAPrinter::~IAPrinter()
 {
-    for (auto &s: pPrinterProperties)
+    for (auto &s: pPropertiesControllerList)
         delete s;
     for (auto &s: pSceneSettings)
         delete s;
 }
 
 
-void IAPrinter::initializePrinterProperties()
+void IAPrinter::createPropertiesControls()
 {
     IATreeViewController *s;
 
     // -- display the UUID (this is not really important for the user)
     s = new IALabelController("uuid", "Printer ID:", uuid());
-    pPrinterProperties.push_back(s);
+    pPropertiesControllerList.push_back(s);
 
     // -- editable name of this printer
     s = new IATextController("name", "Printer Name:", name, 32, "",
                              []{ Iota.pPrinterListController.preferencesNameChanged(); } );
-    pPrinterProperties.push_back(s);
+    pPropertiesControllerList.push_back(s);
 
-    // FIXME: we can actually leave the Attribute here, but put the Controller in
-    //        a derived class and give it more matching text labels.
-//    s = new IAVectorController("buildVolume", "Build Volume:", "", buildVolume,
-//                               "Width (X):", "mm",
-//                               "Depth (Y):", "mm",
-//                               "Height (Z):", "mm", []{} );
-//    pPrinterProperties.push_back(s);
+    // -- recentUpload is handled by the "upload" menu.
 
+    // -- motionRange and printVolume controlles should be added by the derived printer classes.
 }
 
 
@@ -132,40 +127,41 @@ void IAPrinter::purgeSlicesAndCaches()
  * The file path is the general app data area for every platform, followed by
  * the vendor string. The filename is the name of the printer.
  */
-void IAPrinter::loadProperties()
+void IAPrinter::readPropertiesFile()
 {
-    // FIXME: where do we save this?
-    char buf[FL_PATH_MAX];
-//    Fl_Preferences prefs(Fl_Preferences::USER, "com.matthiasm.iota.printer", name());
-//    Fl_Preferences output(prefs, "output");
-//    output.get("lastFilename", buf, "", sizeof(buf));
-//    setOutputPath( buf );
-
     const char *path = Iota.gPreferences.printerDefinitionsPath();
     Fl_Preferences printer(path, "Iota Printer Properties", uuid());
+    readProperties(printer);
+}
 
-    uuid.read(printer);
-    name.read(printer);
-    recentUpload.read(printer);
 
-    Fl_Preferences properties(printer, "properties");
-    motionRangeMin.read(properties);
-    motionRangeMax.read(properties);
-    printVolumeMin.read(properties);
-    printVolumeMax.read(properties);
+void IAPrinter::readProperties(Fl_Preferences &prefs)
+{
+    uuid.read(prefs);
+    name.read(prefs);
+    recentUpload.read(prefs);
+
+    Fl_Preferences properties(prefs, "properties");
+    motionRangeMin.read(prefs);
+    motionRangeMax.read(prefs);
+    printVolumeMin.read(prefs);
+    printVolumeMax.read(prefs);
 }
 
 
 /**
  * Save all settings of this printer to a Preferences file.
  */
-void IAPrinter::saveProperties()
+void IAPrinter::writePropertiesFile()
 {
     const char *path = Iota.gPreferences.printerDefinitionsPath();
     Fl_Preferences printer(path, "Iota Printer Properties", uuid());
+    writeProperties(printer);
+}
 
-    // "recentUpload will be saved via "setRecentUpload"
 
+void IAPrinter::writeProperties(Fl_Preferences &printer)
+{
     uuid.write(printer);
     name.write(printer);
     recentUpload.write(printer);
@@ -178,7 +174,7 @@ void IAPrinter::saveProperties()
 }
 
 
-void IAPrinter::removeProperties()
+void IAPrinter::deletePropertiesFile()
 {
     char buf[FL_PATH_MAX];
     strcpy(buf, Iota.gPreferences.printerDefinitionsPath());
@@ -201,7 +197,7 @@ void IAPrinter::buildSessionSettings(Fl_Tree *treeWidget)
     treeWidget->begin();
     wSessionSettings->begin();
     for (auto &s: pSceneSettings) {
-        s->build(treeWidget, IATreeViewController::kSetting);
+        s->build(treeWidget, IATreeViewController::kSetting, treeWidget->w()-40);
     }
     treeWidget->end();
 }
@@ -210,7 +206,7 @@ void IAPrinter::buildSessionSettings(Fl_Tree *treeWidget)
 /**
  * Create the Treeview items for editing the printer properties.
  */
-void IAPrinter::buildPropertiesUI(Fl_Tree *treeWidget)
+void IAPrinter::createPropertiesViews(Fl_Tree *treeWidget)
 {
     treeWidget->showroot(0);
     treeWidget->item_labelsize(13);
@@ -218,8 +214,8 @@ void IAPrinter::buildPropertiesUI(Fl_Tree *treeWidget)
     treeWidget->item_draw_mode(FL_TREE_ITEM_DRAW_DEFAULT);
     treeWidget->clear();
     treeWidget->begin();
-    for (auto &s: pPrinterProperties) {
-        s->build(treeWidget, IATreeViewController::kProperty);
+    for (auto &s: pPropertiesControllerList) {
+        s->build(treeWidget, IATreeViewController::kProperty, treeWidget->w()-100);
     }
     treeWidget->end();
 }
@@ -297,7 +293,7 @@ bool IAPrinter::queryOutputFilename(const char *title,
         fl_filename_setext(buf, sizeof(buf), extension);
     }
     recentUpload.set(buf);
-    saveProperties();
+    writePropertiesFile();
     pFirstWrite = false;
     return true;
 }
@@ -416,7 +412,7 @@ void IAPrinter::userChangedLayerHeight()
 
 void IAPrinter::updateBuildVolume()
 {
-    printVolumeMin().z( motionRangeMin().z() );
+    printVolumeMin().z( 0.0 );
     printVolumeMax().z( motionRangeMax().z() );
     pPrintVolume = printVolumeMax() - printVolumeMin();
     pPrintVolumeRadius = pPrintVolume.length()*2.5;

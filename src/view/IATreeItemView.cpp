@@ -5,7 +5,7 @@
 //
 
 
-#include "view/IATreeView.h"
+#include "view/IATreeItemView.h"
 
 #include <FL/Fl_Box.H>
 #include <FL/Fl_Choice.H>
@@ -19,7 +19,7 @@
 //============================================================================//
 
 
-IALabelView::IALabelView(IATreeViewController::Type t, int w, const char *label)
+IATreeItemView::IATreeItemView(IATreeViewController::Type t, int w, const char *label)
 :   Fl_Group(0, 0, w, t==IATreeViewController::kSetting?13:15)
 {
     box(FL_FLAT_BOX);
@@ -27,16 +27,7 @@ IALabelView::IALabelView(IATreeViewController::Type t, int w, const char *label)
     pLabel = new Fl_Box(0, 0, w/2-4, h());
     pLabel->labelsize(h()-2);
     pLabel->label(label);
-    pText = new Fl_Box(w/2, 0, w/2-4, h());
-    pText->labelsize(h()-2);
-    pText->align(FL_ALIGN_INSIDE|FL_ALIGN_LEFT);
-    if (t==IATreeViewController::kSetting) {
-        pLabel->align(FL_ALIGN_INSIDE|FL_ALIGN_LEFT);
-    } else {
-        pLabel->align(FL_ALIGN_INSIDE|FL_ALIGN_RIGHT);
-        color(parent()->color());
-        pLabel->color(parent()->color());
-    }
+    pLabel->align(FL_ALIGN_INSIDE|FL_ALIGN_LEFT);
     end();
 }
 
@@ -47,27 +38,32 @@ IALabelView::IALabelView(IATreeViewController::Type t, int w, const char *label)
 //============================================================================//
 
 
-IAFloatView::IAFloatView(IATreeViewController::Type t, int w, const char *label)
-:   Fl_Group(0, 0, w, t==IATreeViewController::kSetting?13:15)
+IALabelView::IALabelView(IATreeViewController::Type t, int w, const char *label, const char *text)
+:   IATreeItemView(t, w, label)
 {
-    box(FL_FLAT_BOX);
     begin();
-    pLabel = new Fl_Box(0, 0, w/2-4, h());
-    pLabel->labelsize(h()-2);
-    pLabel->label(label);
-    pInput = new Fl_Float_Input(w/2, 0, 65, h());
+    pText = new Fl_Box(w/2, 0, w/2-4, h(), text);
+    pText->labelsize(h()-2);
+    pText->align(FL_ALIGN_INSIDE|FL_ALIGN_LEFT);
+    end();
+}
+
+
+#ifdef __APPLE__
+#pragma mark -
+#endif
+//============================================================================//
+
+
+IAFloatView::IAFloatView(IATreeViewController::Type t, int w, const char *label, const char *unit)
+:   IATreeItemView(t, w, label)
+{
+    begin();
+    pInput = new Fl_Float_Input(w/2, 0, 65, h(), unit);
     pInput->textsize(h()-2);
     pInput->labelsize(h()-2);
     pInput->align(FL_ALIGN_RIGHT);
     pInput->callback((Fl_Callback*)choice_cb);
-    if (t==IATreeViewController::kSetting) {
-        pLabel->align(FL_ALIGN_INSIDE|FL_ALIGN_LEFT);
-    } else {
-        pLabel->align(FL_ALIGN_INSIDE|FL_ALIGN_RIGHT);
-        color(parent()->color());
-        pLabel->color(parent()->color());
-        pInput->color(parent()->color());
-    }
     end();
 }
 
@@ -98,27 +94,15 @@ void IAFloatView::choice_cb(Fl_Float_Input *w, void *u)
 //============================================================================//
 
 
-IATextView::IATextView(IATreeViewController::Type t, int w, const char *label)
-:   Fl_Group(0, 0, w, t==IATreeViewController::kSetting?13:15)
+IATextView::IATextView(IATreeViewController::Type t, int w, const char *label, const char *unit)
+:   IATreeItemView(t, w, label)
 {
-    box(FL_FLAT_BOX);
     begin();
-    pLabel = new Fl_Box(0, 0, w/2-4, h());
-    pLabel->labelsize(h()-2);
-    pLabel->label(label);
-    pInput = new Fl_Input(w/2, 0, h()*12, h());
+    pInput = new Fl_Input(w/2, 0, h()*12, h(), unit);
     pInput->textsize(h()-2);
     pInput->labelsize(h()-2);
     pInput->align(FL_ALIGN_RIGHT);
     pInput->callback((Fl_Callback*)choice_cb);
-    if (t==IATreeViewController::kSetting) {
-        pLabel->align(FL_ALIGN_INSIDE|FL_ALIGN_LEFT);
-    } else {
-        pLabel->align(FL_ALIGN_INSIDE|FL_ALIGN_RIGHT);
-        color(parent()->color());
-        pLabel->color(parent()->color());
-        pInput->color(parent()->color());
-    }
     end();
 }
 
@@ -147,27 +131,18 @@ void IATextView::choice_cb(Fl_Choice *w, void *u)
 //============================================================================//
 
 
-IAFloatChoiceView::IAFloatChoiceView(IATreeViewController::Type t, int w, const char *label)
-:   Fl_Group(0, 0, w, t==IATreeViewController::kSetting?13:15)
+IAFloatChoiceView::IAFloatChoiceView(IATreeViewController::Type t, int w,
+                                     const char *label, Fl_Menu_Item *menu,
+                                     const char *unit)
+:   IATreeItemView(t, w, label)
 {
-    box(FL_FLAT_BOX);
     begin();
-    pLabel = new Fl_Box(0, 0, w/2-4, h());
-    pLabel->labelsize(h()-2);
-    pLabel->label(label);
-    pChoice = new Fl_Input_Choice(w/2, 0, 65, h());
+    pChoice = new Fl_Input_Choice(w/2, 0, 65, h(), unit);
     pChoice->textsize(h()-2);
     pChoice->labelsize(h()-2);
     pChoice->align(FL_ALIGN_RIGHT);
+    pChoice->menu(menu);
     pChoice->callback((Fl_Callback*)choice_cb);
-    if (t==IATreeViewController::kSetting) {
-        pLabel->align(FL_ALIGN_INSIDE|FL_ALIGN_LEFT);
-    } else {
-        pLabel->align(FL_ALIGN_INSIDE|FL_ALIGN_RIGHT);
-        color(parent()->color());
-        pLabel->color(parent()->color());
-        pChoice->color(parent()->color());
-    }
     end();
 }
 
@@ -200,18 +175,17 @@ void IAFloatChoiceView::choice_cb(Fl_Input_Choice *w, void *u)
 //============================================================================//
 
 
-IAChoiceView::IAChoiceView(int x, int y, int w, int h, const char *label)
-:   Fl_Group(x, y, w, h, label)
+IAChoiceView::IAChoiceView(IATreeViewController::Type t, int w, const char *label,
+                           Fl_Menu_Item *menu)
+:   IATreeItemView(t, w, label)
 {
     begin();
-    align(FL_ALIGN_INSIDE|FL_ALIGN_LEFT);
-    labelsize(11);
-    box(FL_FLAT_BOX);
-    pChoice = new Fl_Choice(x+100, y, w-100, h);
+    pChoice = new Fl_Choice(w/2, 0, h()*7, h());
     // FIXME: calculate sizes using menu entries and unit string length
-    pChoice->textsize(11);
-    pChoice->labelsize(11);
+    pChoice->textsize(h()-2);
+    pChoice->labelsize(h()-2);
     pChoice->align(FL_ALIGN_RIGHT);
+    pChoice->menu(menu);
     pChoice->callback((Fl_Callback*)choice_cb);
     end();
 }

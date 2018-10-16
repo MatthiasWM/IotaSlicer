@@ -359,7 +359,7 @@ void IAIota::userDialogSettingPrinterRemove()
             pCustomPrinterList.fillBrowserWidget(wSettingsPrinterList, 0);
             pCustomPrinterList.updatePrinterSelectMenu();
             pUserDialogSettingsSelectedPrinterIndex = 0;
-            p->removeProperties();
+            p->deletePropertiesFile();
             pCustomPrinterList.saveCustomPrinters();
             wSettingsPrinterList->do_callback();
             if (pCurrentPrinter==p) {

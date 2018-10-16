@@ -42,8 +42,14 @@ public:
     virtual void purgeSlicesAndCaches() override;
     virtual void drawPreview(double lo, double hi) override;
 
+    // ---- controllers
+    virtual void createPropertiesControls() override;
+
     // ---- properties
-    virtual void initializePrinterProperties() override;
+    virtual void readProperties(Fl_Preferences &p) override;
+    virtual void writeProperties(Fl_Preferences &p) override;
+
+    IAIntProperty numExtruders { "numExtruders", 1 };
 
     // ---- scene settings
     virtual void initializeSceneSettings() override;
