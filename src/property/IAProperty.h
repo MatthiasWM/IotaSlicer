@@ -122,6 +122,14 @@ protected:
 };
 
 
+class IAExtruderProperty : public IAIntProperty
+{
+public:
+    IAExtruderProperty(char const* name, int value=0)
+    : IAIntProperty(name, value) { }
+};
+
+
 #endif /* IA_PROPERTY_H */
 
 

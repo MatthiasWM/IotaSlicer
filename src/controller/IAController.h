@@ -60,18 +60,20 @@ public:
 // FIXME: deriving from IAController is an awful hack to transition from
 // IASettings into IAProperty and IAController (and IAView)
 // FIXME: what actually happens whe the tree is cleared? Tree-Items deletd? Widget stay in Group? ???
-class IATreeViewController : public IAController
+class IATreeItemController : public IAController
 {
 public:
     typedef enum { kProperty, kSetting } Type;
-    IATreeViewController(const char *path, const char *label);
-    virtual ~IATreeViewController() override;
+    IATreeItemController(const char *path, const char *label);
+    virtual ~IATreeItemController() override;
     virtual void build(Fl_Tree*, Type, int) { }
+    void tooltip(const char *text) { pTooltip = text; }
 
     Fl_Menu_Item *dup(Fl_Menu_Item const*);
 
     char *pPath = nullptr;
     char *pLabel = nullptr;
+    const char *pTooltip = nullptr;
     Fl_Tree_Item *pTreeItem = nullptr;
 };
 
@@ -80,7 +82,7 @@ public:
 /**
  * Manage a setting that appears in a tree view.
  */
-class IALabelController : public IATreeViewController
+class IALabelController : public IATreeItemController
 {
 public:
     IALabelController(const char *path, const char *label, const char *text=nullptr);
@@ -96,7 +98,7 @@ public:
 /**
  * Manage a setting that appears in a tree view.
  */
-class IAFloatController : public IATreeViewController
+class IAFloatController : public IATreeItemController
 {
 public:
     IAFloatController(const char *path, const char *label, IAFloatProperty &prop,
@@ -118,7 +120,7 @@ public:
 /**
  * Manage a setting that appears in a tree view.
  */
-class IATextController : public IATreeViewController
+class IATextController : public IATreeItemController
 {
 public:
     IATextController(const char *path, const char *label, IATextProperty &prop, int wdt,
@@ -142,7 +144,7 @@ public:
 /**
  * Manage a setting that appears in a tree view.
  */
-class IAFloatChoiceController : public IATreeViewController
+class IAFloatChoiceController : public IATreeItemController
 {
 public:
     IAFloatChoiceController(const char *path, const char *label, IAFloatProperty &prop,
@@ -165,7 +167,7 @@ public:
 /**
  * Manage a setting that appears in a tree view.
  */
-class IAChoiceController : public IATreeViewController
+class IAChoiceController : public IATreeItemController
 {
 public:
     IAChoiceController(const char *path, const char *label, IAIntProperty &prop,
@@ -183,7 +185,7 @@ public:
 };
 
 
-class IAVectorController : public IATreeViewController
+class IAVectorController : public IATreeItemController
 {
 public:
     IAVectorController(const char *path, const char *label, const char *text,
@@ -217,7 +219,7 @@ public:
 };
 
 
-typedef std::vector<IATreeViewController*> IAControllerList;
+typedef std::vector<IATreeItemController*> IAControllerList;
 
 
 #endif /* IA_PRINTER_LIST_CONTROLLER_H */

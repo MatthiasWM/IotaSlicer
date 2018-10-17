@@ -25,7 +25,7 @@ class Fl_Input;
 class IATreeItemView : public Fl_Group
 {
 public:
-    IATreeItemView(IATreeViewController::Type t, int w, const char *label=nullptr);
+    IATreeItemView(IATreeItemController::Type t, int w, const char *label=nullptr);
 protected:
     Fl_Box *pLabel;
 };
@@ -34,7 +34,7 @@ protected:
 class IALabelView : public IATreeItemView
 {
 public:
-    IALabelView(IATreeViewController::Type t, int w, const char *label=nullptr, \
+    IALabelView(IATreeItemController::Type t, int w, const char *label=nullptr, \
                 const char *text=nullptr);
 protected:
     Fl_Box *pText;
@@ -44,7 +44,7 @@ protected:
 class IAFloatView : public IATreeItemView
 {
 public:
-    IAFloatView(IATreeViewController::Type t, int w, const char *label=nullptr,
+    IAFloatView(IATreeItemController::Type t, int w, const char *label=nullptr,
                 const char *unit=nullptr);
     double value();
     void value(double v);
@@ -57,7 +57,7 @@ protected:
 class IATextView : public IATreeItemView
 {
 public:
-    IATextView(IATreeViewController::Type t, int w, const char *label=nullptr,
+    IATextView(IATreeItemController::Type t, int w, const char *label=nullptr,
                const char *text=nullptr);
     const char *value();
     void value(char const* v);
@@ -70,7 +70,7 @@ protected:
 class IAFloatChoiceView : public IATreeItemView
 {
 public:
-    IAFloatChoiceView(IATreeViewController::Type t, int w, const char *label,
+    IAFloatChoiceView(IATreeItemController::Type t, int w, const char *label,
                       Fl_Menu_Item *menu, const char *unit=nullptr);
     double value();
     void value(double v);
@@ -83,7 +83,7 @@ protected:
 class IAChoiceView : public IATreeItemView
 {
 public:
-    IAChoiceView(IATreeViewController::Type t, int w, const char *label,
+    IAChoiceView(IATreeItemController::Type t, int w, const char *label,
                  Fl_Menu_Item *menu);
     int value();
     void value(int v);

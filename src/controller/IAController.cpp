@@ -73,21 +73,21 @@ void IACallbackController::propertyValueChanged()
 //============================================================================//
 
 
-IATreeViewController::IATreeViewController(const char *path, const char *label)
+IATreeItemController::IATreeItemController(const char *path, const char *label)
 :   pPath(strdup(path)),
-pLabel(strdup(label))
+    pLabel(strdup(label))
 {
 }
 
 
-IATreeViewController::~IATreeViewController()
+IATreeItemController::~IATreeItemController()
 {
     if (pPath) ::free((void*)pPath);
     if (pLabel) ::free((void*)pLabel);
 }
 
 
-Fl_Menu_Item *IATreeViewController::dup(Fl_Menu_Item const *src)
+Fl_Menu_Item *IATreeItemController::dup(Fl_Menu_Item const *src)
 {
     Fl_Menu_Item const *s = src;
     int n = 1;
@@ -108,7 +108,7 @@ Fl_Menu_Item *IATreeViewController::dup(Fl_Menu_Item const *src)
 
 
 IALabelController::IALabelController(const char *path, const char *label, const char *text)
-:   IATreeViewController(path, label)
+:   IATreeItemController(path, label)
 {
     if (text) pText = strdup(text);
 }
@@ -124,6 +124,7 @@ void IALabelController::build(Fl_Tree *treeWidget, Type t, int w)
 {
     if (!pWidget) {
         pWidget = new IALabelView(t, w, pLabel, pText);
+        pWidget->tooltip(pTooltip);
     }
     pTreeItem = treeWidget->add(pPath);
     pTreeItem->close();
@@ -139,7 +140,7 @@ void IALabelController::build(Fl_Tree *treeWidget, Type t, int w)
 IAFloatController::IAFloatController(const char *path, const char *label,
                                      IAFloatProperty &prop, const char *unit,
                                      std::function<void()>&& cb)
-:   IATreeViewController(path, label),
+:   IATreeItemController(path, label),
 pProperty(prop),
 pUnit(strdup(unit)),
 pCallback(cb),
@@ -171,6 +172,7 @@ void IAFloatController::build(Fl_Tree *treeWidget, Type t, int w)
         pWidget = new IAFloatView(t, w, pLabel, pUnit);
         pWidget->value(pProperty());
         pWidget->callback((Fl_Callback*)wCallback, this);
+        pWidget->tooltip(pTooltip);
     }
     pTreeItem = treeWidget->add(pPath);
     pTreeItem->close();
@@ -192,7 +194,7 @@ void IAFloatController::propertyValueChanged()
 IATextController::IATextController(const char *path, const char *label, IATextProperty &prop,
                                    int wdt, const char *unit,
                                    std::function<void()>&& cb)
-:   IATreeViewController(path, label),
+:   IATreeItemController(path, label),
 pProperty(prop),
 pWdt(wdt),
 pUnit(strdup(unit)),
@@ -225,6 +227,7 @@ void IATextController::build(Fl_Tree *treeWidget, Type t, int w)
         pWidget = new IATextView(t, w, pLabel, pUnit);
         pWidget->value(pProperty());
         pWidget->callback((Fl_Callback*)wCallback, this);
+        pWidget->tooltip(pTooltip);
     }
     pTreeItem = treeWidget->add(pPath);
     pTreeItem->close();
@@ -245,7 +248,7 @@ void IATextController::propertyValueChanged()
 
 IAFloatChoiceController::IAFloatChoiceController(const char *path, const char *label, IAFloatProperty &prop, const char *unit,
                                                  std::function<void()>&& cb, Fl_Menu_Item *menu)
-:   IATreeViewController(path, label),
+:   IATreeItemController(path, label),
 pProperty(prop),
 pUnit(strdup(unit)),
 pCallback(cb),
@@ -279,6 +282,7 @@ void IAFloatChoiceController::build(Fl_Tree *treeWidget, Type t, int w)
         pWidget = new IAFloatChoiceView(t, w, pLabel, pMenu, pUnit);
         pWidget->value( pProperty() );
         pWidget->callback((Fl_Callback*)wCallback, this);
+        pWidget->tooltip(pTooltip);
     }
     pTreeItem = treeWidget->add(pPath);
     pTreeItem->close();
@@ -301,7 +305,7 @@ void IAFloatChoiceController::propertyValueChanged()
 
 IAChoiceController::IAChoiceController(const char *path, const char *label, IAIntProperty &prop,
                                        std::function<void()>&& cb, Fl_Menu_Item *menu)
-:   IATreeViewController(path, label),
+:   IATreeItemController(path, label),
     pProperty(prop),
     pMenu(dup(menu)),
     pCallback(cb),
@@ -334,6 +338,7 @@ void IAChoiceController::build(Fl_Tree *treeWidget, Type t, int w)
         // FIXME: compare to user_data() in the menu list to find the right entry
         pWidget->value(pProperty());
         pWidget->callback((Fl_Callback*)wCallback, this);
+        pWidget->tooltip(pTooltip);
     }
     pTreeItem = treeWidget->add(pPath);
     pTreeItem->close();
@@ -360,7 +365,7 @@ IAVectorController::IAVectorController(const char *path, const char *label, cons
                                        char const* yLabel, char const* yUnits,
                                        char const* zLabel, char const* zUnits,
                                        std::function<void()>&& cb)
-:   IATreeViewController(path, label),
+:   IATreeItemController(path, label),
     pProperty(prop),
     pCallback(cb),
     pXLabel(xLabel), pXUnits(xUnits),
@@ -390,6 +395,7 @@ void IAVectorController::build(Fl_Tree *treeWidget, Type t, int w)
 {
     if (!pLabelWidget) {
         pLabelWidget = new IALabelView(t, w, pLabel, pText);
+        pLabelWidget->tooltip(pTooltip);
     }
     pTreeItem = treeWidget->add(pPath);
     pTreeItem->close();

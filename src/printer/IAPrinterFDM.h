@@ -50,22 +50,33 @@ public:
     virtual void writeProperties(Fl_Preferences &p) override;
 
     IAIntProperty numExtruders { "numExtruders", 1 };
+    // ex 0 type
+    // ex 0 nozzle diameter
+    // ex 0 feeds
+    // ex 0 feed 0 material
 
     // ---- scene settings
     virtual void initializeSceneSettings() override;
 
+
+    // printer
     IAFloatProperty nozzleDiameter { "nozzleDiameter", 0.4 };
+    // construction
     IAIntProperty numShells { "numShells", 3 };
     IAIntProperty numLids { "numLids", 2 };
     IAIntProperty lidType { "lidType", 0 }; // 0=zigzag, 1=concentric
     IAFloatProperty infillDensity { "infillDensity", 20.0 }; // %
     IAIntProperty hasSkirt { "hasSkirt",  1 }; // prime line around perimeter
+    IAExtruderProperty modelExtruder { "modelExtruder", 0 };
+    // support
     IAIntProperty hasSupport { "hasSupport", 1 };
     IAFloatProperty supportAngle { "supportAngle", 50.0 };
     IAFloatProperty supportDensity { "supportDensity", 40.0 };
     IAFloatProperty supportTopGap { "supportTopGap", 1.0 };
     IAFloatProperty supportSideGap { "supportSideGap", 0.2 };
     IAFloatProperty supportBottomGap { "supportBottomGap", 1.0 };
+    IAExtruderProperty supportExtruder { "supportExtruder", 0 };
+    // models and meshes
 
     // ----
     void sliceAll();
@@ -118,6 +129,7 @@ class IALayerMapFDM
     ~IALayerMapFDM();
     std::map<IALayerFDM, double> pMap;
 };
+
 
 
 #endif /* IA_PRINTER_FDM_H */

@@ -74,15 +74,17 @@ IAPrinter::~IAPrinter()
 
 void IAPrinter::createPropertiesControls()
 {
-    IATreeViewController *s;
+    IATreeItemController *s;
 
     // -- display the UUID (this is not really important for the user)
     s = new IALabelController("uuid", "Printer ID:", uuid());
+    s->tooltip("This unique ID is used for debugging purposes. Please ignore.");
     pPropertiesControllerList.push_back(s);
 
     // -- editable name of this printer
     s = new IATextController("name", "Printer Name:", name, 32, "",
                              []{ Iota.pPrinterListController.preferencesNameChanged(); } );
+    s->tooltip("Give this printer description a human readable name.");
     pPropertiesControllerList.push_back(s);
 
     // -- recentUpload is handled by the "upload" menu.
@@ -103,7 +105,7 @@ void IAPrinter::initializeSceneSettings()
         { }
     };
 
-    IATreeViewController *s;
+    IATreeItemController *s;
     s = new IAFloatChoiceController("layerHeight", "Layer Height:", layerHeight, "mm",
                               [this]{userChangedLayerHeight();},
                               layerHeightMenu);
@@ -197,7 +199,7 @@ void IAPrinter::buildSessionSettings(Fl_Tree *treeWidget)
     treeWidget->begin();
     wSessionSettings->begin();
     for (auto &s: pSceneSettings) {
-        s->build(treeWidget, IATreeViewController::kSetting, treeWidget->w()-40);
+        s->build(treeWidget, IATreeItemController::kSetting, treeWidget->w()-40);
     }
     treeWidget->end();
 }
@@ -215,7 +217,7 @@ void IAPrinter::createPropertiesViews(Fl_Tree *treeWidget)
     treeWidget->clear();
     treeWidget->begin();
     for (auto &s: pPropertiesControllerList) {
-        s->build(treeWidget, IATreeViewController::kProperty, treeWidget->w()-100);
+        s->build(treeWidget, IATreeItemController::kProperty, treeWidget->w()-100);
     }
     treeWidget->end();
 }

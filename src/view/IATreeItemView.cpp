@@ -19,8 +19,8 @@
 //============================================================================//
 
 
-IATreeItemView::IATreeItemView(IATreeViewController::Type t, int w, const char *label)
-:   Fl_Group(0, 0, w, t==IATreeViewController::kSetting?13:15)
+IATreeItemView::IATreeItemView(IATreeItemController::Type t, int w, const char *label)
+:   Fl_Group(0, 0, w, t==IATreeItemController::kSetting?13:15)
 {
     box(FL_FLAT_BOX);
     begin();
@@ -38,7 +38,7 @@ IATreeItemView::IATreeItemView(IATreeViewController::Type t, int w, const char *
 //============================================================================//
 
 
-IALabelView::IALabelView(IATreeViewController::Type t, int w, const char *label, const char *text)
+IALabelView::IALabelView(IATreeItemController::Type t, int w, const char *label, const char *text)
 :   IATreeItemView(t, w, label)
 {
     begin();
@@ -55,7 +55,7 @@ IALabelView::IALabelView(IATreeViewController::Type t, int w, const char *label,
 //============================================================================//
 
 
-IAFloatView::IAFloatView(IATreeViewController::Type t, int w, const char *label, const char *unit)
+IAFloatView::IAFloatView(IATreeItemController::Type t, int w, const char *label, const char *unit)
 :   IATreeItemView(t, w, label)
 {
     begin();
@@ -94,7 +94,7 @@ void IAFloatView::choice_cb(Fl_Float_Input *w, void *u)
 //============================================================================//
 
 
-IATextView::IATextView(IATreeViewController::Type t, int w, const char *label, const char *unit)
+IATextView::IATextView(IATreeItemController::Type t, int w, const char *label, const char *unit)
 :   IATreeItemView(t, w, label)
 {
     begin();
@@ -131,7 +131,7 @@ void IATextView::choice_cb(Fl_Choice *w, void *u)
 //============================================================================//
 
 
-IAFloatChoiceView::IAFloatChoiceView(IATreeViewController::Type t, int w,
+IAFloatChoiceView::IAFloatChoiceView(IATreeItemController::Type t, int w,
                                      const char *label, Fl_Menu_Item *menu,
                                      const char *unit)
 :   IATreeItemView(t, w, label)
@@ -175,7 +175,7 @@ void IAFloatChoiceView::choice_cb(Fl_Input_Choice *w, void *u)
 //============================================================================//
 
 
-IAChoiceView::IAChoiceView(IATreeViewController::Type t, int w, const char *label,
+IAChoiceView::IAChoiceView(IATreeItemController::Type t, int w, const char *label,
                            Fl_Menu_Item *menu)
 :   IATreeItemView(t, w, label)
 {

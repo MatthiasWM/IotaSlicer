@@ -179,7 +179,7 @@ public:
 
 
 /**
- * Element chagnes to another extruder.
+ * Element changes to another extruder.
  */
 class IAToolpathExtruder : public IAToolpathElement
 {

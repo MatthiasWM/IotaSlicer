@@ -22,6 +22,7 @@
 #include <FL/fl_ask.H>
 #include <FL/fl_utf8.h>
 #include <FL/Fl_Native_File_Chooser.H>
+#include <FL/Fl_Tooltip.H>
 
 #include <errno.h>
 
@@ -518,6 +519,7 @@ int main (int argc, char **argv)
 	Fl::args(argc, argv);
     Fl::set_color(FL_BACKGROUND_COLOR, 0xeeeeee00);
     Fl::use_high_res_GL(1);
+    Fl_Tooltip::size(12);
 
     Iota.pPrinterPrototypeList.generatePrototypes();
     Iota.pCustomPrinterList.loadCustomPrinters(Iota.pCurrentPrinter);

@@ -171,6 +171,7 @@ IAPrinterFDM::IAPrinterFDM(IAPrinterFDM const& src)
     lidType.set( src.lidType() );
     infillDensity = src.infillDensity;
     hasSkirt.set( src.hasSkirt() );
+    // FIXME: annd all other properties and settings
 }
 
 
@@ -217,7 +218,7 @@ IAPrinter *IAPrinterFDM::clone() const
 
 void IAPrinterFDM::createPropertiesControls()
 {
-    IATreeViewController *s;
+    IATreeItemController *s;
 
     super::createPropertiesControls();
 
@@ -284,7 +285,7 @@ void IAPrinterFDM::createPropertiesControls()
 void IAPrinterFDM::initializeSceneSettings()
 {
     super::initializeSceneSettings();
-    IATreeViewController *s;
+    IATreeItemController *s;
 
     static Fl_Menu_Item numShellsMenu[] = {
         { "0*", 0, nullptr, (void*)0, 0, 0, 0, 11 },
@@ -337,6 +338,14 @@ void IAPrinterFDM::initializeSceneSettings()
 
     s = new IAChoiceController("skirt", "skirt: ", hasSkirt,
                             [this]{userChangedSkirt();}, skirtMenu );
+    pSceneSettings.push_back(s);
+
+    static Fl_Menu_Item extruderChoiceMenu[] = {
+        { "#0 (white)", 0, nullptr, (void*)0, 0, 0, 0, 11 },
+        { "#1 (black)", 0, nullptr, (void*)1, 0, 0, 0, 11 },
+        { nullptr } };
+    s = new IAChoiceController("modelExtruder", "extruder:", modelExtruder,
+                               []{}, extruderChoiceMenu );
     pSceneSettings.push_back(s);
 
     static Fl_Menu_Item nozzleDiameterMenu[] = {
@@ -408,6 +417,10 @@ void IAPrinterFDM::initializeSceneSettings()
         { nullptr } };
     s = new IAFloatChoiceController("support/bottomGap", "bottom gap: ", supportBottomGap, "layers",
                                  [this]{ ; }, bottomGapMenu );
+    pSceneSettings.push_back(s);
+
+    s = new IAChoiceController("support/extruder", "extruder:", supportExtruder,
+                               []{}, extruderChoiceMenu );
     pSceneSettings.push_back(s);
 
 
