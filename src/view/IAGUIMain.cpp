@@ -29,12 +29,12 @@ printer settings</li>\n                <li><b>v0.3</b>: automatic generation o\
 f support for flat triangles</li>\n                <li>v0.4: material selectio\
 n for support structures and body (dual extruder)</li>\n                <li>v0\
 .5: code generation for belt printers (BlackBelt)</li>\n                <li>v0\
-.6: load textured models (obj), render projected texture rim, seams</li>\n    \
-            <li>v0.7: sort toolpath segments by color and print in dual hotend\
- dual color</li>\n                <li>v0.8: support for mixing extruders and v\
-irtual extruders and waste columns</li>\n                <li>v0.9: dialogs to \
-generate new printers</li>\n                <li>v0.10: multiple meshes per ses\
-sion, move, scale, and rotate meshes</li>\n                <li>....</li>\n    \
+.6: multiple meshes per session, move, scale, and rotate meshes</li>\n        \
+        <li>v0.7: load textured models (obj), render projected texture rim, se\
+ams</li>\n                <li>v0.8: sort toolpath segments by color and print \
+in dual hotend dual color</li>\n                <li>v0.9: support for mixing e\
+xtruders and virtual extruders and waste columns</li>\n                <li>v0.\
+10: dialogs to generate new printers</li>\n                <li>....</li>\n    \
             <li>v1.0: load colored and textured STL and OBJ files, new printer\
 s, printer\n                    settings, build settings, reliable and repeata\
 ble printouts, documentation,\n                    web page, user managment, f\

@@ -288,6 +288,39 @@ void IAPrinterFDM::initializeSceneSettings()
     super::initializeSceneSettings();
     IATreeItemController *s;
 
+    // This preset contains all costumizable changes to the printer hardware.
+    // Mainly, this is the filament used, and in rare cases a change in nozzle
+    // type or diameter.
+    // For mixing extruders, this can also include virtual extruders.
+    // For now, we may also want to put layer height in here, until we allow
+    // different layer heights for different models.
+    static Fl_Menu_Item printerPresetMenu[] = {
+        // if any of the setting within the preset changed, mark it as "not yet saved"
+        // (or as one of the other preset, in case they match)
+        { "<not saved>", 0, nullptr, (void*)0, 0, 0, 0, 11 },
+        // show the item below, if the preset is marked as "not yet saved"
+        { "save this as a preset...", 0, nullptr, (void*)0, FL_MENU_DIVIDER, 0, 0, 11 },
+        // show this item, if the preset exists. If it is "default", deactivate this menu
+        { "remove this preset...", 0, nullptr, (void*)0, FL_MENU_DIVIDER|FL_MENU_INVISIBLE, 0, 0, 11 },
+        // "default" means, that all settings will be the printer default properties
+        { "default", 0, nullptr, (void*)0, 0, 0, 0, 11 },
+        // a list of custom named and generated preset that will be saved to a file
+        // and that can be selectd on a pre-mesh basis in the settings below
+        { "soluble support", 0, nullptr, (void*)1, 0, 0, 0, 11 },
+        { "calibrated color", 0, nullptr, (void*)2, 0, 0, 0, 11 },
+        { nullptr } };
+    static IAIntProperty printerPreset { "printerPreset", 0 };
+    s = new IAChoiceController("Printer", "Printer:", printerPreset,
+                               []{;}, printerPresetMenu);
+    pSceneSettings.push_back(s);
+    // extruder 0 nozzle size
+    // extruder 0 material and color
+    // extruder 1 nozzle size
+    // extruder 1 material and color
+
+
+    // The next list of parameters are presets for print quality. They determine
+    // home meshes are converted into plastic strings.
     static Fl_Menu_Item numShellsMenu[] = {
         { "0*", 0, nullptr, (void*)0, 0, 0, 0, 11 },
         { "1", 0, nullptr, (void*)1, 0, 0, 0, 11 },
@@ -370,6 +403,8 @@ void IAPrinterFDM::initializeSceneSettings()
                                  [this]{userChangedNozzleDiameter();}, nozzleDiameterMenu );
     pSceneSettings.push_back(s);
 
+    // There will be a preset system for the way that support structures are
+    // built. Not every mesh in an assembly needs support.
     static Fl_Menu_Item supportMenu[] = {
         { "no", 0, nullptr, (void*)0, 0, 0, 0, 11 },
         { "yes", 0, nullptr, (void*)1, 0, 0, 0, 11 },
@@ -432,6 +467,9 @@ void IAPrinterFDM::initializeSceneSettings()
                                  []{ ; }, bottomGapMenu );
     pSceneSettings.push_back(s);
 
+    // We need an extruder ref controller that displays the current material and
+    // color for the choosen extruder. For mixing extruders, this could even allow
+    // a choice of color?
     s = new IAChoiceController("support/extruder", "extruder:", supportExtruder,
                                []{}, extruderChoiceMenu );
     pSceneSettings.push_back(s);
