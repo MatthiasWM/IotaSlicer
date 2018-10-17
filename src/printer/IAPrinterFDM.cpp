@@ -171,6 +171,7 @@ IAPrinterFDM::IAPrinterFDM(IAPrinterFDM const& src)
     lidType.set( src.lidType() );
     infillDensity = src.infillDensity;
     hasSkirt.set( src.hasSkirt() );
+    minimumLayerTime.set( src.minimumLayerTime() );
     // FIXME: annd all other properties and settings
 }
 
@@ -295,7 +296,7 @@ void IAPrinterFDM::initializeSceneSettings()
         { nullptr } };
 
     s = new IAChoiceController("NPerimiter", "# of perimeters: ", numShells,
-                         [this]{;}, numShellsMenu );
+                         []{;}, numShellsMenu );
     pSceneSettings.push_back(s);
 
     static Fl_Menu_Item numLidsMenu[] = {
@@ -340,6 +341,18 @@ void IAPrinterFDM::initializeSceneSettings()
                             [this]{userChangedSkirt();}, skirtMenu );
     pSceneSettings.push_back(s);
 
+    static Fl_Menu_Item layerTimeMenu[] = {
+        { "0 sec.", 0, nullptr, (void*)0, 0, 0, 0, 11 },
+        { "15 sec.", 0, nullptr, (void*)0, 0, 0, 0, 11 },
+        { "30 sec.", 0, nullptr, (void*)0, 0, 0, 0, 11 },
+        { nullptr } };
+    s = new IAFloatChoiceController("minLayerTime", "min. layer time: ", minimumLayerTime, "sec",
+                                    []{;}, layerTimeMenu );
+    s->tooltip("This ia the minimum time it will take to print a layer. Setting this "
+               "to 15 seconds or more will give already printed filament time to cool "
+               "before the next layer is added.");
+    pSceneSettings.push_back(s);
+
     static Fl_Menu_Item extruderChoiceMenu[] = {
         { "#0 (white)", 0, nullptr, (void*)0, 0, 0, 0, 11 },
         { "#1 (black)", 0, nullptr, (void*)1, 0, 0, 0, 11 },
@@ -362,7 +375,7 @@ void IAPrinterFDM::initializeSceneSettings()
         { "yes", 0, nullptr, (void*)1, 0, 0, 0, 11 },
         { nullptr } };
     s = new IAChoiceController("support", "support: ", hasSupport,
-                         [this]{ ; }, supportMenu ); // FIXME: recache all
+                         []{ ; }, supportMenu ); // FIXME: recache all
     pSceneSettings.push_back(s);
 
     // TODO: support material
@@ -374,7 +387,7 @@ void IAPrinterFDM::initializeSceneSettings()
         { "60.0\xC2\xB0", 0, nullptr, (void*)3, 0, 0, 0, 11 },
         { nullptr } };
     s = new IAFloatChoiceController("support/angle", "angle: ", supportAngle, "deg",
-                                 [this]{ ; }, supportAngleMenu );
+                                 []{ ; }, supportAngleMenu );
     pSceneSettings.push_back(s);
 
     static Fl_Menu_Item supportDensityMenu[] = {
@@ -385,7 +398,7 @@ void IAPrinterFDM::initializeSceneSettings()
         { "50.0%", 0, nullptr, (void*)3, 0, 0, 0, 11 },
         { nullptr } };
     s = new IAFloatChoiceController("support/density", "density: ", supportDensity, "%",
-                                 [this]{ ; }, supportDensityMenu );
+                                 []{ ; }, supportDensityMenu );
     pSceneSettings.push_back(s);
 
     static Fl_Menu_Item topGapMenu[] = {
@@ -395,7 +408,7 @@ void IAPrinterFDM::initializeSceneSettings()
         { "3 layers", 0, nullptr, (void*)3, 0, 0, 0, 11 },
         { nullptr } };
     s = new IAFloatChoiceController("support/topGap", "top gap: ", supportTopGap, "layers",
-                                 [this]{ ; }, topGapMenu );
+                                 []{ ; }, topGapMenu );
     pSceneSettings.push_back(s);
 
     static Fl_Menu_Item sideGapMenu[] = {
@@ -406,7 +419,7 @@ void IAPrinterFDM::initializeSceneSettings()
         { "0.4mm", 0, nullptr, (void*)0, 0, 0, 0, 11 },
         { nullptr } };
     s = new IAFloatChoiceController("support/sideGap", "side gap: ", supportSideGap, "mm",
-                                 [this]{ ; }, sideGapMenu );
+                                 []{ ; }, sideGapMenu );
     pSceneSettings.push_back(s);
 
     static Fl_Menu_Item bottomGapMenu[] = {
@@ -416,7 +429,7 @@ void IAPrinterFDM::initializeSceneSettings()
         { "3 layers", 0, nullptr, (void*)3, 0, 0, 0, 11 },
         { nullptr } };
     s = new IAFloatChoiceController("support/bottomGap", "bottom gap: ", supportBottomGap, "layers",
-                                 [this]{ ; }, bottomGapMenu );
+                                 []{ ; }, bottomGapMenu );
     pSceneSettings.push_back(s);
 
     s = new IAChoiceController("support/extruder", "extruder:", supportExtruder,

@@ -266,7 +266,7 @@ int IAMachineToolpath::roundLayerNumber(double z)
  */
 bool IAMachineToolpath::saveGCode(const char *filename /*, printer */)
 {
-    double minLayerTime = 15.0;
+    double minLayerTime = pPrinter->minimumLayerTime();
 
     bool ret = false;
     IAGcodeWriter w(pPrinter);

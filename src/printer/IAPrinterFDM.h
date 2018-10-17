@@ -67,6 +67,7 @@ public:
     IAIntProperty lidType { "lidType", 0 }; // 0=zigzag, 1=concentric
     IAFloatProperty infillDensity { "infillDensity", 20.0 }; // %
     IAIntProperty hasSkirt { "hasSkirt",  1 }; // prime line around perimeter
+    IAFloatProperty minimumLayerTime { "minimumLayerTime", 15.0 };
     IAExtruderProperty modelExtruder { "modelExtruder", 0 };
     // support
     IAIntProperty hasSupport { "hasSupport", 1 };
