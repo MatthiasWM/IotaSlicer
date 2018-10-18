@@ -556,13 +556,13 @@ void IAPrinterFDM::sliceAll()
 
     int i = 0, n = (int)((zMax-zMin)/zLayerHeight);
     // create a slice for each layer
-    IASlice **sliceList = (IASlice**)calloc(n+4, sizeof(IASlice*));
+    IAMeshSlice **sliceList = (IAMeshSlice**)calloc(n+4, sizeof(IAMeshSlice*));
 
     for (double z=zMin; z<zMax+2*zLayerHeight; z+=zLayerHeight)
     {
         if (IAProgressDialog::update(i*50/n, i, n, i*50/n)) break;
 
-        IASlice *slc = sliceList[i] = new IASlice( this );
+        IAMeshSlice *slc = sliceList[i] = new IAMeshSlice( this );
         slc->setNewZ(z);
         slc->generateRim(Iota.pMesh);
         slc->tesselateAndDrawLid();
@@ -576,12 +576,11 @@ void IAPrinterFDM::sliceAll()
             Iota.pMesh->draw(IAMesh::kMASK, 1.0, 1.0, 1.0);
             glPopMatrix();
             skirt.unbindFromRendering();
-            skirt.saveAsJpeg("/Users/matt/aaa.jpg");
             skirt.toolpathFromLassoAndExpand(z, 3);  // 3mm, should probably be more if the extrusion is 1mm or more
             IAToolpathListSP tpSkirt1 = skirt.toolpathFromLassoAndContract(z, nozzleDiameter());
-            tp->add(tpSkirt1.get(), 5, 0);
+            tp->add(tpSkirt1.get(), modelExtruder(), 5, 0);
             IAToolpathListSP tpSkirt2 = skirt.toolpathFromLassoAndContract(z, nozzleDiameter());
-            tp->add(tpSkirt2.get(), 5, 1);
+            tp->add(tpSkirt2.get(), modelExtruder(), 5, 1);
         }
 
         IAToolpathListSP tp0 = nullptr, tp1 = nullptr, tp2 = nullptr, tp3 = nullptr;
@@ -600,9 +599,9 @@ void IAPrinterFDM::sliceAll()
          *      for the last shell that is created.
          */
 
-        if (tp3) tp->add(tp3.get(), 10, 0);
-        if (tp2) tp->add(tp2.get(), 10, 1);
-        if (tp1) tp->add(tp1.get(), 10, 2);
+        if (tp3) tp->add(tp3.get(), modelExtruder(), 10, 0);
+        if (tp2) tp->add(tp2.get(), modelExtruder(), 10, 1);
+        if (tp1) tp->add(tp1.get(), modelExtruder(), 10, 2);
 
         i++;
     }
@@ -614,7 +613,7 @@ void IAPrinterFDM::sliceAll()
         if (IAProgressDialog::update(i*50/n+50, i, n, i*50/n+50)) break;
 
         IAToolpathList *tp = pMachineToolpath.findLayer(z);
-        IASlice *slc = sliceList[i];
+        IAMeshSlice *slc = sliceList[i];
 
         // --- support structures
         if (hasSupport()) {
@@ -671,7 +670,7 @@ void IAPrinterFDM::sliceAll()
                 support.overlayInfillPattern(0, 2*nozzleDiameter() * (100.0 / supportDensity()) - nozzleDiameter());
             }
             auto supportPath = support.toolpathFromLasso(z);
-            if (supportPath) tp->add(supportPath.get(), 60, 0);
+            if (supportPath) tp->add(supportPath.get(), supportExtruder(), 60, 0);
             // TODO: don't draw anything here which we will draw otherwise later
             // FIXME: find icicles and draw support for those
             // FIXME: find and exclude bridges
@@ -703,7 +702,7 @@ void IAPrinterFDM::sliceAll()
                 // ZIGZAG (could do bridging if used in the correct direction!)
                 lid.overlayInfillPattern(i, nozzleDiameter());
                 auto lidPath = lid.toolpathFromLasso(z);
-                if (lidPath) tp->add(lidPath.get(), 20, 0);
+                if (lidPath) tp->add(lidPath.get(), modelExtruder(), 20, 0);
             } else {
                 // CONCENTRIC (nicer for lids)
                 /** \bug limit this to the width and hight of the build platform divided by the extrsuion width */
@@ -712,7 +711,7 @@ void IAPrinterFDM::sliceAll()
                     auto tp1 = lid.toolpathFromLassoAndContract(z, nozzleDiameter());
                     if (!tp1) break;
                     infill.subtract(tp1, nozzleDiameter());
-                    tp->add(tp1.get(), 20, k);
+                    tp->add(tp1.get(), modelExtruder(), 20, k);
                 }
                 if (k==300) {
                     // assert(0);
@@ -723,21 +722,17 @@ void IAPrinterFDM::sliceAll()
         // build infills
         /** \todo We are actually filling the areas where the lids and the infill touch twice! */
         /** \todo remove material that we generated in the lid already */
-
         if (infillDensity()>0.0001) {
-            // pNozzleDiameter = 100%
-            // pNozzleDiameter*2 = 50%
-            // pNozzleDiameter*4 = 25%
             infill.overlayInfillPattern(i, 2*nozzleDiameter() * (100.0 / infillDensity()) - nozzleDiameter());
             auto infillPath = infill.toolpathFromLasso(z);
-            if (infillPath) tp->add(infillPath.get(), 30, 0);
+            if (infillPath) tp->add(infillPath.get(), modelExtruder(), 30, 0); // FIXME: should me ExtruderDontCare
         }
 
         i++;
     }
 
     for (i=0; i<n+4; i++) {
-        IASlice *slc = sliceList[i];
+        IAMeshSlice *slc = sliceList[i];
         delete slc;
     }
     free((void*)sliceList);

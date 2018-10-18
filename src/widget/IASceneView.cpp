@@ -12,7 +12,7 @@
 #include "widget/IACamera.h"
 #include "widget/IAGLRangeSlider.h"
 #include "geometry/IAMesh.h"
-#include "geometry/IASlice.h"
+#include "geometry/IAMeshSlice.h"
 #include "printer/IAPrinter.h"
 #include "toolpath/IAToolpath.h"
 #include "opengl/IAFramebuffer.h"

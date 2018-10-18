@@ -49,7 +49,7 @@ public:
     virtual void readProperties(Fl_Preferences &p) override;
     virtual void writeProperties(Fl_Preferences &p) override;
 
-    IAIntProperty numExtruders { "numExtruders", 1 };
+    IAIntProperty numExtruders { "numExtruders", 2 };
     // ex 0 type
     // ex 0 nozzle diameter
     // ex 0 feeds
@@ -99,38 +99,6 @@ private:
     /// the toolpath for the entire scene for vector based machines
     IAMachineToolpath pMachineToolpath = IAMachineToolpath(this);
 };
-
-
-class IALayerMapFDM;
-
-/**
- * Layers foor FDM printers contain all data from slice to toolpath.
- */
-class IALayerFDM
-{
-public:
-    IALayerFDM(IALayerMapFDM*, double z, double height);
-    ~IALayerFDM();
-    void createToolpath();
-    void createInfill();
-    void createLid();
-    void createBottom();
-    void createShells();
-    void createSLice();
-private:
-    IASlice *pSlice;
-    IAFramebuffer *pFBSlice;
-    IAFramebuffer *pFBCore; // slice without shell
-};
-
-
-class IALayerMapFDM
-{
-    IALayerMapFDM(IAPrinterFDM*);
-    ~IALayerMapFDM();
-    std::map<IALayerFDM, double> pMap;
-};
-
 
 
 #endif /* IA_PRINTER_FDM_H */

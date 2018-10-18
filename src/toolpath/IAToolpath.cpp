@@ -262,6 +262,18 @@ int IAMachineToolpath::roundLayerNumber(double z)
 
 
 /**
+ * Create a bitmap of all tools/extruders used in this toolpath.
+ */
+unsigned int IAMachineToolpath::createToolmap()
+{
+    unsigned int toolmap = 0;
+    for (auto &p: pToolpathListMap)
+        toolmap |= p.second->createToolmap();
+    return toolmap;
+}
+
+
+/**
  * Save the toolpath as a GCode file.
  */
 bool IAMachineToolpath::saveGCode(const char *filename /*, printer */)
@@ -272,7 +284,8 @@ bool IAMachineToolpath::saveGCode(const char *filename /*, printer */)
     IAGcodeWriter w(pPrinter);
     if (w.open(filename)) {
         w.resetTotalTime();
-        w.sendInitSequence();
+        unsigned int toolmap = createToolmap();
+        w.sendInitSequence(toolmap);
         for (auto &p: pToolpathListMap) {
             w.cmdComment("");
             w.cmdComment("==== layer at z=%g", p.first / 1000.0);
@@ -363,8 +376,9 @@ bool IAToolpathList::isEmpty()
 /**
  * Add another toolpath type to the list.
  */
-void IAToolpathList::add(IAToolpath *tt, int group, int priority)
+void IAToolpathList::add(IAToolpath *tt, int tool, int group, int priority)
 {
+    tt->pTool = tool;
     tt->pGroup = group;
     tt->pPriority = priority;
     pToolpathList.push_back(tt);
@@ -374,10 +388,10 @@ void IAToolpathList::add(IAToolpath *tt, int group, int priority)
 /**
  * Add another toolpath list to the list.
  */
-void IAToolpathList::add(IAToolpathList *tl, int group, int priority)
+void IAToolpathList::add(IAToolpathList *tl, int tool, int group, int priority)
 {
     for (auto &tt: tl->pToolpathList) {
-        add(tt->clone(), group, priority);
+        add(tt->clone(), tool, group, priority);
     }
 }
 
@@ -419,6 +433,18 @@ void IAToolpathList::drawFlatToBitmap(IAFramebuffer *fb, double w, int color)
 
 
 /**
+ * Create a bitmap of all tools/extruders used in this toolpath.
+ */
+unsigned int IAToolpathList::createToolmap()
+{
+    unsigned int toolmap = 0;
+    for (auto &p: pToolpathList)
+        toolmap |= p->createToolmap();
+    return toolmap;
+}
+
+
+/**
  * Save the toolpath as a GCode file.
  */
 void IAToolpathList::saveGCode(IAGcodeWriter &w)
@@ -448,19 +474,25 @@ void IAToolpathList::saveDXF(const char *filename)
 void IAToolpathList::optimize()
 {
     std::sort(pToolpathList.begin(), pToolpathList.end(), IAToolpath::comparePriorityAscending);
-    // -- optimize my travel distance: if Toolpaths are in the same group
-    // and with the same priority, sort them so that trips between toolpaths
-    // is short
+    // -- optimize my travel distance: if Toolpaths are in the same group,
+    // with the same priority, and the same tool, sort them so that traveling
+    // between toolpaths is short
     size_t i, j, n = pToolpathList.size();
     if (n) for (i=0; i<n-1; i++) {
         IAToolpath *ta = pToolpathList[i];
         IAToolpath *tx = pToolpathList[i+1];
         size_t x = i+1;
-        if (ta->pGroup==tx->pGroup && ta->pPriority==tx->pPriority) {
+        if (   ta->pGroup==tx->pGroup
+            && ta->pPriority==tx->pPriority
+            && ta->pTool==tx->pTool)
+        {
             double dist = (ta->tFirst-tx->tFirst).length();
             for (j=i+2; j<n; j++) {
                 IAToolpath *tb = pToolpathList[j];
-                if (ta->pGroup==tb->pGroup && ta->pPriority==tb->pPriority) {
+                if (   ta->pGroup==tb->pGroup
+                    && ta->pPriority==tb->pPriority
+                    && ta->pTool==tx->pTool )
+                {
                     double dist2 = (ta->tFirst-tb->tFirst).length();
                     if (dist2<dist) {
                         dist = dist2;
@@ -508,12 +540,22 @@ IAToolpath::~IAToolpath()
 }
 
 
+/**
+ * Create a duplicate of this Toolpath.
+ *
+ * \param[in] t is set if the object was already created by a derived class.
+ * \return a copy of this toolpath, caller must \em delete
+ */
 IAToolpath *IAToolpath::clone(IAToolpath *t)
 {
     if (!t)
         t = new IAToolpath(pZ);
     t->tFirst = tFirst;
     t->tPrev = tPrev;
+    t->pZ = pZ;
+    t->pTool = pTool;
+    t->pGroup = pGroup;
+    t->pPriority = pPriority;
     for (auto &e: pElementList)
         t->pElementList.push_back(e->clone());
     return t;
@@ -536,12 +578,22 @@ void IAToolpath::clear(double z)
 
 bool IAToolpath::comparePriorityAscending(const IAToolpath *a, const IAToolpath *b)
 {
+    // first, sort by the extruder index
+    if ( a->pTool < b->pTool )
+        return true;
+    if ( a->pTool > b->pTool )
+        return false;
+
+    // next, sort by the group number
     if ( a->pGroup < b->pGroup )
         return true;
-    if ( a->pGroup == b->pGroup ) {
-        if ( a->pPriority < b->pPriority )
-            return true;
-    }
+    if ( a->pGroup > b->pGroup )
+        return false;
+
+    // finally, sort by the priority within the group
+    if ( a->pPriority < b->pPriority )
+        return true;
+    
     return false;
 }
 
@@ -552,6 +604,11 @@ bool IAToolpath::comparePriorityAscending(const IAToolpath *a, const IAToolpath 
  */
 void IAToolpath::draw()
 {
+    switch (pTool) {
+        case -1: glColor3f(1.0, 0.0, 0.0); break;
+        case  0: glColor3f(1.0, 1.0, 1.0); break;
+        case  1: glColor3f(0.3, 0.3, 0.3); break;
+    }
     for (auto &e: pElementList) {
         e->draw();
     }
@@ -615,10 +672,21 @@ void IAToolpath::closePath()
 
 
 /**
+ * Create a bitmap of all tools/extruders used in this toolpath.
+ */
+unsigned int IAToolpath::createToolmap()
+{
+    if (pTool==-1) return 1;
+    return 1<<pTool;
+}
+
+
+/**
  * Save the toolpath as a GCode file.
  */
 void IAToolpath::saveGCode(IAGcodeWriter &w)
 {
+    w.requestTool(pTool);
     for (auto &e: pElementList) {
         e->saveGCode(w);
     }
@@ -698,72 +766,72 @@ void IAToolpathElement::draw()
 }
 
 
-#ifdef __APPLE__
-#pragma mark -
-#endif
-// =============================================================================
-
-
-
-/**
- * Create any sort of toolpath element.
- */
-IAToolpathExtruder::IAToolpathExtruder(int tool)
-:   pTool( tool )
-{
-}
-
-
-/**
- * Destroy an element.
- */
-IAToolpathExtruder::~IAToolpathExtruder()
-{
-}
-
-
-IAToolpathElement *IAToolpathExtruder::clone()
-{
-    IAToolpathExtruder *tpe = new IAToolpathExtruder(pTool);
-    return tpe;
-}
-
-
-/**
- * Save the toolpath element as a GCode file.
- */
-void IAToolpathExtruder::saveGCode(IAGcodeWriter &w)
-{
-    assert(0); // this must be implemented again
-#if 0
-    w.cmdComment("");
-    w.cmdComment("---- Change to extruder %d", pTool);
-    // deactivate the other extruder
-    int otherTool = 1-pTool;
-    w.cmdSelectExtruder(otherTool);
-    w.cmdResetExtruder();
-    w.cmdExtrude(-4.0);
-
-    // activate the new extruder
-    w.cmdSelectExtruder(pTool);
-    w.cmdResetExtruder();
-    w.cmdExtrude(4.0);
-    int x = pTool ? 100 : 48;
-    int pw = 20;
-    w.cmdRapidMove(x, 10.0);
-    int i;
-    for (i=0; i<4; i++) {
-        w.cmdPrintMove(x+pw, 10.0+i);
-        w.cmdPrintMove(x+pw, 10.0+i+0.5);
-        w.cmdMove(x, 10.0+i+0.5);
-        w.cmdMove(x, 10.0+i+1.0);
-    }
-    w.cmdSelectExtruder(pTool); // redundant
-    w.cmdResetExtruder();
-    w.cmdComment("Extruder %d ready", pTool);
-    w.cmdComment("");
-#endif
-}
+//#ifdef __APPLE__
+//#pragma mark -
+//#endif
+//// =============================================================================
+//
+//
+//
+///**
+// * Create any sort of toolpath element.
+// */
+//IAToolpathExtruder::IAToolpathExtruder(int tool)
+//:   pTool( tool )
+//{
+//}
+//
+//
+///**
+// * Destroy an element.
+// */
+//IAToolpathExtruder::~IAToolpathExtruder()
+//{
+//}
+//
+//
+//IAToolpathElement *IAToolpathExtruder::clone()
+//{
+//    IAToolpathExtruder *tpe = new IAToolpathExtruder(pTool);
+//    return tpe;
+//}
+//
+//
+///**
+// * Save the toolpath element as a GCode file.
+// */
+//void IAToolpathExtruder::saveGCode(IAGcodeWriter &w)
+//{
+//    assert(0); // this must be implemented again
+//#if 0
+//    w.cmdComment("");
+//    w.cmdComment("---- Change to extruder %d", pTool);
+//    // deactivate the other extruder
+//    int otherTool = 1-pTool;
+//    w.cmdSelectExtruder(otherTool);
+//    w.cmdResetExtruder();
+//    w.cmdExtrude(-4.0);
+//
+//    // activate the new extruder
+//    w.cmdSelectExtruder(pTool);
+//    w.cmdResetExtruder();
+//    w.cmdExtrude(4.0);
+//    int x = pTool ? 100 : 48;
+//    int pw = 20;
+//    w.cmdRapidMove(x, 10.0);
+//    int i;
+//    for (i=0; i<4; i++) {
+//        w.cmdPrintMove(x+pw, 10.0+i);
+//        w.cmdPrintMove(x+pw, 10.0+i+0.5);
+//        w.cmdMove(x, 10.0+i+0.5);
+//        w.cmdMove(x, 10.0+i+1.0);
+//    }
+//    w.cmdSelectExtruder(pTool); // redundant
+//    w.cmdResetExtruder();
+//    w.cmdComment("Extruder %d ready", pTool);
+//    w.cmdComment("");
+//#endif
+//}
 
 
 #ifdef __APPLE__
@@ -805,9 +873,9 @@ void IAToolpathMotion::draw()
 {
 #ifdef RENDER_HEX_TOOLPATH
     if (pIsRapid) {
-        glDisable(GL_LIGHTING);
-        glColor3f(1.0, 1.0, 0.0);
-        glEnable(GL_LIGHTING);
+//        glDisable(GL_LIGHTING);
+//        glColor3f(1.0, 1.0, 0.0);
+//        glEnable(GL_LIGHTING);
     } else {
         double r=0.2;
         IAVector3d d = (pEnd - pStart).normalized();
@@ -817,7 +885,8 @@ void IAToolpathMotion::draw()
         IAVector3d n3 = { 0.0, 0.0, -1.0 };
         IAVector3d p0, p1, p2, p3;
 
-        glColor3ub(pColor>>16, pColor>>8, pColor);
+        if (pColor!=0xFFFFFFFF)
+            glColor3ub(pColor>>16, pColor>>8, pColor);
 
         glBegin(GL_QUADS);
         glNormal3dv(n0.dataPointer());

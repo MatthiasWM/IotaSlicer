@@ -25,11 +25,11 @@ class IAFramebuffer;
  *
  * \todo framebuffer member variables should not be public!
  */
-class IASlice : public IAMesh
+class IAMeshSlice : public IAMesh
 {
 public:
-    IASlice(IAPrinter*);
-    virtual ~IASlice() override;
+    IAMeshSlice(IAPrinter*);
+    virtual ~IAMeshSlice() override;
     virtual void clear() override;
     bool setNewZ(double z);
 

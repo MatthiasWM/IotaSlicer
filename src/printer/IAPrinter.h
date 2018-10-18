@@ -9,7 +9,7 @@
 
 
 #include "geometry/IAVector3d.h"
-#include "geometry/IASlice.h"
+#include "geometry/IAMeshSlice.h"
 #include "toolpath/IAToolpath.h"
 #include "property/IAProperty.h"
 #include "view/IATreeItemView.h"
@@ -96,7 +96,7 @@ public:
     // ----
 
     /// This is the current slice that contains the entire scene at a give z.
-    IASlice gSlice = IASlice(this);
+    IAMeshSlice gSlice = IAMeshSlice(this);
 
 protected:
     bool queryOutputFilename(const char *title,

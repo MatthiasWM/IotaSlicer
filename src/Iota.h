@@ -12,7 +12,7 @@
 
 #include "app/IAError.h"
 #include "geometry/IAMesh.h"
-#include "geometry/IASlice.h"
+#include "geometry/IAMeshSlice.h"
 #include "printer/IAPrinterList.h"
 #include "app/IAPreferences.h"
 #include "controller/IAPrinterListController.h"

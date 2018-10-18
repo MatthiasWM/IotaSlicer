@@ -62,6 +62,8 @@ public:
 
     bool saveGCode(const char *filename);
 
+    unsigned int createToolmap();
+
 private:
     IAToolpathListMap pToolpathListMap;
     IAPrinterFDM *pPrinter = nullptr;
@@ -84,12 +86,14 @@ public:
     void drawFlat(double w);
     void drawFlatToBitmap(IAFramebuffer*, double w, int color=0);
 
-    void add(IAToolpathList *tl, int group, int priority);
-    void add(IAToolpath *tt, int group, int priority);
+    void add(IAToolpathList *tl, int tool, int group, int priority);
+    void add(IAToolpath *tt, int tool, int group, int priority);
 
     bool isEmpty();
 
     void optimize();
+
+    unsigned int createToolmap();
 
 //    void colorize(uint8_t *rgb, IAToolpath *black, IAToolpath *white);
 //    void colorizeSoft(uint8_t *rgb, IAToolpath *dst);
@@ -126,6 +130,8 @@ public:
 
 //    void colorize(uint8_t *rgb, IAToolpath *black, IAToolpath *white);
 //    void colorizeSoft(uint8_t *rgb, IAToolpath *dst);
+    
+    unsigned int createToolmap();
 
     void saveGCode(IAGcodeWriter &g);
     void saveDXF(IADxfWriter &w);
@@ -135,6 +141,7 @@ public:
 
     IAVector3d tFirst, tPrev;
     double pZ = 0.0;
+    int pTool = -1;
     int pGroup = 0;
     int pPriority = 0;
 };
@@ -181,18 +188,18 @@ public:
 /**
  * Element changes to another extruder.
  */
-class IAToolpathExtruder : public IAToolpathElement
-{
-public:
-    IAToolpathExtruder(int i);
-    virtual ~IAToolpathExtruder() override;
-    virtual void draw() override { }
-    virtual void drawFlat(double w) override { }
-    virtual void saveGCode(IAGcodeWriter &g) override;
-    virtual IAToolpathElement *clone() override;
-
-    int pTool = 0;
-};
+//class IAToolpathExtruder : public IAToolpathElement
+//{
+//public:
+//    IAToolpathExtruder(int i);
+//    virtual ~IAToolpathExtruder() override;
+//    virtual void draw() override { }
+//    virtual void drawFlat(double w) override { }
+//    virtual void saveGCode(IAGcodeWriter &g) override;
+//    virtual IAToolpathElement *clone() override;
+//
+//    int pTool = 0;
+//};
 
 
 /**
@@ -211,7 +218,7 @@ public:
     void setColor(uint32_t c) { pColor = c; }
 
     IAVector3d pStart, pEnd;
-    uint32_t pColor = 0x00FFFFFF;
+    uint32_t pColor = 0xFFFFFFFF;
     bool pIsRapid = false;
 };
 

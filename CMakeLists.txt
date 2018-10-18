@@ -140,8 +140,8 @@ add_executable (IotaSlicer MACOSX_BUNDLE
 	src/geometry/IAMath.h
 	src/geometry/IAMesh.cpp
 	src/geometry/IAMesh.h
-	src/geometry/IASlice.cpp
-	src/geometry/IASlice.h
+	src/geometry/IAMeshSlice.cpp
+	src/geometry/IAMeshSlice.h
 	src/geometry/IATriangle.cpp
 	src/geometry/IATriangle.h
 	src/geometry/IAVector3d.cpp

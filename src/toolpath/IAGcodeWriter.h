@@ -49,8 +49,10 @@ public:
      \return the position of the current extruder's tip. */
     IAVector3d &position() { return pPosition; }
 
-    void sendInitSequence();
+    void sendInitSequence(unsigned int toolmap);
     void sendShutdownSequence();
+
+    void requestTool(int i);
 
     void cmdHome();
     void cmdResetExtruder();
@@ -92,6 +94,10 @@ private:
     double pRapidFeedrate = 3000.0;
     double pPrintFeedrate = 1000.0; // 1400.0
     double pLayerHeight = 0.3;
+    unsigned int pToolmap = 0; // fill this list with bit for every tool used in the process
+
+    int pExtruderStandbyTemp = 190;
+    int pExtruderPrintTemp = 230;
 
     /*
      Calculating the E-Factor:

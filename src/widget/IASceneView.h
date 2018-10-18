@@ -14,7 +14,7 @@
 
 
 class IAMeshList;
-class IASlice;
+class IAMeshSlice;
 class IACamera;
 
 

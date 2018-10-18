@@ -5,7 +5,7 @@
 //
 
 
-#include "IASlice.h"
+#include "IAMeshSlice.h"
 
 #include "Iota.h"
 #include "IAMesh.h"
@@ -28,7 +28,7 @@ GLUtesselator *gGluTess = nullptr;
 /**
  Create an emoty slice.
  */
-IASlice::IASlice(IAPrinter *printer)
+IAMeshSlice::IAMeshSlice(IAPrinter *printer)
 //:   pPrinter( printer )
 {
 #if 0
@@ -43,7 +43,7 @@ IASlice::IASlice(IAPrinter *printer)
 /**
  Free all resources.
  */
-IASlice::~IASlice()
+IAMeshSlice::~IAMeshSlice()
 {
     for (auto &e: pRim) { // pLid is an edge list
         delete e;
@@ -57,7 +57,7 @@ IASlice::~IASlice()
 /**
  Free all resources.
  */
-void IASlice::clear()
+void IAMeshSlice::clear()
 {
     for (auto &e: pRim) { // pLid is an edge list
         delete e;
@@ -76,7 +76,7 @@ void IASlice::clear()
  *
  * \return true, if the layer actually changed
  */
-bool IASlice::setNewZ(double z)
+bool IAMeshSlice::setNewZ(double z)
 {
     if (pCurrentZ==z) {
         // nothing changed, keep the data
@@ -93,7 +93,7 @@ bool IASlice::setNewZ(double z)
 /**
  Create the outline of a lid by slicing all meshes at Z.
  */
-void IASlice::generateRim(IAMesh *mesh)
+void IAMeshSlice::generateRim(IAMesh *mesh)
 {
     clear();
     addRim(mesh);
@@ -105,7 +105,7 @@ void IASlice::generateRim(IAMesh *mesh)
  The egde list runs clockwise for a connected outline, and counterclockwise for
  holes. Every outline loop can followed by a null ptr and more outlines.
  */
-void IASlice::addRim(IAMesh *m)
+void IAMeshSlice::addRim(IAMesh *m)
 {
     // setup
     m->updateGlobalSpace();
@@ -161,7 +161,7 @@ void IASlice::addRim(IAMesh *m)
  *       the flange in the other direction. Either way, the result is
  *       pretty random.
  */
-void IASlice::addFirstRimVertex(IATriangle *t)
+void IAMeshSlice::addFirstRimVertex(IATriangle *t)
 {
     // case 1: z crosses two edges
     // case 2: z touches one vertex and crosses one edge
@@ -234,7 +234,7 @@ void IASlice::addFirstRimVertex(IATriangle *t)
  \param edgeIndex the index of the first edge that crosses zMin
  \param zMin slice on this z plane
  */
-bool IASlice::addNextRimVertex(IAHalfEdgePtr &e)
+bool IAMeshSlice::addNextRimVertex(IAHalfEdgePtr &e)
 {
     // case 1: z crosses two edges
     // case 2: z touches one vertex and crosses one edge
@@ -278,7 +278,7 @@ bool IASlice::addNextRimVertex(IAHalfEdgePtr &e)
 /**
  Draw the edge where the slice intersects the model.
  */
-void IASlice::drawRim()
+void IAMeshSlice::drawRim()
 {
     glColor3f(0.8f, 1.0f, 1.0f);
     glLineWidth(12.0);
@@ -302,7 +302,7 @@ void IASlice::drawRim()
 /**
  * Draw the framebuffer as a slice into the current printer outline.
  */
-void IASlice::drawFramebuffer()
+void IAMeshSlice::drawFramebuffer()
 {
 #if 0 // temp hack
     if (pFramebuffer) {
@@ -321,7 +321,7 @@ void IASlice::drawFramebuffer()
  */
 static int tessVertexCount = 0;
 static IAVertex *tessV0, *tessV1, *tessV2;
-static IASlice *currentSlice = nullptr;
+static IAMeshSlice *currentSlice = nullptr;
 
 #ifdef __APPLE__
 #define __stdcall
@@ -390,7 +390,7 @@ void __stdcall tessErrorCallback(GLenum errorCode)
  \todo drawFlat should not be called here!
  \todo drawShell should not be called here!
  */
-void IASlice::tesselateLidFromRim()
+void IAMeshSlice::tesselateLidFromRim()
 {
     currentSlice = this;
     if (!gGluTess)
@@ -438,7 +438,7 @@ void IASlice::tesselateLidFromRim()
 /**
  * Tesselate the rim and draw the resulting lid.
  */
-void IASlice::tesselateAndDrawLid()
+void IAMeshSlice::tesselateAndDrawLid()
 {
     pFramebuffer->bindForRendering(); // make sure we have a square in the buffer
     if (pFramebuffer->buffers()==IAFramebuffer::BITMAP) {
@@ -451,7 +451,7 @@ void IASlice::tesselateAndDrawLid()
 }
 
 
-void IASlice::drawShell()
+void IAMeshSlice::drawShell()
 {
 //    /// \bug temporary hack
 //    pColorbuffer->bindForRendering();
