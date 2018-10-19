@@ -21,7 +21,7 @@ class IAToolpathList;
 class IAToolpath;
 class IAToolpathElement;
 class IAFramebuffer;
-class IAPrinterFDM;
+class IAFDMPrinter;
 
 
 typedef std::map<int, IAToolpathList*> IAToolpathListMap;
@@ -48,10 +48,10 @@ typedef std::shared_ptr<IAToolpath> IAToolpathTypeSP;
 class IAMachineToolpath
 {
 public:
-    IAMachineToolpath(IAPrinterFDM *printer);
+    IAMachineToolpath(IAFDMPrinter *printer);
     ~IAMachineToolpath();
-
-    void clear();
+    void purge();
+    
     void draw(double lo, double hi);
     void drawLayer(double);
     IAToolpathList *findLayer(double);
@@ -66,7 +66,7 @@ public:
 
 private:
     IAToolpathListMap pToolpathListMap;
-    IAPrinterFDM *pPrinter = nullptr;
+    IAFDMPrinter *pPrinter = nullptr;
 };
 
 
@@ -81,7 +81,8 @@ class IAToolpathList
 public:
     IAToolpathList(double z);
     ~IAToolpathList();
-    void clear(double z);
+    void purge();
+    void setZ(double z) { pZ = z; }
     void draw();
     void drawFlat(double w);
     void drawFlatToBitmap(IAFramebuffer*, double w, int color=0);
@@ -117,7 +118,8 @@ public:
     virtual ~IAToolpath();
     virtual IAToolpath *clone(IAToolpath *t=nullptr);
 
-    void clear(double z);
+    void purge();
+    void setZ(double z) { pZ = z; tFirst.z(z); tPrev.z(z); }
     void draw();
     void drawFlat(double w);
     void drawFlatToBitmap(IAFramebuffer*, double w, int color=0);

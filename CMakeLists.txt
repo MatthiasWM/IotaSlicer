@@ -88,10 +88,10 @@ collect_info_files(${other_files})
 
 find_package(Doxygen)
 if (DOXYGEN_FOUND)
+message("Doxygen found: ${DOXYGEN_EXECUTABLE}")
     add_custom_target( docs ALL
         COMMAND ${DOXYGEN_EXECUTABLE} ${PROJECT_SOURCE_DIR}/Doxyfile
         WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
-#${CMAKE_CURRENT_BINARY_DIR}
         COMMENT "Generating API documentation with Doxygen"
         VERBATIM
     )
@@ -170,8 +170,8 @@ add_executable (IotaSlicer MACOSX_BUNDLE
 	src/potrace/trace.h
 	src/printer/IAPrinter.cpp
 	src/printer/IAPrinter.h
-	src/printer/IAPrinterFDM.cpp
-	src/printer/IAPrinterFDM.h
+	src/printer/IAFDMPrinter.cpp
+	src/printer/IAFDMPrinter.h
 	src/printer/IAPrinterFDMBelt.cpp
 	src/printer/IAPrinterFDMBelt.h
 	src/printer/IAPrinterInkjet.cpp

@@ -8,7 +8,7 @@
 #include "printer/IAPrinterList.h"
 
 #include "Iota.h"
-#include "printer/IAPrinterFDM.h"
+#include "printer/IAFDMPrinter.h"
 #include "printer/IAPrinterFDMBelt.h"
 #include "printer/IAPrinterInkjet.h"
 #include "printer/IAPrinterLasercutter.h"
@@ -66,7 +66,7 @@ void IAPrinterList::generatePrototypes()
     IAPrinter *p;
 
     // add an FDM printer prototype
-    p = new IAPrinterFDM();
+    p = new IAFDMPrinter();
     p->name.set("Generic FDM Printer");
     add(p);
 
@@ -102,7 +102,7 @@ void IAPrinterList::loadCustomPrinters(IAPrinter *(&currentPrinter))
             printerRef.get("type", type, "", 128);
             IAPrinter *printer = nullptr;
             if (strcmp(type, "IAPrinterFDM")==0) {
-                printer = new IAPrinterFDM();
+                printer = new IAFDMPrinter();
             } else if (strcmp(type, "IAPrinterInkjet")==0) {
                 printer = new IAPrinterInkjet();
             } else if (strcmp(type, "IAPrinterLasercutter")==0) {

@@ -22,6 +22,9 @@ class Fl_Float_Input;
 class Fl_Input;
 
 
+/**
+ * This is the base class for various eidatble views in a tree widget.
+ */
 class IATreeItemView : public Fl_Group
 {
 public:
@@ -31,6 +34,9 @@ protected:
 };
 
 
+/**
+ * This view creates a mathing label and secondary text for tree views.
+ */
 class IALabelView : public IATreeItemView
 {
 public:
@@ -41,6 +47,9 @@ protected:
 };
 
 
+/**
+ * This view provides a numeric editor through a text input field for tree views.
+ */
 class IAFloatView : public IATreeItemView
 {
 public:
@@ -54,6 +63,9 @@ protected:
 };
 
 
+/**
+ * This view provides a text editor for tree views.
+ */
 class IATextView : public IATreeItemView
 {
 public:
@@ -67,6 +79,13 @@ protected:
 };
 
 
+/**
+ * This view edits floating point values via a text field and a pulldown menu.
+ *
+ * The pulldown menu is great for providing useful presets. The text field
+ * will interprete all consecutive numeric characters from the start of the
+ * menu label.
+ */
 class IAFloatChoiceView : public IATreeItemView
 {
 public:
@@ -80,6 +99,9 @@ protected:
 };
 
 
+/**
+ * This view provides a pulldown menu with integer output for tree views.
+ */
 class IAChoiceView : public IATreeItemView
 {
 public:

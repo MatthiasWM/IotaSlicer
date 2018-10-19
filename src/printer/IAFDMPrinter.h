@@ -11,9 +11,22 @@
 #include "printer/IAPrinter.h"
 
 
-class Fl_Widget;
-class Fl_Choice;
-class Fl_Input_Choice;
+class IAFDMPrinter;
+class IAFDMSlice;
+typedef std::map<double, IAFDMSlice> IAFDMSliceMap;
+
+
+/**
+ * This class holds a single slice of infomeation for a given Z valiue.
+ */
+class IAFDMSlice
+{
+public:
+    IAFDMSlice(IAFDMPrinter *printer);
+
+private:
+    IAFDMPrinter *pPrinter = nullptr;
+};
 
 
 /**
@@ -22,15 +35,15 @@ class Fl_Input_Choice;
  *
  * This printer driver writes GCode files.
  */
-class IAPrinterFDM : public IAPrinter
+class IAFDMPrinter : public IAPrinter
 {
     typedef IAPrinter super;
 public:
     // ---- constructor and destructor
-    IAPrinterFDM();
-    IAPrinterFDM(IAPrinterFDM const& src);
-    virtual ~IAPrinterFDM() override;
-    IAPrinterFDM &operator=(IAPrinterFDM&) = delete;
+    IAFDMPrinter();
+    IAFDMPrinter(IAFDMPrinter const& src);
+    virtual ~IAFDMPrinter() override;
+    IAFDMPrinter &operator=(IAFDMPrinter&) = delete;
     virtual IAPrinter *clone() const override;
     virtual const char *type() const override { return "IAPrinterFDM"; }
 
@@ -98,6 +111,7 @@ private:
 
     /// the toolpath for the entire scene for vector based machines
     IAMachineToolpath pMachineToolpath = IAMachineToolpath(this);
+    IAFDMSliceMap pSliceMap;
 };
 
 

@@ -19,6 +19,11 @@ class IAProperty;
 class Fl_Preferences;
 
 
+/**
+ * A list of properties.
+ *
+ * \see IAProperty
+ */
 class IAPropertyList
 {
 public:
@@ -55,6 +60,9 @@ protected:
 };
 
 
+/**
+ * This property holds a single floating point value in a variable of type 'double'.
+ */
 class IAFloatProperty : public IAProperty
 {
 public:
@@ -69,6 +77,9 @@ protected:
 };
 
 
+/**
+ * This property holds a single integer value in a variable of type 'int'.
+ */
 class IAIntProperty : public IAProperty
 {
 public:
@@ -83,6 +94,11 @@ protected:
 };
 
 
+/**
+ * This property holds a utf-8 string.
+ *
+ * Memory allocations and deallocations are done inside the class.
+ */
 class IATextProperty : public IAProperty
 {
 public:
@@ -99,6 +115,11 @@ protected:
 };
 
 
+/**
+ * This property holds a filename in a utf-8 string.
+ *
+ * Memory allocations and deallocations are done inside the class.
+ */
 class IAFilenameProperty : public IATextProperty
 {
 public:
@@ -106,6 +127,9 @@ public:
 };
 
 
+/**
+ * This property holds a IAVector3d.
+ */
 class IAVectorProperty : public IAProperty
 {
 public:
@@ -122,6 +146,9 @@ protected:
 };
 
 
+/**
+ * This property references an extruder in the FDM Printer setup.
+ */
 class IAExtruderProperty : public IAIntProperty
 {
 public:

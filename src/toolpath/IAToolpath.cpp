@@ -12,7 +12,7 @@
 
 #include "Iota.h"
 #include "opengl/IAFramebuffer.h"
-#include "printer/IAPrinterFDM.h"
+#include "printer/IAFDMPrinter.h"
 
 #include <FL/gl.h>
 
@@ -146,11 +146,17 @@ void IAToolpath::colorizeSoft(uint8_t *rgb, IAToolpath *dst)
 
 
 
+#ifdef __APPLE__
+#pragma mark -
+#endif
+// =============================================================================
+
+
 
 /**
  * Create a list of toolpaths for the entire printout.
  */
-IAMachineToolpath::IAMachineToolpath(IAPrinterFDM *printer)
+IAMachineToolpath::IAMachineToolpath(IAFDMPrinter *printer)
 :   pPrinter( printer )
 {
 }
@@ -161,14 +167,14 @@ IAMachineToolpath::IAMachineToolpath(IAPrinterFDM *printer)
  */
 IAMachineToolpath::~IAMachineToolpath()
 {
-    clear();
+    purge();
 }
 
 
 /**
  * Free all allocations.
  */
-void IAMachineToolpath::clear()
+void IAMachineToolpath::purge()
 {
     for (auto &p: pToolpathListMap) {
         delete p.second;
@@ -339,18 +345,15 @@ IAToolpathList::IAToolpathList(double z)
  */
 IAToolpathList::~IAToolpathList()
 {
-    for (auto &tt: pToolpathList)
-        delete tt;
-    pToolpathList.clear();
+    purge();
 }
 
 
 /**
  * Delete all resources.
  */
-void IAToolpathList::clear(double z)
+void IAToolpathList::purge()
 {
-    pZ = z;
     for (auto &tt: pToolpathList)
         delete tt;
     pToolpathList.clear();
@@ -536,7 +539,7 @@ IAToolpath::IAToolpath(double z)
  */
 IAToolpath::~IAToolpath()
 {
-    clear(pZ);
+    purge();
 }
 
 
@@ -565,14 +568,13 @@ IAToolpath *IAToolpath::clone(IAToolpath *t)
 /**
  * Clear a toolpath for its next use.
  */
-void IAToolpath::clear(double z)
+void IAToolpath::purge()
 {
-    pZ = z;
     for (auto &el: pElementList)
         delete el;
     pElementList.clear();
-    tFirst = { 0.0, 0.0, z };
-    tPrev = { 0.0, 0.0, z };
+    tFirst = { 0.0, 0.0, pZ };
+    tPrev = { 0.0, 0.0, pZ };
 }
 
 

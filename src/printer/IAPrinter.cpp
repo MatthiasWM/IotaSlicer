@@ -8,7 +8,7 @@
 #include "IAPrinter.h"
 
 #include "Iota.h"
-#include "IAPrinterFDM.h"
+#include "IAFDMPrinter.h"
 #include "IAPrinterFDMBelt.h"
 #include "IAPrinterInkjet.h"
 #include "IAPrinterLasercutter.h"

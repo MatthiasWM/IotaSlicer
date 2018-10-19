@@ -39,16 +39,16 @@ extern bool initializeOpenGL();
 
 
 /**
- * Manage an OpenGL framebuffer object as a texture.
+ * Manage a memeory mapped or OpenGL framebuffer object as a texture.
  *
- * Framebuffers are used to represent a single Z-layer of the overall
+ * Framebuffers are most often used to represent a single Z-layer of the overall
  * scene voxel.
  *
  * Framebuffers are filled by rendering slices, outlines, shadows, or such
  * into them. Colors can represent object ID's but can also contain true
  * color information of textured objects.
  *
- * Framebuffers can be filtered to grow or shrink objects. They can be mreged
+ * Framebuffers can be filtered to grow or shrink objects. They can be merged
  * to add object information, support structure information, and whatever
  * else is needed to create a vector representation.
  *
@@ -67,6 +67,9 @@ class IAFramebuffer
 public:
     typedef unsigned long bm_word;
 
+    /**
+     * These are the supported buffer types and sizes.
+     */
     typedef enum {
         NONE = 0,
         RGBA,

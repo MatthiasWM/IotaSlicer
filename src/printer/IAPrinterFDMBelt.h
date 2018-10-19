@@ -8,7 +8,7 @@
 #define IA_PRINTER_FDM_BELT_H
 
 
-#include "printer/IAPrinterFDM.h"
+#include "printer/IAFDMPrinter.h"
 
 
 /**

@@ -8,7 +8,7 @@
 #include "IAGcodeWriter.h"
 
 #include "Iota.h"
-#include "printer/IAPrinterFDM.h"
+#include "printer/IAFDMPrinter.h"
 
 #include <FL/gl.h>
 
@@ -25,7 +25,7 @@
 /**
  * Create a new GCode writer.
  */
-IAGcodeWriter::IAGcodeWriter(IAPrinterFDM *printer)
+IAGcodeWriter::IAGcodeWriter(IAFDMPrinter *printer)
 :   pPrinter( printer )
 {
 }
@@ -694,6 +694,10 @@ void IAGcodeWriter::requestTool(int t)
     if (pT!=t) {
         // TODO: there will be a whole bunch of extruder change strategies
         // --- This is the strategy for multiple hotends with one feed each
+        // We are creating wasted plastic in the park position, which is later
+        // missing in the build. Some of this may be reduced by retracting much
+        // further, bu I assume, some kind of minimal waste tower
+        // is unavaoidable.
         if (pT!=-1) {
             fprintf(pFile, "T%d\n", pT);
             fprintf(pFile, "M104 S%d ; standby temperature\n", pExtruderStandbyTemp);
@@ -713,6 +717,7 @@ void IAGcodeWriter::requestTool(int t)
             fprintf(pFile, "M109 S%d ; printing temperature and wait\n", pExtruderPrintTemp);
             // -- or purge, or print outline, or print waste tower, or ...
             cmdUnretract();
+            pTotalTime += abs(t-pT)/1.5; // we assume 1.5 deg C per seconds heating rate
         }
         pT = t;
     }

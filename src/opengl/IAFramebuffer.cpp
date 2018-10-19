@@ -481,7 +481,8 @@ uint8_t *IAFramebuffer::getRawImageRGBA()
  */
 int IAFramebuffer::traceOutline(IAToolpathList *toolpathList, double z)
 {
-    toolpathList->clear(z);
+    toolpathList->purge();
+    toolpathList->setZ(z);
     potrace(this, toolpathList, z);
     return 0;
 }

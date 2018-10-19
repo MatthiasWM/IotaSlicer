@@ -16,7 +16,7 @@
 #include <map>
 
 
-class IAPrinterFDM;
+class IAFDMPrinter;
 
 
 /**
@@ -25,7 +25,7 @@ class IAPrinterFDM;
 class IAGcodeWriter
 {
 public:
-    IAGcodeWriter(IAPrinterFDM *printer);
+    IAGcodeWriter(IAFDMPrinter *printer);
     ~IAGcodeWriter();
 
     bool open(const char *filename);
@@ -85,7 +85,7 @@ private:
     void sendExtrusionRel(uint32_t color, double e);
     void sendNewLine(const char *comment=nullptr);
 
-    IAPrinterFDM *pPrinter = nullptr;
+    IAFDMPrinter *pPrinter = nullptr;
     FILE *pFile = nullptr;
     IAVector3d pPosition;
     int pT = 0;
@@ -96,7 +96,7 @@ private:
     double pLayerHeight = 0.3;
     unsigned int pToolmap = 0; // fill this list with bit for every tool used in the process
 
-    int pExtruderStandbyTemp = 190;
+    int pExtruderStandbyTemp = 205;
     int pExtruderPrintTemp = 230;
 
     /*

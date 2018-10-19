@@ -5,7 +5,7 @@
 //
 
 
-#include "IAPrinterFDM.h"
+#include "IAFDMPrinter.h"
 
 #include "Iota.h"
 #include "view/IAGUIMain.h"
@@ -154,13 +154,13 @@ typedef Fl_Menu_Item Fl_Menu_Item_List[];
 
 
 
-IAPrinterFDM::IAPrinterFDM()
+IAFDMPrinter::IAFDMPrinter()
 :   super()
 {
 }
 
 
-IAPrinterFDM::IAPrinterFDM(IAPrinterFDM const& src)
+IAFDMPrinter::IAFDMPrinter(IAFDMPrinter const& src)
 :   super(src)
 {
     numExtruders.set( src.numExtruders() );
@@ -176,15 +176,15 @@ IAPrinterFDM::IAPrinterFDM(IAPrinterFDM const& src)
 }
 
 
-IAPrinterFDM::~IAPrinterFDM()
+IAFDMPrinter::~IAFDMPrinter()
 {
     // nothing to delete
 }
 
 
-IAPrinter *IAPrinterFDM::clone() const
+IAPrinter *IAFDMPrinter::clone() const
 {
-    IAPrinterFDM *p = new IAPrinterFDM(*this);
+    IAFDMPrinter *p = new IAFDMPrinter(*this);
     return p;
 }
 
@@ -217,7 +217,7 @@ IAPrinter *IAPrinterFDM::clone() const
 //               dialect: Repetier
 
 
-void IAPrinterFDM::createPropertiesControls()
+void IAFDMPrinter::createPropertiesControls()
 {
     IATreeItemController *s;
 
@@ -283,7 +283,7 @@ void IAPrinterFDM::createPropertiesControls()
 }
 
 
-void IAPrinterFDM::initializeSceneSettings()
+void IAFDMPrinter::initializeSceneSettings()
 {
     super::initializeSceneSettings();
     IATreeItemController *s;
@@ -496,7 +496,7 @@ void IAPrinterFDM::initializeSceneSettings()
  * Verify a given filename when this is the first call in a session. Request
  * a new filename if none was set yet.
  */
-void IAPrinterFDM::userSliceSave()
+void IAFDMPrinter::userSliceSave()
 {
     if (pFirstWrite) {
         userSliceSaveAs();
@@ -513,7 +513,7 @@ void IAPrinterFDM::userSliceSave()
  * Implement this to open a file chooser with the require file
  * pattern and extension.
  */
-void IAPrinterFDM::userSliceSaveAs()
+void IAFDMPrinter::userSliceSaveAs()
 {
     if (queryOutputFilename("Save toolpath as GCode", "*.gcode", ".gcode")) {
         pFirstWrite = false;
@@ -525,7 +525,7 @@ void IAPrinterFDM::userSliceSaveAs()
 /**
  * Generate all slice data and cache it for a fast preview or save operation.
  */
-void IAPrinterFDM::userSliceGenerateAll()
+void IAFDMPrinter::userSliceGenerateAll()
 {
     purgeSlicesAndCaches();
     sliceAll();
@@ -535,9 +535,9 @@ void IAPrinterFDM::userSliceGenerateAll()
 /**
  * Slice all meshes and models in the scenen.
  */
-void IAPrinterFDM::sliceAll()
+void IAFDMPrinter::sliceAll()
 {
-    pMachineToolpath.clear();
+    pMachineToolpath.purge();
 
     double hgt = Iota.pMesh->pMax.z() - Iota.pMesh->pMin.z() + 2.0*layerHeight();
     // initial height determines stickiness to bed
@@ -749,7 +749,7 @@ void IAPrinterFDM::sliceAll()
 }
 
 
-void IAPrinterFDM::saveToolpath(const char *filename)
+void IAFDMPrinter::saveToolpath(const char *filename)
 {
     if (!filename)
         filename = recentUpload();
@@ -762,9 +762,9 @@ void IAPrinterFDM::saveToolpath(const char *filename)
 /**
  * Clear all buffered data and prepare for a modified scene.
  */
-void IAPrinterFDM::purgeSlicesAndCaches()
+void IAFDMPrinter::purgeSlicesAndCaches()
 {
-    pMachineToolpath.clear();
+    pMachineToolpath.purge();
     super::purgeSlicesAndCaches();
 }
 
@@ -772,7 +772,7 @@ void IAPrinterFDM::purgeSlicesAndCaches()
 /**
  * Draw a preview of the slicing operation.
  */
-void IAPrinterFDM::drawPreview(double lo, double hi)
+void IAFDMPrinter::drawPreview(double lo, double hi)
 {
     pMachineToolpath.draw(lo, hi);
 }
@@ -780,46 +780,46 @@ void IAPrinterFDM::drawPreview(double lo, double hi)
 
 
 
-void IAPrinterFDM::userChangedColorMode()
+void IAFDMPrinter::userChangedColorMode()
 {
     // TODO: clear toolpath and slice cache
 }
 
 
-void IAPrinterFDM::userChangedNumLids()
+void IAFDMPrinter::userChangedNumLids()
 {
     // TODO: clear toolpath and slice cache
 }
 
 
-void IAPrinterFDM::userChangedNumShells()
+void IAFDMPrinter::userChangedNumShells()
 {
     // TODO: clear toolpath and slice cache
 }
 
 
-void IAPrinterFDM::userChangedLidType()
+void IAFDMPrinter::userChangedLidType()
 {
     // TODO: clear toolpath and slice cache
 }
 
-void IAPrinterFDM::userChangedInfillDensity()
+void IAFDMPrinter::userChangedInfillDensity()
 {
     // TODO: clear toolpath and slice cache
 }
 
-void IAPrinterFDM::userChangedSkirt()
+void IAFDMPrinter::userChangedSkirt()
 {
     // TODO: clear toolpath and slice cache
 }
 
-void IAPrinterFDM::userChangedNozzleDiameter()
+void IAFDMPrinter::userChangedNozzleDiameter()
 {
     // TODO: clear toolpath and slice cache
 }
 
 
-void IAPrinterFDM::readProperties(Fl_Preferences &printer)
+void IAFDMPrinter::readProperties(Fl_Preferences &printer)
 {
     super::readProperties(printer);
     Fl_Preferences properties(printer, "properties");
@@ -827,7 +827,7 @@ void IAPrinterFDM::readProperties(Fl_Preferences &printer)
 }
 
 
-void IAPrinterFDM::writeProperties(Fl_Preferences &printer)
+void IAFDMPrinter::writeProperties(Fl_Preferences &printer)
 {
     super::writeProperties(printer);
     Fl_Preferences properties(printer, "properties");
