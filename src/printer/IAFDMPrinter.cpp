@@ -330,7 +330,7 @@ void IAFDMPrinter::initializeSceneSettings()
         { nullptr } };
 
     s = new IAChoiceController("NPerimiter", "# of perimeters: ", numShells,
-                         []{;}, numShellsMenu );
+                               [this]{purgeSlicesAndCaches();}, numShellsMenu );
     pSceneSettings.push_back(s);
 
     static Fl_Menu_Item numLidsMenu[] = {
@@ -340,7 +340,7 @@ void IAFDMPrinter::initializeSceneSettings()
         { nullptr } };
 
     s = new IAChoiceController("NLids", "# of lids: ", numLids,
-                         [this]{userChangedNumLids();}, numLidsMenu );
+                               [this]{purgeSlicesAndCaches();}, numLidsMenu );
     pSceneSettings.push_back(s);
 
     static Fl_Menu_Item lidTypeMenu[] = {
@@ -349,7 +349,7 @@ void IAFDMPrinter::initializeSceneSettings()
         { nullptr } };
 
     s = new IAChoiceController("lidType", "lid type: ", lidType,
-                            [this]{userChangedLidType();}, lidTypeMenu );
+                                [this]{purgeSlicesAndCaches();}, lidTypeMenu );
     pSceneSettings.push_back(s);
 
     static Fl_Menu_Item infillDensityMenuMenu[] = {
@@ -363,7 +363,7 @@ void IAFDMPrinter::initializeSceneSettings()
         { nullptr } };
 
     s = new IAFloatChoiceController("infillDensity", "infill density: ", infillDensity, "%",
-                                 [this]{userChangedInfillDensity();}, infillDensityMenuMenu );
+                                    [this]{purgeSlicesAndCaches();}, infillDensityMenuMenu );
     pSceneSettings.push_back(s);
 
     static Fl_Menu_Item skirtMenu[] = {
@@ -372,7 +372,7 @@ void IAFDMPrinter::initializeSceneSettings()
         { nullptr } };
 
     s = new IAChoiceController("skirt", "skirt: ", hasSkirt,
-                            [this]{userChangedSkirt();}, skirtMenu );
+                               [this]{purgeSlicesAndCaches();}, skirtMenu );
     pSceneSettings.push_back(s);
 
     static Fl_Menu_Item layerTimeMenu[] = {
@@ -381,7 +381,7 @@ void IAFDMPrinter::initializeSceneSettings()
         { "30 sec.", 0, nullptr, (void*)0, 0, 0, 0, 11 },
         { nullptr } };
     s = new IAFloatChoiceController("minLayerTime", "min. layer time: ", minimumLayerTime, "sec",
-                                    []{;}, layerTimeMenu );
+                                    [this]{purgeSlicesAndCaches();}, layerTimeMenu );
     s->tooltip("This ia the minimum time it will take to print a layer. Setting this "
                "to 15 seconds or more will give already printed filament time to cool "
                "before the next layer is added.");
@@ -392,7 +392,7 @@ void IAFDMPrinter::initializeSceneSettings()
         { "#1 (black)", 0, nullptr, (void*)1, 0, 0, 0, 11 },
         { nullptr } };
     s = new IAChoiceController("modelExtruder", "extruder:", modelExtruder,
-                               []{}, extruderChoiceMenu );
+                               [this]{purgeSlicesAndCaches();}, extruderChoiceMenu );
     pSceneSettings.push_back(s);
 
     static Fl_Menu_Item nozzleDiameterMenu[] = {
@@ -401,7 +401,7 @@ void IAFDMPrinter::initializeSceneSettings()
         { nullptr } };
 
     s = new IAFloatChoiceController("nozzleDiameter", "nozzle diameter: ", nozzleDiameter, "mm",
-                                 [this]{userChangedNozzleDiameter();}, nozzleDiameterMenu );
+                                 [this]{purgeSlicesAndCaches();}, nozzleDiameterMenu );
     pSceneSettings.push_back(s);
 
     // There will be a preset system for the way that support structures are
@@ -411,7 +411,7 @@ void IAFDMPrinter::initializeSceneSettings()
         { "yes", 0, nullptr, (void*)1, 0, 0, 0, 11 },
         { nullptr } };
     s = new IAChoiceController("support", "support: ", hasSupport,
-                         []{ ; }, supportMenu ); // FIXME: recache all
+                         [this]{purgeSlicesAndCaches();}, supportMenu ); // FIXME: recache all
     pSceneSettings.push_back(s);
 
     // TODO: support material
@@ -423,7 +423,7 @@ void IAFDMPrinter::initializeSceneSettings()
         { "60.0\xC2\xB0", 0, nullptr, (void*)3, 0, 0, 0, 11 },
         { nullptr } };
     s = new IAFloatChoiceController("support/angle", "angle: ", supportAngle, "deg",
-                                 []{ ; }, supportAngleMenu );
+                                 [this]{purgeSlicesAndCaches();}, supportAngleMenu );
     pSceneSettings.push_back(s);
 
     static Fl_Menu_Item supportDensityMenu[] = {
@@ -434,7 +434,7 @@ void IAFDMPrinter::initializeSceneSettings()
         { "50.0%", 0, nullptr, (void*)3, 0, 0, 0, 11 },
         { nullptr } };
     s = new IAFloatChoiceController("support/density", "density: ", supportDensity, "%",
-                                 []{ ; }, supportDensityMenu );
+                                 [this]{purgeSlicesAndCaches();}, supportDensityMenu );
     pSceneSettings.push_back(s);
 
     static Fl_Menu_Item topGapMenu[] = {
@@ -444,7 +444,7 @@ void IAFDMPrinter::initializeSceneSettings()
         { "3 layers", 0, nullptr, (void*)3, 0, 0, 0, 11 },
         { nullptr } };
     s = new IAFloatChoiceController("support/topGap", "top gap: ", supportTopGap, "layers",
-                                 []{ ; }, topGapMenu );
+                                 [this]{purgeSlicesAndCaches();}, topGapMenu );
     pSceneSettings.push_back(s);
 
     static Fl_Menu_Item sideGapMenu[] = {
@@ -455,7 +455,7 @@ void IAFDMPrinter::initializeSceneSettings()
         { "0.4mm", 0, nullptr, (void*)0, 0, 0, 0, 11 },
         { nullptr } };
     s = new IAFloatChoiceController("support/sideGap", "side gap: ", supportSideGap, "mm",
-                                 []{ ; }, sideGapMenu );
+                                 [this]{purgeSlicesAndCaches();}, sideGapMenu );
     pSceneSettings.push_back(s);
 
     static Fl_Menu_Item bottomGapMenu[] = {
@@ -465,14 +465,14 @@ void IAFDMPrinter::initializeSceneSettings()
         { "3 layers", 0, nullptr, (void*)3, 0, 0, 0, 11 },
         { nullptr } };
     s = new IAFloatChoiceController("support/bottomGap", "bottom gap: ", supportBottomGap, "layers",
-                                 []{ ; }, bottomGapMenu );
+                                 [this]{purgeSlicesAndCaches();}, bottomGapMenu );
     pSceneSettings.push_back(s);
 
     // We need an extruder ref controller that displays the current material and
     // color for the choosen extruder. For mixing extruders, this could even allow
     // a choice of color?
     s = new IAChoiceController("support/extruder", "extruder:", supportExtruder,
-                               []{}, extruderChoiceMenu );
+                               [this]{purgeSlicesAndCaches();}, extruderChoiceMenu );
     pSceneSettings.push_back(s);
 
 
@@ -696,7 +696,7 @@ double IAFDMPrinter::sliceIndexToZ(int i)
 }
 
 
-void IAFDMPrinter::acquireCoreMap(int i)
+void IAFDMPrinter::acquireCorePattern(int i)
 {
     if (!pSliceMap[i].pCore) {
         IAFramebuffer *sliceMap = new IAFramebuffer(this, IAFramebuffer::BITMAP);
@@ -712,64 +712,71 @@ void IAFDMPrinter::acquireCoreMap(int i)
 
 void IAFDMPrinter::sliceLayer(int i)
 {
-    double z = sliceIndexToZ(i);
+    if (!Iota.pMesh) return;
 
-    acquireCoreMap(i);
+    double z = sliceIndexToZ(i);
+    IAFDMSlice &s = pSliceMap[i];
+
+    acquireCorePattern(i);
 
     // TODO: do the stuff below only if we do not have yet generated the components yet.
     // (see acquireCoreMap() --> acquireToolpath() )
 
     // skirt aroiund the entire model
-    if (i==0 && hasSkirt()) {
+    if (i==0 && hasSkirt() && !s.pSkirtToolpath) {
         IAToolpathList *tp = pSliceMap[i].pSkirtToolpath = new IAToolpathList(z);
         addToolpathForSkirt(tp, i);
     }
 
     // support structures
-    if (hasSupport()) {
+    if (hasSupport() && !s.pSupportToolpath) {
         IAToolpathList *tp = pSliceMap[i].pSupportToolpath = new IAToolpathList(z);
         addToolpathForSupport(tp, i);
     }
 
-    IAFramebuffer infill(pSliceMap[i].pCore);
+    if (!s.pInfillToolpath || !s.pLidToolpath) {
+        IAFramebuffer infill(pSliceMap[i].pCore);
 
-    // build lids and bottoms
-    if (numLids()>0) {
-        acquireCoreMap(i+1);
-        IAFramebuffer mask(pSliceMap[i+1].pCore);
-        if (numLids()>1) {
-            acquireCoreMap(i+2);
-            if (pSliceMap[i+2].pCore)
-                mask.logicAnd(pSliceMap[i+2].pCore);
-            else
-                mask.clear();
-        }
-        if (i>0) {
-            acquireCoreMap(i-1);
-            mask.logicAnd(pSliceMap[i-1].pCore);
-        } else {
-            mask.clear();
-        }
-        if (numLids()>1) {
-            if (i>1) {
-                acquireCoreMap(i-2);
-                mask.logicAnd(pSliceMap[i-2].pCore);
+        // build lids and bottoms
+        if (numLids()>0) {
+            acquireCorePattern(i+1);
+            IAFramebuffer mask(pSliceMap[i+1].pCore);
+            if (numLids()>1) {
+                acquireCorePattern(i+2);
+                if (pSliceMap[i+2].pCore)
+                    mask.logicAnd(pSliceMap[i+2].pCore);
+                else
+                    mask.clear();
+            }
+            if (i>0) {
+                acquireCorePattern(i-1);
+                mask.logicAnd(pSliceMap[i-1].pCore);
             } else {
                 mask.clear();
             }
+            if (numLids()>1) {
+                if (i>1) {
+                    acquireCorePattern(i-2);
+                    mask.logicAnd(pSliceMap[i-2].pCore);
+                } else {
+                    mask.clear();
+                }
+            }
+
+            IAFramebuffer lid(pSliceMap[i].pCore);
+            lid.logicAndNot(&mask); // TODO: shrink lid
+            infill.logicAnd(&mask); // TODO: shrink infill
+            if (!s.pLidToolpath) {
+                IAToolpathList *tp = pSliceMap[i].pLidToolpath = new IAToolpathList(z);
+                addToolpathForLid(tp, i, lid);
+            }
         }
 
-        IAFramebuffer lid(pSliceMap[i].pCore);
-        lid.logicAndNot(&mask); // TODO: shrink lid
-        infill.logicAnd(&mask); // TODO: shrink infill
-        IAToolpathList *tp = pSliceMap[i].pLidToolpath = new IAToolpathList(z);
-        addToolpathForLid(tp, i, lid);
-    }
-
-    // build infills
-    if (infillDensity()>0.0001) {
-        IAToolpathList *tp = pSliceMap[i].pInfillToolpath = new IAToolpathList(z);
-        addToolpathForInfill(tp, i, infill);
+        // build infills
+        if (infillDensity()>0.0001 && !s.pInfillToolpath) {
+            IAToolpathList *tp = pSliceMap[i].pInfillToolpath = new IAToolpathList(z);
+            addToolpathForInfill(tp, i, infill);
+        }
     }
 }
 
@@ -779,9 +786,7 @@ void IAFDMPrinter::sliceLayer(int i)
  */
 void IAFDMPrinter::sliceAll()
 {
-    pMachineToolpath.purge();
-    pSliceMap.clear();
-
+//    pSliceMap.clear();
     double hgt = Iota.pMesh->pMax.z() - Iota.pMesh->pMin.z() + 2.0*layerHeight();
     double zMin = layerHeight() * 0.9; // initial height
     double zLayerHeight = layerHeight();
@@ -815,26 +820,34 @@ void IAFDMPrinter::saveToolpath(const char *filename)
 {
     if (!filename)
         filename = recentUpload();
+    sliceAll();
     double hgt = Iota.pMesh->pMax.z() - Iota.pMesh->pMin.z() + 2.0*layerHeight();
     double zLayerHeight = layerHeight();
     double zMax = hgt;
+    IAMachineToolpath machineToolpath(this);
     int i = 0, n = (int)((zMax)/zLayerHeight) + 2;
     for (i=0; i<n; ++i)
     {
         double z = sliceIndexToZ(i);
-        IAToolpathList *tp = pMachineToolpath.createLayer(z);
+        IAToolpathList *tp = machineToolpath.createLayer(z);
         IAFDMSlice &s = pSliceMap[i];
-        if (s.pShellToolpath) tp->move(s.pShellToolpath);
-        if (s.pLidToolpath) tp->move(s.pLidToolpath);
-        if (s.pInfillToolpath) tp->move(s.pInfillToolpath);
-        if (s.pSkirtToolpath) tp->move(s.pSkirtToolpath);
-        if (s.pSupportToolpath) tp->move(s.pSupportToolpath);
+        if (s.pShellToolpath) tp->add(s.pShellToolpath);
+        if (s.pLidToolpath) tp->add(s.pLidToolpath);
+        if (s.pInfillToolpath) tp->add(s.pInfillToolpath);
+        if (s.pSkirtToolpath) tp->add(s.pSkirtToolpath);
+        if (s.pSupportToolpath) tp->add(s.pSupportToolpath);
     }
-    pSliceMap.clear();
+    machineToolpath.optimize();
+    machineToolpath.saveGCode(filename);
+}
 
-    pMachineToolpath.optimize();
-    // generate Toolpath if it is not complete
-    pMachineToolpath.saveGCode(filename);
+
+void IAFDMPrinter::rangeSliderChanged() {
+    printf("Event %d\n", Fl::event());
+    if (Fl::event()==FL_RELEASE || Fl::event()==FL_KEYDOWN) {
+        sliceLayer(zRangeSlider->highValue()); // FIXME:
+        gSceneView->redraw();
+    }
 }
 
 
@@ -843,8 +856,10 @@ void IAFDMPrinter::saveToolpath(const char *filename)
  */
 void IAFDMPrinter::purgeSlicesAndCaches()
 {
-    pMachineToolpath.purge();
+    pSliceMap.clear();
     super::purgeSlicesAndCaches();
+    sliceLayer(zRangeSlider->highValue()); // FIXME:
+    gSceneView->redraw();
 }
 
 
@@ -864,47 +879,6 @@ void IAFDMPrinter::drawPreview(double lo, double hi)
         if (s.pSkirtToolpath) s.pSkirtToolpath->draw();
         if (s.pSupportToolpath) s.pSupportToolpath->draw();
     }
-}
-
-
-
-
-void IAFDMPrinter::userChangedColorMode()
-{
-    // TODO: clear toolpath and slice cache
-}
-
-
-void IAFDMPrinter::userChangedNumLids()
-{
-    // TODO: clear toolpath and slice cache
-}
-
-
-void IAFDMPrinter::userChangedNumShells()
-{
-    // TODO: clear toolpath and slice cache
-}
-
-
-void IAFDMPrinter::userChangedLidType()
-{
-    // TODO: clear toolpath and slice cache
-}
-
-void IAFDMPrinter::userChangedInfillDensity()
-{
-    // TODO: clear toolpath and slice cache
-}
-
-void IAFDMPrinter::userChangedSkirt()
-{
-    // TODO: clear toolpath and slice cache
-}
-
-void IAFDMPrinter::userChangedNozzleDiameter()
-{
-    // TODO: clear toolpath and slice cache
 }
 
 

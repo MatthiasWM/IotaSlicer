@@ -67,6 +67,7 @@ public:
 
     virtual void purgeSlicesAndCaches() override;
     virtual void drawPreview(double lo, double hi) override;
+    virtual void rangeSliderChanged() override;
 
     // ---- controllers
     virtual void createPropertiesControls() override;
@@ -107,32 +108,28 @@ public:
 
     // ----
     double sliceIndexToZ(int i);
+
+    void acquireCorePattern(int i);
+//    void acquireSkirtPath(int i);
+//    void acquireSupportPath(int i);
+//    void acquireLidPath(int i);
+//    void acquireInfillPath(int i);
+
     void sliceLayer(int i);
     void sliceAll();
+
     void addToolpathForSkirt(IAToolpathList *tp, int i);
     void addToolpathForSupport(IAToolpathList *tp, int i);
     void createToolpathForShell(int i, IAFramebuffer *slice);
     void addToolpathForLid(IAToolpathList *tp, int i, IAFramebuffer &fb);
     void addToolpathForInfill(IAToolpathList *tp, int i, IAFramebuffer &fb);
-    void acquireCoreMap(int i);
 
     void saveToolpath(const char *filename = nullptr);
 
     double filamentDiameter() { return 1.75; }
-
-protected:
-    void userChangedColorMode();
-    void userChangedNumLids();
-    void userChangedLidType();
-    void userChangedNumShells();
-    void userChangedInfillDensity();
-    void userChangedSkirt();
-    void userChangedNozzleDiameter();
-
+    
 private:
 
-    /// the toolpath for the entire scene for vector based machines
-    IAMachineToolpath pMachineToolpath = IAMachineToolpath(this);
     IAFDMSliceMap pSliceMap;
 };
 

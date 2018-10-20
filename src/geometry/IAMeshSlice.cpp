@@ -100,6 +100,7 @@ void IAMeshSlice::generateRim(IAMesh *mesh)
  */
 void IAMeshSlice::addRim(IAMesh *m)
 {
+    if (!m) return;
     // setup
     m->updateGlobalSpace();
 

@@ -6,6 +6,9 @@ code_name {.cpp}
 decl {\#include "Iota.h"} {public global
 }
 
+decl {\#include "printer/IAPrinter.h"} {selected public global
+}
+
 decl {\#include "widget/IASceneView.h"} {public global
 }
 
@@ -235,7 +238,7 @@ Function {createIotaAppWindow()} {open
       } {
         MenuItem {} {
           label {Test Lua}
-          callback {Iota.lua.dostring("Iota:quit()");} selected
+          callback {Iota.lua.dostring("Iota:quit()");}
           xywh {16 16 100 20}
         }
         MenuItem {} {
@@ -310,7 +313,9 @@ gSceneView->redraw();}
             }
             Fl_Slider zRangeSlider {
               callback {Iota.gShowSlice = true;
-    gSceneView->redraw();}
+if (Iota.pCurrentPrinter)
+    Iota.pCurrentPrinter->rangeSliderChanged();
+gSceneView->redraw();}
               xywh {555 104 35 452} maximum 250 resizable
               class IAGLRangeSlider
             }

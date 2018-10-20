@@ -50,6 +50,7 @@ public:
     virtual void userSliceGenerateAll() = 0;
 
     // ----
+    virtual void rangeSliderChanged() { }
     virtual void draw();
     virtual void drawPreview(double lo, double hi);
     virtual void purgeSlicesAndCaches();

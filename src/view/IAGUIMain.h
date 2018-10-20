@@ -4,6 +4,7 @@
 #define IAGUIMain_h
 #include <FL/Fl.H>
 #include "Iota.h"
+#include "printer/IAPrinter.h"
 #include "widget/IASceneView.h"
 #include "widget/IAGLButton.h"
 #include "widget/IAGLRangeSlider.h"

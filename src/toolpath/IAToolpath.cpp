@@ -411,6 +411,14 @@ void IAToolpathList::add(IAToolpathList *tl, int tool, int group, int priority)
 }
 
 
+void IAToolpathList::add(IAToolpathList *tl)
+{
+    for (auto &tt: tl->pToolpathList) {
+        add(tt->clone(), tt->pTool, tt->pGroup, tt->pPriority);
+    }
+}
+
+
 /**
  * Draw the current toolpath into the scene viewer at world coordinates.
  */

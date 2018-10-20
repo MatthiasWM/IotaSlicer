@@ -286,7 +286,9 @@ IAGLRangeSlider *zRangeSlider=(IAGLRangeSlider *)0;
 
 static void cb_zRangeSlider(IAGLRangeSlider*, void*) {
   Iota.gShowSlice = true;
-    gSceneView->redraw();
+if (Iota.pCurrentPrinter)
+    Iota.pCurrentPrinter->rangeSliderChanged();
+gSceneView->redraw();
 }
 
 Fl_Choice *wPrinterChoice=(Fl_Choice *)0;

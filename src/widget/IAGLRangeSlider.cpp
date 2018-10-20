@@ -106,6 +106,7 @@ int IAGLRangeSlider::handle(int event, int X, int Y, int W, int H)
             return 1;
         case FL_RELEASE:
             btn = 0;
+            do_callback();
             redraw();
             return 1;
         case FL_KEYBOARD:
@@ -113,10 +114,12 @@ int IAGLRangeSlider::handle(int event, int X, int Y, int W, int H)
             switch (Fl::event_key()) {
                 case FL_Up:
                     if (pLowValue>minimum()) { pLowValue -= 1.0; pHighValue -= 1.0; }
+                    do_callback();
                     redraw();
                     return 1;
                 case FL_Down:
                     if (pHighValue<maximum()) { pLowValue += 1.0; pHighValue += 1.0; }
+                    do_callback();
                     redraw();
                     return 1;
                 default:
