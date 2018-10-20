@@ -87,6 +87,7 @@ public:
     void drawFlat(double w);
     void drawFlatToBitmap(IAFramebuffer*, double w, int color=0);
 
+    void move(IAToolpathList *tl);
     void add(IAToolpathList *tl, int tool, int group, int priority);
     void add(IAToolpath *tt, int tool, int group, int priority);
 

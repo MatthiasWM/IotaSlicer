@@ -389,6 +389,18 @@ void IAToolpathList::add(IAToolpath *tt, int tool, int group, int priority)
 
 
 /**
+ * Move toolpaths from another list to this list.
+ */
+void IAToolpathList::move(IAToolpathList *tl)
+{
+    for (auto &tt: tl->pToolpathList) {
+        pToolpathList.push_back(tt);
+    }
+    tl->pToolpathList.clear();
+}
+
+
+/**
  * Add another toolpath list to the list.
  */
 void IAToolpathList::add(IAToolpathList *tl, int tool, int group, int priority)

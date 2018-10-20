@@ -29,13 +29,16 @@ public:
     void purge();
 
 //private:
+    /// Temporarily store the mesh slice (we will probably not need that)
     IAMeshSlice *pMeshSlice = nullptr;
+    /// Store the toolptah that generates the shell
+    IAToolpathList *pShellToolpath = nullptr;
+    IAToolpathList *pLidToolpath = nullptr;
+    IAToolpathList *pInfillToolpath = nullptr;
+    IAToolpathList *pSkirtToolpath = nullptr;
+    IAToolpathList *pSupportToolpath = nullptr;
+    /// Store the bitmap for the slice without the shell
     IAFramebuffer *pCore = nullptr;
-    // slices:
-    // - current mesh slice
-    // - core (mesh minus shell)
-    // - infill
-    // - support
 };
 
 
@@ -103,12 +106,15 @@ public:
     // models and meshes
 
     // ----
+    double sliceIndexToZ(int i);
+    void sliceLayer(int i);
     void sliceAll();
-    void addToolpathForSkirt(IAToolpathList *tp, double z);
-    void addToolpathForSupport(IAToolpathList *tp, double z, int i);
-    void addToolpathForShell(IAToolpathList *tp, double z, IAFramebuffer *fb);
-    void addToolpathForLid(IAToolpathList *tp, double z, int i, IAFramebuffer &fb);
-    void addToolpathForInfill(IAToolpathList *tp, double z, int i, IAFramebuffer &fb);
+    void addToolpathForSkirt(IAToolpathList *tp, int i);
+    void addToolpathForSupport(IAToolpathList *tp, int i);
+    void createToolpathForShell(int i, IAFramebuffer *slice);
+    void addToolpathForLid(IAToolpathList *tp, int i, IAFramebuffer &fb);
+    void addToolpathForInfill(IAToolpathList *tp, int i, IAFramebuffer &fb);
+    void acquireCoreMap(int i);
 
     void saveToolpath(const char *filename = nullptr);
 

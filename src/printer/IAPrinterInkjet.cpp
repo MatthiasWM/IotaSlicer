@@ -148,12 +148,12 @@ void IAPrinterInkjet::saveSlices(const char *filename)
         strcat(fn, "_%04d");
     }
 
-    double hgt = Iota.pMesh->pMax.z() - Iota.pMesh->pMin.z();
+//    double hgt = Iota.pMesh->pMax.z() - Iota.pMesh->pMin.z();
     // initial height determines stickiness to bed
 
-    double zMin = layerHeight() * 0.7;
-    double zLayerHeight = layerHeight();
-    double zMax = hgt;
+//    double zMin = layerHeight() * 0.7;
+//    double zLayerHeight = layerHeight();
+//    double zMax = hgt;
 
     IAProgressDialog::show("Writing slices",
                            "Writing layer %d of %d at %.3fmm (%d%%)");

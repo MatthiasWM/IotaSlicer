@@ -536,8 +536,9 @@ void IAFDMPrinter::userSliceGenerateAll()
 /**
  * Create and add the toolpath for a skirt around the omesh base.
  */
-void IAFDMPrinter::addToolpathForSkirt(IAToolpathList *tp, double z)
+void IAFDMPrinter::addToolpathForSkirt(IAToolpathList *tp, int i)
 {
+    double z = sliceIndexToZ(i);
     IAFramebuffer skirt(this, IAFramebuffer::RGBA);
     skirt.bindForRendering();
     glPushMatrix();
@@ -556,8 +557,9 @@ void IAFDMPrinter::addToolpathForSkirt(IAToolpathList *tp, double z)
 /**
  * Create and add the toolpath for a support structure under overhangs.
  */
-void IAFDMPrinter::addToolpathForSupport(IAToolpathList *tp, double z, int i)
+void IAFDMPrinter::addToolpathForSupport(IAToolpathList *tp, int i)
 {
+    double z = sliceIndexToZ(i);
     IAFramebuffer support(this, IAFramebuffer::RGBAZ);
 
     support.bindForRendering();
@@ -624,8 +626,10 @@ void IAFDMPrinter::addToolpathForSupport(IAToolpathList *tp, double z, int i)
  * when we enter, the framebuffer contains a slice of the entire model
  * on exit, the framebuffer is the core, i.e. the slice minus the outlines
  */
-void IAFDMPrinter::addToolpathForShell(IAToolpathList *tp, double z, IAFramebuffer *fb)
+void IAFDMPrinter::createToolpathForShell(int i, IAFramebuffer *fb)
 {
+    double z = sliceIndexToZ(i);
+
     IAToolpathListSP tp0 = nullptr, tp1 = nullptr, tp2 = nullptr, tp3 = nullptr;
     if (numShells()>0) {
         tp0 = fb->toolpathFromLassoAndContract(z, 0.5 * nozzleDiameter());
@@ -642,14 +646,18 @@ void IAFDMPrinter::addToolpathForShell(IAToolpathList *tp, double z, IAFramebuff
      *      for the last shell that is created.
      */
 
+    IAToolpathList *tp = new IAToolpathList(z);
     if (tp3) tp->add(tp3.get(), modelExtruder(), 10, 0);
     if (tp2) tp->add(tp2.get(), modelExtruder(), 10, 1);
     if (tp1) tp->add(tp1.get(), modelExtruder(), 10, 2);
+    pSliceMap[i].pShellToolpath = tp;
+    pSliceMap[i].pCore = fb;
 }
 
 
-void IAFDMPrinter::addToolpathForLid(IAToolpathList *tp, double z, int i, IAFramebuffer &lid)
+void IAFDMPrinter::addToolpathForLid(IAToolpathList *tp, int i, IAFramebuffer &lid)
 {
+    double z = sliceIndexToZ(i);
     if (lidType()==0) {
         // ZIGZAG (could do bridging if used in the correct direction!)
         lid.overlayInfillPattern(i, nozzleDiameter());
@@ -671,13 +679,95 @@ void IAFDMPrinter::addToolpathForLid(IAToolpathList *tp, double z, int i, IAFram
 }
 
 
-void IAFDMPrinter::addToolpathForInfill(IAToolpathList *tp, double z, int i, IAFramebuffer &infill)
+void IAFDMPrinter::addToolpathForInfill(IAToolpathList *tp, int i, IAFramebuffer &infill)
 {
+    double z = sliceIndexToZ(i);
     /** \todo We are actually filling the areas twice, where the lids and the infill touch! */
     /** \todo remove material that we generated in the lid already */
     infill.overlayInfillPattern(i, 2*nozzleDiameter() * (100.0 / infillDensity()) - nozzleDiameter());
     auto infillPath = infill.toolpathFromLasso(z);
     if (infillPath) tp->add(infillPath.get(), modelExtruder(), 30, 0); // FIXME: should me ExtruderDontCare
+}
+
+
+double IAFDMPrinter::sliceIndexToZ(int i)
+{
+    return i * layerHeight() + 0.5 /* + first layer offset */;
+}
+
+
+void IAFDMPrinter::acquireCoreMap(int i)
+{
+    if (!pSliceMap[i].pCore) {
+        IAFramebuffer *sliceMap = new IAFramebuffer(this, IAFramebuffer::BITMAP);
+        IAMeshSlice *slc = new IAMeshSlice( this );
+        slc->setNewZ(sliceIndexToZ(i));
+        slc->generateRim(Iota.pMesh);
+        slc->tesselateAndDrawLid(sliceMap);
+        createToolpathForShell(i, sliceMap);
+        delete slc;
+    }
+}
+
+
+void IAFDMPrinter::sliceLayer(int i)
+{
+    double z = sliceIndexToZ(i);
+
+    acquireCoreMap(i);
+
+    // skirt aroiund the entire model
+    if (i==0 && hasSkirt()) {
+        IAToolpathList *tp = pSliceMap[i].pSkirtToolpath = new IAToolpathList(z);
+        addToolpathForSkirt(tp, i);
+    }
+
+    // support structures
+    if (hasSupport()) {
+        IAToolpathList *tp = pSliceMap[i].pSupportToolpath = new IAToolpathList(z);
+        addToolpathForSupport(tp, i);
+    }
+
+    IAFramebuffer infill(pSliceMap[i].pCore);
+
+    // build lids and bottoms
+    if (numLids()>0) {
+        acquireCoreMap(i+1);
+        IAFramebuffer mask(pSliceMap[i+1].pCore);
+        if (numLids()>1) {
+            acquireCoreMap(i+2);
+            if (pSliceMap[i+2].pCore)
+                mask.logicAnd(pSliceMap[i+2].pCore);
+            else
+                mask.clear();
+        }
+        if (i>0) {
+            acquireCoreMap(i-1);
+            mask.logicAnd(pSliceMap[i-1].pCore);
+        } else {
+            mask.clear();
+        }
+        if (numLids()>1) {
+            if (i>1) {
+                acquireCoreMap(i-2);
+                mask.logicAnd(pSliceMap[i-2].pCore);
+            } else {
+                mask.clear();
+            }
+        }
+
+        IAFramebuffer lid(pSliceMap[i].pCore);
+        lid.logicAndNot(&mask); // TODO: shrink lid
+        infill.logicAnd(&mask); // TODO: shrink infill
+        IAToolpathList *tp = pSliceMap[i].pLidToolpath = new IAToolpathList(z);
+        addToolpathForLid(tp, i, lid);
+    }
+
+    // build infills
+    if (infillDensity()>0.0001) {
+        IAToolpathList *tp = pSliceMap[i].pInfillToolpath = new IAToolpathList(z);
+        addToolpathForInfill(tp, i, infill);
+    }
 }
 
 
@@ -697,66 +787,26 @@ void IAFDMPrinter::sliceAll()
     IAProgressDialog::show("Generating slices",
                            "Building shell for layer %d of %d (%d%%)");
 
-    int i = 0, n = (int)((zMax-zMin)/zLayerHeight);
-
-    for (double z=zMin; z<zMax+2*zLayerHeight; z+=zLayerHeight)
-    {
-        if (IAProgressDialog::update(i*50/n, i, n, i*50/n)) break;
-
-        IAToolpathList *tp = pMachineToolpath.createLayer(z);
-
-        if (hasSkirt() && z==zMin)
-            addToolpathForSkirt(tp, z);
-
-        pSliceMap[i].pCore = new IAFramebuffer(this, IAFramebuffer::BITMAP);
-        IAMeshSlice *slc = pSliceMap[i].pMeshSlice = new IAMeshSlice( this );
-        slc->setNewZ(z);
-        slc->generateRim(Iota.pMesh);
-        slc->tesselateAndDrawLid(pSliceMap[i].pCore);
-        addToolpathForShell(tp, z, pSliceMap[i].pCore);
-
-        i++;
-    }
+    int i = 0, n = (int)((zMax-zMin)/zLayerHeight) + 2;
 
     IAProgressDialog::setText("Building lids and infill for layer %d of %d (%d%%)");
-    i=0;
-    for (double z=zMin; z<zMax-zLayerHeight; z+=zLayerHeight)
+
+    for (i=0; i<n; ++i)
     {
         if (IAProgressDialog::update(i*50/n+50, i, n, i*50/n+50)) break;
+        sliceLayer(i);
+    }
 
-        IAToolpathList *tp = pMachineToolpath.findLayer(z);
-
-        // support structures
-        if (hasSupport())
-            addToolpathForSupport(tp, z, i);
-
-        IAFramebuffer infill(pSliceMap[i].pCore);
-
-        // build lids and bottoms
-        if (numLids()>0) {
-            IAFramebuffer mask(pSliceMap[i+1].pCore);
-            if (numLids()>1) {
-                if (pSliceMap[i+2].pCore && pSliceMap[i+2].pCore)
-                    mask.logicAnd(pSliceMap[i+2].pCore);
-                else
-                    mask.clear();
-            }
-            mask.logicAnd((i>0) ? pSliceMap[i-1].pCore : nullptr);
-            if (numLids()>1) {
-                mask.logicAnd((i>1) ? pSliceMap[i-2].pCore : nullptr);
-            }
-
-            IAFramebuffer lid(pSliceMap[i].pCore);
-            lid.logicAndNot(&mask); // TODO: shrink lid
-            infill.logicAnd(&mask); // TODO: shrink infill
-            addToolpathForLid(tp, z, i, lid);
-        }
-
-        // build infills
-        if (infillDensity()>0.0001)
-            addToolpathForInfill(tp, z, i, infill);
-
-        i++;
+    for (i=0; i<n; ++i)
+    {
+        double z = sliceIndexToZ(i);
+        IAToolpathList *tp = pMachineToolpath.createLayer(z);
+        IAFDMSlice &s = pSliceMap[i];
+        if (s.pShellToolpath) tp->move(s.pShellToolpath);
+        if (s.pLidToolpath) tp->move(s.pLidToolpath);
+        if (s.pInfillToolpath) tp->move(s.pInfillToolpath);
+        if (s.pSkirtToolpath) tp->move(s.pSkirtToolpath);
+        if (s.pSupportToolpath) tp->move(s.pSupportToolpath);
     }
 
     pSliceMap.clear();
@@ -876,5 +926,10 @@ IAFDMSlice::~IAFDMSlice()
 void IAFDMSlice::purge()
 {
     delete pMeshSlice; pMeshSlice = nullptr;
+    delete pShellToolpath; pShellToolpath = nullptr;
+    delete pLidToolpath; pLidToolpath = nullptr;
+    delete pInfillToolpath; pInfillToolpath = nullptr;
+    delete pSkirtToolpath; pSkirtToolpath = nullptr;
+    delete pSupportToolpath; pSupportToolpath = nullptr;
     delete pCore; pCore = nullptr;
 }
