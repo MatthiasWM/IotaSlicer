@@ -57,9 +57,7 @@ public:
 };
 
 
-// FIXME: deriving from IAController is an awful hack to transition from
-// IASettings into IAProperty and IAController (and IAView)
-// FIXME: what actually happens whe the tree is cleared? Tree-Items deletd? Widget stay in Group? ???
+// FIXME: what actually happens whe the tree is cleared? Tree-Items deleted? Widgets stay in Group? ???
 class IATreeItemController : public IAController
 {
 public:

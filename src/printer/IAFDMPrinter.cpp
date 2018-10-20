@@ -411,10 +411,8 @@ void IAFDMPrinter::initializeSceneSettings()
         { "yes", 0, nullptr, (void*)1, 0, 0, 0, 11 },
         { nullptr } };
     s = new IAChoiceController("support", "support: ", hasSupport,
-                         [this]{purgeSlicesAndCaches();}, supportMenu ); // FIXME: recache all
+                         [this]{purgeSlicesAndCaches();}, supportMenu );
     pSceneSettings.push_back(s);
-
-    // TODO: support material
 
     static Fl_Menu_Item supportAngleMenu[] = {
         { "45.0\xC2\xB0", 0, nullptr, (void*)0, 0, 0, 0, 11 },
@@ -422,7 +420,7 @@ void IAFDMPrinter::initializeSceneSettings()
         { "55.0\xC2\xB0", 0, nullptr, (void*)2, 0, 0, 0, 11 },
         { "60.0\xC2\xB0", 0, nullptr, (void*)3, 0, 0, 0, 11 },
         { nullptr } };
-    s = new IAFloatChoiceController("support/angle", "angle: ", supportAngle, "deg",
+    s = new IAFloatChoiceController("support/angle", "overhang angle: ", supportAngle, "deg",
                                  [this]{purgeSlicesAndCaches();}, supportAngleMenu );
     pSceneSettings.push_back(s);
 
@@ -502,9 +500,6 @@ void IAFDMPrinter::userSliceSave()
     if (pFirstWrite) {
         userSliceSaveAs();
     } else {
-        // FIXME: if not yet sliced, do it
-        //sliceAll();
-        // FIXME: save to disk
         saveToolpath();
     }
 }
@@ -720,9 +715,6 @@ void IAFDMPrinter::sliceLayer(int i)
 
     acquireCorePattern(i);
 
-    // TODO: do the stuff below only if we do not have yet generated the components yet.
-    // (see acquireCoreMap() --> acquireToolpath() )
-
     // skirt aroiund the entire model
     if (i==0 && hasSkirt() && !s.pSkirtToolpath) {
         IAToolpathList *tp = pSliceMap[i].pSkirtToolpath = new IAToolpathList(z);
@@ -747,20 +739,20 @@ void IAFDMPrinter::sliceLayer(int i)
                 if (pSliceMap[i+2].pCore)
                     mask.logicAnd(pSliceMap[i+2].pCore);
                 else
-                    mask.clear();
+                    mask.fill(0);
             }
             if (i>0) {
                 acquireCorePattern(i-1);
                 mask.logicAnd(pSliceMap[i-1].pCore);
             } else {
-                mask.clear();
+                mask.fill(0);
             }
             if (numLids()>1) {
                 if (i>1) {
                     acquireCorePattern(i-2);
                     mask.logicAnd(pSliceMap[i-2].pCore);
                 } else {
-                    mask.clear();
+                    mask.fill(0);
                 }
             }
 
@@ -843,8 +835,8 @@ void IAFDMPrinter::saveToolpath(const char *filename)
 }
 
 
-void IAFDMPrinter::rangeSliderChanged() {
-    printf("Event %d\n", Fl::event());
+void IAFDMPrinter::rangeSliderChanged()
+{
     if (Fl::event()==FL_RELEASE || Fl::event()==FL_KEYDOWN) {
         sliceLayer(zRangeSlider->highValue()); // FIXME:
         gSceneView->redraw();
@@ -870,8 +862,6 @@ void IAFDMPrinter::purgeSlicesAndCaches()
 void IAFDMPrinter::drawPreview(double lo, double hi)
 {
     // FIXME: trigger building the slices in another thread
-    // FIXME: draw the toolpaths from the appropriate IAFDMSlice
-    //pMachineToolpath.draw(lo, hi);
     for (int i=lo; i<=hi; i++) {
         IAFDMSlice &s = pSliceMap[i];
         if (s.pShellToolpath) s.pShellToolpath->draw();

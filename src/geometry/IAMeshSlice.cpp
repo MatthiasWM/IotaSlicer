@@ -57,7 +57,7 @@ void IAMeshSlice::clear()
         delete e;
     }
     pRim.clear();
-    pColorbuffer->clear();
+    pColorbuffer->fill(0);
     IAMesh::clear();
 }
 

@@ -60,7 +60,7 @@ void IAPrinterLasercutter::userSliceSave()
     if (pFirstWrite) {
         userSliceSaveAs();
     } else {
-        // FIXME: if not yet sliced, so it
+        // FIXME: if not yet sliced, do it
         //sliceAll();
         // FIXME: save to disk
         saveToolpaths();
@@ -169,7 +169,6 @@ void IAPrinterLasercutter::saveToolpaths(const char *filename)
         IAToolpathList *tp = new IAToolpathList(z);
         gSlice.pFramebuffer->traceOutline(tp, z);
 //        tp->pToolpathList.push_back(new IAToolpathExtruder(1));
-        //        FIXME: what does the call above do?
 
         char dxfFilename[2048];
         sprintf(dxfFilename, fn, i);

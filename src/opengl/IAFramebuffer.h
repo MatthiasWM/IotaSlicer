@@ -80,7 +80,7 @@ public:
     IAFramebuffer(IAPrinter*, Buffers type);
     IAFramebuffer(IAFramebuffer*);
     ~IAFramebuffer();
-    void clear(int color=0);
+    void fill(int color);
 
     void bindForRendering();
     void unbindFromRendering();

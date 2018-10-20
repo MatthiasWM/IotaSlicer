@@ -253,7 +253,6 @@ void IAFramebuffer::logicAnd(IAFramebuffer *src)
 {
     if (src && src->hasFBO()) {
         bindForRendering();
-        bindForRendering();
         if (pBuffers==BITMAP) {
             int dy = pBitmap->dy;
             int y;
@@ -309,7 +308,8 @@ void IAFramebuffer::logicAnd(IAFramebuffer *src)
         unbindFromRendering();
     } else {
         // if src has no FBO, it is all 0, so AND will make the result all 0
-        clear();
+        // FIXME: can we purge() instead?
+        fill(0);
     }
 }
 
@@ -335,7 +335,7 @@ IAFramebuffer::~IAFramebuffer()
  *
  * This call does not delete any resources.
  */
-void IAFramebuffer::clear(int color)
+void IAFramebuffer::fill(int color)
 {
     if (hasFBO()) {
         bindForRendering();
@@ -751,12 +751,7 @@ void IAFramebuffer::createFBO()
         }
     }
     pFramebufferCreated = true;
-    clear();
-//    //    FIXME: this is a test pattern for the bitmap mode
-//    if (pBitmap) {
-//        for (int y = 800; y<1600; y++)
-//            bm_hline(pBitmap, 800, 1500, y);
-//    }
+    fill(0);
 }
 
 
