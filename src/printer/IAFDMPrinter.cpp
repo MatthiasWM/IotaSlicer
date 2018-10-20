@@ -172,7 +172,7 @@ IAFDMPrinter::IAFDMPrinter(IAFDMPrinter const& src)
     infillDensity = src.infillDensity;
     hasSkirt.set( src.hasSkirt() );
     minimumLayerTime.set( src.minimumLayerTime() );
-    // FIXME: annd all other properties and settings
+    // FIXME: and all other properties and settings
 }
 
 
@@ -502,7 +502,7 @@ void IAFDMPrinter::userSliceSave()
     if (pFirstWrite) {
         userSliceSaveAs();
     } else {
-        // FIXME: if not yet sliced, so it
+        // FIXME: if not yet sliced, do it
         //sliceAll();
         // FIXME: save to disk
         saveToolpath();
@@ -686,7 +686,7 @@ void IAFDMPrinter::addToolpathForInfill(IAToolpathList *tp, int i, IAFramebuffer
     /** \todo remove material that we generated in the lid already */
     infill.overlayInfillPattern(i, 2*nozzleDiameter() * (100.0 / infillDensity()) - nozzleDiameter());
     auto infillPath = infill.toolpathFromLasso(z);
-    if (infillPath) tp->add(infillPath.get(), modelExtruder(), 30, 0); // FIXME: should me ExtruderDontCare
+    if (infillPath) tp->add(infillPath.get(), modelExtruder(), 30, 0); // FIXME: should be ExtruderDontCare
 }
 
 
@@ -715,6 +715,9 @@ void IAFDMPrinter::sliceLayer(int i)
     double z = sliceIndexToZ(i);
 
     acquireCoreMap(i);
+
+    // TODO: do the stuff below only if we do not have yet generated the components yet.
+    // (see acquireCoreMap() --> acquireToolpath() )
 
     // skirt aroiund the entire model
     if (i==0 && hasSkirt()) {
@@ -797,6 +800,7 @@ void IAFDMPrinter::sliceAll()
         sliceLayer(i);
     }
 
+    // FIXME: this loop should go into saveToolpath()
     for (i=0; i<n; ++i)
     {
         double z = sliceIndexToZ(i);
@@ -848,6 +852,8 @@ void IAFDMPrinter::purgeSlicesAndCaches()
  */
 void IAFDMPrinter::drawPreview(double lo, double hi)
 {
+    // FIXME: trigger building the slices in another thread
+    // FIXME: draw the toolpaths from the appropriate IAFDMSlice
     pMachineToolpath.draw(lo, hi);
 }
 
