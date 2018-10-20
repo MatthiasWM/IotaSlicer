@@ -788,15 +788,14 @@ void IAFDMPrinter::sliceAll()
     double zMax = hgt;
 
     IAProgressDialog::show("Generating slices",
-                           "Building shell for layer %d of %d (%d%%)");
+                           "Slicing layer %d of %d at %.2fmm (%d%%)");
 
     int i = 0, n = (int)((zMax-zMin)/zLayerHeight) + 2;
 
-    IAProgressDialog::setText("Building lids and infill for layer %d of %d (%d%%)");
-
     for (i=0; i<n; ++i)
     {
-        if (IAProgressDialog::update(i*50/n+50, i, n, i*50/n+50)) break;
+        double z = sliceIndexToZ(i);
+        if (IAProgressDialog::update(i*100/n, i, n, z, i*100/n)) break;
         sliceLayer(i);
     }
 
