@@ -31,11 +31,6 @@ GLUtesselator *gGluTess = nullptr;
 IAMeshSlice::IAMeshSlice(IAPrinter *printer)
 //:   pPrinter( printer )
 {
-#if 0
-    pFramebuffer = new IAFramebuffer(printer, IAFramebuffer::RGBA);
-#else
-    pFramebuffer = new IAFramebuffer(printer, IAFramebuffer::BITMAP);
-#endif
     pColorbuffer = new IAFramebuffer(printer, IAFramebuffer::RGBAZ);
 }
 
@@ -49,7 +44,6 @@ IAMeshSlice::~IAMeshSlice()
         delete e;
     }
     pRim.clear();
-    delete pFramebuffer;
     delete pColorbuffer;
 }
 
@@ -63,7 +57,6 @@ void IAMeshSlice::clear()
         delete e;
     }
     pRim.clear();
-    pFramebuffer->clear();
     pColorbuffer->clear();
     IAMesh::clear();
 }
@@ -438,16 +431,16 @@ void IAMeshSlice::tesselateLidFromRim()
 /**
  * Tesselate the rim and draw the resulting lid.
  */
-void IAMeshSlice::tesselateAndDrawLid()
+void IAMeshSlice::tesselateAndDrawLid(IAFramebuffer *fb)
 {
-    pFramebuffer->bindForRendering(); // make sure we have a square in the buffer
-    if (pFramebuffer->buffers()==IAFramebuffer::BITMAP) {
-        pFramebuffer->drawLid(pRim);
+    fb->bindForRendering(); // make sure we have a square in the buffer
+    if (fb->buffers()==IAFramebuffer::BITMAP) {
+        fb->drawLid(pRim);
     } else {
         tesselateLidFromRim();
         draw(IAMesh::kMASK, 1.0, 1.0, 0.0);
     }
-    pFramebuffer->unbindFromRendering();
+    fb->unbindFromRendering();
 }
 
 

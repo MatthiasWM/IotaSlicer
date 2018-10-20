@@ -158,42 +158,42 @@ void IAPrinterInkjet::saveSlices(const char *filename)
     IAProgressDialog::show("Writing slices",
                            "Writing layer %d of %d at %.3fmm (%d%%)");
 
-    int i = 0, n = (int)((zMax-zMin)/zLayerHeight);
-    for (double z=zMin; z<zMax; z+=zLayerHeight) {
-        if (IAProgressDialog::update(i*100/n, i, n, z, i*100/n)) break;
-
-        gSlice.setNewZ(z);
-        gSlice.clear();
-        gSlice.generateRim(Iota.pMesh);
-        gSlice.tesselateLidFromRim();
-        gSlice.draw(IAMesh::kMASK, 1, 1, 1);
-
-        uint8_t *alpha = gSlice.pFramebuffer->getRawImageRGB();
-        uint8_t *rgb = gSlice.pColorbuffer->getRawImageRGBA();
-
-        /**
-         \todo we can of course do all that in the OpenGL code already
-         \todo infill should be white or user selectable
-         \todo inkjet should generate support structurs for image based SLA
-         */
-        {
-            int i = 0, n = gSlice.pColorbuffer->width()
-                         * gSlice.pColorbuffer->height();
-            uint8_t *s = alpha, *d = rgb;
-            for (i=0; i<n; ++i) {
-                d[3] = *s;
-                s+=3; d+=4;
-            }
-        }
-
-        char imgFilename[2048];
-        sprintf(imgFilename, fn, i);
-        gSlice.pColorbuffer->saveAsPng(imgFilename, 4, rgb);
-        // for testing, we also can write jpegs or other files.
-        //        fl_filename_setext(imgFilename, 2048, ".jpg");
-        //        gSlice.pColorbuffer->saveAsJpeg(imgFilename, rgb);
-        i++;
-    }
+//    int i = 0, n = (int)((zMax-zMin)/zLayerHeight);
+//    for (double z=zMin; z<zMax; z+=zLayerHeight) {
+//        if (IAProgressDialog::update(i*100/n, i, n, z, i*100/n)) break;
+//
+//        gSlice.setNewZ(z);
+//        gSlice.clear();
+//        gSlice.generateRim(Iota.pMesh);
+//        gSlice.tesselateLidFromRim();
+//        gSlice.draw(IAMesh::kMASK, 1, 1, 1);
+//
+//        uint8_t *alpha = gSlice.pFramebuffer->getRawImageRGB();
+//        uint8_t *rgb = gSlice.pColorbuffer->getRawImageRGBA();
+//
+//        /**
+//         \todo we can of course do all that in the OpenGL code already
+//         \todo infill should be white or user selectable
+//         \todo inkjet should generate support structurs for image based SLA
+//         */
+//        {
+//            int i = 0, n = gSlice.pColorbuffer->width()
+//                         * gSlice.pColorbuffer->height();
+//            uint8_t *s = alpha, *d = rgb;
+//            for (i=0; i<n; ++i) {
+//                d[3] = *s;
+//                s+=3; d+=4;
+//            }
+//        }
+//
+//        char imgFilename[2048];
+//        sprintf(imgFilename, fn, i);
+//        gSlice.pColorbuffer->saveAsPng(imgFilename, 4, rgb);
+//        // for testing, we also can write jpegs or other files.
+//        //        fl_filename_setext(imgFilename, 2048, ".jpg");
+//        //        gSlice.pColorbuffer->saveAsJpeg(imgFilename, rgb);
+//        i++;
+//    }
     IAProgressDialog::hide();
     gSceneView->redraw();
 }

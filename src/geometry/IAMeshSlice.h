@@ -38,7 +38,7 @@ public:
     void addFirstRimVertex(IATriangle *IATriangle);
     bool addNextRimVertex(IAHalfEdgePtr &edge);
     void drawRim();
-    void tesselateAndDrawLid();
+    void tesselateAndDrawLid(IAFramebuffer *fb);
     void drawShell();
     void drawFramebuffer();
     void tesselateLidFromRim();
@@ -52,7 +52,6 @@ private:
     //IAPrinter *pPrinter = nullptr;
 
 public:
-    IAFramebuffer *pFramebuffer = nullptr;
     IAFramebuffer *pColorbuffer = nullptr;
 };
 

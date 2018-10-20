@@ -708,12 +708,12 @@ void IAFDMPrinter::sliceAll()
         if (hasSkirt() && z==zMin)
             addToolpathForSkirt(tp, z);
 
+        pSliceMap[i].pCore = new IAFramebuffer(this, IAFramebuffer::BITMAP);
         IAMeshSlice *slc = pSliceMap[i].pMeshSlice = new IAMeshSlice( this );
         slc->setNewZ(z);
         slc->generateRim(Iota.pMesh);
-        slc->tesselateAndDrawLid();
-
-        addToolpathForShell(tp, z, slc->pFramebuffer);
+        slc->tesselateAndDrawLid(pSliceMap[i].pCore);
+        addToolpathForShell(tp, z, pSliceMap[i].pCore);
 
         i++;
     }
@@ -725,29 +725,28 @@ void IAFDMPrinter::sliceAll()
         if (IAProgressDialog::update(i*50/n+50, i, n, i*50/n+50)) break;
 
         IAToolpathList *tp = pMachineToolpath.findLayer(z);
-        IAMeshSlice *slc = pSliceMap[i].pMeshSlice;
 
         // support structures
         if (hasSupport())
             addToolpathForSupport(tp, z, i);
 
-        IAFramebuffer infill(slc->pFramebuffer);
+        IAFramebuffer infill(pSliceMap[i].pCore);
 
         // build lids and bottoms
         if (numLids()>0) {
-            IAFramebuffer mask(pSliceMap[i+1].pMeshSlice->pFramebuffer);
+            IAFramebuffer mask(pSliceMap[i+1].pCore);
             if (numLids()>1) {
-                if (pSliceMap[i+2].pMeshSlice && pSliceMap[i+2].pMeshSlice->pFramebuffer)
-                    mask.logicAnd(pSliceMap[i+2].pMeshSlice->pFramebuffer);
+                if (pSliceMap[i+2].pCore && pSliceMap[i+2].pCore)
+                    mask.logicAnd(pSliceMap[i+2].pCore);
                 else
                     mask.clear();
             }
-            mask.logicAnd((i>0) ? pSliceMap[i-1].pMeshSlice->pFramebuffer : nullptr);
+            mask.logicAnd((i>0) ? pSliceMap[i-1].pCore : nullptr);
             if (numLids()>1) {
-                mask.logicAnd((i>1) ? pSliceMap[i].pMeshSlice->pFramebuffer : nullptr);
+                mask.logicAnd((i>1) ? pSliceMap[i-2].pCore : nullptr);
             }
 
-            IAFramebuffer lid(slc->pFramebuffer);
+            IAFramebuffer lid(pSliceMap[i].pCore);
             lid.logicAndNot(&mask); // TODO: shrink lid
             infill.logicAnd(&mask); // TODO: shrink infill
             addToolpathForLid(tp, z, i, lid);
