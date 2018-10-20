@@ -650,6 +650,7 @@ void IAFDMPrinter::createToolpathForShell(int i, IAFramebuffer *fb)
     if (tp3) tp->add(tp3.get(), modelExtruder(), 10, 0);
     if (tp2) tp->add(tp2.get(), modelExtruder(), 10, 1);
     if (tp1) tp->add(tp1.get(), modelExtruder(), 10, 2);
+    if (pSliceMap[i].pShellToolpath) delete pSliceMap[i].pShellToolpath;
     pSliceMap[i].pShellToolpath = tp;
     pSliceMap[i].pCore = fb;
 }
@@ -734,7 +735,7 @@ void IAFDMPrinter::sliceLayer(int i)
         addToolpathForSupport(tp, i);
     }
 
-    if (!s.pInfillToolpath || !s.pLidToolpath) {
+    if ((!s.pInfillToolpath) || (!s.pLidToolpath)) {
         IAFramebuffer infill(pSliceMap[i].pCore);
 
         // build lids and bottoms
@@ -914,7 +915,6 @@ IAFDMSlice::~IAFDMSlice()
 
 void IAFDMSlice::purge()
 {
-    delete pMeshSlice; pMeshSlice = nullptr;
     delete pShellToolpath; pShellToolpath = nullptr;
     delete pLidToolpath; pLidToolpath = nullptr;
     delete pInfillToolpath; pInfillToolpath = nullptr;

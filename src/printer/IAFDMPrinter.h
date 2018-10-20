@@ -29,8 +29,6 @@ public:
     void purge();
 
 //private:
-    /// Temporarily store the mesh slice (we will probably not need that)
-    IAMeshSlice *pMeshSlice = nullptr;
     /// Store the toolptah that generates the shell
     IAToolpathList *pShellToolpath = nullptr;
     IAToolpathList *pLidToolpath = nullptr;
