@@ -13,19 +13,29 @@
 
 class IAFDMPrinter;
 class IAFDMSlice;
-typedef std::map<double, IAFDMSlice> IAFDMSliceMap;
+typedef std::map<int, IAFDMSlice> IAFDMSliceMap;
 
 
 /**
- * This class holds a single slice of infomeation for a given Z valiue.
+ * This class holds a single slice of information for a given Z value.
+ * \note not used yte
+ * \bug per mesh? per scene?
  */
 class IAFDMSlice
 {
 public:
-    IAFDMSlice(IAFDMPrinter *printer);
+    IAFDMSlice();
+    ~IAFDMSlice();
+    void purge();
 
-private:
-    IAFDMPrinter *pPrinter = nullptr;
+//private:
+    IAMeshSlice *pMeshSlice = nullptr;
+    IAFramebuffer *pCore = nullptr;
+    // slices:
+    // - current mesh slice
+    // - core (mesh minus shell)
+    // - infill
+    // - support
 };
 
 
@@ -94,6 +104,12 @@ public:
 
     // ----
     void sliceAll();
+    void addToolpathForSkirt(IAToolpathList *tp, double z);
+    void addToolpathForSupport(IAToolpathList *tp, double z, int i);
+    void addToolpathForShell(IAToolpathList *tp, double z, IAFramebuffer *fb);
+    void addToolpathForLid(IAToolpathList *tp, double z, int i, IAFramebuffer &fb);
+    void addToolpathForInfill(IAToolpathList *tp, double z, int i, IAFramebuffer &fb);
+
     void saveToolpath(const char *filename = nullptr);
 
     double filamentDiameter() { return 1.75; }

@@ -446,8 +446,8 @@ void IAMeshSlice::tesselateAndDrawLid()
     } else {
         tesselateLidFromRim();
         draw(IAMesh::kMASK, 1.0, 1.0, 0.0);
-        pFramebuffer->unbindFromRendering();
     }
+    pFramebuffer->unbindFromRendering();
 }
 
 

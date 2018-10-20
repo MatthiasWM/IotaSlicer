@@ -185,6 +185,7 @@ IAFDMPrinter::~IAFDMPrinter()
 IAPrinter *IAFDMPrinter::clone() const
 {
     IAFDMPrinter *p = new IAFDMPrinter(*this);
+    // FIXME: not working
     return p;
 }
 
@@ -533,75 +534,186 @@ void IAFDMPrinter::userSliceGenerateAll()
 
 
 /**
- * Slice all meshes and models in the scenen.
+ * Create and add the toolpath for a skirt around the omesh base.
+ */
+void IAFDMPrinter::addToolpathForSkirt(IAToolpathList *tp, double z)
+{
+    IAFramebuffer skirt(this, IAFramebuffer::RGBA);
+    skirt.bindForRendering();
+    glPushMatrix();
+    glTranslated(Iota.pMesh->position().x(), Iota.pMesh->position().y(), Iota.pMesh->position().z());
+    Iota.pMesh->draw(IAMesh::kMASK, 1.0, 1.0, 1.0);
+    glPopMatrix();
+    skirt.unbindFromRendering();
+    skirt.toolpathFromLassoAndExpand(z, 3);  // 3mm, should probably be more if the extrusion is 1mm or more
+    IAToolpathListSP tpSkirt1 = skirt.toolpathFromLassoAndContract(z, nozzleDiameter());
+    tp->add(tpSkirt1.get(), modelExtruder(), 5, 0);
+    IAToolpathListSP tpSkirt2 = skirt.toolpathFromLassoAndContract(z, nozzleDiameter());
+    tp->add(tpSkirt2.get(), modelExtruder(), 5, 1);
+}
+
+
+/**
+ * Create and add the toolpath for a support structure under overhangs.
+ */
+void IAFDMPrinter::addToolpathForSupport(IAToolpathList *tp, double z, int i)
+{
+    IAFramebuffer support(this, IAFramebuffer::RGBAZ);
+
+    support.bindForRendering();
+
+    glEnable(GL_DEPTH_TEST);
+    glDepthFunc(GL_GREATER);
+
+    glClearDepth(0.0);
+    glClear(GL_DEPTH_BUFFER_BIT);
+
+    // Draw only what is above the current z plane, but leave a little
+    // space between the model and the support to reduce stickyness
+    support.beginClipBelowZ(z + supportTopGap()*layerHeight());
+
+    // FIXME: don't do this for every layer!
+    // mark all triangles that need support first, then render only those
+    // mark all vertices that need support, then render them here
+    Iota.pMesh->drawAngledFaces(90.0+supportAngle());
+
+    glPushMatrix();
+    // Draw the upper part of the model, so that the support will not
+    // protrude through it. Leave a little gap so that the support
+    // Also, remember if we need support at all.
+    // sticks less to the model.
+    glTranslated(Iota.pMesh->position().x(),
+                 Iota.pMesh->position().y(),
+                 Iota.pMesh->position().z()
+                 + (supportBottomGap()+supportTopGap())*layerHeight());
+    Iota.pMesh->draw(IAMesh::kMASK, 0.0, 0.0, 0.0);
+    glPopMatrix();
+
+    support.endClip();
+
+    glDepthFunc(GL_LESS);
+    glClearDepth(1.0);
+
+    support.unbindFromRendering();
+    // FIXME: change to bitmap mode
+
+    // reduce the size of the mask to leave room for the filament, plus
+    // a little gap so that the support tower sides do not stick to
+    // the model.
+    support.toolpathFromLassoAndContract(z, nozzleDiameter()/2.0 + supportSideGap());
+
+    // Fill it.
+    if (i==0) {
+        // layer 0 must be filled 100% to give good adhesion
+        support.overlayInfillPattern(0, nozzleDiameter());
+    } else {
+        // other layers use the set density
+        support.overlayInfillPattern(0, 2*nozzleDiameter() * (100.0 / supportDensity()) - nozzleDiameter());
+    }
+    auto supportPath = support.toolpathFromLasso(z);
+    if (supportPath) tp->add(supportPath.get(), supportExtruder(), 60, 0);
+    // TODO: don't draw anything here which we will draw otherwise later
+    // FIXME: find icicles and draw support for those
+    // FIXME: find and exclude bridges
+}
+
+
+/**
+ * Create the toolpath to add a shell around the model.
+ *
+ * when we enter, the framebuffer contains a slice of the entire model
+ * on exit, the framebuffer is the core, i.e. the slice minus the outlines
+ */
+void IAFDMPrinter::addToolpathForShell(IAToolpathList *tp, double z, IAFramebuffer *fb)
+{
+    IAToolpathListSP tp0 = nullptr, tp1 = nullptr, tp2 = nullptr, tp3 = nullptr;
+    if (numShells()>0) {
+        tp0 = fb->toolpathFromLassoAndContract(z, 0.5 * nozzleDiameter());
+        tp1 = tp0 ? fb->toolpathFromLassoAndContract(z, nozzleDiameter()) : nullptr;
+    }
+    if (numShells()>1) {
+        tp2 = tp1 ? fb->toolpathFromLassoAndContract(z, nozzleDiameter()) : nullptr;
+    }
+    if (numShells()>2) {
+        tp3 = tp2 ? fb->toolpathFromLassoAndContract(z, nozzleDiameter()) : nullptr;
+    }
+    /** \todo We can create an overlap between the infill and the shell by
+     *      reducing the second parameter of toolpathFromLassoAndContract
+     *      for the last shell that is created.
+     */
+
+    if (tp3) tp->add(tp3.get(), modelExtruder(), 10, 0);
+    if (tp2) tp->add(tp2.get(), modelExtruder(), 10, 1);
+    if (tp1) tp->add(tp1.get(), modelExtruder(), 10, 2);
+}
+
+
+void IAFDMPrinter::addToolpathForLid(IAToolpathList *tp, double z, int i, IAFramebuffer &lid)
+{
+    if (lidType()==0) {
+        // ZIGZAG (could do bridging if used in the correct direction!)
+        lid.overlayInfillPattern(i, nozzleDiameter());
+        auto lidPath = lid.toolpathFromLasso(z);
+        if (lidPath) tp->add(lidPath.get(), modelExtruder(), 20, 0);
+    } else {
+        // CONCENTRIC (nicer for lids)
+        /** \bug limit this to the width and hight of the build platform divided by the extrsuion width */
+        int k;
+        for (k=0;k<300;k++) { // FIXME
+            auto tp1 = lid.toolpathFromLassoAndContract(z, nozzleDiameter());
+            if (!tp1) break;
+            tp->add(tp1.get(), modelExtruder(), 20, k);
+        }
+        if (k==300) {
+            // assert(0);
+        }
+    }
+}
+
+
+void IAFDMPrinter::addToolpathForInfill(IAToolpathList *tp, double z, int i, IAFramebuffer &infill)
+{
+    /** \todo We are actually filling the areas twice, where the lids and the infill touch! */
+    /** \todo remove material that we generated in the lid already */
+    infill.overlayInfillPattern(i, 2*nozzleDiameter() * (100.0 / infillDensity()) - nozzleDiameter());
+    auto infillPath = infill.toolpathFromLasso(z);
+    if (infillPath) tp->add(infillPath.get(), modelExtruder(), 30, 0); // FIXME: should me ExtruderDontCare
+}
+
+
+/**
+ * Slice all meshes and models in the scene.
  */
 void IAFDMPrinter::sliceAll()
 {
     pMachineToolpath.purge();
+    pSliceMap.clear();
 
     double hgt = Iota.pMesh->pMax.z() - Iota.pMesh->pMin.z() + 2.0*layerHeight();
-    // initial height determines stickiness to bed
-
-    double zMin = layerHeight() * 0.9;
+    double zMin = layerHeight() * 0.9; // initial height
     double zLayerHeight = layerHeight();
-#if 1
     double zMax = hgt;
-#else
-    zLayerHeight = 2.0;
-    double zMax = hgt + zLayerHeight;
-#endif
 
-    IAProgressDialog::show("Genrating slices",
+    IAProgressDialog::show("Generating slices",
                            "Building shell for layer %d of %d (%d%%)");
 
     int i = 0, n = (int)((zMax-zMin)/zLayerHeight);
-    // create a slice for each layer
-    IAMeshSlice **sliceList = (IAMeshSlice**)calloc(n+4, sizeof(IAMeshSlice*));
 
     for (double z=zMin; z<zMax+2*zLayerHeight; z+=zLayerHeight)
     {
         if (IAProgressDialog::update(i*50/n, i, n, i*50/n)) break;
 
-        IAMeshSlice *slc = sliceList[i] = new IAMeshSlice( this );
+        IAToolpathList *tp = pMachineToolpath.createLayer(z);
+
+        if (hasSkirt() && z==zMin)
+            addToolpathForSkirt(tp, z);
+
+        IAMeshSlice *slc = pSliceMap[i].pMeshSlice = new IAMeshSlice( this );
         slc->setNewZ(z);
         slc->generateRim(Iota.pMesh);
         slc->tesselateAndDrawLid();
-        IAToolpathList *tp = pMachineToolpath.createLayer(z);
 
-        if (hasSkirt() && z==zMin) {
-            IAFramebuffer skirt(this, IAFramebuffer::RGBA);
-            skirt.bindForRendering();
-            glPushMatrix();
-            glTranslated(Iota.pMesh->position().x(), Iota.pMesh->position().y(), Iota.pMesh->position().z());
-            Iota.pMesh->draw(IAMesh::kMASK, 1.0, 1.0, 1.0);
-            glPopMatrix();
-            skirt.unbindFromRendering();
-            skirt.toolpathFromLassoAndExpand(z, 3);  // 3mm, should probably be more if the extrusion is 1mm or more
-            IAToolpathListSP tpSkirt1 = skirt.toolpathFromLassoAndContract(z, nozzleDiameter());
-            tp->add(tpSkirt1.get(), modelExtruder(), 5, 0);
-            IAToolpathListSP tpSkirt2 = skirt.toolpathFromLassoAndContract(z, nozzleDiameter());
-            tp->add(tpSkirt2.get(), modelExtruder(), 5, 1);
-        }
-
-        IAToolpathListSP tp0 = nullptr, tp1 = nullptr, tp2 = nullptr, tp3 = nullptr;
-        if (numShells()>0) {
-            tp0 = slc->pFramebuffer->toolpathFromLassoAndContract(z, 0.5 * nozzleDiameter());
-            tp1 = tp0 ? slc->pFramebuffer->toolpathFromLassoAndContract(z, nozzleDiameter()) : nullptr;
-        }
-        if (numShells()>1) {
-            tp2 = tp1 ? slc->pFramebuffer->toolpathFromLassoAndContract(z, nozzleDiameter()) : nullptr;
-        }
-        if (numShells()>2) {
-            tp3 = tp2 ? slc->pFramebuffer->toolpathFromLassoAndContract(z, nozzleDiameter()) : nullptr;
-        }
-        /** \todo We can create an overlap between the infill and the shell by
-         *      reducing the second parameter of toolpathFromLassoAndContract
-         *      for the last shell that is created.
-         */
-
-        if (tp3) tp->add(tp3.get(), modelExtruder(), 10, 0);
-        if (tp2) tp->add(tp2.get(), modelExtruder(), 10, 1);
-        if (tp1) tp->add(tp1.get(), modelExtruder(), 10, 2);
+        addToolpathForShell(tp, z, slc->pFramebuffer);
 
         i++;
     }
@@ -613,129 +725,42 @@ void IAFDMPrinter::sliceAll()
         if (IAProgressDialog::update(i*50/n+50, i, n, i*50/n+50)) break;
 
         IAToolpathList *tp = pMachineToolpath.findLayer(z);
-        IAMeshSlice *slc = sliceList[i];
+        IAMeshSlice *slc = pSliceMap[i].pMeshSlice;
 
-        // --- support structures
-        if (hasSupport()) {
-            IAFramebuffer support(this, IAFramebuffer::RGBAZ);
-
-            support.bindForRendering();
-
-            glEnable(GL_DEPTH_TEST);
-            glDepthFunc(GL_GREATER);
-
-            glClearDepth(0.0);
-            glClear(GL_DEPTH_BUFFER_BIT);
-
-            // Draw only what is above the current z plane, but leave a little
-            // space between the model and the support to reduce stickyness
-            support.beginClipBelowZ(z + supportTopGap()*layerHeight());
-
-            // FIXME: don't do this for every layer!
-            // mark all triangles that need support first, then render only those
-            // mark all vertices that need support, then render them here
-            Iota.pMesh->drawAngledFaces(90.0+supportAngle());
-
-            glPushMatrix();
-            // Draw the upper part of the model, so that the support will not
-            // protrude through it. Leave a little gap so that the support
-            // Also, remember if we need support at all.
-            // sticks less to the model.
-            glTranslated(Iota.pMesh->position().x(),
-                         Iota.pMesh->position().y(),
-                         Iota.pMesh->position().z()
-                         + (supportBottomGap()+supportTopGap())*layerHeight());
-            Iota.pMesh->draw(IAMesh::kMASK, 0.0, 0.0, 0.0);
-            glPopMatrix();
-
-            support.endClip();
-
-            glDepthFunc(GL_LESS);
-            glClearDepth(1.0);
-
-            support.unbindFromRendering();
-            // FIXME: change to bitmap mode
-
-            // reduce the size of the mask to leave room for the filament, plus
-            // a little gap so that the support tower sides do not stick to
-            // the model.
-            support.toolpathFromLassoAndContract(z, nozzleDiameter()/2.0 + supportSideGap());
-
-            // Fill it.
-            if (i==0) {
-                // layer 0 must be filled 100% to give good adhesion
-                support.overlayInfillPattern(0, nozzleDiameter());
-            } else {
-                // other layers use the set density
-                support.overlayInfillPattern(0, 2*nozzleDiameter() * (100.0 / supportDensity()) - nozzleDiameter());
-            }
-            auto supportPath = support.toolpathFromLasso(z);
-            if (supportPath) tp->add(supportPath.get(), supportExtruder(), 60, 0);
-            // TODO: don't draw anything here which we will draw otherwise later
-            // FIXME: find icicles and draw support for those
-            // FIXME: find and exclude bridges
-        }
-
-        // --- infill, lids, bottoms
+        // support structures
+        if (hasSupport())
+            addToolpathForSupport(tp, z, i);
 
         IAFramebuffer infill(slc->pFramebuffer);
 
         // build lids and bottoms
         if (numLids()>0) {
-            IAFramebuffer mask(sliceList[i+1]->pFramebuffer);
+            IAFramebuffer mask(pSliceMap[i+1].pMeshSlice->pFramebuffer);
             if (numLids()>1) {
-                if (sliceList[i+2] && sliceList[i+2]->pFramebuffer)
-                    mask.logicAnd(sliceList[i+2]->pFramebuffer);
+                if (pSliceMap[i+2].pMeshSlice && pSliceMap[i+2].pMeshSlice->pFramebuffer)
+                    mask.logicAnd(pSliceMap[i+2].pMeshSlice->pFramebuffer);
                 else
                     mask.clear();
             }
-            mask.logicAnd((i>0) ? sliceList[i-1]->pFramebuffer : nullptr);
+            mask.logicAnd((i>0) ? pSliceMap[i-1].pMeshSlice->pFramebuffer : nullptr);
             if (numLids()>1) {
-                mask.logicAnd((i>1) ? sliceList[i-2]->pFramebuffer : nullptr);
+                mask.logicAnd((i>1) ? pSliceMap[i].pMeshSlice->pFramebuffer : nullptr);
             }
 
             IAFramebuffer lid(slc->pFramebuffer);
-            lid.logicAndNot(&mask);
-            infill.logicAnd(&mask);
-
-            if (lidType()==0) {
-                // ZIGZAG (could do bridging if used in the correct direction!)
-                lid.overlayInfillPattern(i, nozzleDiameter());
-                auto lidPath = lid.toolpathFromLasso(z);
-                if (lidPath) tp->add(lidPath.get(), modelExtruder(), 20, 0);
-            } else {
-                // CONCENTRIC (nicer for lids)
-                /** \bug limit this to the width and hight of the build platform divided by the extrsuion width */
-                int k;
-                for (k=0;k<300;k++) { // FIXME
-                    auto tp1 = lid.toolpathFromLassoAndContract(z, nozzleDiameter());
-                    if (!tp1) break;
-                    infill.subtract(tp1, nozzleDiameter());
-                    tp->add(tp1.get(), modelExtruder(), 20, k);
-                }
-                if (k==300) {
-                    // assert(0);
-                }
-            }
+            lid.logicAndNot(&mask); // TODO: shrink lid
+            infill.logicAnd(&mask); // TODO: shrink infill
+            addToolpathForLid(tp, z, i, lid);
         }
 
         // build infills
-        /** \todo We are actually filling the areas where the lids and the infill touch twice! */
-        /** \todo remove material that we generated in the lid already */
-        if (infillDensity()>0.0001) {
-            infill.overlayInfillPattern(i, 2*nozzleDiameter() * (100.0 / infillDensity()) - nozzleDiameter());
-            auto infillPath = infill.toolpathFromLasso(z);
-            if (infillPath) tp->add(infillPath.get(), modelExtruder(), 30, 0); // FIXME: should me ExtruderDontCare
-        }
+        if (infillDensity()>0.0001)
+            addToolpathForInfill(tp, z, i, infill);
 
         i++;
     }
 
-    for (i=0; i<n+4; i++) {
-        IAMeshSlice *slc = sliceList[i];
-        delete slc;
-    }
-    free((void*)sliceList);
+    pSliceMap.clear();
 
     IAProgressDialog::hide();
     if (zRangeSlider->lowValue()>n-1) {
@@ -837,3 +862,20 @@ void IAFDMPrinter::writeProperties(Fl_Preferences &printer)
 
 
 
+
+IAFDMSlice::IAFDMSlice()
+{
+}
+
+
+IAFDMSlice::~IAFDMSlice()
+{
+    purge();
+}
+
+
+void IAFDMSlice::purge()
+{
+    delete pMeshSlice; pMeshSlice = nullptr;
+    delete pCore; pCore = nullptr;
+}
