@@ -799,21 +799,6 @@ void IAFDMPrinter::sliceAll()
         sliceLayer(i);
     }
 
-    // FIXME: this loop should go into saveToolpath()
-    for (i=0; i<n; ++i)
-    {
-        double z = sliceIndexToZ(i);
-        IAToolpathList *tp = pMachineToolpath.createLayer(z);
-        IAFDMSlice &s = pSliceMap[i];
-        if (s.pShellToolpath) tp->move(s.pShellToolpath);
-        if (s.pLidToolpath) tp->move(s.pLidToolpath);
-        if (s.pInfillToolpath) tp->move(s.pInfillToolpath);
-        if (s.pSkirtToolpath) tp->move(s.pSkirtToolpath);
-        if (s.pSupportToolpath) tp->move(s.pSupportToolpath);
-    }
-
-    pSliceMap.clear();
-
     IAProgressDialog::hide();
     if (zRangeSlider->lowValue()>n-1) {
         int nn = n-2; if (nn<0) nn = 0;
@@ -830,6 +815,23 @@ void IAFDMPrinter::saveToolpath(const char *filename)
 {
     if (!filename)
         filename = recentUpload();
+    double hgt = Iota.pMesh->pMax.z() - Iota.pMesh->pMin.z() + 2.0*layerHeight();
+    double zLayerHeight = layerHeight();
+    double zMax = hgt;
+    int i = 0, n = (int)((zMax)/zLayerHeight) + 2;
+    for (i=0; i<n; ++i)
+    {
+        double z = sliceIndexToZ(i);
+        IAToolpathList *tp = pMachineToolpath.createLayer(z);
+        IAFDMSlice &s = pSliceMap[i];
+        if (s.pShellToolpath) tp->move(s.pShellToolpath);
+        if (s.pLidToolpath) tp->move(s.pLidToolpath);
+        if (s.pInfillToolpath) tp->move(s.pInfillToolpath);
+        if (s.pSkirtToolpath) tp->move(s.pSkirtToolpath);
+        if (s.pSupportToolpath) tp->move(s.pSupportToolpath);
+    }
+    pSliceMap.clear();
+
     pMachineToolpath.optimize();
     // generate Toolpath if it is not complete
     pMachineToolpath.saveGCode(filename);
@@ -853,7 +855,15 @@ void IAFDMPrinter::drawPreview(double lo, double hi)
 {
     // FIXME: trigger building the slices in another thread
     // FIXME: draw the toolpaths from the appropriate IAFDMSlice
-    pMachineToolpath.draw(lo, hi);
+    //pMachineToolpath.draw(lo, hi);
+    for (int i=lo; i<=hi; i++) {
+        IAFDMSlice &s = pSliceMap[i];
+        if (s.pShellToolpath) s.pShellToolpath->draw();
+        if (s.pLidToolpath) s.pLidToolpath->draw();
+        if (s.pInfillToolpath) s.pInfillToolpath->draw();
+        if (s.pSkirtToolpath) s.pSkirtToolpath->draw();
+        if (s.pSupportToolpath) s.pSupportToolpath->draw();
+    }
 }
 
 

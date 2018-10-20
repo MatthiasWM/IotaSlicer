@@ -294,14 +294,14 @@ bool IAMachineToolpath::saveGCode(const char *filename /*, printer */)
         w.sendInitSequence(toolmap);
         for (auto &p: pToolpathListMap) {
             w.cmdComment("");
-            w.cmdComment("==== layer at z=%g", p.first / 1000.0);
+            w.cmdComment("==== layer at z=%.2f", p.first / 1000.0);
             w.cmdComment("");
             w.cmdResetExtruder();
             w.resetLayerTime();
             // send all motion commands
             p.second->saveGCode(w);
             double layerTime = w.getLayerTime();
-            printf("Layer %f will print in %f seconds\n", p.first / 1000.0, layerTime);
+            printf("Layer at %.2f will print in %.2f seconds\n", p.first / 1000.0, layerTime);
             /** \todo tune this parameter */
             if (layerTime>0.0 && layerTime<minLayerTime) {
                 IAVector3d prev = w.position();
@@ -318,7 +318,7 @@ bool IAMachineToolpath::saveGCode(const char *filename /*, printer */)
             }
         }
         w.sendShutdownSequence();
-        printf("Total print time is %f minutes\n", w.getTotalTime()/60.0);
+        printf("Total print time is %.2f minutes\n", w.getTotalTime()/60.0);
         w.close();
         ret = true;
     }
