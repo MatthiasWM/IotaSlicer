@@ -36,6 +36,7 @@ If will probably run with little or no modifications on other FDM printers as we
   * added simple material selection for support and model
   * internal restructuring of IAFDMPrinter to eventually allow multithreaded slicing
   * iternal simplifications around properties, controllers, and views
+  * linking with Lua as a scripting language
 * v0.3.0b
   * **Milestone!** implemented support structures for overhangs including parameters
 * v0.2.1b
