@@ -103,7 +103,7 @@ void IAIota::userMenuFileOpen()
     Fl_Native_File_Chooser fc(Fl_Native_File_Chooser::BROWSE_FILE);
     fc.title("Open mesh file");
     fc.filter("*.{stl,STL}");
-    fc.directory(gPreferences.pLastLoadFilename);
+    // fc.directory(gPreferences.pLastLoadFilename); pRecentFile[]...
     switch (fc.show()) {
         case -1: // error
         case 1: // cancel

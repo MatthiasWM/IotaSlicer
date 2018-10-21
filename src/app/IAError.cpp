@@ -81,11 +81,11 @@ void IAError::clear()
  *
  * Errors most be meaningful to the user first and foremost!
  *
- * \param loc the error location. This description should be useful to the user,
+ * \param[in] loc the error location. This description should be useful to the user,
  *        not the programmer
- * \param err the actual error message. Error messages ending in _BSD will store
+ * \param[in] err the actual error message. Error messages ending in _BSD will store
  *        the 'errno' at the time of this call.
- * \param str error messages ending in _STR require additonal text to print the
+ * \param[in] str error messages ending in _STR require additonal text to print the
  *        error message, usually a file name
  */
 void IAError::set(const char *loc, Error err, const char *str)

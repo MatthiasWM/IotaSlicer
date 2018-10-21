@@ -23,10 +23,30 @@ class Fl_Input;
 
 
 /**
+ * The base class for all views.
+ *
+ * A view is a UI representation of a property. Views are connected to
+ * properties through controllers. Multiple views can each connect through their
+ * controller to a single property. When a property changes, all controllers
+ * are signaled, and all views are updated.
+ *
+ * \see IAController, IAProperty
+ */
+class IAView : public Fl_Group
+{
+    typedef Fl_Group super;
+public:
+    IAView(int x, int y, int w, int h, const char *label=nullptr)
+    : super(x, y, w, h, label) { }
+};
+
+
+/**
  * This is the base class for various eidatble views in a tree widget.
  */
-class IATreeItemView : public Fl_Group
+class IATreeItemView : public IAView
 {
+    typedef IAView super;
 public:
     IATreeItemView(IATreeItemController::Type t, int w, const char *label=nullptr);
 protected:
@@ -39,6 +59,7 @@ protected:
  */
 class IALabelView : public IATreeItemView
 {
+    typedef IATreeItemView super;
 public:
     IALabelView(IATreeItemController::Type t, int w, const char *label=nullptr, \
                 const char *text=nullptr);
@@ -52,6 +73,7 @@ protected:
  */
 class IAFloatView : public IATreeItemView
 {
+    typedef IATreeItemView super;
 public:
     IAFloatView(IATreeItemController::Type t, int w, const char *label=nullptr,
                 const char *unit=nullptr);
@@ -68,6 +90,7 @@ protected:
  */
 class IATextView : public IATreeItemView
 {
+    typedef IATreeItemView super;
 public:
     IATextView(IATreeItemController::Type t, int w, const char *label=nullptr,
                const char *text=nullptr);
@@ -88,6 +111,7 @@ protected:
  */
 class IAFloatChoiceView : public IATreeItemView
 {
+    typedef IATreeItemView super;
 public:
     IAFloatChoiceView(IATreeItemController::Type t, int w, const char *label,
                       Fl_Menu_Item *menu, const char *unit=nullptr);
@@ -104,6 +128,7 @@ protected:
  */
 class IAChoiceView : public IATreeItemView
 {
+    typedef IATreeItemView super;
 public:
     IAChoiceView(IATreeItemController::Type t, int w, const char *label,
                  Fl_Menu_Item *menu);

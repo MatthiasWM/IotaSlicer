@@ -11,6 +11,9 @@
 #include <memory>
 
 
+/**
+ * This class manages errors that are presented to the user.
+ */
 class IAError
 {
 public:

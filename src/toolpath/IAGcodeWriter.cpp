@@ -692,7 +692,7 @@ void IAGcodeWriter::sendShutdownSequence()
 void IAGcodeWriter::requestTool(int t)
 {
     if (pT!=t) {
-        // TODO: there will be a whole bunch of extruder change strategies
+        /// \todo there will be a whole bunch of extruder change strategies
         // --- This is the strategy for multiple hotends with one feed each
         // We are creating wasted plastic in the park position, which is later
         // missing in the build. Some of this may be reduced by retracting much
@@ -710,7 +710,7 @@ void IAGcodeWriter::requestTool(int t)
             IAVector3d pause = Iota.pMesh->pMin
                 - IAVector3d(10.0, 10.0, 0.0)
                 + Iota.pMesh->position(); /** \bug in world coordinates */
-            pause.setMax(IAVector3d(0.0, 0.0, 0.0)); // FIXME: back-right of the bed (or beyond)
+            pause.setMax(IAVector3d(0.0, 0.0, 0.0)); /** \bug back-right of the bed (or beyond) */
             pause.z( pPosition.z() );
             cmdRapidMove(pause);
             // -- wait for printing temperature

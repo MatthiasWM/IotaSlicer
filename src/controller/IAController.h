@@ -33,6 +33,16 @@ class Fl_Preferences;
 struct Fl_Menu_Item;
 
 
+/**
+ * Controllers connect Properties to one or more Views.
+ *
+ * A controller manages communication between a view and a property. One
+ * controller connects one view to a property. A property can have any number
+ * of controllers, and hence any number of views. When a property changes,
+ * all controllers are signaled, and all views are updated.
+ *
+ * \see IAProperty, IAView
+ */
 class IAController
 {
 public:
@@ -46,6 +56,11 @@ private:
 };
 
 
+/**
+ * This controller calls a custom function when a property changes.
+ *
+ * This controller has no view associtaed to itself.
+ */
 class IACallbackController : public IAController
 {
 public:
@@ -57,7 +72,11 @@ public:
 };
 
 
-// FIXME: what actually happens whe the tree is cleared? Tree-Items deleted? Widgets stay in Group? ???
+/**
+ * This is the controller base class for view that are constructed in an Fl_Tree.
+ *
+ * \todo what actually happens whe the tree is cleared? Tree-Items deleted? Widgets stay in Group? ???
+ */
 class IATreeItemController : public IAController
 {
 public:
@@ -76,9 +95,10 @@ public:
 };
 
 
-
 /**
- * Manage a setting that appears in a tree view.
+ * Manage a label and an additional text that appears in a tree view.
+ *
+ * This Controller is static and not associted to a property.
  */
 class IALabelController : public IATreeItemController
 {
@@ -92,9 +112,8 @@ public:
 };
 
 
-
 /**
- * Manage a setting that appears in a tree view.
+ * Manage a floating point property that appears in a tree view as a text input field.
  */
 class IAFloatController : public IATreeItemController
 {
@@ -114,9 +133,8 @@ public:
 };
 
 
-
 /**
- * Manage a setting that appears in a tree view.
+ * Manage a text property that appears in a tree view as a text input field.
  */
 class IATextController : public IATreeItemController
 {
@@ -133,14 +151,13 @@ public:
     int pWdt;
     char *pUnit = nullptr;
     std::function<void()> pCallback;
-    IATextView *pWidget = nullptr;
-};
-
+    IATextView *pWidget = nullptr;};
 
 
 
 /**
- * Manage a setting that appears in a tree view.
+ * Manage a floating point property that appears in a tree view as a text input
+ * field with a pulldown menu of suggested values.
  */
 class IAFloatChoiceController : public IATreeItemController
 {
@@ -163,7 +180,7 @@ public:
 
 
 /**
- * Manage a setting that appears in a tree view.
+ * Manage an integer property that appears in a tree view as a pulldown menu.
  */
 class IAChoiceController : public IATreeItemController
 {
@@ -183,6 +200,9 @@ public:
 };
 
 
+/**
+ * Manage a 3D vector property that appears in a tree view as up to three text input field.
+ */
 class IAVectorController : public IATreeItemController
 {
 public:

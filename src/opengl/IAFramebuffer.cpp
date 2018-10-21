@@ -156,7 +156,7 @@ IAFramebuffer::IAFramebuffer(IAFramebuffer *src)
     if (src->hasFBO()) {
         bindForRendering();
         if (pBuffers==BITMAP) {
-            // FIXME: assuming that all framebuffers have the same resolution
+            /** \bug assuming that all framebuffers have the same resolution */
             pBitmap = bm_dup(src->pBitmap);
         } else {
             glBindFramebufferEXT(GL_READ_FRAMEBUFFER, src->pFramebuffer);
@@ -204,7 +204,7 @@ void IAFramebuffer::logicAndNot(IAFramebuffer *src)
             glBindFramebufferEXT(GL_DRAW_FRAMEBUFFER, pFramebuffer);
             IA_HANDLE_GL_ERRORS();
 
-            // FIXME: we can push and pop these
+            /** \todo we can push and pop these */
             glDisable(GL_DEPTH_TEST);
             // create a point if the destination point is 1 and the src is 0
 #if 0
@@ -274,7 +274,7 @@ void IAFramebuffer::logicAnd(IAFramebuffer *src)
             glBindFramebufferEXT(GL_DRAW_FRAMEBUFFER, pFramebuffer);
             IA_HANDLE_GL_ERRORS();
 
-            // FIXME: we can push and pop these
+            /** \bug we can push and pop these */
             glDisable(GL_DEPTH_TEST);
 #if 0
             // this would be the obvious solution, but is not supported by many
@@ -308,7 +308,7 @@ void IAFramebuffer::logicAnd(IAFramebuffer *src)
         unbindFromRendering();
     } else {
         // if src has no FBO, it is all 0, so AND will make the result all 0
-        // FIXME: can we purge() instead?
+        /** \bug can we purge() instead? */
         fill(0);
     }
 }
@@ -631,7 +631,7 @@ void IAFramebuffer::draw(double z)
     if (!hasFBO()) return;
 
     if (pBuffers==BITMAP) {
-        // FIXME: write this
+        /** \bug write this */
     } else {
         // set as texture and render out
         IA_HANDLE_GL_ERRORS();

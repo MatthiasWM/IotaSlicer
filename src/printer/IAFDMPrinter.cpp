@@ -172,7 +172,7 @@ IAFDMPrinter::IAFDMPrinter(IAFDMPrinter const& src)
     infillDensity = src.infillDensity;
     hasSkirt.set( src.hasSkirt() );
     minimumLayerTime.set( src.minimumLayerTime() );
-    // FIXME: and all other properties and settings
+    /** \bug and all other properties and settings */
 }
 
 
@@ -185,7 +185,7 @@ IAFDMPrinter::~IAFDMPrinter()
 IAPrinter *IAFDMPrinter::clone() const
 {
     IAFDMPrinter *p = new IAFDMPrinter(*this);
-    // FIXME: not working
+    /** \bug not working */
     return p;
 }
 
@@ -569,7 +569,7 @@ void IAFDMPrinter::addToolpathForSupport(IAToolpathList *tp, int i)
     // space between the model and the support to reduce stickyness
     support.beginClipBelowZ(z + supportTopGap()*layerHeight());
 
-    // FIXME: don't do this for every layer!
+    /** \bug don't do this for every layer! */
     // mark all triangles that need support first, then render only those
     // mark all vertices that need support, then render them here
     Iota.pMesh->drawAngledFaces(90.0+supportAngle());
@@ -592,7 +592,7 @@ void IAFDMPrinter::addToolpathForSupport(IAToolpathList *tp, int i)
     glClearDepth(1.0);
 
     support.unbindFromRendering();
-    // FIXME: change to bitmap mode
+    /** \bug change to bitmap mode */
 
     // reduce the size of the mask to leave room for the filament, plus
     // a little gap so that the support tower sides do not stick to
@@ -609,9 +609,9 @@ void IAFDMPrinter::addToolpathForSupport(IAToolpathList *tp, int i)
     }
     auto supportPath = support.toolpathFromLasso(z);
     if (supportPath) tp->add(supportPath.get(), supportExtruder(), 60, 0);
-    // TODO: don't draw anything here which we will draw otherwise later
-    // FIXME: find icicles and draw support for those
-    // FIXME: find and exclude bridges
+    /// \todo don't draw anything here which we will draw otherwise later
+    /** \bug find icicles and draw support for those */
+    /** \bug find and exclude bridges */
 }
 
 
@@ -661,9 +661,9 @@ void IAFDMPrinter::addToolpathForLid(IAToolpathList *tp, int i, IAFramebuffer &l
         if (lidPath) tp->add(lidPath.get(), modelExtruder(), 20, 0);
     } else {
         // CONCENTRIC (nicer for lids)
-        /** \bug limit this to the width and hight of the build platform divided by the extrsuion width */
+        /** \bug limit this to the width and hight of the build platform divided by the extrusion width */
         int k;
-        for (k=0;k<300;k++) { // FIXME
+        for (k=0;k<300;k++) { /** \bug why 300? */
             auto tp1 = lid.toolpathFromLassoAndContract(z, nozzleDiameter());
             if (!tp1) break;
             tp->add(tp1.get(), modelExtruder(), 20, k);
@@ -682,7 +682,7 @@ void IAFDMPrinter::addToolpathForInfill(IAToolpathList *tp, int i, IAFramebuffer
     /** \todo remove material that we generated in the lid already */
     infill.overlayInfillPattern(i, 2*nozzleDiameter() * (100.0 / infillDensity()) - nozzleDiameter());
     auto infillPath = infill.toolpathFromLasso(z);
-    if (infillPath) tp->add(infillPath.get(), modelExtruder(), 30, 0); // FIXME: should be ExtruderDontCare
+    if (infillPath) tp->add(infillPath.get(), modelExtruder(), 30, 0); /** \bug should be ExtruderDontCare */
 }
 
 
@@ -757,8 +757,8 @@ void IAFDMPrinter::sliceLayer(int i)
             }
 
             IAFramebuffer lid(pSliceMap[i].pCore);
-            lid.logicAndNot(&mask); // TODO: shrink lid
-            infill.logicAnd(&mask); // TODO: shrink infill
+            lid.logicAndNot(&mask); /// \todo shrink lid
+            infill.logicAnd(&mask); /// \todo shrink infill
             if (!s.pLidToolpath) {
                 IAToolpathList *tp = pSliceMap[i].pLidToolpath = new IAToolpathList(z);
                 addToolpathForLid(tp, i, lid);
@@ -838,7 +838,7 @@ void IAFDMPrinter::saveToolpath(const char *filename)
 void IAFDMPrinter::rangeSliderChanged()
 {
     if (Fl::event()==FL_RELEASE || Fl::event()==FL_KEYDOWN) {
-        sliceLayer(zRangeSlider->highValue()); // FIXME:
+        sliceLayer(zRangeSlider->highValue()); /** \bug very direct access through a view */
         gSceneView->redraw();
     }
 }
@@ -851,7 +851,7 @@ void IAFDMPrinter::purgeSlicesAndCaches()
 {
     pSliceMap.clear();
     super::purgeSlicesAndCaches();
-    sliceLayer(zRangeSlider->highValue()); // FIXME:
+    sliceLayer(zRangeSlider->highValue()); /** \bug very direct access through a view */
     gSceneView->redraw();
 }
 
@@ -861,7 +861,7 @@ void IAFDMPrinter::purgeSlicesAndCaches()
  */
 void IAFDMPrinter::drawPreview(double lo, double hi)
 {
-    // FIXME: trigger building the slices in another thread
+    /** \bug trigger building the slices in another thread */
     for (int i=lo; i<=hi; i++) {
         IAFDMSlice &s = pSliceMap[i];
         if (s.pShellToolpath) s.pShellToolpath->draw();

@@ -447,11 +447,6 @@ void IAMeshSlice::tesselateAndDrawLid(IAFramebuffer *fb)
 
 void IAMeshSlice::drawShell()
 {
-//    /// \bug temporary hack
-//    pColorbuffer->bindForRendering();
-//    drawShell();
-//    pColorbuffer->unbindFromRendering();
-
     glClearColor(0.0, 0.0, 0.0, 0.0);
     glClearDepth(1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

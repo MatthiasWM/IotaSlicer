@@ -18,7 +18,6 @@ typedef std::map<int, IAFDMSlice> IAFDMSliceMap;
 
 /**
  * This class holds a single slice of information for a given Z value.
- * \note not used yte
  * \bug per mesh? per scene?
  */
 class IAFDMSlice

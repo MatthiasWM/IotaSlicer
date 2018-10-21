@@ -60,9 +60,9 @@ void IAPrinterInkjet::userSliceSave()
     if (pFirstWrite) {
         userSliceSaveAs();
     } else {
-        // FIXME: if not yet sliced, do it
+        /** \bug if not yet sliced, do it */
         // sliceAll();
-        // FIXME: save to disk
+        /** \bug save to disk */
         saveSlices();
     }
 }

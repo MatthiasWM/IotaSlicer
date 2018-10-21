@@ -11,6 +11,9 @@
 #include "view/IAGUIMain.h"
 
 
+/**
+ * This class helps creating new Iota releases.
+ */
 class IAVersioneer : public IAVersioneerDialog
 {
 public:
@@ -44,6 +47,7 @@ protected:
     void system(const char *);
     void systemf(const char *, ...);
 
+    /** The Versioneer dialog window */
     Fl_Double_Window *pDialog = nullptr;
 };
 

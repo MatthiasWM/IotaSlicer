@@ -19,21 +19,38 @@
 #include <FL/Fl_Float_Input.H>
 
 
+/**
+ * Create a controller.
+ */
 IAController::IAController()
 {
 }
 
 
+/**
+ * Destroy a controller.
+ */
 IAController::~IAController()
 {
 }
 
 
+/**
+ * Do nothing if a property changed.
+ *
+ * This function transfers infomation form the property to the view.
+ */
 void IAController::propertyValueChanged()
 {
 }
 
 
+/**
+ * Set the Autodelete flag for a controller.
+ *
+ * If this flag is set, deleting a property will also delete this controller.
+ * It's up to the controller to potetially delete the view as well.
+ */
 void IAController::autoDelete(bool v)
 {
     pAutoDelete = v;
@@ -46,6 +63,12 @@ void IAController::autoDelete(bool v)
 //============================================================================//
 
 
+/**
+ * Create a controller that triggers a callback, but is not associated to a view.
+ *
+ * \param[in] prop connect to an arbitrary property
+ * \param[in] cb call this function when the property changes.
+ */
 IACallbackController::IACallbackController(IAProperty &prop, std::function<void()>&& cb)
 :   pProperty( prop ),
     pCallback( cb )
@@ -54,12 +77,18 @@ IACallbackController::IACallbackController(IAProperty &prop, std::function<void(
 }
 
 
+/**
+ * Destroy this controller.
+ */
 IACallbackController::~IACallbackController()
 {
     pProperty.detach(this);
 }
 
 
+/**
+ * This is called by the property whenever the property changes.
+ */
 void IACallbackController::propertyValueChanged()
 {
     if (pCallback)
@@ -73,6 +102,13 @@ void IACallbackController::propertyValueChanged()
 //============================================================================//
 
 
+/**
+ * Create a controller for an Fl_Tree.
+ *
+ * \param[in] path location of this tree item inside the tree hirarchy,
+ *          may contain forward slashes.
+ * \param[in] label a text that will appear to the left of the active widgets.
+ */
 IATreeItemController::IATreeItemController(const char *path, const char *label)
 :   pPath(strdup(path)),
     pLabel(strdup(label))
@@ -80,6 +116,9 @@ IATreeItemController::IATreeItemController(const char *path, const char *label)
 }
 
 
+/**
+ * Destroy the instance.
+ */
 IATreeItemController::~IATreeItemController()
 {
     if (pPath) ::free((void*)pPath);
@@ -87,6 +126,11 @@ IATreeItemController::~IATreeItemController()
 }
 
 
+/**
+ * Utility function to duplicate a simple Fl_Menu_Item list.
+ *
+ * \return Array of Fl_Menu_Item, must be free'd by the caller.
+ */
 Fl_Menu_Item *IATreeItemController::dup(Fl_Menu_Item const *src)
 {
     Fl_Menu_Item const *s = src;
@@ -107,6 +151,14 @@ Fl_Menu_Item *IATreeItemController::dup(Fl_Menu_Item const *src)
 //============================================================================//
 
 
+/**
+ * Create a controller that manages a static text in an Fl_Tree.
+ *
+ * \param[in] path location of this tree item inside the tree hirarchy,
+ *          may contain forward slashes.
+ * \param[in] label a text that will appear to the left of the active widgets.
+ * \param[in] text an additional text to the right of the label.
+ */
 IALabelController::IALabelController(const char *path, const char *label, const char *text)
 :   IATreeItemController(path, label)
 {
@@ -114,12 +166,22 @@ IALabelController::IALabelController(const char *path, const char *label, const 
 }
 
 
+/**
+ * Destroy the instance.
+ */
 IALabelController::~IALabelController()
 {
     if (pText) ::free((void*)pText);
 }
 
 
+/**
+ * Build the view for this controller.
+ *
+ * \param[in] treeWidget create the view inside this Fl_Tree.
+ * \param[in] t a preference style or toolbox style tree widget
+ * \param[in] w width of the menu item in pixels
+ */
 void IALabelController::build(Fl_Tree *treeWidget, Type t, int w)
 {
     if (!pWidget) {
@@ -137,12 +199,24 @@ void IALabelController::build(Fl_Tree *treeWidget, Type t, int w)
 #endif
 //============================================================================//
 
+
+/**
+ * Create a controller that manages a floating point input field in an Fl_Tree.
+ *
+ * \param[in] path location of this tree item inside the tree hirarchy,
+ *          may contain forward slashes.
+ * \param[in] label a text that will appear to the left of the active widgets.
+ * \param[in] prop control this property.
+ * \param[in] unit a string showing the values units to the right of the input
+ *          widget, can be nullptr.
+ * \param[in] cb call this function when the property changes.
+ */
 IAFloatController::IAFloatController(const char *path, const char *label,
                                      IAFloatProperty &prop, const char *unit,
                                      std::function<void()>&& cb)
 :   IATreeItemController(path, label),
 pProperty(prop),
-pUnit(strdup(unit)),
+pUnit(strdup(unit?unit:"")),
 pCallback(cb),
 pWidget(nullptr)
 {
@@ -150,6 +224,9 @@ pWidget(nullptr)
 }
 
 
+/**
+ * Destroy the instance.
+ */
 IAFloatController::~IAFloatController()
 {
     pProperty.detach(this);
@@ -158,6 +235,9 @@ IAFloatController::~IAFloatController()
 }
 
 
+/**
+ * Manage callbacks from the view.
+ */
 void IAFloatController::wCallback(IAFloatView *w, IAFloatController *d)
 {
     d->pProperty.set( w->value(), d );
@@ -166,6 +246,13 @@ void IAFloatController::wCallback(IAFloatView *w, IAFloatController *d)
 }
 
 
+/**
+ * Build the view for this controller.
+ *
+ * \param[in] treeWidget create the view inside this Fl_Tree.
+ * \param[in] t a preference style or toolbox style tree widget
+ * \param[in] w width of the menu item in pixels
+ */
 void IAFloatController::build(Fl_Tree *treeWidget, Type t, int w)
 {
     if (!pWidget) {
@@ -179,6 +266,10 @@ void IAFloatController::build(Fl_Tree *treeWidget, Type t, int w)
     pTreeItem->widget(pWidget);
 }
 
+
+/**
+ * Called whenever the property changes, updates the associated widget.
+ */
 void IAFloatController::propertyValueChanged()
 {
     if (pWidget)
@@ -191,13 +282,26 @@ void IAFloatController::propertyValueChanged()
 #endif
 //============================================================================//
 
+
+/**
+ * Create a controller that manages a text input field in an Fl_Tree.
+ *
+ * \param[in] path location of this tree item inside the tree hirarchy,
+ *          may contain forward slashes.
+ * \param[in] label a text that will appear to the left of the active widgets.
+ * \param[in] prop control this property.
+ * \param[in] width of the input field, currently ignored
+ * \param[in] unit a string showing the values units to the right of the input
+ *          widget, can be nullptr.
+ * \param[in] cb call this function when the property changes.
+ */
 IATextController::IATextController(const char *path, const char *label, IATextProperty &prop,
                                    int wdt, const char *unit,
                                    std::function<void()>&& cb)
 :   IATreeItemController(path, label),
 pProperty(prop),
 pWdt(wdt),
-pUnit(strdup(unit)),
+pUnit(strdup(unit?unit:"")),
 pCallback(cb),
 pWidget(nullptr)
 {
@@ -205,6 +309,9 @@ pWidget(nullptr)
 }
 
 
+/**
+ * Destroy the instance.
+ */
 IATextController::~IATextController()
 {
     pProperty.detach(this);
@@ -213,6 +320,9 @@ IATextController::~IATextController()
 }
 
 
+/**
+ * Manage callbacks from the view.
+ */
 void IATextController::wCallback(IATextView *w, IATextController *d)
 {
     d->pProperty.set( w->value(), d );
@@ -221,6 +331,13 @@ void IATextController::wCallback(IATextView *w, IATextController *d)
 }
 
 
+/**
+ * Build the view for this controller.
+ *
+ * \param[in] treeWidget create the view inside this Fl_Tree.
+ * \param[in] t a preference style or toolbox style tree widget
+ * \param[in] w width of the menu item in pixels
+ */
 void IATextController::build(Fl_Tree *treeWidget, Type t, int w)
 {
     if (!pWidget) {
@@ -234,6 +351,10 @@ void IATextController::build(Fl_Tree *treeWidget, Type t, int w)
     pTreeItem->widget(pWidget);
 }
 
+
+/**
+ * Called whenever the property changes, updates the associated widget.
+ */
 void IATextController::propertyValueChanged()
 {
     if (pWidget)
@@ -246,11 +367,27 @@ void IATextController::propertyValueChanged()
 #endif
 //============================================================================//
 
-IAFloatChoiceController::IAFloatChoiceController(const char *path, const char *label, IAFloatProperty &prop, const char *unit,
+
+/**
+ * Create a controller that manages a floating point input field and
+ * pulldown menu in an Fl_Tree.
+ *
+ * \param[in] path location of this tree item inside the tree hirarchy,
+ *          may contain forward slashes.
+ * \param[in] label a text that will appear to the left of the active widgets.
+ * \param[in] prop control this property.
+ * \param[in] unit a string showing the values units to the right of the input
+ *          widget, can be nullptr.
+ * \param[in] cb call this function when the property changes.
+ * \param[in] menu list of menu items with presets for the text field, menu
+ *          will be duplicated and managed by the class
+ */
+IAFloatChoiceController::IAFloatChoiceController(const char *path, const char *label,
+                                                 IAFloatProperty &prop, const char *unit,
                                                  std::function<void()>&& cb, Fl_Menu_Item *menu)
 :   IATreeItemController(path, label),
 pProperty(prop),
-pUnit(strdup(unit)),
+pUnit(strdup(unit?unit:"")),
 pCallback(cb),
 pMenu(dup(menu)),
 pWidget(nullptr)
@@ -259,6 +396,9 @@ pWidget(nullptr)
 }
 
 
+/**
+ * Destroy the instance.
+ */
 IAFloatChoiceController::~IAFloatChoiceController()
 {
     pProperty.detach(this);
@@ -268,6 +408,9 @@ IAFloatChoiceController::~IAFloatChoiceController()
 }
 
 
+/**
+ * Manage callbacks from the view.
+ */
 void IAFloatChoiceController::wCallback(IAFloatChoiceView *w, IAFloatChoiceController *d)
 {
     d->pProperty.set( w->value(), d );
@@ -276,6 +419,13 @@ void IAFloatChoiceController::wCallback(IAFloatChoiceView *w, IAFloatChoiceContr
 }
 
 
+/**
+ * Build the view for this controller.
+ *
+ * \param[in] treeWidget create the view inside this Fl_Tree.
+ * \param[in] t a preference style or toolbox style tree widget
+ * \param[in] w width of the menu item in pixels
+ */
 void IAFloatChoiceController::build(Fl_Tree *treeWidget, Type t, int w)
 {
     if (!pWidget) {
@@ -289,12 +439,15 @@ void IAFloatChoiceController::build(Fl_Tree *treeWidget, Type t, int w)
     pTreeItem->widget(pWidget);
 }
 
+
+/**
+ * Called whenever the property changes, updates the associated widget.
+ */
 void IAFloatChoiceController::propertyValueChanged()
 {
     if (pWidget)
         pWidget->value(pProperty());
 }
-
 
 
 #ifdef __APPLE__
@@ -303,6 +456,17 @@ void IAFloatChoiceController::propertyValueChanged()
 //============================================================================//
 
 
+/**
+ * Create a controller that manages a pulldown menu in an Fl_Tree.
+ *
+ * \param[in] path location of this tree item inside the tree hirarchy,
+ *          may contain forward slashes.
+ * \param[in] label a text that will appear to the left of the active widgets.
+ * \param[in] prop control this property.
+ * \param[in] cb call this function when the property changes.
+ * \param[in] menu list of menu items with presets for the text field, menu
+ *          will be duplicated and managed by the class
+ */
 IAChoiceController::IAChoiceController(const char *path, const char *label, IAIntProperty &prop,
                                        std::function<void()>&& cb, Fl_Menu_Item *menu)
 :   IATreeItemController(path, label),
@@ -315,6 +479,9 @@ IAChoiceController::IAChoiceController(const char *path, const char *label, IAIn
 }
 
 
+/**
+ * Destroy the instance.
+ */
 IAChoiceController::~IAChoiceController()
 {
     pProperty.detach(this);
@@ -323,6 +490,9 @@ IAChoiceController::~IAChoiceController()
 }
 
 
+/**
+ * Manage callbacks from the view.
+ */
 void IAChoiceController::wCallback(IAChoiceView *w, IAChoiceController *d)
 {
     d->pProperty.set( w->value(), d );
@@ -331,11 +501,18 @@ void IAChoiceController::wCallback(IAChoiceView *w, IAChoiceController *d)
 }
 
 
+/**
+ * Build the view for this controller.
+ *
+ * \param[in] treeWidget create the view inside this Fl_Tree.
+ * \param[in] t a preference style or toolbox style tree widget
+ * \param[in] w width of the menu item in pixels
+ */
 void IAChoiceController::build(Fl_Tree *treeWidget, Type t, int w)
 {
     if (!pWidget) {
         pWidget = new IAChoiceView(t, w, pLabel, pMenu);
-        // FIXME: compare to user_data() in the menu list to find the right entry
+        /** \bug compare to user_data() in the menu list to find the right entry */
         pWidget->value(pProperty());
         pWidget->callback((Fl_Callback*)wCallback, this);
         pWidget->tooltip(pTooltip);
@@ -346,6 +523,9 @@ void IAChoiceController::build(Fl_Tree *treeWidget, Type t, int w)
 }
 
 
+/**
+ * Called whenever the property changes, updates the associated widget.
+ */
 void IAChoiceController::propertyValueChanged()
 {
     if (pWidget)
@@ -359,6 +539,23 @@ void IAChoiceController::propertyValueChanged()
 //============================================================================//
 
 
+/**
+ * Create a controller that manages a floating point input field and
+ * pulldown menu in an Fl_Tree.
+ *
+ * \param[in] path location of this tree item inside the tree hirarchy,
+ *          may contain forward slashes.
+ * \param[in] label a text that will appear to the left of the active widgets.
+ * \param[in] text an additional text to the right of the label.
+ * \param[in] prop control this property.
+ * \param[in] xLabel a text that will appear to the left of the x input.
+ * \param[in] xUnits a text that will appear to the right of the x input, can be nullptr.
+ * \param[in] yLabel a text that will appear to the left of the x input, can be nullptr to show only the x value.
+ * \param[in] yUnits a text that will appear to the right of the x input, can be nullptr.
+ * \param[in] zLabel a text that will appear to the left of the x input, can be nullptr to show only the x and y value.
+ * \param[in] zUnits a text that will appear to the right of the x input, can be nullptr.
+ * \param[in] cb call this function when the property changes.
+ */
 IAVectorController::IAVectorController(const char *path, const char *label, const char *text,
                                        IAVectorProperty &prop,
                                        char const* xLabel, char const* xUnits,
@@ -377,6 +574,9 @@ IAVectorController::IAVectorController(const char *path, const char *label, cons
 }
 
 
+/**
+ * Destroy the instance.
+ */
 IAVectorController::~IAVectorController()
 {
     pProperty.detach(this);
@@ -391,6 +591,13 @@ IAVectorController::~IAVectorController()
 }
 
 
+/**
+ * Build the view for this controller.
+ *
+ * \param[in] treeWidget create the view inside this Fl_Tree.
+ * \param[in] t a preference style or toolbox style tree widget
+ * \param[in] w width of the menu item in pixels
+ */
 void IAVectorController::build(Fl_Tree *treeWidget, Type t, int w)
 {
     if (!pLabelWidget) {
@@ -436,6 +643,9 @@ void IAVectorController::build(Fl_Tree *treeWidget, Type t, int w)
 }
 
 
+/**
+ * Called whenever the property changes, updates the associated widget.
+ */
 void IAVectorController::propertyValueChanged()
 {
     if (pXWidget) pXWidget->value(pProperty().x());
@@ -444,6 +654,9 @@ void IAVectorController::propertyValueChanged()
 }
 
 
+/**
+ * Manage callbacks from the view.
+ */
 void IAVectorController::wCallback(IAFloatView *w, IAVectorController *d)
 {
     IAVector3d v;

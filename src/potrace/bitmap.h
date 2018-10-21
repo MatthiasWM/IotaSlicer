@@ -228,7 +228,7 @@ static inline int bm_resize(potrace_bitmap_t *bm, int h) {
 
 static inline void bm_hline(potrace_bitmap_t *bm, int x1, int x2, int y, int color)
 {
-    // FIXME: this can be optimized a lot!
+    /** \bug this can be optimized a lot! */
     if (x1>=x2) return;
     if (x1<0) x1 = 0;
     if (x2>bm->w) x2 = bm->w;

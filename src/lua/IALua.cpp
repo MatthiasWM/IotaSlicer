@@ -33,7 +33,7 @@ int IALua::quit(lua_State *L)
         forceQuit = lua_toboolean(L, 2);
     }
     Iota.userMenuFileQuit();
-    // FIXME: call via AppController and use a property to genearte notifications?
+    /** \bug call via AppController and use a property to genearte notifications? */
     lua_pushnumber(L, 1);
     return 1;
 }

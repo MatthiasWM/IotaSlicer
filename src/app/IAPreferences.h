@@ -15,7 +15,7 @@ class Fl_Preferences;
 
 
 /**
- * User preferences.
+ * Manage application wide user preferences.
  */
 class IAPreferences
 {
@@ -37,14 +37,11 @@ public:
     int pMainWindowW = 800;
     /** main window height. */
     int pMainWindowH = 600;
-
-    /** Name and path of the last STL file that was read.
-     * \todo we should remember 10 files and put them in a menu.
-     */
-    char pLastLoadFilename[FL_PATH_MAX] = { 0 };
-    
+    /** # of recent files to store */
     static const int pNRecentFiles = 10;
+    /** store the filenames of recent files here */
     char *pRecentFile[pNRecentFiles] = { 0 };
+    /** write preferences for individual printers here */
     char *pPrinterDefinitionsPath = nullptr;
 };
 

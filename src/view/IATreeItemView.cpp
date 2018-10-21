@@ -20,7 +20,7 @@
 
 
 IATreeItemView::IATreeItemView(IATreeItemController::Type t, int w, const char *label)
-:   Fl_Group(0, 0, w, t==IATreeItemController::kSetting?13:15)
+:   IAView(0, 0, w, t==IATreeItemController::kSetting?13:15)
 {
     box(FL_FLAT_BOX);
     begin();
@@ -181,7 +181,7 @@ IAChoiceView::IAChoiceView(IATreeItemController::Type t, int w, const char *labe
 {
     begin();
     pChoice = new Fl_Choice(w/2, 0, h()*7, h());
-    // FIXME: calculate sizes using menu entries and unit string length
+    /** \bug calculate sizes using menu entries and unit string length */
     pChoice->textsize(h()-2);
     pChoice->labelsize(h()-2);
     pChoice->align(FL_ALIGN_RIGHT);

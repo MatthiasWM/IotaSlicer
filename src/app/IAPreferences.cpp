@@ -103,6 +103,8 @@ void IAPreferences::updateRecentfilesMenu()
 
 /**
  * Add another file to the list of recently opened files.
+ *
+ * \param[in] filename Add this file. We will always save the absolute path.
  */
 void IAPreferences::addRecentFile(const char *filename)
 {
@@ -135,6 +137,9 @@ void IAPreferences::addRecentFile(const char *filename)
 }
 
 
+/**
+ * Clear all "Recent File" entries.
+ */
 void IAPreferences::clearRecentFileList()
 {
     for (int i=0; i<pNRecentFiles; i++) {

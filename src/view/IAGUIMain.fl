@@ -405,22 +405,22 @@ Function {createSettingWindow()} {open
     label Settings
     callback {Iota.userDialogSettingPrinterDeselect();
 o->hide();}
-    comment {TODO: save position and size} open
+    comment {/// \\todo save position and size} open
     xywh {548 249 640 400} type Double resizable modal size_range {640 320 640 2048} visible
   } {
     Fl_Pack {} {
-      comment {TODO: implement the tab style selection of panes} open
+      comment {/// \\todo implement the tab style selection of panes} open
       xywh {0 0 640 48} type HORIZONTAL
     } {
       Fl_Group {} {
         label General
-        comment {// TODO: add general settings below} open
+        comment {/// \\todo add general settings below} open
         xywh {0 2 50 44} box FLAT_BOX labelsize 10 align 18
       } {
         Fl_Button {} {
           label {@filesaveas}
           callback {Iota.userDialogSettingPrinterDeselect();}
-          comment {TODO: find a new icon}
+          comment {/// \\todo find a new icon}
           xywh {0 2 50 36} box NO_BOX labelsize 20 labelcolor 40 align 16
         }
       }
@@ -430,7 +430,7 @@ o->hide();}
       } {
         Fl_Button {} {
           label {@fileprint}
-          comment {TODO: find a new icon}
+          comment {/// \\todo find a new icon}
           xywh {50 2 50 36} box NO_BOX labelsize 20 labelcolor 40 align 16
         }
       }
@@ -441,7 +441,7 @@ o->hide();}
         Fl_Button {} {
           label {@circle}
           callback {Iota.userDialogSettingPrinterDeselect();}
-          comment {TODO: find a new icon}
+          comment {/// \\todo find a new icon}
           xywh {100 2 50 36} box NO_BOX labelsize 20 labelcolor 40 align 16
         }
       }
@@ -479,7 +479,7 @@ Iota.userDialogSettingPrinterSelect();}
           }
           Fl_Button {} {
             label {@-22>}
-            comment {TODO: ICON, choose form internet templates? }
+            comment {/// \\todo ICON, choose form internet templates? }
             xywh {48 370 18 18} box NO_BOX color 52 labelcolor 42 hide
           }
         }

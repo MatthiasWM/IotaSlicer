@@ -1001,7 +1001,7 @@ void IAToolpathMotion::drawFlat(double w)
         glVertex3d(pStart.x()-x7+y7, pStart.y()-y7-x7, pStart.z());
         glEnd();
 #else
-        // FIXME: line width!
+        /** \bug line width! */
         glBegin(GL_LINES);
         glVertex3dv(pStart.dataPointer());
         glVertex3dv(pEnd.dataPointer());

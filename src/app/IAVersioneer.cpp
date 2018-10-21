@@ -217,9 +217,12 @@ int system_np(const char* command, int timeout_milliseconds,
 
 
 /**
+ * Load the Versioneer setting from a preferences database.
+ *
+ * Also, find the current relase number in "README.md".
+ *
  * \todo copy newly built FLTK binaries automatically:
  *      /Users/matt/dev/fltk-1.4.svn/build/Xcode/bin/Release/fluid.app
- * \todo add terminal view when running system commands to see output
  * \todo path setting and "release" button to create distributables
  */
 
@@ -289,6 +292,10 @@ void IAVersioneer::loadSettings()
     }
 }
 
+
+/**
+ * Save the current Versioneer settings to a preferences database.
+ */
 void IAVersioneer::saveSettings()
 {
     Fl_Preferences pref(Fl_Preferences::USER, "iota.matthiasm.com", "versioneer");
@@ -302,12 +309,20 @@ void IAVersioneer::saveSettings()
     vers.set("class", wClass->value());
 }
 
+
+/**
+ * Set the path to the Iota file tree using the Versioneer preferences.
+ */
 void IAVersioneer::setProjectPath()
 {
     Fl_Preferences pref(Fl_Preferences::USER, "iota.matthiasm.com", "versioneer");
     pref.set("path", wBasePath->value());
 }
 
+
+/**
+ * Open a file chooser to help slection the Iota project path.
+ */
 void IAVersioneer::selectProjectPath()
 {
     const char *path = fl_dir_chooser("Choose the Iota Base Directory",
@@ -320,6 +335,9 @@ void IAVersioneer::selectProjectPath()
 }
 
 
+/**
+ * Read the FLTK 1.4 path from the versioneer preferences.
+ */
 void IAVersioneer::setFLTKPath()
 {
     Fl_Preferences pref(Fl_Preferences::USER, "iota.matthiasm.com", "versioneer");
@@ -327,6 +345,9 @@ void IAVersioneer::setFLTKPath()
 }
 
 
+/**
+ * Open a file chooser to help slection the FLTK project path.
+ */
 void IAVersioneer::selectFLTKPath()
 {
     const char *path = fl_dir_chooser("Choose the FLTK root Directory",
@@ -339,6 +360,10 @@ void IAVersioneer::selectFLTKPath()
 }
 
 
+/**
+ * Copy the latest FLTK build from the FLTK path into the include and bin
+ * directory.
+ */
 void IAVersioneer::updateFLTK()
 {
     if (fl_choice(
@@ -349,13 +374,14 @@ void IAVersioneer::updateFLTK()
         return;
 
     fl_chdir(wBasePath->value());
+    /** \todo Verify script to copy FLTK libs into Iota on MacOS */
 #ifdef __APPLE__
     system("mkdir platforms");
     system("mkdir platforms/MacOS");
     system("mkdir platforms/MacOS/bin");
     systemf("cp %s/build/Xcode/bin/Debug/fluid.app/Contents/MacOS/fluid platforms/MacOS/bin",
             wFLTKPath->value());
-    // TODO: separate debug and release builds
+    /// \todo separate debug and release builds
     systemf("cp %s/build/Xcode/lib/Debug/lib* platforms/MacOS/lib",
             wFLTKPath->value());
     system("mkdir include");
@@ -367,6 +393,7 @@ void IAVersioneer::updateFLTK()
     systemf("cp %s/jpeg/*.h include/libjpeg/", wFLTKPath->value());
     systemf("cp %s/png/*.h include/libpng/", wFLTKPath->value());
 #endif
+    /** \todo Implement script to copy FLTK libs into Iota on MSWindows */
 #ifdef _WIN32
 	system("cmd \\c echo \"Not implemented on MSWindows\"");
 #if 0
@@ -375,7 +402,7 @@ void IAVersioneer::updateFLTK()
 	system("cmd \\c md platforms/MSWindows/bin");
 	systemf("xcopy %s/build/VisualC/bin/Debug/fluid.exe platforms/MSWindows/bin",
 		wFLTKPath->value());
-	// TODO: separate debug and release builds
+	/// \todo separate debug and release builds
 	systemf("xcopy %s/build/VisualC/lib/Release/lib* platforms/MSWindows/lib \\s \\e \\y",
 		wFLTKPath->value());
 	system("cmd \\c md include");
@@ -388,17 +415,25 @@ void IAVersioneer::updateFLTK()
 	systemf("xcopy %s/png/*.h include/libpng/ \\s \\e \\y", wFLTKPath->value());
 #endif
 #endif
+    /** \todo Implement script to copy FLTK libs into Iota on Linux */
 #ifdef __LINUX__
 #endif
 }
 
 
+/**
+ * Read the deployment archive path from the versioneer preferences.
+ */
 void IAVersioneer::setArchivePath()
 {
     Fl_Preferences pref(Fl_Preferences::USER, "iota.matthiasm.com", "versioneer");
     pref.set("archivePath", wArchivePath->value());
 }
 
+
+/**
+ * Open a file chooser to help slection the deployment archive path.
+ */
 void IAVersioneer::selectArchivePath()
 {
     const char *path = fl_dir_chooser("Choose the Archive Directory",
@@ -411,14 +446,19 @@ void IAVersioneer::selectArchivePath()
 }
 
 
+/**
+ * Create files to be deployed and archive them in the given path.
+ */
 void IAVersioneer::createArchive()
 {
+    /** \todo Fix deployment for MacOS. Also, can we kick off the build process from here? */
 #ifdef __APPLE__
     // in platforms/MacOS
     // xcodebuild -target IotaSlicer -configuration Release
     // xcodebuild -scheme Iota -showBuildSettings | grep TARGET_BUILD_DIR
     fl_message("Select the menu 'Product > Archive' in Xcode.\nArchive will be created in $HOME/Desktop");
 #endif
+    /** \todo Verify deployment for MSWindows. Also, can we kick off the build process from here? */
 #ifdef _WIN32
 	if (fl_choice(
 		"Select 'Release' Solution Configuration in VisualC and press F7.\n"
@@ -441,6 +481,7 @@ void IAVersioneer::createArchive()
 		system(buf);
 	}
 #endif
+    /** \todo Verify deployment for Linux. Also, can we kick off the build process from here? */
 #ifdef __LINUX__
 	if (fl_choice(
 		"Select 'Release' in CodeBlock and click 'Build'.\n"
@@ -465,6 +506,9 @@ void IAVersioneer::createArchive()
 }
 
 
+/**
+ * Add 1 to the major version.
+ */
 void IAVersioneer::majorPlus()
 {
     char buf[80];
@@ -477,6 +521,9 @@ void IAVersioneer::majorPlus()
 }
 
 
+/**
+ * Add 1 to the minor version.
+ */
 void IAVersioneer::minorPlus()
 {
     char buf[80];
@@ -488,6 +535,9 @@ void IAVersioneer::minorPlus()
 }
 
 
+/**
+ * Increment the build number.
+ */
 void IAVersioneer::buildPlus()
 {
     char buf[80];
@@ -498,6 +548,14 @@ void IAVersioneer::buildPlus()
 }
 
 
+/**
+ * Overwrite the version number in HTML files.
+ *
+ * Version numbers in HTML must be marked <!--[ver-->v#.#.#x<!--]-->.
+ * The file will be modified in place.
+ *
+ * \param[in] filename of the HTML file.
+ */
 void IAVersioneer::applySettingsHtml(const char *name) {
     char filename[2048];
     char out[2048];
@@ -543,6 +601,15 @@ void IAVersioneer::applySettingsHtml(const char *name) {
     }
 }
 
+
+/**
+ * Overwrite the version number in CPP files.
+ *
+ * Version numbers in CPP must be marked /*[ver*_/v#.#.#x/@]*_/.
+ * The file will be modified in place.
+ *
+ * \param[in] filename of the CPP file.
+ */
 void IAVersioneer::applySettingsCpp(const char *name)
 {
     char filename[2048];
@@ -589,6 +656,16 @@ void IAVersioneer::applySettingsCpp(const char *name)
     }
 }
 
+
+/**
+ * Overwrite the version number in the Doxygen file.
+ *
+ * The file will be modified in place.
+ *
+ * \param[in] filename of the Doxygen file.
+ *
+ * \todo we wshould implement this for the CMake files as well.
+ */
 void IAVersioneer::applySettingsDoxyfile(const char *name)
 {
     char filename[2048];
@@ -631,6 +708,11 @@ void IAVersioneer::applySettingsDoxyfile(const char *name)
 }
 
 
+/**
+ * Mark a file as currently modified.
+ *
+ * \param[in] name filename of the file to be marked
+ */
 void IAVersioneer::touch(const char *name)
 {
     char filename[2048];
@@ -639,6 +721,9 @@ void IAVersioneer::touch(const char *name)
 }
 
 
+/**
+ * Update the version number in platform specific files.
+ */
 void IAVersioneer::updatePlatformFiles()
 {
 #ifdef __APPLE__
@@ -668,6 +753,9 @@ void IAVersioneer::updatePlatformFiles()
 }
 
 
+/**
+ * Update the Versio Number string in a number of files across the project.
+ */
 void IAVersioneer::applySettings()
 {
     fl_chdir(wBasePath->value());
@@ -682,6 +770,11 @@ void IAVersioneer::applySettings()
 }
 
 
+/**
+ * Call Git Tag with the current version tag.
+ *
+ * \todo this works currently only on MacOS and Linux.
+ */
 void IAVersioneer::gitTag()
 {
 #ifdef _WIN32
@@ -702,16 +795,33 @@ void IAVersioneer::gitTag()
 }
 
 
+/**
+ * Construct the Versioneer class.
+ */
 IAVersioneer::IAVersioneer()
 {
 }
 
 
+/**
+ * Destroy the Versioneer class.
+ */
 IAVersioneer::~IAVersioneer()
 {
 }
 
 
+/**
+ * Call a shell command fprintf-style and output the result to the terminal.
+ *
+ * \param[in] fmt the formatting string, followed by a number of arguments.
+ *
+ * \note for MSDOS commands under MSWindows, this call will flip forward slashes
+ *      into backward slashes to create MSDOS compatible file paths. It will
+ *      also flip backward slashes into forward slashes, so the the typicla
+ *      MSDOS command line option starting with a forward slash, will continue
+ *      to work and not be confused with a path.
+ */
 void IAVersioneer::systemf(const char *fmt, ...)
 {
     char buf[4*FL_PATH_MAX];
@@ -722,6 +832,18 @@ void IAVersioneer::systemf(const char *fmt, ...)
     system(buf);
 }
 
+
+/**
+ * Call a shell command nd output the result to the terminal.
+ *
+ * \param[in] cmd The shell command with full path and arguments.
+ *
+ * \note for MSDOS commands under MSWindows, this call will flip forward slashes
+ *      into backward slashes to create MSDOS compatible file paths. It will
+ *      also flip backward slashes into forward slashes, so the the typicla
+ *      MSDOS command line option starting with a forward slash, will continue
+ *      to work and not be confused with a path.
+ */
 void IAVersioneer::system(const char *cmd)
 {
     wTerminal->printf("> %s\n", cmd);
@@ -755,6 +877,9 @@ void IAVersioneer::system(const char *cmd)
 }
 
 
+/**
+ * Show the Versioneer dialog box.
+ */
 void IAVersioneer::show()
 {
     if (!pDialog) {

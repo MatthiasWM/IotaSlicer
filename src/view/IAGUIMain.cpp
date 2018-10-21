@@ -535,18 +535,18 @@ static void cb_9(Fl_Button*, void*) {
 Fl_Tree *wSettingsPrinterProperties=(Fl_Tree *)0;
 
 Fl_Double_Window* createSettingWindow() {
-  { // TODO: save position and size
+  { // /// \todo save position and size
     wSettingsWindow = new Fl_Double_Window(640, 400, "Settings");
     wSettingsWindow->callback((Fl_Callback*)cb_wSettingsWindow);
-    { // TODO: implement the tab style selection of panes
+    { // /// \todo implement the tab style selection of panes
       Fl_Pack* o = new Fl_Pack(0, 0, 640, 48);
       o->type(1);
-      { // // TODO: add general settings below
+      { // /// \todo add general settings below
         Fl_Group* o = new Fl_Group(0, 2, 50, 44, "General");
         o->box(FL_FLAT_BOX);
         o->labelsize(10);
         o->align(Fl_Align(FL_ALIGN_BOTTOM|FL_ALIGN_INSIDE));
-        { // TODO: find a new icon
+        { // /// \todo find a new icon
           Fl_Button* o = new Fl_Button(0, 2, 50, 36, "@filesaveas");
           o->box(FL_NO_BOX);
           o->labelsize(20);
@@ -561,7 +561,7 @@ Fl_Double_Window* createSettingWindow() {
         o->color(FL_DARK1);
         o->labelsize(10);
         o->align(Fl_Align(FL_ALIGN_BOTTOM|FL_ALIGN_INSIDE));
-        { // TODO: find a new icon
+        { // /// \todo find a new icon
           Fl_Button* o = new Fl_Button(50, 2, 50, 36, "@fileprint");
           o->box(FL_NO_BOX);
           o->labelsize(20);
@@ -574,7 +574,7 @@ Fl_Double_Window* createSettingWindow() {
         o->box(FL_FLAT_BOX);
         o->labelsize(10);
         o->align(Fl_Align(FL_ALIGN_BOTTOM|FL_ALIGN_INSIDE));
-        { // TODO: find a new icon
+        { // /// \todo find a new icon
           Fl_Button* o = new Fl_Button(100, 2, 50, 36, "@circle");
           o->box(FL_NO_BOX);
           o->labelsize(20);
@@ -621,7 +621,7 @@ Fl_Double_Window* createSettingWindow() {
             o->color(FL_LIGHT2);
             o->callback((Fl_Callback*)cb_9);
           } // Fl_Button* o
-          { // TODO: ICON, choose form internet templates? 
+          { // /// \todo ICON, choose form internet templates? 
             Fl_Button* o = new Fl_Button(48, 370, 18, 18, "@-22>");
             o->box(FL_NO_BOX);
             o->color(FL_LIGHT2);

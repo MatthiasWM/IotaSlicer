@@ -426,7 +426,7 @@ void IAMesh::drawAngledFaces(double a)
     for (auto &t: triangleList) {
         double na = t->pNormal.dot(zVec);
         if (na<ref) {
-            glNormal3dv(t->pNormal.dataPointer()); // FIXME: global normal!
+            glNormal3dv(t->pNormal.dataPointer()); /** \bug  global normal! */
             for (int j = 0; j < 3; ++j) {
                 IAVertex *v = t->vertex(j);
 //                glVertex3dv(v->pLocalPosition.dataPointer());
@@ -513,7 +513,7 @@ void IAMesh::projectTexture(double wMult, double hMult, int type)
  * \return the existing or newly created vertex. There is no way of knowing if
  *      the vertex was found or created.
  *
- * \todo there should probably be a minimal toloerance when comparing positions!
+ * \todo there should probably be a minimal tollerance when comparing positions!
  * \todo create a vertex list class and move this methode there
  */
 IAVertex *IAMesh::findOrAddNewVertex(IAVector3d const& pos)

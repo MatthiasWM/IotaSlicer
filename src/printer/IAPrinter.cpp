@@ -95,7 +95,7 @@ void IAPrinter::createPropertiesControls()
 
 void IAPrinter::initializeSceneSettings()
 {
-    // TODO: add choice of profiles (and how to manage them)
+    /// \todo add choice of profiles (and how to manage them)
 
     static Fl_Menu_Item layerHeightMenu[] = {
         { "0.1", 0, nullptr, nullptr, 0, 0, 0, 11 },
