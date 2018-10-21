@@ -10,10 +10,26 @@
 
 #include "printer/IAPrinter.h"
 
+#include <mutex>
+
 
 class IAFDMPrinter;
 class IAFDMSlice;
-typedef std::map<int, IAFDMSlice> IAFDMSliceMap;
+
+
+class IAFDMSliceList
+{
+public:
+    IAFDMSliceList() { }
+    ~IAFDMSliceList() { }
+    /** \todo implement asynchrnous calculation of slices. */
+    // if ( m.find("f") == m.end() )
+    // lock this list and individual slices
+    IAFDMSlice &operator[](int i) { return pList[i]; }
+    void purge();
+private:
+    std::map<int, IAFDMSlice> pList;
+};
 
 
 /**
@@ -26,7 +42,10 @@ public:
     IAFDMSlice();
     ~IAFDMSlice();
     void purge();
+    void lock() { pMutex.lock(); }
+    void unlock() { pMutex.unlock(); }
 
+    std::mutex pMutex;
 //private:
     /// Store the toolptah that generates the shell
     IAToolpathList *pShellToolpath = nullptr;
@@ -35,7 +54,7 @@ public:
     IAToolpathList *pSkirtToolpath = nullptr;
     IAToolpathList *pSupportToolpath = nullptr;
     /// Store the bitmap for the slice without the shell
-    IAFramebuffer *pCore = nullptr;
+    IAFramebuffer *pCoreBitmap = nullptr;
 };
 
 
@@ -107,10 +126,6 @@ public:
     double sliceIndexToZ(int i);
 
     void acquireCorePattern(int i);
-//    void acquireSkirtPath(int i);
-//    void acquireSupportPath(int i);
-//    void acquireLidPath(int i);
-//    void acquireInfillPath(int i);
 
     void sliceLayer(int i);
     void sliceAll();
@@ -127,7 +142,7 @@ public:
     
 private:
 
-    IAFDMSliceMap pSliceMap;
+    IAFDMSliceList pSliceList;
 };
 
 

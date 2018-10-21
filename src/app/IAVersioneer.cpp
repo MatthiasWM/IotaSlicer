@@ -605,7 +605,7 @@ void IAVersioneer::applySettingsHtml(const char *name) {
 /**
  * Overwrite the version number in CPP files.
  *
- * Version numbers in CPP must be marked /*[ver*_/v#.#.#x/@]*_/.
+ * Version numbers in CPP must be marked /_*[ver*_/v#.#.#x/_*]*_/.
  * The file will be modified in place.
  *
  * \param[in] filename of the CPP file.
