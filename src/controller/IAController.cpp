@@ -669,3 +669,120 @@ void IAVectorController::wCallback(IAFloatView *w, IAVectorController *d)
 }
 
 
+#ifdef __APPLE__
+#pragma mark -
+#endif
+//============================================================================//
+
+
+/**
+ * Create a controller that manages presets for a group of Properties.
+ *
+ * \param[in] path location of this tree item inside the tree hirarchy,
+ *          may contain forward slashes.
+ * \param[in] label a text that will appear to the left of the active widgets.
+ * \param[in] prop control this property.
+ * \param[in] cb call this function when the property changes.
+ */
+IAPresetController::IAPresetController(const char *path, const char *label,
+                                       IAPresetProperty &prop, std::function<void()>&& cb)
+:   super(path, label),
+    pProperty( prop ),
+    pCallback( cb )
+{
+    /// \todo build the menu now or later in build()?
+}
+
+
+/**
+ * Destroy the instance.
+ */
+IAPresetController::~IAPresetController()
+{
+}
+
+
+/**
+ * Build the view for this controller.
+ *
+ * \param[in] treeWidget create the view inside this Fl_Tree.
+ * \param[in] t a preference style or toolbox style tree widget
+ * \param[in] w width of the menu item in pixels
+ */
+void IAPresetController::build(Fl_Tree *treeWidget, Type t, int w)
+{
+    buildMenu();
+    if (!pWidget) {
+        pWidget = new IAChoiceView(t, w, pLabel, pMenu);
+        /** \bug choose by text */
+        pWidget->value(0);
+        pWidget->callback((Fl_Callback*)wCallback, this);
+        pWidget->tooltip(pTooltip);
+    }
+    pTreeItem = treeWidget->add(pPath);
+    pTreeItem->close();
+    pTreeItem->widget(pWidget);
+}
+
+
+/**
+ * Called whenever the property changes, updates the associated widget.
+ */
+void IAPresetController::propertyValueChanged()
+{
+    // property.set() will load the settings for us
+    /// \todo update the menu.
+}
+
+
+/**
+ * Manage callbacks from the view.
+ */
+void IAPresetController::wCallback(IAChoiceView *w, IAPresetController *d)
+{
+    int i = w->value();
+    if (i==0) { // <not saved>
+        /// \todo implement what happens if we choose this item (does anything happen?)
+    } else if (i==1) { // save as preset...
+        /// \todo implement a way to name and save this new preset
+        // ask user for a new name
+        // what do we do if the name overrides a builtin preset?
+        // check if that name exists
+        // ask user, if overwriting is ok
+        // save the preset under the new name
+        // rebuild the menu
+        // set the value to the new name menu item
+    } else if (i==2) { // remove this preset...
+        /// \todo implement a way to remove the current preset
+        // check if this is a bultin preset and cancel if it is
+        // delete preset from file
+        // rebuild menu
+        // set next best value
+    } else {
+        d->pProperty.set( d->pMenu[i].label(), d );
+        // d->pProperty.load(); // property.set() will load the settings for us
+        if (d->pCallback)
+            d->pCallback();
+    }
+}
+
+
+/**
+ * Build a menu from the list of availabel presets.
+ */
+void IAPresetController::buildMenu()
+{
+    if (pMenu) ::free((void*)pMenu); /** \bug and free the labels! */
+    std::vector< std::string > presetList;
+    pProperty.listPresets(presetList);
+    int n = presetList.size();
+    pMenu = (Fl_Menu_Item*)calloc(n+4, sizeof(Fl_Menu_Item));
+    pMenu[0] = { strdup("<not saved>"), 0, nullptr, (void*)0, FL_MENU_INACTIVE, 0, 0, 11 };
+    pMenu[1] = { strdup("save this as a preset..."), 0, nullptr, (void*)1, FL_MENU_DIVIDER, 0, 0, 11 };
+    pMenu[2] = { strdup("remove this preset..."), 0, nullptr, (void*)2, FL_MENU_DIVIDER|FL_MENU_INVISIBLE, 0, 0, 11 };
+    for (int i=0; i<n; i++) {
+        pMenu[i+3] = { strdup(presetList[i].c_str()), 0, nullptr, (void*)(fl_intptr_t)(i+3), 0, 0, 0, 11 };
+    }
+}
+
+

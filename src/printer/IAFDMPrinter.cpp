@@ -157,12 +157,21 @@ typedef Fl_Menu_Item Fl_Menu_Item_List[];
 IAFDMPrinter::IAFDMPrinter()
 :   super()
 {
+    supportPreset.add(hasSupport);
+    supportPreset.add(supportAngle);
+    supportPreset.add(supportDensity);
+    supportPreset.add(supportTopGap);
+    supportPreset.add(supportSideGap);
+    supportPreset.add(supportBottomGap);
+    supportPreset.add(supportExtruder);
 }
 
 
 IAFDMPrinter::IAFDMPrinter(IAFDMPrinter const& src)
 :   super(src)
 {
+    presetClass.set( "FDM" );
+
     numExtruders.set( src.numExtruders() );
 
     nozzleDiameter = src.nozzleDiameter;
@@ -253,6 +262,7 @@ void IAFDMPrinter::createPropertiesControls()
         { nullptr } };
     s = new IAChoiceController("specs/extruder", "Extruders:", numExtruders,
                                []{}, numExtruderMenu );
+#if 0
     pPropertiesControllerList.push_back(s);
     s = new IALabelController("specs/extruder/0", "Extruder 0:");
     pPropertiesControllerList.push_back(s);
@@ -278,6 +288,7 @@ void IAFDMPrinter::createPropertiesControls()
     pPropertiesControllerList.push_back(s);
     s = new IALabelController("specs/extruder/1", "Extruder 1:");
     pPropertiesControllerList.push_back(s);
+#endif
     // :construction: = \xF0\x9F\x9A\xA7
     // :warning: = E2 9A A0
     // :stop: = F0 9F 9B 91
@@ -289,31 +300,6 @@ void IAFDMPrinter::initializeSceneSettings()
     super::initializeSceneSettings();
     IATreeItemController *s;
 
-    // This preset contains all costumizable changes to the printer hardware.
-    // Mainly, this is the filament used, and in rare cases a change in nozzle
-    // type or diameter.
-    // For mixing extruders, this can also include virtual extruders.
-    // For now, we may also want to put layer height in here, until we allow
-    // different layer heights for different models.
-    static Fl_Menu_Item printerPresetMenu[] = {
-        // if any of the setting within the preset changed, mark it as "not yet saved"
-        // (or as one of the other preset, in case they match)
-        { "<not saved>", 0, nullptr, (void*)0, 0, 0, 0, 11 },
-        // show the item below, if the preset is marked as "not yet saved"
-        { "save this as a preset...", 0, nullptr, (void*)0, FL_MENU_DIVIDER, 0, 0, 11 },
-        // show this item, if the preset exists. If it is "default", deactivate this menu
-        { "remove this preset...", 0, nullptr, (void*)0, FL_MENU_DIVIDER|FL_MENU_INVISIBLE, 0, 0, 11 },
-        // "default" means, that all settings will be the printer default properties
-        { "default", 0, nullptr, (void*)0, 0, 0, 0, 11 },
-        // a list of custom named and generated preset that will be saved to a file
-        // and that can be selectd on a pre-mesh basis in the settings below
-        { "soluble support", 0, nullptr, (void*)1, 0, 0, 0, 11 },
-        { "calibrated color", 0, nullptr, (void*)2, 0, 0, 0, 11 },
-        { nullptr } };
-    static IAIntProperty printerPreset { "printerPreset", 0 };
-    s = new IAChoiceController("Printer", "Printer:", printerPreset,
-                               []{;}, printerPresetMenu);
-    pSceneSettings.push_back(s);
     // extruder 0 nozzle size
     // extruder 0 material and color
     // extruder 1 nozzle size
@@ -406,11 +392,41 @@ void IAFDMPrinter::initializeSceneSettings()
 
     // There will be a preset system for the way that support structures are
     // built. Not every mesh in an assembly needs support.
+
+    // This preset contains all costumizable changes to the printer hardware.
+    // Mainly, this is the filament used, and in rare cases a change in nozzle
+    // type or diameter.
+    // For mixing extruders, this can also include virtual extruders.
+    // For now, we may also want to put layer height in here, until we allow
+    // different layer heights for different models.
+#if 0
+    static Fl_Menu_Item supportPresetMenu[] = {
+        // if any of the setting within the preset changed, mark it as "not yet saved"
+        // (or as one of the other preset, in case they match)
+        { "<not saved>", 0, nullptr, (void*)0, 0, 0, 0, 11 },
+        // show the item below, if the preset is marked as "not yet saved"
+        { "save this as a preset...", 0, nullptr, (void*)0, FL_MENU_DIVIDER, 0, 0, 11 },
+        // show this item, if the preset exists. If it is "default", deactivate this menu
+        { "remove this preset...", 0, nullptr, (void*)0, FL_MENU_DIVIDER|FL_MENU_INVISIBLE, 0, 0, 11 },
+        // "default" means, that all settings will be the printer default properties
+        //{ "default", 0, nullptr, (void*)0, 0, 0, 0, 11 },
+        // a list of custom named and generated preset that will be saved to a file
+        // and that can be selectd on a pre-mesh basis in the settings below
+        { "none", 0, nullptr, (void*)1, 0, 0, 0, 11 },
+        { "fast", 0, nullptr, (void*)2, 0, 0, 0, 11 },
+        { "medium", 0, nullptr, (void*)3, 0, 0, 0, 11 },
+        { "detailed", 0, nullptr, (void*)4, 0, 0, 0, 11 },
+        { nullptr } };
+#endif
+    s = new IAPresetController("support", "Support Preset:",
+                               supportPreset, []{;});
+    pSceneSettings.push_back(s);
+
     static Fl_Menu_Item supportMenu[] = {
         { "no", 0, nullptr, (void*)0, 0, 0, 0, 11 },
         { "yes", 0, nullptr, (void*)1, 0, 0, 0, 11 },
         { nullptr } };
-    s = new IAChoiceController("support", "support: ", hasSupport,
+    s = new IAChoiceController("support/active", "support: ", hasSupport,
                          [this]{purgeSlicesAndCaches();}, supportMenu );
     pSceneSettings.push_back(s);
 

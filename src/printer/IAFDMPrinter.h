@@ -113,6 +113,7 @@ public:
     IAFloatProperty minimumLayerTime { "minimumLayerTime", 15.0 };
     IAExtruderProperty modelExtruder { "modelExtruder", 0 };
     // support
+    IAPresetProperty supportPreset { presetClass, "supportPreset", "medium" };
     IAIntProperty hasSupport { "hasSupport", 1 };
     IAFloatProperty supportAngle { "supportAngle", 50.0 };
     IAFloatProperty supportDensity { "supportDensity", 40.0 };

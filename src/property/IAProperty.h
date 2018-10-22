@@ -11,6 +11,7 @@
 #include "geometry/IAVector3d.h"
 
 #include <vector>
+#include <string>
 #include <functional>
 
 
@@ -155,6 +156,41 @@ public:
     IAExtruderProperty(char const* name, int value=0)
     : IAIntProperty(name, value) { }
 };
+
+
+/**
+ * This property holds the name of a preset and manages linked properties.
+ *
+ * Memory allocations and deallocations are done inside the class.
+ */
+class IAPresetProperty : public IATextProperty
+{
+    typedef IATextProperty super;
+public:
+    IAPresetProperty(IATextProperty &presetClass, char const* name, char const* value=nullptr);
+    virtual ~IAPresetProperty() override;
+//    char const* operator()() const { return pValue; }
+    void set(char const* value, IAController *ctrl=nullptr);
+//    virtual void read(Fl_Preferences&) override;
+//    virtual void write(Fl_Preferences&) override;
+    void load();
+    void save();
+    void listPresets(std::vector< std::string > &list);
+    // check if preset by this name exists
+    // escape and unescape preset names for preferences
+    // erase a preset from a file
+    // add a fallback set of presets if no file is found or it is empty
+    void add(IAProperty &prop);
+protected:
+//    void _set(char const* value);
+//    bool _equals(char const* value);
+//    char *pValue = nullptr;
+    std::vector<IAProperty*> pPropList;
+    IATextProperty &pPresetClass;
+};
+
+
+
 
 
 #endif /* IA_PROPERTY_H */

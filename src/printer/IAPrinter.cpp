@@ -51,6 +51,7 @@ IAPrinter::IAPrinter(IAPrinter const& src)
 
     uuid.set( src.uuid() );
     name.set( src.name() );
+    presetClass.set( src.presetClass() );
     recentUpload.set( src.recentUpload() );
     motionRangeMin.set( src.motionRangeMin() );
     motionRangeMax.set( src.motionRangeMax() );
@@ -85,6 +86,12 @@ void IAPrinter::createPropertiesControls()
     s = new IATextController("name", "Printer Name:", name, 32, "",
                              []{ Iota.pPrinterListController.preferencesNameChanged(); } );
     s->tooltip("Give this printer description a human readable name.");
+    pPropertiesControllerList.push_back(s);
+
+    // -- group presets of similar printers in a class
+    s = new IATextController("presetClass", "Preset Class:", presetClass, 32, "",
+                             []{ /* reloadPresets(); */ } );
+    s->tooltip("Group presets of similar printers in a class.");
     pPropertiesControllerList.push_back(s);
 
     // -- recentUpload is handled by the "upload" menu.
@@ -137,17 +144,18 @@ void IAPrinter::readPropertiesFile()
 }
 
 
-void IAPrinter::readProperties(Fl_Preferences &prefs)
+void IAPrinter::readProperties(Fl_Preferences &printer)
 {
-    uuid.read(prefs);
-    name.read(prefs);
-    recentUpload.read(prefs);
+    uuid.read(printer);
+    name.read(printer);
+    presetClass.read(printer);
+    recentUpload.read(printer);
 
-    Fl_Preferences properties(prefs, "properties");
-    motionRangeMin.read(prefs);
-    motionRangeMax.read(prefs);
-    printVolumeMin.read(prefs);
-    printVolumeMax.read(prefs);
+    Fl_Preferences properties(printer, "properties");
+    motionRangeMin.read(properties);
+    motionRangeMax.read(properties);
+    printVolumeMin.read(properties);
+    printVolumeMax.read(properties);
 }
 
 
@@ -166,6 +174,7 @@ void IAPrinter::writeProperties(Fl_Preferences &printer)
 {
     uuid.write(printer);
     name.write(printer);
+    presetClass.write(printer);
     recentUpload.write(printer);
 
     Fl_Preferences properties(printer, "properties");

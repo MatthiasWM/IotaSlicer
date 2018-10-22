@@ -297,9 +297,82 @@ void IAVectorProperty::write(Fl_Preferences &prefs)
 }
 
 
+#ifdef __APPLE__
+#pragma mark -
+#endif
+//============================================================================//
 
 
+IAPresetProperty::IAPresetProperty(IATextProperty &presetClass, char const* name, char const* value)
+:   super(name, value),
+    pPresetClass(presetClass)
+{
+}
+
+IAPresetProperty::~IAPresetProperty()
+{
+}
 
 
+void IAPresetProperty::set(char const* value, IAController *ctrl)
+{
+    if (!_equals(value)) {
+        _set(value);
+        load();
+        for (auto &c: pControllerList) {
+            if (c!=ctrl)
+                c->propertyValueChanged();
+        }
+    }
+}
+
+
+void IAPresetProperty::load()
+{
+    char path[FL_PATH_MAX];
+    snprintf(path, FL_PATH_MAX, "%spresets/%s/",
+             Iota.gPreferences.printerDefinitionsPath(),
+             pPresetClass());
+    Fl_Preferences presetFile(path, "Iota Slicer Preset", pName);
+    Fl_Preferences presets(presetFile, pValue);
+    for (auto &p: pPropList) {
+        p->read(presets);
+    }
+}
+
+
+void IAPresetProperty::save()
+{
+    char path[FL_PATH_MAX];
+    snprintf(path, FL_PATH_MAX, "%spresets/%s/",
+             Iota.gPreferences.printerDefinitionsPath(),
+             pPresetClass());
+    Fl_Preferences presetFile(path, "Iota Slicer Preset", pName);
+    Fl_Preferences presets(presetFile, pValue);
+    for (auto &p: pPropList) {
+        p->write(presets);
+    }
+}
+
+
+void IAPresetProperty::listPresets(std::vector< std::string > &list)
+{
+    char path[FL_PATH_MAX];
+    snprintf(path, FL_PATH_MAX, "%spresets/%s/",
+             Iota.gPreferences.printerDefinitionsPath(),
+             pPresetClass());
+    Fl_Preferences presetFile(path, "Iota Slicer Preset", pName);
+    int n = presetFile.groups();
+    for (int i=0; i<n; i++) {
+        const char *name = presetFile.group(i);
+        list.push_back(name);
+    }
+}
+
+
+void IAPresetProperty::add(IAProperty &prop)
+{
+    pPropList.push_back(&prop);
+}
 
 

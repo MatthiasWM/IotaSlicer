@@ -237,6 +237,31 @@ public:
 };
 
 
+/**
+ * Manage a text property that names a group preset.
+ */
+class IAPresetController : public IATreeItemController
+{
+    typedef IATreeItemController super;
+public:
+    IAPresetController(const char *path, const char *label,
+                       IAPresetProperty &prop, std::function<void()>&& cb);
+    virtual ~IAPresetController() override;
+    virtual void build(Fl_Tree*, Type, int) override;
+    virtual void propertyValueChanged() override;
+
+    static void wCallback(IAChoiceView *w, IAPresetController *d);
+
+    void buildMenu();
+    IAPresetProperty &pProperty;
+    Fl_Menu_Item *pMenu = nullptr;
+    std::function<void()> pCallback;
+    IAChoiceView *pWidget = nullptr;
+};
+
+
+
+
 typedef std::vector<IATreeItemController*> IAControllerList;
 
 

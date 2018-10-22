@@ -74,6 +74,7 @@ public:
 
     IATextProperty uuid { "UUID", nullptr };
     IATextProperty name { "name", nullptr };
+    IATextProperty presetClass { "presetClass", "generic" };
     IAFilenameProperty recentUpload { "recentUpload", nullptr };
 
     IAVectorProperty motionRangeMin { "motionRangeMin", { 0, 0, 0 }, [this]{updateBuildVolume();}  };

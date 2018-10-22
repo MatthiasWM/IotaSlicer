@@ -1,5 +1,5 @@
 
-# Iota <!--[ver-->v0.3.1b<!--]--> Voxel based Mesh Slicer for Color 3D Printing #
+# Iota <!--[ver-->v0.3.2b<!--]--> Voxel based Mesh Slicer for Color 3D Printing #
 
 ## Status: compiling and running on all three platforms, first successful prints ##
 
