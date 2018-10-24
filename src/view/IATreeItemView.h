@@ -134,6 +134,8 @@ public:
                  Fl_Menu_Item *menu);
     int value();
     void value(int v);
+    bool value(char const* v);
+    void menu(Fl_Menu_Item*);
 protected:
     static void choice_cb(Fl_Choice *w, void *u);
     Fl_Choice *pChoice = nullptr;

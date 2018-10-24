@@ -174,7 +174,8 @@ public:
 //    virtual void read(Fl_Preferences&) override;
 //    virtual void write(Fl_Preferences&) override;
     void load();
-    void save();
+    void save(const char *newTag=nullptr);
+    void erase(const char *tag=nullptr);
     void listPresets(std::vector< std::string > &list);
     // check if preset by this name exists
     // escape and unescape preset names for preferences

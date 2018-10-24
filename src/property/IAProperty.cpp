@@ -345,8 +345,9 @@ void IAPresetProperty::load()
 }
 
 
-void IAPresetProperty::save()
+void IAPresetProperty::save(const char *newTag)
 {
+    if (newTag) _set(newTag);
     char path[FL_PATH_MAX];
     snprintf(path, FL_PATH_MAX, "%spresets/%s/",
              Iota.gPreferences.printerDefinitionsPath(),
@@ -356,6 +357,18 @@ void IAPresetProperty::save()
     for (auto &p: pClientList) {
         p->write(presets);
     }
+}
+
+
+void IAPresetProperty::erase(const char *tag)
+{
+    if (!tag) tag = pValue;
+    char path[FL_PATH_MAX];
+    snprintf(path, FL_PATH_MAX, "%spresets/%s/",
+             Iota.gPreferences.printerDefinitionsPath(),
+             pPresetClass());
+    Fl_Preferences presetFile(path, "Iota Slicer Preset", pName);
+    presetFile.deleteGroup(tag);
 }
 
 

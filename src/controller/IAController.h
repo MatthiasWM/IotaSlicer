@@ -251,6 +251,7 @@ public:
     virtual void propertyValueChanged(IAProperty*) override;
 
     static void wCallback(IAChoiceView *w, IAPresetController *d);
+    void updateView(bool checkName);
 
     void buildMenu();
     IAPresetProperty &pProperty;
@@ -258,6 +259,7 @@ public:
     std::function<void()> pCallback;
     IAChoiceView *pWidget = nullptr;
     bool pPauseUpdates = false;
+    bool pUnsaved = false;
 };
 
 

@@ -211,6 +211,29 @@ void IAChoiceView::value(int v)
 }
 
 
+bool IAChoiceView::value(char const* v)
+{
+    bool found = false;
+    const Fl_Menu_Item *m = pChoice->menu();
+    for (int i=0; ; i++) {
+        if (m[i].label()==nullptr) break;
+        if (strcmp(v, m[i].label())==0) {
+            pChoice->value(m+i);
+            found = true;
+            break;
+        }
+    }
+    return found;
+}
+
+
+void IAChoiceView::menu(Fl_Menu_Item *newMenu)
+{
+    pChoice->menu(newMenu);
+    pChoice->redraw();
+}
+
+
 void IAChoiceView::choice_cb(Fl_Choice *w, void *u)
 {
     w->parent()->do_callback();

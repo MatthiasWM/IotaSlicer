@@ -719,8 +719,7 @@ void IAPresetController::build(Fl_Tree *treeWidget, Type t, int w)
     pProperty.attachClients(this);
     if (!pWidget) {
         pWidget = new IAChoiceView(t, w, pLabel, pMenu);
-        /** \bug choose by text */
-        pWidget->value(0);
+        updateView(true);
         pWidget->callback((Fl_Callback*)wCallback, this);
         pWidget->tooltip(pTooltip);
     }
@@ -731,29 +730,59 @@ void IAPresetController::build(Fl_Tree *treeWidget, Type t, int w)
 
 
 /**
+ * Set the view to the value in pProperty.
+ */
+void IAPresetController::updateView(bool checkName)
+{
+    bool found;
+    if (checkName)
+        found = pWidget->value(pProperty());
+    else
+        found = false;
+
+    if (found) {
+        pUnsaved = false;
+        pMenu[0].hide();
+        pMenu[1].hide();
+        pMenu[2].show();
+    } else {
+        pUnsaved = false;
+        char buf[FL_PATH_MAX];
+        ::free((void*)pMenu[0].label());
+        snprintf(buf, sizeof(buf), "* %s", pProperty());
+        pMenu[0].label(strdup(buf));
+        pMenu[0].show();
+        pMenu[1].show();
+        pMenu[2].hide();
+        pWidget->value(0);
+        pWidget->redraw();
+    }
+}
+
+
+/**
  * Called whenever the property changes, updates the associated widget.
  */
 void IAPresetController::propertyValueChanged(IAProperty *p)
 {
     if (p==&pProperty) {
-        /// \todo update the view and all properties in the group.
+        /// update the view (clients must be updated by property.set()).
         // a different preset was selected by some source
-        printf("IAPresetController::propertyValueChanged: me!\n");
+        updateView(true);
+        // pProperty.load();
     } else if (p==(IAProperty*)1) {
         // disable updates for now
-        printf("IAPresetController::propertyValueChanged: PAUSE\n");
         pPauseUpdates = true;
     } else if (p==(IAProperty*)2) {
         // disable updates for now
-        printf("IAPresetController::propertyValueChanged: UNPAUSE\n");
         pPauseUpdates = false;
     } else {
-        /// \todo update the menu.
-        // one of the values inside the preset group has changed
-        if (pPauseUpdates)
-            printf("IAPresetController::propertyValueChanged: Client (paused)\n");
-        else
-            printf("IAPresetController::propertyValueChanged: Client!\n");
+        // update the menu: one of the values inside the preset group has changed
+        if (pPauseUpdates) {
+            ;
+        } else {
+            updateView(false);
+        }
     }
 }
 
@@ -769,23 +798,46 @@ void IAPresetController::wCallback(IAChoiceView *w, IAPresetController *d)
     } else if (i==1) { // save as preset...
         /// \todo implement a way to name and save this new preset
         // ask user for a new name
+        const char *newLabel = fl_input("Please enter a label for this new preset");
+        if (!newLabel) {
+            d->updateView(false);
+            return;
+        }
+        /// \todo check if the label name conforms to FL_Prefrences tags, or escape it!
         // what do we do if the name overrides a builtin preset?
         // check if that name exists
+        bool found = d->pWidget->value(newLabel);
+        d->pWidget->value(0);
         // ask user, if overwriting is ok
+        if (found)
+            if (fl_choice("A preset by that name already exists.", "Overwrite", "Cancel", nullptr))
+                return;
         // save the preset under the new name
+        d->pProperty.save(newLabel);
         // rebuild the menu
+        d->buildMenu();
+        d->pWidget->menu(d->pMenu);
+        d->updateView(true);
         // set the value to the new name menu item
     } else if (i==2) { // remove this preset...
         /// \todo implement a way to remove the current preset
         // check if this is a bultin preset and cancel if it is
+        if (fl_choice("Please confirm that you want to permanently remove\n"
+                      "the preset \"%s\".", "Remove", "Cancel", nullptr, d->pProperty()))
+            return;
         // delete preset from file
+        d->pProperty.erase();
         // rebuild menu
+        d->buildMenu();
+        d->pWidget->menu(d->pMenu);
+        d->pProperty.set(d->pMenu[3].label());
         // set next best value
     } else {
         d->pProperty.set( d->pMenu[i].label(), d );
         // d->pProperty.load(); // property.set() will load the settings for us
         if (d->pCallback)
             d->pCallback();
+        d->updateView(true);
     }
 }
 
@@ -801,6 +853,7 @@ void IAPresetController::buildMenu()
     int n = presetList.size();
     pMenu = (Fl_Menu_Item*)calloc(n+4, sizeof(Fl_Menu_Item));
     pMenu[0] = { strdup("<not saved>"), 0, nullptr, (void*)0, FL_MENU_INACTIVE, 0, 0, 11 };
+    // overwrite *preset
     pMenu[1] = { strdup("save this as a preset..."), 0, nullptr, (void*)1, FL_MENU_DIVIDER, 0, 0, 11 };
     pMenu[2] = { strdup("remove this preset..."), 0, nullptr, (void*)2, FL_MENU_DIVIDER|FL_MENU_INVISIBLE, 0, 0, 11 };
     for (int i=0; i<n; i++) {
