@@ -157,13 +157,13 @@ typedef Fl_Menu_Item Fl_Menu_Item_List[];
 IAFDMPrinter::IAFDMPrinter()
 :   super()
 {
-    supportPreset.add(hasSupport);
-    supportPreset.add(supportAngle);
-    supportPreset.add(supportDensity);
-    supportPreset.add(supportTopGap);
-    supportPreset.add(supportSideGap);
-    supportPreset.add(supportBottomGap);
-    supportPreset.add(supportExtruder);
+    supportPreset.addClient(hasSupport);
+    supportPreset.addClient(supportAngle);
+    supportPreset.addClient(supportDensity);
+    supportPreset.addClient(supportTopGap);
+    supportPreset.addClient(supportSideGap);
+    supportPreset.addClient(supportBottomGap);
+    supportPreset.addClient(supportExtruder);
 }
 
 

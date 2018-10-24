@@ -40,7 +40,7 @@ IAController::~IAController()
  *
  * This function transfers infomation form the property to the view.
  */
-void IAController::propertyValueChanged()
+void IAController::propertyValueChanged(IAProperty*)
 {
 }
 
@@ -89,7 +89,7 @@ IACallbackController::~IACallbackController()
 /**
  * This is called by the property whenever the property changes.
  */
-void IACallbackController::propertyValueChanged()
+void IACallbackController::propertyValueChanged(IAProperty*)
 {
     if (pCallback)
         pCallback();
@@ -270,7 +270,7 @@ void IAFloatController::build(Fl_Tree *treeWidget, Type t, int w)
 /**
  * Called whenever the property changes, updates the associated widget.
  */
-void IAFloatController::propertyValueChanged()
+void IAFloatController::propertyValueChanged(IAProperty*)
 {
     if (pWidget)
         pWidget->value(pProperty());
@@ -355,7 +355,7 @@ void IATextController::build(Fl_Tree *treeWidget, Type t, int w)
 /**
  * Called whenever the property changes, updates the associated widget.
  */
-void IATextController::propertyValueChanged()
+void IATextController::propertyValueChanged(IAProperty*)
 {
     if (pWidget)
         pWidget->value(pProperty());
@@ -443,7 +443,7 @@ void IAFloatChoiceController::build(Fl_Tree *treeWidget, Type t, int w)
 /**
  * Called whenever the property changes, updates the associated widget.
  */
-void IAFloatChoiceController::propertyValueChanged()
+void IAFloatChoiceController::propertyValueChanged(IAProperty*)
 {
     if (pWidget)
         pWidget->value(pProperty());
@@ -526,7 +526,7 @@ void IAChoiceController::build(Fl_Tree *treeWidget, Type t, int w)
 /**
  * Called whenever the property changes, updates the associated widget.
  */
-void IAChoiceController::propertyValueChanged()
+void IAChoiceController::propertyValueChanged(IAProperty*)
 {
     if (pWidget)
         pWidget->value(pProperty());
@@ -646,7 +646,7 @@ void IAVectorController::build(Fl_Tree *treeWidget, Type t, int w)
 /**
  * Called whenever the property changes, updates the associated widget.
  */
-void IAVectorController::propertyValueChanged()
+void IAVectorController::propertyValueChanged(IAProperty*)
 {
     if (pXWidget) pXWidget->value(pProperty().x());
     if (pYWidget) pYWidget->value(pProperty().y());
@@ -690,7 +690,10 @@ IAPresetController::IAPresetController(const char *path, const char *label,
     pProperty( prop ),
     pCallback( cb )
 {
-    /// \todo build the menu now or later in build()?
+    pProperty.attach(this);
+    // super:: already attaches to the property event list
+    /// \todo how will we make all the other properties in the group signal this if they changed?
+    // add a function in the property to attach all other property controllers? But what if they were not created yet?
 }
 
 
@@ -699,6 +702,7 @@ IAPresetController::IAPresetController(const char *path, const char *label,
  */
 IAPresetController::~IAPresetController()
 {
+    pProperty.detach(this);
 }
 
 
@@ -712,6 +716,7 @@ IAPresetController::~IAPresetController()
 void IAPresetController::build(Fl_Tree *treeWidget, Type t, int w)
 {
     buildMenu();
+    pProperty.attachClients(this);
     if (!pWidget) {
         pWidget = new IAChoiceView(t, w, pLabel, pMenu);
         /** \bug choose by text */
@@ -728,10 +733,28 @@ void IAPresetController::build(Fl_Tree *treeWidget, Type t, int w)
 /**
  * Called whenever the property changes, updates the associated widget.
  */
-void IAPresetController::propertyValueChanged()
+void IAPresetController::propertyValueChanged(IAProperty *p)
 {
-    // property.set() will load the settings for us
-    /// \todo update the menu.
+    if (p==&pProperty) {
+        /// \todo update the view and all properties in the group.
+        // a different preset was selected by some source
+        printf("IAPresetController::propertyValueChanged: me!\n");
+    } else if (p==(IAProperty*)1) {
+        // disable updates for now
+        printf("IAPresetController::propertyValueChanged: PAUSE\n");
+        pPauseUpdates = true;
+    } else if (p==(IAProperty*)2) {
+        // disable updates for now
+        printf("IAPresetController::propertyValueChanged: UNPAUSE\n");
+        pPauseUpdates = false;
+    } else {
+        /// \todo update the menu.
+        // one of the values inside the preset group has changed
+        if (pPauseUpdates)
+            printf("IAPresetController::propertyValueChanged: Client (paused)\n");
+        else
+            printf("IAPresetController::propertyValueChanged: Client!\n");
+    }
 }
 
 

@@ -48,7 +48,7 @@ class IAController
 public:
     IAController();
     virtual ~IAController();
-    virtual void propertyValueChanged();
+    virtual void propertyValueChanged(IAProperty*);
     void autoDelete(bool v);
     bool isAutoDelete() { return pAutoDelete; }
 private:
@@ -66,7 +66,7 @@ class IACallbackController : public IAController
 public:
     IACallbackController(IAProperty &prop, std::function<void()>&& cb);
     virtual ~IACallbackController();
-    virtual void propertyValueChanged() override;
+    virtual void propertyValueChanged(IAProperty*) override;
     IAProperty &pProperty;
     std::function<void()> pCallback;
 };
@@ -122,7 +122,7 @@ public:
                       const char *unit, std::function<void()>&& cb);
     virtual ~IAFloatController() override;
     virtual void build(Fl_Tree*, Type, int) override;
-    virtual void propertyValueChanged() override;
+    virtual void propertyValueChanged(IAProperty*) override;
 
     static void wCallback(IAFloatView *w, IAFloatController *d);
 
@@ -143,7 +143,7 @@ public:
                      const char *unit, std::function<void()>&& cb);
     virtual ~IATextController() override;
     virtual void build(Fl_Tree*, Type, int) override;
-    virtual void propertyValueChanged() override;
+    virtual void propertyValueChanged(IAProperty*) override;
 
     static void wCallback(IATextView *w, IATextController *d);
 
@@ -167,7 +167,7 @@ public:
                             Fl_Menu_Item *menu);
     virtual ~IAFloatChoiceController() override;
     virtual void build(Fl_Tree*, Type, int) override;
-    virtual void propertyValueChanged() override;
+    virtual void propertyValueChanged(IAProperty*) override;
 
     static void wCallback(IAFloatChoiceView *w, IAFloatChoiceController *d);
 
@@ -189,7 +189,7 @@ public:
                        std::function<void()>&& cb, Fl_Menu_Item *menu);
     virtual ~IAChoiceController() override;
     virtual void build(Fl_Tree*, Type, int) override;
-    virtual void propertyValueChanged() override;
+    virtual void propertyValueChanged(IAProperty*) override;
 
     static void wCallback(IAChoiceView *w, IAChoiceController *d);
 
@@ -214,7 +214,7 @@ public:
                        std::function<void()>&& cb);
     virtual ~IAVectorController() override;
     virtual void build(Fl_Tree*, Type, int) override;
-    virtual void propertyValueChanged() override;
+    virtual void propertyValueChanged(IAProperty*) override;
 
     static void wCallback(IAFloatView *w, IAVectorController *d);
 
@@ -248,7 +248,7 @@ public:
                        IAPresetProperty &prop, std::function<void()>&& cb);
     virtual ~IAPresetController() override;
     virtual void build(Fl_Tree*, Type, int) override;
-    virtual void propertyValueChanged() override;
+    virtual void propertyValueChanged(IAProperty*) override;
 
     static void wCallback(IAChoiceView *w, IAPresetController *d);
 
@@ -257,6 +257,7 @@ public:
     Fl_Menu_Item *pMenu = nullptr;
     std::function<void()> pCallback;
     IAChoiceView *pWidget = nullptr;
+    bool pPauseUpdates = false;
 };
 
 

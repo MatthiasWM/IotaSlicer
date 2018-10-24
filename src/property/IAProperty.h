@@ -180,12 +180,13 @@ public:
     // escape and unescape preset names for preferences
     // erase a preset from a file
     // add a fallback set of presets if no file is found or it is empty
-    void add(IAProperty &prop);
+    void addClient(IAProperty &prop);
+    void attachClients(IAController*);
 protected:
 //    void _set(char const* value);
 //    bool _equals(char const* value);
 //    char *pValue = nullptr;
-    std::vector<IAProperty*> pPropList;
+    std::vector<IAProperty*> pClientList;
     IATextProperty &pPresetClass;
 };
 

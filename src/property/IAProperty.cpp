@@ -102,7 +102,7 @@ void IAFloatProperty::set(double v, IAController *ctrl)
         pValue = v;
         for (auto &c: pControllerList) {
             if (c!=ctrl)
-                c->propertyValueChanged();
+                c->propertyValueChanged(this);
         }
     }
 }
@@ -144,7 +144,7 @@ void IAIntProperty::set(int v, IAController *ctrl)
         pValue = v;
         for (auto &c: pControllerList) {
             if (c!=ctrl)
-                c->propertyValueChanged();
+                c->propertyValueChanged(this);
         }
     }
 }
@@ -187,7 +187,7 @@ void IATextProperty::set(char const* value, IAController *ctrl)
         _set(value);
         for (auto &c: pControllerList) {
             if (c!=ctrl)
-                c->propertyValueChanged();
+                c->propertyValueChanged(this);
         }
     }
 }
@@ -273,7 +273,7 @@ void IAVectorProperty::set(IAVector3d const& v, IAController *ctrl)
         if (pCallback) pCallback();
         for (auto &c: pControllerList) {
             if (c!=ctrl)
-                c->propertyValueChanged();
+                c->propertyValueChanged(this);
         }
     }
 }
@@ -321,7 +321,7 @@ void IAPresetProperty::set(char const* value, IAController *ctrl)
         load();
         for (auto &c: pControllerList) {
             if (c!=ctrl)
-                c->propertyValueChanged();
+                c->propertyValueChanged(this);
         }
     }
 }
@@ -335,9 +335,13 @@ void IAPresetProperty::load()
              pPresetClass());
     Fl_Preferences presetFile(path, "Iota Slicer Preset", pName);
     Fl_Preferences presets(presetFile, pValue);
-    for (auto &p: pPropList) {
+    // kludge to tell controllers that we will now change ALL clients
+    for (auto &c: pControllerList) c->propertyValueChanged((IAProperty*)1);
+    for (auto &p: pClientList) {
         p->read(presets);
     }
+    // kludge to tell controllers that we are done changing ALL clients
+    for (auto &c: pControllerList) c->propertyValueChanged((IAProperty*)2);
 }
 
 
@@ -349,7 +353,7 @@ void IAPresetProperty::save()
              pPresetClass());
     Fl_Preferences presetFile(path, "Iota Slicer Preset", pName);
     Fl_Preferences presets(presetFile, pValue);
-    for (auto &p: pPropList) {
+    for (auto &p: pClientList) {
         p->write(presets);
     }
 }
@@ -370,9 +374,16 @@ void IAPresetProperty::listPresets(std::vector< std::string > &list)
 }
 
 
-void IAPresetProperty::add(IAProperty &prop)
+void IAPresetProperty::addClient(IAProperty &prop)
 {
-    pPropList.push_back(&prop);
+    pClientList.push_back(&prop);
 }
 
+
+void IAPresetProperty::attachClients(IAController *ctrl)
+{
+    for (auto &p: pClientList) {
+        p->attach(ctrl);
+    }
+}
 
