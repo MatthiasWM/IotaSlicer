@@ -744,7 +744,8 @@ void IAPresetController::updateView(bool checkName)
         pUnsaved = false;
         pMenu[0].hide();
         pMenu[1].hide();
-        pMenu[2].show();
+        pMenu[2].hide();
+        pMenu[3].show();
     } else {
         pUnsaved = false;
         char buf[FL_PATH_MAX];
@@ -753,7 +754,8 @@ void IAPresetController::updateView(bool checkName)
         pMenu[0].label(strdup(buf));
         pMenu[0].show();
         pMenu[1].show();
-        pMenu[2].hide();
+        pMenu[2].show();
+        pMenu[3].hide();
         pWidget->value(0);
         pWidget->redraw();
     }
@@ -795,7 +797,14 @@ void IAPresetController::wCallback(IAChoiceView *w, IAPresetController *d)
     int i = w->value();
     if (i==0) { // <not saved>
         /// \todo implement what happens if we choose this item (does anything happen?)
-    } else if (i==1) { // save as preset...
+    } else if (i==1) { // overwrite preset...
+        // ask user, if overwriting is ok
+        if (fl_choice("Please confirm that your want to overwrite this preset.", "Overwrite", "Cancel", nullptr))
+            return;
+        // save the preset under the new name
+        d->pProperty.save();
+        d->updateView(true);
+    } else if (i==2) { // save as preset...
         /// \todo implement a way to name and save this new preset
         // ask user for a new name
         const char *newLabel = fl_input("Please enter a label for this new preset");
@@ -819,9 +828,12 @@ void IAPresetController::wCallback(IAChoiceView *w, IAPresetController *d)
         d->pWidget->menu(d->pMenu);
         d->updateView(true);
         // set the value to the new name menu item
-    } else if (i==2) { // remove this preset...
-        /// \todo implement a way to remove the current preset
+    } else if (i==3) { // remove this preset...
         // check if this is a bultin preset and cancel if it is
+        if (d->pMenu[5].label()==nullptr) {
+            fl_message("The last remaining preset can not be deleted.");
+            return;
+        }
         if (fl_choice("Please confirm that you want to permanently remove\n"
                       "the preset \"%s\".", "Remove", "Cancel", nullptr, d->pProperty()))
             return;
@@ -830,7 +842,7 @@ void IAPresetController::wCallback(IAChoiceView *w, IAPresetController *d)
         // rebuild menu
         d->buildMenu();
         d->pWidget->menu(d->pMenu);
-        d->pProperty.set(d->pMenu[3].label());
+        d->pProperty.set(d->pMenu[4].label());
         // set next best value
     } else {
         d->pProperty.set( d->pMenu[i].label(), d );
@@ -853,11 +865,11 @@ void IAPresetController::buildMenu()
     int n = presetList.size();
     pMenu = (Fl_Menu_Item*)calloc(n+4, sizeof(Fl_Menu_Item));
     pMenu[0] = { strdup("<not saved>"), 0, nullptr, (void*)0, FL_MENU_INACTIVE, 0, 0, 11 };
-    // overwrite *preset
-    pMenu[1] = { strdup("save this as a preset..."), 0, nullptr, (void*)1, FL_MENU_DIVIDER, 0, 0, 11 };
-    pMenu[2] = { strdup("remove this preset..."), 0, nullptr, (void*)2, FL_MENU_DIVIDER|FL_MENU_INVISIBLE, 0, 0, 11 };
+    pMenu[1] = { strdup("overwrite preset"), 0, nullptr, (void*)1, 0, 0, 0, 11 };
+    pMenu[2] = { strdup("save preset as..."), 0, nullptr, (void*)2, FL_MENU_DIVIDER, 0, 0, 11 };
+    pMenu[3] = { strdup("remove this preset..."), 0, nullptr, (void*)3, FL_MENU_DIVIDER|FL_MENU_INVISIBLE, 0, 0, 11 };
     for (int i=0; i<n; i++) {
-        pMenu[i+3] = { strdup(presetList[i].c_str()), 0, nullptr, (void*)(fl_intptr_t)(i+3), 0, 0, 0, 11 };
+        pMenu[i+4] = { strdup(presetList[i].c_str()), 0, nullptr, (void*)(fl_intptr_t)(i+4), 0, 0, 0, 11 };
     }
 }
 
