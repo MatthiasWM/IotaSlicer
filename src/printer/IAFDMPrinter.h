@@ -113,8 +113,8 @@ public:
     IAFloatProperty minimumLayerTime { "minimumLayerTime", 15.0 };
     IAExtruderProperty modelExtruder { "modelExtruder", 0 };
     // support
-    IAPresetProperty supportPreset { presetClass, "supportPreset", "medium" };
-    IAIntProperty hasSupport { "hasSupport", 1 };
+    IAPresetProperty supportPreset { presetClass, "supportPreset", "none" };
+    IAIntProperty hasSupport { "hasSupport", 0 };
     IAFloatProperty supportAngle { "supportAngle", 50.0 };
     IAFloatProperty supportDensity { "supportDensity", 40.0 };
     IAFloatProperty supportTopGap { "supportTopGap", 1.0 };
@@ -122,7 +122,7 @@ public:
     IAFloatProperty supportBottomGap { "supportBottomGap", 1.0 };
     IAExtruderProperty supportExtruder { "supportExtruder", 0 };
     // models and meshes
-
+    
     // ----
     double sliceIndexToZ(int i);
 

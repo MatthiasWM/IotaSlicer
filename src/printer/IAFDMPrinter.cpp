@@ -155,8 +155,14 @@ typedef Fl_Menu_Item Fl_Menu_Item_List[];
 static const char *supportPresetDefaults[] = {
     "30",               "none", "fast", "standard", "fine", nullptr,
     "hasSupport",       "0", "1", "1", "1",
-    "supportAngle",     "0", "50", "40", "30",
-    nullptr };
+    "supportAngle",     "60", "60", "55", "45",
+    "supportDensity",   "40", "40", "50", "60",
+    "supportTopGap",    "1", "1", "1", "1",
+    "supportSideGap",   "0.2", "0.2", "0.2", "0.2",
+    "supportBottomGap", "1", "1", "1", "1",
+    "supportExtruder",  "0", "0", "0", "1",
+    nullptr
+};
 
 IAFDMPrinter::IAFDMPrinter()
 :   super()
@@ -169,25 +175,6 @@ IAFDMPrinter::IAFDMPrinter()
     supportPreset.addClient(supportBottomGap);
     supportPreset.addClient(supportExtruder);
     supportPreset.initialPresets( supportPresetDefaults );
-//                                 { "A", "B" } );
-//                                 { "medium", nullptr,
-//        "hasSupport", "1",
-//        "supportAngle", "50.0",
-//        "supportDensity", "40.0",
-//        nullptr, nullptr } );
-
-
-
-
-//    IAPresetProperty supportPreset { presetClass, "supportPreset", "medium" };
-//    IAIntProperty hasSupport { "hasSupport", 1 };
-//    IAFloatProperty supportAngle { "supportAngle", 50.0 };
-//    IAFloatProperty supportDensity { "supportDensity", 40.0 };
-//    IAFloatProperty supportTopGap { "supportTopGap", 1.0 };
-//    IAFloatProperty supportSideGap { "supportSideGap", 0.2 };
-//    IAFloatProperty supportBottomGap { "supportBottomGap", 1.0 };
-//    IAExtruderProperty supportExtruder { "supportExtruder", 0 };
-//                                 );
 }
 
 
@@ -414,43 +401,15 @@ void IAFDMPrinter::initializeSceneSettings()
                                  [this]{purgeSlicesAndCaches();}, nozzleDiameterMenu );
     pSceneSettings.push_back(s);
 
-    // There will be a preset system for the way that support structures are
-    // built. Not every mesh in an assembly needs support.
-
-    // This preset contains all costumizable changes to the printer hardware.
-    // Mainly, this is the filament used, and in rare cases a change in nozzle
-    // type or diameter.
-    // For mixing extruders, this can also include virtual extruders.
-    // For now, we may also want to put layer height in here, until we allow
-    // different layer heights for different models.
-#if 0
-    static Fl_Menu_Item supportPresetMenu[] = {
-        // if any of the setting within the preset changed, mark it as "not yet saved"
-        // (or as one of the other preset, in case they match)
-        { "<not saved>", 0, nullptr, (void*)0, 0, 0, 0, 11 },
-        // show the item below, if the preset is marked as "not yet saved"
-        { "save this as a preset...", 0, nullptr, (void*)0, FL_MENU_DIVIDER, 0, 0, 11 },
-        // show this item, if the preset exists. If it is "default", deactivate this menu
-        { "remove this preset...", 0, nullptr, (void*)0, FL_MENU_DIVIDER|FL_MENU_INVISIBLE, 0, 0, 11 },
-        // "default" means, that all settings will be the printer default properties
-        //{ "default", 0, nullptr, (void*)0, 0, 0, 0, 11 },
-        // a list of custom named and generated preset that will be saved to a file
-        // and that can be selectd on a pre-mesh basis in the settings below
-        { "none", 0, nullptr, (void*)1, 0, 0, 0, 11 },
-        { "fast", 0, nullptr, (void*)2, 0, 0, 0, 11 },
-        { "medium", 0, nullptr, (void*)3, 0, 0, 0, 11 },
-        { "detailed", 0, nullptr, (void*)4, 0, 0, 0, 11 },
-        { nullptr } };
-#endif
     s = new IAPresetController("support", "Support Preset:",
-                               supportPreset, []{;});
+                               supportPreset, [this]{purgeSlicesAndCaches();});
     pSceneSettings.push_back(s);
 
     static Fl_Menu_Item supportMenu[] = {
         { "no", 0, nullptr, (void*)0, 0, 0, 0, 11 },
         { "yes", 0, nullptr, (void*)1, 0, 0, 0, 11 },
         { nullptr } };
-    s = new IAChoiceController("support/active", "support: ", hasSupport,
+    s = new IAChoiceController("support/active", "generate support: ", hasSupport,
                          [this]{purgeSlicesAndCaches();}, supportMenu );
     pSceneSettings.push_back(s);
 
