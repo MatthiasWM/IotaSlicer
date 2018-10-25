@@ -327,6 +327,42 @@ void IAPresetProperty::set(char const* value, IAController *ctrl)
 }
 
 
+void IAPresetProperty::initialPresets(const char *presets[])
+{
+    pInitialPresets = presets;
+}
+
+
+void IAPresetProperty::loadInitialPresets(Fl_Preferences &presetFile)
+{
+    if (pInitialPresets) {
+        const char **src = pInitialPresets;
+        int presetVersion = atoi(*src++);
+        int fileVersion = 0;
+        presetFile.get("_version", fileVersion, 0);
+        if (presetVersion>fileVersion) {
+            std::vector<Fl_Preferences> preset;
+            for (;;) {
+                if (*src==nullptr) break;
+                preset.push_back(Fl_Preferences(presetFile, *src));
+                src++;
+            }
+            src++;
+            for (;;) {
+                if (*src==nullptr) break;
+                const char *name = *src++;
+                for (auto &p: preset) {
+                    const char *value = *src++;
+                    p.set(name, value);
+                }
+            }
+            presetFile.set("_version", presetVersion);
+        }
+    }
+    pDatabaseInitialized = true;
+}
+
+
 void IAPresetProperty::load()
 {
     char path[FL_PATH_MAX];
@@ -334,6 +370,7 @@ void IAPresetProperty::load()
              Iota.gPreferences.printerDefinitionsPath(),
              pPresetClass());
     Fl_Preferences presetFile(path, "Iota Slicer Preset", pName);
+    if (!pDatabaseInitialized) loadInitialPresets(presetFile);
     Fl_Preferences presets(presetFile, pValue);
     // kludge to tell controllers that we will now change ALL clients
     for (auto &c: pControllerList) c->propertyValueChanged((IAProperty*)1);
@@ -379,6 +416,7 @@ void IAPresetProperty::listPresets(std::vector< std::string > &list)
              Iota.gPreferences.printerDefinitionsPath(),
              pPresetClass());
     Fl_Preferences presetFile(path, "Iota Slicer Preset", pName);
+    if (!pDatabaseInitialized) loadInitialPresets(presetFile);
     int n = presetFile.groups();
     for (int i=0; i<n; i++) {
         const char *name = presetFile.group(i);

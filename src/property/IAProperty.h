@@ -173,6 +173,8 @@ public:
     void set(char const* value, IAController *ctrl=nullptr);
 //    virtual void read(Fl_Preferences&) override;
 //    virtual void write(Fl_Preferences&) override;
+    void initialPresets(const char *presets[]);
+    void loadInitialPresets(Fl_Preferences &prefs);
     void load();
     void save(const char *newTag=nullptr);
     void erase(const char *tag=nullptr);
@@ -189,6 +191,8 @@ protected:
 //    char *pValue = nullptr;
     std::vector<IAProperty*> pClientList;
     IATextProperty &pPresetClass;
+    const char **pInitialPresets = nullptr;
+    bool pDatabaseInitialized = false;
 };
 
 

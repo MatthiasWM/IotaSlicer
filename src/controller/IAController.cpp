@@ -803,6 +803,8 @@ void IAPresetController::wCallback(IAChoiceView *w, IAPresetController *d)
             return;
         // save the preset under the new name
         d->pProperty.save();
+        d->buildMenu();
+        d->pWidget->menu(d->pMenu);
         d->updateView(true);
     } else if (i==2) { // save as preset...
         /// \todo implement a way to name and save this new preset
@@ -863,7 +865,7 @@ void IAPresetController::buildMenu()
     std::vector< std::string > presetList;
     pProperty.listPresets(presetList);
     int n = presetList.size();
-    pMenu = (Fl_Menu_Item*)calloc(n+4, sizeof(Fl_Menu_Item));
+    pMenu = (Fl_Menu_Item*)calloc(n+5, sizeof(Fl_Menu_Item));
     pMenu[0] = { strdup("<not saved>"), 0, nullptr, (void*)0, FL_MENU_INACTIVE, 0, 0, 11 };
     pMenu[1] = { strdup("overwrite preset"), 0, nullptr, (void*)1, 0, 0, 0, 11 };
     pMenu[2] = { strdup("save preset as..."), 0, nullptr, (void*)2, FL_MENU_DIVIDER, 0, 0, 11 };

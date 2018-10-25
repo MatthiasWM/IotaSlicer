@@ -152,7 +152,11 @@
 
 typedef Fl_Menu_Item Fl_Menu_Item_List[];
 
-
+static const char *supportPresetDefaults[] = {
+    "30",               "none", "fast", "standard", "fine", nullptr,
+    "hasSupport",       "0", "1", "1", "1",
+    "supportAngle",     "0", "50", "40", "30",
+    nullptr };
 
 IAFDMPrinter::IAFDMPrinter()
 :   super()
@@ -164,6 +168,26 @@ IAFDMPrinter::IAFDMPrinter()
     supportPreset.addClient(supportSideGap);
     supportPreset.addClient(supportBottomGap);
     supportPreset.addClient(supportExtruder);
+    supportPreset.initialPresets( supportPresetDefaults );
+//                                 { "A", "B" } );
+//                                 { "medium", nullptr,
+//        "hasSupport", "1",
+//        "supportAngle", "50.0",
+//        "supportDensity", "40.0",
+//        nullptr, nullptr } );
+
+
+
+
+//    IAPresetProperty supportPreset { presetClass, "supportPreset", "medium" };
+//    IAIntProperty hasSupport { "hasSupport", 1 };
+//    IAFloatProperty supportAngle { "supportAngle", 50.0 };
+//    IAFloatProperty supportDensity { "supportDensity", 40.0 };
+//    IAFloatProperty supportTopGap { "supportTopGap", 1.0 };
+//    IAFloatProperty supportSideGap { "supportSideGap", 0.2 };
+//    IAFloatProperty supportBottomGap { "supportBottomGap", 1.0 };
+//    IAExtruderProperty supportExtruder { "supportExtruder", 0 };
+//                                 );
 }
 
 
