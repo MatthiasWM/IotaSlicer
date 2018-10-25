@@ -472,6 +472,18 @@ void IAFDMPrinter::initializeSceneSettings()
                                [this]{purgeSlicesAndCaches();}, extruderChoiceMenu );
     pSceneSettings.push_back(s);
 
+    pSceneSettings.push_back(new IALabelController("material", "Material"));
+
+    static Fl_Menu_Item toolChangeMenu[] = {
+        { "(instant)",          0, nullptr, (void*)0, 0, 0, 0, 11 },
+        { "pause and cool",     0, nullptr, (void*)1, 0, 0, 0, 11 },
+        { "(purge shield)",     0, nullptr, (void*)2, 0, 0, 0, 11 },
+        { "purge tower",        0, nullptr, (void*)3, 0, 0, 0, 11 },
+        { "(purge to infill)",  0, nullptr, (void*)4, 0, 0, 0, 11 },
+        { nullptr } };
+    s = new IAChoiceController("material/toolChange", "tool change: ", toolChangeStrategy,
+                               [this]{purgeSlicesAndCaches();}, toolChangeMenu );
+    pSceneSettings.push_back(s);
 
     // Extrusion width
     // Extrusion speed

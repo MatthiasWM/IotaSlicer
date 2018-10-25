@@ -109,6 +109,7 @@ public:
     IAIntProperty numLids { "numLids", 2 };
     IAIntProperty lidType { "lidType", 0 }; // 0=zigzag, 1=concentric
     IAFloatProperty infillDensity { "infillDensity", 20.0 }; // %
+    // skirt, brim, raft, ooze shield/side wall (vertical, waterfall, contoured, #shells, max. angle); bottom layer speed factor, temperature, prime pillar
     IAIntProperty hasSkirt { "hasSkirt",  1 }; // prime line around perimeter
     IAFloatProperty minimumLayerTime { "minimumLayerTime", 15.0 };
     IAExtruderProperty modelExtruder { "modelExtruder", 0 };
@@ -121,6 +122,8 @@ public:
     IAFloatProperty supportSideGap { "supportSideGap", 0.2 };
     IAFloatProperty supportBottomGap { "supportBottomGap", 1.0 };
     IAExtruderProperty supportExtruder { "supportExtruder", 0 };
+    // material
+    IAIntProperty toolChangeStrategy { "toolChangeStrategy", 1 };
     // models and meshes
     
     // ----

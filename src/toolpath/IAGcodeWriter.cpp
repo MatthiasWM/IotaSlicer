@@ -701,7 +701,7 @@ void IAGcodeWriter::requestTool(int t)
         if (pT!=-1) {
             fprintf(pFile, "T%d\n", pT);
             fprintf(pFile, "M104 S%d ; standby temperature\n", pExtruderStandbyTemp);
-            cmdRetract();
+            cmdExtrude(-4.0); // pull the filament 4mm in in the hopes it will stop oozing
         }
         if (t!=-1) {
             // -- select the new extruder
@@ -716,8 +716,28 @@ void IAGcodeWriter::requestTool(int t)
             // -- wait for printing temperature
             fprintf(pFile, "M109 S%d ; printing temperature and wait\n", pExtruderPrintTemp);
             // -- or purge, or print outline, or print waste tower, or ...
-            cmdUnretract();
+            cmdExtrude(4.0); // unretract the filament 4mm in in the hopes it will continue printing without gap
             pTotalTime += abs(t-pT)/1.5; // we assume 1.5 deg C per seconds heating rate
+            if (pPrinter->toolChangeStrategy()==3) { // prime tower
+                double dx = 21.0 * t;
+                // snake lines
+                for (double i=1; i<=19; i++) {
+                    cmdPrintMove(pause.x()-dx+i, pause.y()-0.5);
+                    cmdPrintMove(pause.x()-dx+i, pause.y()-9.5);
+                    cmdPrintMove(pause.x()-dx+i+0.5, pause.y()-9.5);
+                    cmdPrintMove(pause.x()-dx+i+0.5, pause.y()-0.5);
+                }
+                cmdPrintMove(pause.x()-dx, pause.y());
+                // a rectangle around the prime tower
+                cmdPrintMove(pause.x()-dx, pause.y());
+                cmdPrintMove(pause.x()-dx+20, pause.y());
+                cmdPrintMove(pause.x()-dx+20, pause.y()-10);
+                cmdPrintMove(pause.x()-dx, pause.y()-10);
+                cmdPrintMove(pause.x()-dx, pause.y());
+                /// \todo generate a prime tower to ensure a steady flow of filament.
+                /// \todo what's with collisions? Printing outside of the bed? Manually positioning towers?
+                // we may also use an ooze shild or the infill for priming
+            }
         }
         pT = t;
     }
