@@ -653,9 +653,9 @@ void IAFDMPrinter::createToolpathForShell(int i, IAFramebuffer *fb)
      */
 
     IAToolpathList *tp = new IAToolpathList(z);
-    if (tp3) tp->add(tp3.get(), modelExtruder(), 10, 0);
-    if (tp2) tp->add(tp2.get(), modelExtruder(), 10, 1);
-    if (tp1) tp->add(tp1.get(), modelExtruder(), 10, 2);
+    if (tp3) tp->add(tp3.get(), modelExtruder(), 40, 0);
+    if (tp2) tp->add(tp2.get(), modelExtruder(), 40, 1);
+    if (tp1) tp->add(tp1.get(), modelExtruder(), 40, 2);
     if (pSliceList[i].pShellToolpath) delete pSliceList[i].pShellToolpath;
     pSliceList[i].pShellToolpath = tp;
     pSliceList[i].pCoreBitmap = fb;

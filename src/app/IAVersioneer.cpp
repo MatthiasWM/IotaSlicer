@@ -453,10 +453,23 @@ void IAVersioneer::createArchive()
 {
     /** \todo Fix deployment for MacOS. Also, can we kick off the build process from here? */
 #ifdef __APPLE__
-    // in platforms/MacOS
-    // xcodebuild -target IotaSlicer -configuration Release
+    // cd /Users/matt/dev/IotaSlicer.github/build/Xcode
     // xcodebuild -scheme Iota -showBuildSettings | grep TARGET_BUILD_DIR
-    fl_message("Select the menu 'Product > Archive' in Xcode.\nArchive will be created in $HOME/Desktop");
+    // xcodebuild -target IotaSlicer -configuration Release
+    // /Users/matt/dev/IotaSlicer.github/build/Xcode/Release/IotaSlicer.app
+    systemf("cd %s/build/Xcode "
+            "&& xcodebuild -target IotaSlicer -configuration Release",
+            wBasePath->value());
+    systemf("cd %s/build/Xcode/Release/ "
+            "&& /usr/bin/zip -r -y"
+            " %s/IotaSlicer_%d.%d.%d%s_MacOS.zip"
+            " IotaSlicer.app",
+            wBasePath->value(),
+            wArchivePath->value(),
+            atoi(wMajor->value()),
+            atoi(wMinor->value()),
+            atoi(wBuild->value()),
+            wClass->value());
 #endif
     /** \todo Verify deployment for MSWindows. Also, can we kick off the build process from here? */
 #ifdef _WIN32
@@ -867,6 +880,7 @@ void IAVersioneer::system(const char *cmd)
             char buf[82];
             if (fgets(buf, 80, f)) {
                 wTerminal->append(buf);
+                Fl::flush();
             }
         }
         ::pclose(f);

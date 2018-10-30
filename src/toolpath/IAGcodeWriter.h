@@ -95,6 +95,7 @@ private:
     double pPrintFeedrate = 1000.0; // 1400.0
     double pLayerHeight = 0.3;
     unsigned int pToolmap = 0; // fill this list with bit for every tool used in the process
+    int pToolCount = 0; // number of tools used
 
     int pExtruderStandbyTemp = 205;
     int pExtruderPrintTemp = 230;
