@@ -675,7 +675,7 @@ void IAVersioneer::applySettingsCpp(const char *name)
  *
  * The file will be modified in place.
  *
- * \param[in] filename of the Doxygen file.
+ * \param[in] name filename of the Doxygen file.
  *
  * \todo we wshould implement this for the CMake files as well.
  */

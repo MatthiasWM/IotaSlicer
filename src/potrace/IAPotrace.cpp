@@ -151,7 +151,12 @@ int potrace(IAFramebuffer *framebuffer, IAToolpathList *toolpath, double z)
     param->opttolerance = 0.2;
 
     /* trace the bitmap */
+//    bm->w = width/2;
+//    bm->map +=32;
     st = potrace_trace(param, bm);
+//    bm->w = width;
+//    bm->map -=32;
+
     if (!st || st->status != POTRACE_STATUS_OK) {
         fprintf(stderr, "Error tracing bitmap: %s\n", strerror(errno));
         return 1;

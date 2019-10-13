@@ -19,6 +19,7 @@ set (CMAKE_OSX_ARCHITECTURES=i386;x86_64)
 # APPLE WIN32 MSVC UNIX
 if (APPLE)
 	set (PLATFORM_DIR platforms/MacOS)
+    add_compile_definitions(GL_SILENCE_DEPRECATION)
 endif()
 if (UNIX AND NOT APPLE)
 	set (PLATFORM_DIR platforms/Linux)

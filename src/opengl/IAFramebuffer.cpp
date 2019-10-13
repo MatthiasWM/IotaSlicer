@@ -957,16 +957,34 @@ void IAFramebuffer::overlayInfillPattern(int i, double infillWdt)
         infillWdt *= sqrt(2.0); // compensate that we draw at a 45 deg angle
         int dx = infillWdt/pPrinter->pPrintVolume.x()*pWidth;
         if (dx<1) dx = 1;
-        if (i&1) {
-            for (int x=-pWidth; x<pWidth; x+=2*dx) {
-                for (int y=0; y<pHeight; y++) {
-                    bm_hline(pBitmap, x+y, x+y+dx, y, 0);
+        if (dx==10) {
+            /// \todo some ultra fast fill function using word sized lookup tables
+            // This is a special case for dx=10, just to try the effect
+            bm_word m = 0b1111111111000000000011111111110000000000111111111100000000001111;
+            bm_word lut[20];
+            for (int i=0; i<20; i++) lut[i] = (m>>i) | (m<<(20-i));
+            for (int y=0; y<pHeight; y++) {
+                bm_word *dst = bm_scanline(pBitmap, y);
+                int src = (i&1) ? y%20 : 19-(y%20);
+                for (int x=0; x<pBitmap->dy; x++) {
+                    *dst++ &= lut[src];
+                    src = (src+16)%20;
                 }
             }
         } else {
-            for (int x=0; x<2*pWidth; x+=2*dx) {
+            if (i&1) {
                 for (int y=0; y<pHeight; y++) {
-                    bm_hline(pBitmap, x-y, x-y+dx, y, 0);
+                    for (int x=0; x<pWidth; x+=2*dx) {
+                        int xx = x + y%(2*dx);
+                        bm_hline(pBitmap, xx, xx+dx, y, 0);
+                    }
+                }
+            } else {
+                for (int y=0; y<pHeight; y++) {
+                    for (int x=0; x<pWidth; x+=2*dx) {
+                        int xx = x+2*dx - y%(2*dx);
+                        bm_hline(pBitmap, xx, xx+dx, y, 0);
+                    }
                 }
             }
         }

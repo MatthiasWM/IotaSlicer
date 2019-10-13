@@ -864,7 +864,7 @@ void IAPresetController::buildMenu()
     if (pMenu) ::free((void*)pMenu); /** \bug and free the labels! */
     std::vector< std::string > presetList;
     pProperty.listPresets(presetList);
-    int n = presetList.size();
+    int n = (int)presetList.size();
     pMenu = (Fl_Menu_Item*)calloc(n+5, sizeof(Fl_Menu_Item));
     pMenu[0] = { strdup("<not saved>"), 0, nullptr, (void*)0, FL_MENU_INACTIVE, 0, 0, 11 };
     pMenu[1] = { strdup("overwrite preset"), 0, nullptr, (void*)1, 0, 0, 0, 11 };
