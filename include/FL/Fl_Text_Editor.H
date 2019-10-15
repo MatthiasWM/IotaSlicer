@@ -1,5 +1,5 @@
 //
-// "$Id: Fl_Text_Editor.H 11822 2016-07-19 23:19:16Z greg.ercolano $"
+// "$Id$"
 //
 // Header file for Fl_Text_Editor class.
 //
@@ -139,6 +139,6 @@ class FL_EXPORT Fl_Text_Editor : public Fl_Text_Display {
 #endif
 
 //
-// End of "$Id: Fl_Text_Editor.H 11822 2016-07-19 23:19:16Z greg.ercolano $".
+// End of "$Id$".
 //
 

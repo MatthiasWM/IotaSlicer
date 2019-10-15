@@ -1,5 +1,5 @@
 //
-// "$Id: Fl_Help_Dialog.H 11088 2016-01-30 00:56:42Z AlbrechtS $"
+// "$Id$"
 //
 // Fl_Help_Dialog dialog for the Fast Light Tool Kit (FLTK).
 //
@@ -86,5 +86,5 @@ public:
 #endif
 
 //
-// End of "$Id: Fl_Help_Dialog.H 11088 2016-01-30 00:56:42Z AlbrechtS $".
+// End of "$Id$".
 //

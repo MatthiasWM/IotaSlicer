@@ -1,5 +1,5 @@
 //
-// "$Id: Fl_Table.H 12390 2017-08-18 15:16:08Z AlbrechtS $"
+// "$Id$"
 //
 // Fl_Table -- A table widget
 //
@@ -1119,5 +1119,5 @@ public:
 #endif /*_FL_TABLE_H*/
 
 //
-// End of "$Id: Fl_Table.H 12390 2017-08-18 15:16:08Z AlbrechtS $".
+// End of "$Id$".
 //

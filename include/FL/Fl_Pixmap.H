@@ -1,5 +1,5 @@
 //
-// "$Id: Fl_Pixmap.H 12851 2018-04-18 15:03:51Z manolo $"
+// "$Id$"
 //
 // Pixmap header file for the Fast Light Tool Kit (FLTK).
 //
@@ -79,5 +79,5 @@ public:
 #endif
 
 //
-// End of "$Id: Fl_Pixmap.H 12851 2018-04-18 15:03:51Z manolo $".
+// End of "$Id$".
 //

@@ -1,5 +1,5 @@
 //
-// "$Id: Fl_Table_Row.H 12390 2017-08-18 15:16:08Z AlbrechtS $"
+// "$Id$"
 //
 
 #ifndef _FL_TABLE_ROW_H
@@ -187,5 +187,5 @@ public:
 #endif /*_FL_TABLE_ROW_H*/
 
 //
-// End of "$Id: Fl_Table_Row.H 12390 2017-08-18 15:16:08Z AlbrechtS $".
+// End of "$Id$".
 //

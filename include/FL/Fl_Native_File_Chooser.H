@@ -1,5 +1,5 @@
 //
-// "$Id: Fl_Native_File_Chooser.H 12970 2018-06-23 20:50:22Z matt $"
+// "$Id$"
 //
 // FLTK native OS file chooser widget
 //
@@ -273,5 +273,5 @@ public:
 #endif /*FL_NATIVE_FILE_CHOOSER_H*/
 
 //
-// End of "$Id: Fl_Native_File_Chooser.H 12970 2018-06-23 20:50:22Z matt $".
+// End of "$Id$".
 //

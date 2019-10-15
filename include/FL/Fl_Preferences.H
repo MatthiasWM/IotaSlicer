@@ -1,5 +1,5 @@
 //
-// "$Id: Fl_Preferences.H 12655 2018-02-09 14:39:42Z AlbrechtS $"
+// "$Id$"
 //
 // Preferences implementation for the Fast Light Tool Kit (FLTK).
 //
@@ -51,6 +51,15 @@
    reasons. One application can have multiple preferences files.
    Extensive binary data however should be stored in separate
    files: see getUserdataPath().
+ 
+ \note Platform-specific location of the Fl_Preferences text files.
+ This construct
+  \code new Fl_Preferences(Fl_Preferences::USER, "vendor", "application"); \endcode
+ where "vendor" and "application" are any user-chosen strings, will create these text files:
+ \li Windows XP platform: <tt>C:\\Documents and Settings\\<i>username</i>\\Application Data\\<i>vendor</i>\\<i>application</i>.prefs</tt>
+ \li Windows 7+ platform: <tt>C:\\Users\\<i>username</i>\\AppData\\Roaming\\<i>vendor</i>\\<i>application</i>.prefs </tt>
+ \li X11 platform: <tt>$HOME/.fltk/<i>vendor</i>/<i>application</i>.prefs </tt>
+ \li MacOS platform: <tt>$HOME/Library/Preferences/<i>vendor</i>/<i>application</i>.prefs </tt>
 
    \note Starting with FLTK 1.3, preference databases are expected to
    be in UTF-8 encoding. Previous databases were stored in the
@@ -266,5 +275,5 @@ protected:
 #endif // !Fl_Preferences_H
 
 //
-// End of "$Id: Fl_Preferences.H 12655 2018-02-09 14:39:42Z AlbrechtS $".
+// End of "$Id$".
 //

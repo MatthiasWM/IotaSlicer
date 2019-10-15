@@ -1,5 +1,5 @@
 #
-# "$Id: Makefile.in 8864 2011-07-19 04:49:30Z greg.ercolano $"
+# "$Id$"
 #
 # Header makefile for the Fast Light Tool Kit (FLTK).
 #
@@ -50,5 +50,5 @@ uninstall:
 
 
 #
-# End of "$Id: Makefile.in 8864 2011-07-19 04:49:30Z greg.ercolano $".
+# End of "$Id$".
 #

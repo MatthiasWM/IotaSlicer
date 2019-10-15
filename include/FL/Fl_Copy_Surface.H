@@ -1,5 +1,5 @@
 //
-// "$Id: Fl_Copy_Surface.H 12970 2018-06-23 20:50:22Z matt $"
+// "$Id$"
 //
 // Copy-to-clipboard code for the Fast Light Tool Kit (FLTK).
 //
@@ -107,5 +107,5 @@ protected:
 #endif // Fl_Copy_Surface_H
 
 //
-// End of "$Id: Fl_Copy_Surface.H 12970 2018-06-23 20:50:22Z matt $".
+// End of "$Id$".
 //

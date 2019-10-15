@@ -1,5 +1,5 @@
 //
-// "$Id: mac.H 12970 2018-06-23 20:50:22Z matt $"
+// "$Id$"
 //
 // Mac header file for the Fast Light Tool Kit (FLTK).
 //
@@ -67,6 +67,13 @@ typedef class FLWindow *Window; // pointer to the FLWindow objective-c class
 #ifndef MAC_OS_X_VERSION_10_12
 #define MAC_OS_X_VERSION_10_12 101200
 #endif
+#ifndef MAC_OS_X_VERSION_10_13
+#define MAC_OS_X_VERSION_10_13 101300
+#endif
+#ifndef MAC_OS_X_VERSION_10_14
+#define MAC_OS_X_VERSION_10_14 101400
+#endif
+
 
 #ifndef NSINTEGER_DEFINED // appears with 10.5 in NSObjCRuntime.h
 #if defined(__LP64__) && __LP64__
@@ -128,10 +135,6 @@ void fl_mac_set_about(Fl_Callback *cb, void *user_data, int shortcut = 0);
  */
 extern int fl_mac_os_version;
 
-/** The system menu bar.
- */
-//extern class Fl_Sys_Menu_Bar *fl_sys_menu_bar;
-
 struct Fl_Menu_Item;
 
 class Fl_Mac_App_Menu {
@@ -164,6 +167,6 @@ public:
 /** @} */
 
 //
-// End of "$Id: mac.H 12970 2018-06-23 20:50:22Z matt $".
+// End of "$Id$".
 //
 

@@ -1,5 +1,5 @@
 //
-// "$Id: Fl_Multi_Label.H 12471 2017-09-27 03:30:13Z greg.ercolano $"
+// "$Id$"
 //
 // Multi-label header file for the Fast Light Tool Kit (FLTK).
 //
@@ -101,5 +101,5 @@ struct FL_EXPORT Fl_Multi_Label {
 #endif
 
 //
-// End of "$Id: Fl_Multi_Label.H 12471 2017-09-27 03:30:13Z greg.ercolano $".
+// End of "$Id$".
 //

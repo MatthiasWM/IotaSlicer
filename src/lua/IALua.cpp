@@ -26,11 +26,11 @@ static luaL_Reg iaLuaFuncs[] = {
 
 int IALua::quit(lua_State *L)
 {
-    bool forceQuit = false;
+//    bool forceQuit = false;
     int n = lua_gettop(L);
     if (n==2) {
         luaL_checktype(L, 2, LUA_TBOOLEAN);
-        forceQuit = lua_toboolean(L, 2);
+        //forceQuit = lua_toboolean(L, 2);
     }
     Iota.userMenuFileQuit();
     /** \bug call via AppController and use a property to generate notifications? */

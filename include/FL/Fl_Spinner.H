@@ -1,5 +1,5 @@
 //
-// "$Id: Fl_Spinner.H 12313 2017-07-12 21:51:42Z AlbrechtS $"
+// "$Id$"
 //
 // Spinner widget for the Fast Light Tool Kit (FLTK).
 //
@@ -200,5 +200,5 @@ public:
 
 
 //
-// End of "$Id: Fl_Spinner.H 12313 2017-07-12 21:51:42Z AlbrechtS $".
+// End of "$Id$".
 //

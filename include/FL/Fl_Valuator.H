@@ -1,5 +1,5 @@
 //
-// "$Id: Fl_Valuator.H 11318 2016-03-08 13:51:01Z AlbrechtS $"
+// "$Id$"
 //
 // Valuator header file for the Fast Light Tool Kit (FLTK).
 //
@@ -134,5 +134,5 @@ public:
 #endif
 
 //
-// End of "$Id: Fl_Valuator.H 11318 2016-03-08 13:51:01Z AlbrechtS $".
+// End of "$Id$".
 //

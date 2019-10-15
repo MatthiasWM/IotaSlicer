@@ -1,5 +1,5 @@
 //
-// "$Id: Fl_Graphics_Driver.H 13011 2018-08-08 20:08:10Z manolo $"
+// "$Id$"
 //
 // Definition of classes Fl_Graphics_Driver, Fl_Surface_Device, Fl_Display_Device
 // for the Fast Light Tool Kit (FLTK).
@@ -269,27 +269,27 @@ public:
   /** see fl_line(int, int, int, int) */
   virtual void line(int x, int y, int x1, int y1) {}
   /** see fl_line(int, int, int, int, int, int) */
-  virtual void line(int x, int y, int x1, int y1, int x2, int y2) {}
+  virtual void line(int x, int y, int x1, int y1, int x2, int y2);
   /** see fl_xyline(int, int, int) */
-  virtual void xyline(int x, int y, int x1) {}
+  virtual void xyline(int x, int y, int x1);
   /** see fl_xyline(int, int, int, int) */
-  virtual void xyline(int x, int y, int x1, int y2) {}
+  virtual void xyline(int x, int y, int x1, int y2);
   /** see fl_xyline(int, int, int, int, int) */
-  virtual void xyline(int x, int y, int x1, int y2, int x3) {}
+  virtual void xyline(int x, int y, int x1, int y2, int x3);
   /** see fl_yxline(int, int, int) */
-  virtual void yxline(int x, int y, int y1) {}
+  virtual void yxline(int x, int y, int y1);
   /** see fl_yxline(int, int, int, int) */
-  virtual void yxline(int x, int y, int y1, int x2) {}
+  virtual void yxline(int x, int y, int y1, int x2);
   /** see fl_yxline(int, int, int, int, int) */
-  virtual void yxline(int x, int y, int y1, int x2, int y3) {}
+  virtual void yxline(int x, int y, int y1, int x2, int y3);
   /** see fl_loop(int, int, int, int, int, int) */
-  virtual void loop(int x0, int y0, int x1, int y1, int x2, int y2) {}
+  virtual void loop(int x0, int y0, int x1, int y1, int x2, int y2);
   /** see fl_loop(int, int, int, int, int, int, int, int) */
-  virtual void loop(int x0, int y0, int x1, int y1, int x2, int y2, int x3, int y3) {}
+  virtual void loop(int x0, int y0, int x1, int y1, int x2, int y2, int x3, int y3);
   /** see fl_polygon(int, int, int, int, int, int) */
   virtual void polygon(int x0, int y0, int x1, int y1, int x2, int y2) {}
   /** see fl_polygon(int, int, int, int, int, int, int, int) */
-  virtual void polygon(int x0, int y0, int x1, int y1, int x2, int y2, int x3, int y3) {}
+  virtual void polygon(int x0, int y0, int x1, int y1, int x2, int y2, int x3, int y3);
   // --- clipping
   /** see fl_push_clip() */
   virtual void push_clip(int x, int y, int w, int h) {}
@@ -298,9 +298,9 @@ public:
   /** see fl_not_clipped() */
   virtual int not_clipped(int x, int y, int w, int h) {return 1;}
   /** see fl_push_no_clip() */
-  virtual void push_no_clip() {}
+  virtual void push_no_clip();                  // has default implementation
   /** see fl_pop_clip() */
-  virtual void pop_clip() {}
+  virtual void pop_clip();                      // has default implementation
   virtual Fl_Region clip_region();              // has default implementation
   virtual void clip_region(Fl_Region r);        // has default implementation
   virtual void restore_clip();
@@ -553,5 +553,5 @@ protected:
  */
 
 //
-// End of "$Id: Fl_Graphics_Driver.H 13011 2018-08-08 20:08:10Z manolo $".
+// End of "$Id$".
 //

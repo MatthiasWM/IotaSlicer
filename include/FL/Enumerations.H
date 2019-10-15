@@ -1,5 +1,5 @@
 //
-// "$Id: Enumerations.H 13036 2018-08-30 10:41:16Z AlbrechtS $"
+// "$Id$"
 //
 // Enumerations for the Fast Light Tool Kit (FLTK).
 //
@@ -1233,5 +1233,5 @@ enum Fl_Damage {
 #endif
 
 //
-// End of "$Id: Enumerations.H 13036 2018-08-30 10:41:16Z AlbrechtS $".
+// End of "$Id$".
 //

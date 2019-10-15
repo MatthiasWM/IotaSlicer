@@ -1,5 +1,5 @@
 //
-// "$Id: Fl_Browser_.H 12459 2017-09-14 00:50:36Z greg.ercolano $"
+// "$Id$"
 //
 // Common browser header file for the Fast Light Tool Kit (FLTK).
 //
@@ -385,5 +385,5 @@ public:
 #endif
 
 //
-// End of "$Id: Fl_Browser_.H 12459 2017-09-14 00:50:36Z greg.ercolano $".
+// End of "$Id$".
 //

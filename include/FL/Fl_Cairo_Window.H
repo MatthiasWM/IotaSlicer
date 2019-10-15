@@ -1,5 +1,5 @@
 //
-// "$Id: Fl_Cairo_Window.H 12993 2018-07-27 09:05:12Z AlbrechtS $"
+// "$Id$"
 //
 // Main header file for the Fast Light Tool Kit (FLTK).
 //
@@ -59,10 +59,15 @@ protected:
   /** Overloaded to provide cairo callback support */
   void draw() {
     Fl_Double_Window::draw();
-    // manual method ? if yes explicitly get a cairo_context here
-    if (!Fl::cairo_autolink_context()) 
-      Fl::cairo_make_current(this); 
-    if (draw_cb_) draw_cb_(this, Fl::cairo_cc());
+    if (draw_cb_) { // call the Cairo draw callback
+      // manual method ? if yes explicitly get a cairo_context here
+      if (!Fl::cairo_autolink_context())
+	Fl::cairo_make_current(this);
+      draw_cb_(this, Fl::cairo_cc());
+      // flush cairo drawings: necessary at least for Windows
+      cairo_surface_t *s = cairo_get_target(Fl::cairo_cc());
+      cairo_surface_flush(s);
+    }
   }
 
 public:
@@ -84,5 +89,5 @@ private:
 #endif // FL_CAIRO_WINDOW_H
 
 //
-// End of "$Id: Fl_Cairo_Window.H 12993 2018-07-27 09:05:12Z AlbrechtS $" .
+// End of "$Id$" .
 //

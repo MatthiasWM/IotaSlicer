@@ -1,5 +1,5 @@
 //
-// "$Id: Fl_Overlay_Window.H 11440 2016-03-27 06:58:54Z manolo $"
+// "$Id$"
 //
 // Overlay window header file for the Fast Light Tool Kit (FLTK).
 //
@@ -79,5 +79,5 @@ public:
 #endif
 
 //
-// End of "$Id: Fl_Overlay_Window.H 11440 2016-03-27 06:58:54Z manolo $".
+// End of "$Id$".
 //

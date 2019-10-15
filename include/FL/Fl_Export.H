@@ -1,5 +1,5 @@
 /*
- * "$Id: Fl_Export.H 12655 2018-02-09 14:39:42Z AlbrechtS $"
+ * "$Id$"
  *
  * Windows DLL export .
  *
@@ -38,5 +38,5 @@
 #endif /* !Fl_Export_H */
 
 /*
- * End of "$Id: Fl_Export.H 12655 2018-02-09 14:39:42Z AlbrechtS $".
+ * End of "$Id$".
  */

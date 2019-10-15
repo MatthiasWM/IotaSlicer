@@ -415,7 +415,7 @@ void IAFramebuffer::unbindFromRendering()
 uint8_t *IAFramebuffer::getRawImageRGB()
 {
     size_t size = pWidth*pHeight*3;
-    uint8_t *data = (uint8_t*)malloc(size);
+    uint8_t *data = (uint8_t*)calloc(size, 1);
     if (pBuffers==BITMAP) {
         uint8_t *dst = data;
         for (int y=0; y<pHeight; y++) {
@@ -447,7 +447,7 @@ uint8_t *IAFramebuffer::getRawImageRGB()
 uint8_t *IAFramebuffer::getRawImageRGBA()
 {
     size_t size = pWidth*pHeight*4;
-    uint8_t *data = (uint8_t*)malloc(size);
+    uint8_t *data = (uint8_t*)calloc(size, 1);
     if (pBuffers==BITMAP) {
         uint8_t *dst = data;
         for (int y=0; y<pHeight; y++) {

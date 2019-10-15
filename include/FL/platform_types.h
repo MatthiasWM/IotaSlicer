@@ -1,5 +1,5 @@
 /*
- * "$Id: platform_types.h 12969 2018-06-23 17:04:18Z matt $"
+ * "$Id$"
  *
  * Copyright 2016-2018 by Bill Spitzak and others.
  *
@@ -158,5 +158,5 @@ typedef struct __GLXcontextRec *GLContext;
 #endif // FL_DOXYGEN
 
 /*
- * End of "$Id: platform_types.h 12969 2018-06-23 17:04:18Z matt $".
+ * End of "$Id$".
  */

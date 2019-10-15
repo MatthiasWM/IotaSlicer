@@ -1,5 +1,5 @@
 //
-// "$Id: x.H 12640 2018-01-31 17:46:48Z AlbrechtS $"
+// "$Id$"
 //
 // *Deprecated* platform header file for the Fast Light Tool Kit (FLTK).
 //
@@ -28,5 +28,5 @@
 #endif // !Fl_X_H
 
 //
-// End of "$Id: x.H 12640 2018-01-31 17:46:48Z AlbrechtS $".
+// End of "$Id$".
 //

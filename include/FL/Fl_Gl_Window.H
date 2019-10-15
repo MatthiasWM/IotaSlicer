@@ -1,5 +1,5 @@
 //
-// "$Id: Fl_Gl_Window.H 13023 2018-08-21 07:45:32Z manolo $"
+// "$Id$"
 //
 // OpenGL header file for the Fast Light Tool Kit (FLTK).
 //
@@ -243,5 +243,5 @@ public:
 #endif // Fl_Gl_Window_H
 
 //
-// End of "$Id: Fl_Gl_Window.H 13023 2018-08-21 07:45:32Z manolo $".
+// End of "$Id$".
 //

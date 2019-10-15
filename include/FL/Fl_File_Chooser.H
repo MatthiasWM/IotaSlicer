@@ -1,5 +1,5 @@
 //
-// "$Id: Fl_File_Chooser.H 11957 2016-09-20 13:35:44Z AlbrechtS $"
+// "$Id$"
 //
 // Fl_File_Chooser dialog for the Fast Light Tool Kit (FLTK).
 //
@@ -241,5 +241,5 @@ FL_EXPORT void fl_file_chooser_ok_label(const char*l);
 #endif
 
 //
-// End of "$Id: Fl_File_Chooser.H 11957 2016-09-20 13:35:44Z AlbrechtS $".
+// End of "$Id$".
 //

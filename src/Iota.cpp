@@ -543,7 +543,6 @@ int main (int argc, char **argv)
     Iota.pCustomPrinterList.updatePrinterSelectMenu();
     Iota.pCurrentPrinter->buildSessionSettings(wSessionSettings);
     Iota.gMainWindow->show();
-    Fl::flush();
 
     Iota.loadDemoFiles();
     gSceneView->redraw();

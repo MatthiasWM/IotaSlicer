@@ -1,5 +1,5 @@
 //
-// "$Id: Fl_Menu_.H 12816 2018-03-31 17:29:23Z greg.ercolano $"
+// "$Id$"
 //
 // Menu base class header file for the Fast Light Tool Kit (FLTK).
 //
@@ -188,5 +188,5 @@ public:
 #endif
 
 //
-// End of "$Id: Fl_Menu_.H 12816 2018-03-31 17:29:23Z greg.ercolano $".
+// End of "$Id$".
 //

@@ -1,5 +1,5 @@
 //
-// "$Id: android.H 12970 2018-06-23 20:50:22Z matt $"
+// "$Id$"
 //
 // Template header file for the Fast Light Tool Kit (FLTK).
 //
@@ -162,5 +162,5 @@ enum Fl_Android_Platform_Event
 
 
 //
-// End of "$Id: android.H 12970 2018-06-23 20:50:22Z matt $".
+// End of "$Id$".
 //

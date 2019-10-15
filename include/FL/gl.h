@@ -1,5 +1,5 @@
 //
-// "$Id: gl.h 12970 2018-06-23 20:50:22Z matt $"
+// "$Id$"
 //
 // OpenGL header file for the Fast Light Tool Kit (FLTK).
 //
@@ -99,5 +99,5 @@ FL_EXPORT void gl_draw_image(const uchar *, int x,int y,int w,int h, int d=3, in
 #endif // !FL_gl_H
 
 //
-// End of "$Id: gl.h 12970 2018-06-23 20:50:22Z matt $".
+// End of "$Id$".
 //

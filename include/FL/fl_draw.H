@@ -1,5 +1,5 @@
 //
-// "$Id: fl_draw.H 13005 2018-08-04 16:42:32Z manolo $"
+// "$Id$"
 //
 // Portable drawing function header file for the Fast Light Tool Kit (FLTK).
 //
@@ -849,5 +849,5 @@ FL_EXPORT int fl_add_symbol(const char* name, void (*drawit)(Fl_Color), int scal
 #endif
 
 //
-// End of "$Id: fl_draw.H 13005 2018-08-04 16:42:32Z manolo $".
+// End of "$Id$".
 //

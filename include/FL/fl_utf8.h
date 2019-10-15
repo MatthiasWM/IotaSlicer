@@ -1,5 +1,5 @@
 /*
- * "$Id: fl_utf8.h 12655 2018-02-09 14:39:42Z AlbrechtS $"
+ * "$Id$"
  *
  * Author: Jean-Marc Lienher ( http://oksid.ch )
  * Copyright 2000-2010 by O'ksi'D.
@@ -217,5 +217,5 @@ FL_EXPORT char fl_make_path( const char *path );
 #endif /* _HAVE_FL_UTF8_HDR_ */
 
 /*
- * End of "$Id: fl_utf8.h 12655 2018-02-09 14:39:42Z AlbrechtS $".
+ * End of "$Id$".
  */

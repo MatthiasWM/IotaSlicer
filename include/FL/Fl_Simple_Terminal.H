@@ -1,5 +1,5 @@
 //
-// "$Id: Fl_Simple_Terminal.H 12507 2017-10-17 00:38:38Z greg.ercolano $"
+// "$Id$"
 //
 // A simple terminal widget for Fast Light Tool Kit (FLTK).
 //
@@ -194,5 +194,5 @@ protected:
 #endif
 
 //
-// End of "$Id: Fl_Simple_Terminal.H 12507 2017-10-17 00:38:38Z greg.ercolano $".
+// End of "$Id$".
 //

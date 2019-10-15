@@ -366,9 +366,9 @@ void IASceneView::draw_children()
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    Fl_Window::make_current();
-    fl_push_no_clip();
-    make_current();
+//    Fl_Window::make_current();
+//    fl_push_no_clip();
+//    make_current();
     Fl_Widget*const* a = array();
     for (int i=children(); i--;) {
         Fl_Widget& o = **a++;
@@ -383,7 +383,7 @@ void IASceneView::draw_children()
          */
         gl_draw("Drag and drop STL files here", 0, 0, w(), h(), FL_ALIGN_CENTER|FL_ALIGN_INSIDE);
     }
-    fl_pop_clip();
+//    fl_pop_clip();
     IA_HANDLE_GL_ERRORS();
 }
 

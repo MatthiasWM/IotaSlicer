@@ -1,5 +1,5 @@
 //
-// "$Id: Fl_Tree_Item.H 12036 2016-10-17 12:51:05Z AlbrechtS $"
+// "$Id$"
 //
 
 #ifndef FL_TREE_ITEM_H
@@ -479,5 +479,5 @@ protected:
 #endif /*FL_TREE_ITEM_H*/
 
 //
-// End of "$Id: Fl_Tree_Item.H 12036 2016-10-17 12:51:05Z AlbrechtS $".
+// End of "$Id$".
 //

@@ -1,5 +1,5 @@
 //
-// "$Id: Fl_Widget_Surface.H 12894 2018-05-04 15:11:47Z manolo $"
+// "$Id$"
 //
 // Drivers code for the Fast Light Tool Kit (FLTK).
 //
@@ -56,5 +56,5 @@ public:
 #endif /* Fl_Widget_Surface_h */
 
 //
-// End of "$Id: Fl_Widget_Surface.H 12894 2018-05-04 15:11:47Z manolo $".
+// End of "$Id$".
 //

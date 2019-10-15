@@ -287,6 +287,7 @@ bool IAPrinter::queryOutputFilename(const char *title,
     switch (fc.show()) {
         case -1: // error
         case 1: // cancel
+            free(path);
             return false;
         default: // filename choosen
             break;

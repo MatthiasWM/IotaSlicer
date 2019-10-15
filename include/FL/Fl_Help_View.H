@@ -1,5 +1,5 @@
 //
-// "$Id: Fl_Help_View.H 12903 2018-05-06 10:20:45Z manolo $"
+// "$Id$"
 //
 // Help Viewer widget definitions.
 //
@@ -383,5 +383,5 @@ public:
 #endif // !Fl_Help_View_H
 
 //
-// End of "$Id: Fl_Help_View.H 12903 2018-05-06 10:20:45Z manolo $".
+// End of "$Id$".
 //

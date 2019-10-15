@@ -273,8 +273,8 @@ void IAFDMPrinter::createPropertiesControls()
         { nullptr } };
     s = new IAChoiceController("specs/extruder", "Extruders:", numExtruders,
                                []{}, numExtruderMenu );
-#if 0
     pPropertiesControllerList.push_back(s);
+#if 0
     s = new IALabelController("specs/extruder/0", "Extruder 0:");
     pPropertiesControllerList.push_back(s);
     s = new IALabelController("specs/extruder/0/offset", "Offset:");

@@ -1,5 +1,5 @@
 //
-// "$Id: Fl_Tooltip.H 12748 2018-03-15 09:34:20Z matt $"
+// "$Id$"
 //
 // Tooltip header file for the Fast Light Tool Kit (FLTK).
 //
@@ -120,5 +120,5 @@ private:
 #endif
 
 //
-// End of "$Id: Fl_Tooltip.H 12748 2018-03-15 09:34:20Z matt $".
+// End of "$Id$".
 //

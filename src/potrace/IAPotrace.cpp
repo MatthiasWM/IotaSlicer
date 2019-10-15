@@ -129,6 +129,7 @@ int potrace(IAFramebuffer *framebuffer, IAToolpathList *toolpath, double z)
     param = potrace_param_default();
     if (!param) {
         fprintf(stderr, "Error allocating parameters: %s\n", strerror(errno));
+        bm_free(bm);
         return 1;
     }
 

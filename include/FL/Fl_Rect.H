@@ -1,5 +1,5 @@
 //
-// "$Id: Fl_Rect.H 12825 2018-04-10 18:41:34Z AlbrechtS $"
+// "$Id$"
 //
 // Fl_Rect header file for the Fast Light Tool Kit (FLTK).
 //
@@ -84,5 +84,5 @@ public:
 #endif // Fl_Rect_H
 
 //
-// End of "$Id: Fl_Rect.H 12825 2018-04-10 18:41:34Z AlbrechtS $".
+// End of "$Id$".
 //

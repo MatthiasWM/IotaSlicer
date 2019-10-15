@@ -1,5 +1,5 @@
 //
-// "$Id: platform.H 12969 2018-06-23 17:04:18Z matt $"
+// "$Id$"
 //
 // Platform header file for the Fast Light Tool Kit (FLTK).
 //
@@ -154,5 +154,5 @@ extern FL_EXPORT void fl_open_callback(void (*)(const char *));
 #endif // !FL_PLATFORM_H
 
 //
-// End of "$Id: platform.H 12969 2018-06-23 17:04:18Z matt $".
+// End of "$Id$".
 //

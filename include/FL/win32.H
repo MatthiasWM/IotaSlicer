@@ -1,5 +1,5 @@
 //
-// "$Id: win32.H 12723 2018-03-09 16:27:27Z manolo $"
+// "$Id$"
 //
 // Windows system header file for the Fast Light Tool Kit (FLTK).
 //
@@ -71,5 +71,5 @@ extern FL_EXPORT HDC fl_makeDC(HBITMAP);
 #endif // FL_DOXYGEN
 
 //
-// End of "$Id: win32.H 12723 2018-03-09 16:27:27Z manolo $".
+// End of "$Id$".
 //

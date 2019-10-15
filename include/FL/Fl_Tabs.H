@@ -1,5 +1,5 @@
 //
-// "$Id: Fl_Tabs.H 12270 2017-06-21 20:00:28Z AlbrechtS $"
+// "$Id$"
 //
 // Tab header file for the Fast Light Tool Kit (FLTK).
 //
@@ -267,5 +267,5 @@ public:
 #endif
 
 //
-// End of "$Id: Fl_Tabs.H 12270 2017-06-21 20:00:28Z AlbrechtS $".
+// End of "$Id$".
 //
