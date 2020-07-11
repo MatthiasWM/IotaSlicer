@@ -43,6 +43,8 @@ public:
     char *pRecentFile[pNRecentFiles] = { 0 };
     /** write preferences for individual printers here */
     char *pPrinterDefinitionsPath = nullptr;
+    /** stor ethe index of the currently selected printer of the printer list */
+    int pCurrentPrinterIndex = 0;
 };
 
 

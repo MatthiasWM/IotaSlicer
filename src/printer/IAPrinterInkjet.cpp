@@ -74,7 +74,7 @@ void IAPrinterInkjet::userSliceSave()
  */
 void IAPrinterInkjet::userSliceSaveAs()
 {
-    if (queryOutputFilename("Save toolpath as GCode", "*.gcode", ".gcode")) {
+    if (queryOutputFilename("Save slices a png images", "*.png", ".png")) {
         pFirstWrite = false;
         userSliceSave();
     }
@@ -148,52 +148,38 @@ void IAPrinterInkjet::saveSlices(const char *filename)
         strcat(fn, "_%04d");
     }
 
-//    double hgt = Iota.pMesh->pMax.z() - Iota.pMesh->pMin.z();
-    // initial height determines stickiness to bed
-
-//    double zMin = layerHeight() * 0.7;
-//    double zLayerHeight = layerHeight();
-//    double zMax = hgt;
+    double hgt = Iota.pMesh->pMax.z() - Iota.pMesh->pMin.z() + 2.0*layerHeight();
+    double zMin = layerHeight() * 0.9; // initial height
+    double zLayerHeight = layerHeight();
+    double zMax = hgt;
 
     IAProgressDialog::show("Writing slices",
                            "Writing layer %d of %d at %.3fmm (%d%%)");
 
-//    int i = 0, n = (int)((zMax-zMin)/zLayerHeight);
-//    for (double z=zMin; z<zMax; z+=zLayerHeight) {
-//        if (IAProgressDialog::update(i*100/n, i, n, z, i*100/n)) break;
-//
-//        gSlice.setNewZ(z);
-//        gSlice.clear();
-//        gSlice.generateRim(Iota.pMesh);
-//        gSlice.tesselateLidFromRim();
-//        gSlice.draw(IAMesh::kMASK, 1, 1, 1);
-//
-//        uint8_t *alpha = gSlice.pFramebuffer->getRawImageRGB();
-//        uint8_t *rgb = gSlice.pColorbuffer->getRawImageRGBA();
-//
-//        /**
-//         \todo we can of course do all that in the OpenGL code already
-//         \todo infill should be white or user selectable
-//         \todo inkjet should generate support structurs for image based SLA
-//         */
-//        {
-//            int i = 0, n = gSlice.pColorbuffer->width()
-//                         * gSlice.pColorbuffer->height();
-//            uint8_t *s = alpha, *d = rgb;
-//            for (i=0; i<n; ++i) {
-//                d[3] = *s;
-//                s+=3; d+=4;
-//            }
-//        }
-//
-//        char imgFilename[2048];
-//        sprintf(imgFilename, fn, i);
-//        gSlice.pColorbuffer->saveAsPng(imgFilename, 4, rgb);
-//        // for testing, we also can write jpegs or other files.
-//        //        fl_filename_setext(imgFilename, 2048, ".jpg");
-//        //        gSlice.pColorbuffer->saveAsJpeg(imgFilename, rgb);
-//        i++;
-//    }
+
+    int i = 0, n = (int)((zMax-zMin)/zLayerHeight) + 2;
+
+    for (i=0; i<n; ++i)
+    {
+        double z = i * layerHeight() + 0.5 /* + first layer offset */;
+        if (IAProgressDialog::update(i*100/n, i, n, z, i*100/n)) break;
+
+        gSlice.setNewZ(z);
+        gSlice.clear();
+        gSlice.generateRim( Iota.pMesh );
+        gSlice.tesselateAndDrawLid(gSlice.pColorbuffer);
+        uint8_t *rgb = gSlice.pColorbuffer->getRawImageRGBA();
+
+        char imgFilename[2048];
+        sprintf(imgFilename, fn, i);
+        gSlice.pColorbuffer->saveAsPng(imgFilename, 4, rgb, true);
+        // TODO: we should make the file format depend to the filename extension
+        // for testing, we also can write jpegs or other files.
+        //        fl_filename_setext(imgFilename, 2048, ".jpg");
+        //        gSlice.pColorbuffer->saveAsJpeg(imgFilename, rgb);
+        ::free(rgb);
+    }
+
     IAProgressDialog::hide();
     gSceneView->redraw();
 }

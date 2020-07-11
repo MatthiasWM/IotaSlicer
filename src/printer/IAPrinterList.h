@@ -27,6 +27,7 @@ public:
     bool add(IAPrinter *printer);
     void remove(IAPrinter *printer);
     int size() { return (int)pPrinterList.size(); }
+    IAPrinter *operator[](int ix) { return pPrinterList[ix]; }
 
     void generatePrototypes();
     void loadCustomPrinters(IAPrinter *(&p));

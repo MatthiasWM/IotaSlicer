@@ -17,6 +17,7 @@
 #include <math.h>
 #include <libjpeg/jpeglib.h>
 #include <libpng/png.h>
+#include <zlib.h>
 
 
 const char *glIAErrorString(int err)
@@ -565,7 +566,7 @@ int IAFramebuffer::saveAsJpeg(const char *filename, GLubyte *imgdata)
  * \todo if we want to send data directly to a printhead, we may want to
  *       generate dithered files for color blending.
  */
-int IAFramebuffer::saveAsPng(const char *filename, int components, GLubyte *imgdata)
+int IAFramebuffer::saveAsPng(const char *filename, int components, GLubyte *imgdata, bool rle)
 {
     bool freeImgData = false;
     if (imgdata==nullptr) {
@@ -589,6 +590,21 @@ int IAFramebuffer::saveAsPng(const char *filename, int components, GLubyte *imgd
 
     png_init_io(png, fp);
 
+    png_set_filter(png, 0, PNG_FILTER_NONE);
+
+    // if all we want to do is store the on/off alpha channel, the RLE encoding is fastest
+    png_set_compression_level(png, Z_BEST_SPEED);
+    if (rle) {
+        png_set_compression_strategy(png, Z_RLE);
+    }
+//    png_set_compression_strategy(png_ptr,
+//#define Z_FILTERED            1
+//#define Z_HUFFMAN_ONLY        2
+//#define Z_RLE                 3
+//#define Z_FIXED               4
+//#define Z_DEFAULT_STRATEGY    0
+    /* compression strategy; see deflateInit2() below for details */
+
     int fmt = 0;
     switch (components) {
         case 1: fmt = PNG_COLOR_TYPE_GRAY; break;
@@ -607,11 +623,20 @@ int IAFramebuffer::saveAsPng(const char *filename, int components, GLubyte *imgd
                  PNG_COMPRESSION_TYPE_DEFAULT,
                  PNG_FILTER_TYPE_DEFAULT
                  );
+
     png_write_info(png, info);
 
-    for(int y = 0; y < pHeight; y++) {
-        png_write_row( png, imgdata + y*pWidth*components );
+    png_byte **row = (png_byte**)malloc(pHeight * sizeof(png_byte*));
+    for (int y = 0; y < pHeight; y++) {
+        row[y] = imgdata + y*pWidth*components;
     }
+    png_write_image(png, row);
+    ::free(row);
+
+    png_write_end(png, info);
+    png_destroy_info_struct(png, &info);
+    png_destroy_write_struct(&png, (png_infopp)nullptr);
+
     fclose(fp);
 
     if (freeImgData)

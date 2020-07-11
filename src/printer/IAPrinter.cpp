@@ -249,6 +249,8 @@ void IAPrinter::setNewUUID()
  * \param extension add this extension if none is given
  *
  * \return false, if the user canceled the request
+ *
+ * \todo we could use the path of the current STL as a good strating point
  */
 bool IAPrinter::queryOutputFilename(const char *title,
                                   const char *filter,
@@ -270,7 +272,7 @@ bool IAPrinter::queryOutputFilename(const char *title,
         path = strdup(buf);
     }
 
-#ifdef __LINUX__
+#if 1
     const char *filename = fl_file_chooser(title, filter, path);
 #else
     Fl_Native_File_Chooser fc(Fl_Native_File_Chooser::BROWSE_SAVE_FILE);
@@ -293,6 +295,7 @@ bool IAPrinter::queryOutputFilename(const char *title,
             break;
     }
     const char *filename = fc.filename();
+    
 #endif
 
     free(path);

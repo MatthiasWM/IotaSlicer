@@ -539,8 +539,12 @@ int main (int argc, char **argv)
                                  Iota.gPreferences.pMainWindowW,
                                  Iota.gPreferences.pMainWindowH);
     }
-    wPrinterChoice->value(0);
     Iota.pCustomPrinterList.updatePrinterSelectMenu();
+    int currentPrinter = Iota.gPreferences.pCurrentPrinterIndex;
+    if (currentPrinter>=Iota.pCustomPrinterList.size())
+        currentPrinter = 0;
+    wPrinterChoice->value(currentPrinter);
+    Iota.pCurrentPrinter = Iota.pCustomPrinterList[currentPrinter];
     Iota.pCurrentPrinter->buildSessionSettings(wSessionSettings);
     Iota.gMainWindow->show();
 

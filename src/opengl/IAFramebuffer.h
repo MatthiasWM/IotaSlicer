@@ -90,7 +90,7 @@ public:
     uint8_t *getRawImageRGBA();
     int traceOutline(IAToolpathList *toolpathList, double z);
     int saveAsJpeg(const char *filename, GLubyte *imgdata=nullptr);
-    int saveAsPng(const char *filename, int components, GLubyte *imgdata=nullptr);
+    int saveAsPng(const char *filename, int components, GLubyte *imgdata=nullptr, bool rle=false);
 
     /** Width in pixels.
      \return the width of the buffer. */

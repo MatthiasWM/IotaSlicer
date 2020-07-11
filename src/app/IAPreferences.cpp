@@ -38,6 +38,8 @@ IAPreferences::IAPreferences()
         recentFiles.get(Fl_Preferences::Name(i), pRecentFile[i], "");
     }
     updateRecentfilesMenu();
+
+    main.get("recentPrinterIndex", pCurrentPrinterIndex, 0);
 }
 
 
@@ -71,6 +73,8 @@ void IAPreferences::flush()
     for (int i=0; i<pNRecentFiles; i++) {
         recentFiles.set(Fl_Preferences::Name(i), pRecentFile[i]);
     }
+
+    main.set("recentPrinterIndex", wPrinterChoice->value());
 
     pPrefs.flush();
 }
