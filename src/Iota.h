@@ -16,7 +16,7 @@
 #include "printer/IAPrinterList.h"
 #include "app/IAPreferences.h"
 #include "controller/IAPrinterListController.h"
-#include "lua/IALua.h"
+//#include "lua/IALua.h"
 #include "property/IAProperty.h"
 
 
@@ -154,7 +154,7 @@ public:
 
     IAPrinterListController pPrinterListController;
 
-    IALua lua;
+//    IALua lua;
 };
 
 

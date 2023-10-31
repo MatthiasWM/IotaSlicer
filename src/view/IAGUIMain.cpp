@@ -7,6 +7,7 @@
 #endif
 #ifdef _WIN32
 #endif
+
 static const char *sHelpAbout = /* text inlined from ../../html/helpAbout.html */
 "<html>\n    <body>\n        <font face=\"sans\">\n            <p>&nbsp;</p>\n\
             <p><center><font size=8><b>Iota <!--[ver-->v0.3.2b<!--]--></b></fo\
@@ -41,6 +42,7 @@ ble printouts, documentation,\n                    web page, user managment, f\
 orum, automated builds and releases, etc. </li>\n                <li> new infi\
 lls, more color mixing, material mixing, multi-mesh color, etc. etc.</li>\n   \
          </ul>\n        </font>\n    </body>\n</html>\n";
+
 static const char *sHelpLicenses = /* text inlined from ../../html/helpLicenses.html */
 "<html>\n    <body>\n        <font face=\"sans\">\n            <p>&nbsp;</p>\n\
             <p><center><font size=8><b>Iota <!--[ver-->v0.3.2b<!--]--></b></fo\
@@ -194,10 +196,6 @@ static void cb_Manage(Fl_Menu_*, void*) {
   Iota.userMenuSettingsManagePrinter();
 }
 
-static void cb_Test(Fl_Menu_*, void*) {
-  Iota.lua.dostring("Iota:quit()");
-}
-
 static void cb_Versioneer(Fl_Menu_*, void*) {
   Iota.userMenuHelpVersioneer();
 }
@@ -253,7 +251,7 @@ Fl_Menu_Item menu_[] = {
  {"Manage Materials...", 0,  0, 0, 1, (uchar)FL_NORMAL_LABEL, 0, 14, 0},
  {0,0,0,0,0,0,0,0,0},
  {"Help", 0,  0, 0, 64, (uchar)FL_NORMAL_LABEL, 0, 14, 0},
- {"Test Lua", 0,  (Fl_Callback*)cb_Test, 0, 0, (uchar)FL_NORMAL_LABEL, 0, 14, 0},
+ {"Test", 0,  0, 0, 0, (uchar)FL_NORMAL_LABEL, 0, 14, 0},
  {"Versioneer...", 0,  (Fl_Callback*)cb_Versioneer, 0, 128, (uchar)FL_NORMAL_LABEL, 0, 14, 0},
  {"About...", 0,  (Fl_Callback*)cb_About, 0, 0, (uchar)FL_NORMAL_LABEL, 0, 14, 0},
  {0,0,0,0,0,0,0,0,0},
@@ -262,40 +260,40 @@ Fl_Menu_Item menu_[] = {
 
 IASceneView *gSceneView=(IASceneView *)0;
 
-static void cb_txt(IAGLButton*, void*) {
+static void cb_txt(Fl_Button*, void*) {
   Iota.gShowTexture = !Iota.gShowTexture;
-gSceneView->redraw();
+  gSceneView->redraw();
 }
 
-static void cb_slc(IAGLButton*, void*) {
+static void cb_slc(Fl_Button*, void*) {
   Iota.gShowSlice = !Iota.gShowSlice;
-gSceneView->redraw();
+  gSceneView->redraw();
 }
 
-static void cb_prsp(IAGLButton*, void*) {
+static void cb_prsp(Fl_Button*, void*) {
   gSceneView->setPerspectiveView();
-gSceneView->redraw();
+  gSceneView->redraw();
 }
 
-static void cb_top(IAGLButton*, void*) {
+static void cb_top(Fl_Button*, void*) {
   gSceneView->setTopView();
-gSceneView->redraw();
+  gSceneView->redraw();
 }
 
 IAGLRangeSlider *zRangeSlider=(IAGLRangeSlider *)0;
 
 static void cb_zRangeSlider(IAGLRangeSlider*, void*) {
   Iota.gShowSlice = true;
-if (Iota.pCurrentPrinter)
-    Iota.pCurrentPrinter->rangeSliderChanged();
-gSceneView->redraw();
+  if (Iota.pCurrentPrinter)
+      Iota.pCurrentPrinter->rangeSliderChanged();
+  gSceneView->redraw();
 }
 
 Fl_Choice *wPrinterChoice=(Fl_Choice *)0;
 
 static void cb_wPrinterChoice(Fl_Choice* o, void*) {
   Iota.userMainSelectPrinter();
-o->redraw();
+  o->redraw();
 }
 
 Fl_Tree *wSessionSettings=(Fl_Tree *)0;
@@ -323,30 +321,14 @@ Fl_Double_Window* createIotaAppWindow() {
         } // Fl_Box* o
         { Fl_Group* o = new Fl_Group(0, 28, 600, 572);
           { Fl_Group* o = new Fl_Group(10, 38, 35, 552);
-            { IAGLButton* o = new IAGLButton(10, 38, 35, 25, "txt");
-              o->box(FL_UP_BOX);
-              o->color(FL_BACKGROUND_COLOR);
+            { Fl_Button* o = new Fl_Button(10, 38, 35, 25, "txt");
               o->selection_color((Fl_Color)236);
-              o->labeltype(FL_NORMAL_LABEL);
-              o->labelfont(0);
-              o->labelsize(14);
-              o->labelcolor(FL_FOREGROUND_COLOR);
               o->callback((Fl_Callback*)cb_txt);
-              o->align(Fl_Align(FL_ALIGN_CENTER));
-              o->when(FL_WHEN_RELEASE);
-            } // IAGLButton* o
-            { IAGLButton* o = new IAGLButton(10, 73, 35, 25, "slc");
-              o->box(FL_UP_BOX);
-              o->color(FL_BACKGROUND_COLOR);
+            } // Fl_Button* o
+            { Fl_Button* o = new Fl_Button(10, 73, 35, 25, "slc");
               o->selection_color((Fl_Color)236);
-              o->labeltype(FL_NORMAL_LABEL);
-              o->labelfont(0);
-              o->labelsize(14);
-              o->labelcolor(FL_FOREGROUND_COLOR);
               o->callback((Fl_Callback*)cb_slc);
-              o->align(Fl_Align(FL_ALIGN_CENTER));
-              o->when(FL_WHEN_RELEASE);
-            } // IAGLButton* o
+            } // Fl_Button* o
             { Fl_Box* o = new Fl_Box(10, 138, 35, 418);
               Fl_Group::current()->resizable(o);
             } // Fl_Box* o
@@ -357,30 +339,14 @@ Fl_Double_Window* createIotaAppWindow() {
             Fl_Group::current()->resizable(o);
           } // Fl_Group* o
           { Fl_Group* o = new Fl_Group(555, 38, 35, 552);
-            { IAGLButton* o = new IAGLButton(555, 38, 35, 25, "prsp");
-              o->box(FL_UP_BOX);
-              o->color(FL_BACKGROUND_COLOR);
+            { Fl_Button* o = new Fl_Button(555, 38, 35, 25, "prsp");
               o->selection_color((Fl_Color)236);
-              o->labeltype(FL_NORMAL_LABEL);
-              o->labelfont(0);
-              o->labelsize(14);
-              o->labelcolor(FL_FOREGROUND_COLOR);
               o->callback((Fl_Callback*)cb_prsp);
-              o->align(Fl_Align(FL_ALIGN_CENTER));
-              o->when(FL_WHEN_RELEASE);
-            } // IAGLButton* o
-            { IAGLButton* o = new IAGLButton(555, 73, 35, 25, "top");
-              o->box(FL_UP_BOX);
-              o->color(FL_BACKGROUND_COLOR);
+            } // Fl_Button* o
+            { Fl_Button* o = new Fl_Button(555, 73, 35, 25, "top");
               o->selection_color((Fl_Color)236);
-              o->labeltype(FL_NORMAL_LABEL);
-              o->labelfont(0);
-              o->labelsize(14);
-              o->labelcolor(FL_FOREGROUND_COLOR);
               o->callback((Fl_Callback*)cb_top);
-              o->align(Fl_Align(FL_ALIGN_CENTER));
-              o->when(FL_WHEN_RELEASE);
-            } // IAGLButton* o
+            } // Fl_Button* o
             { zRangeSlider = new IAGLRangeSlider(555, 104, 35, 452);
               zRangeSlider->box(FL_DOWN_BOX);
               zRangeSlider->color(FL_BACKGROUND_COLOR);
@@ -415,7 +381,6 @@ Fl_Double_Window* createIotaAppWindow() {
             o->labelsize(12);
             o->align(Fl_Align(FL_ALIGN_CENTER|FL_ALIGN_INSIDE));
             { wPrinterChoice = new Fl_Choice(605, 33, 240, 28);
-              wPrinterChoice->box(FL_UP_BOX);
               wPrinterChoice->down_box(FL_DOWN_BOX);
               wPrinterChoice->color(FL_DARK1);
               wPrinterChoice->labelsize(12);
@@ -449,7 +414,7 @@ static void cb_OK(Fl_Button* o, void*) {
 Fl_Double_Window* createIotaAboutWindow() {
   Fl_Double_Window* w;
   { Fl_Double_Window* o = new Fl_Double_Window(600, 400, "About Iota");
-    w = o; if (w) {/* empty */}
+    w = o; (void)w;
     { Fl_Group* o = new Fl_Group(10, 10, 584, 344);
       { Fl_Tabs* o = new Fl_Tabs(10, 10, 580, 340);
         { Fl_Group* o = new Fl_Group(10, 35, 580, 315, "About");
@@ -504,7 +469,7 @@ Fl_Double_Window *wSettingsWindow=(Fl_Double_Window *)0;
 
 static void cb_wSettingsWindow(Fl_Double_Window* o, void*) {
   Iota.userDialogSettingPrinterDeselect();
-o->hide();
+  o->hide();
 }
 
 static void cb_filesaveas(Fl_Button*, void*) {
@@ -519,7 +484,7 @@ Fl_Browser *wSettingsPrinterList=(Fl_Browser *)0;
 
 static void cb_wSettingsPrinterList(Fl_Browser*, void*) {
   Iota.userDialogSettingPrinterDeselect();
-Iota.userDialogSettingPrinterSelect();
+  Iota.userDialogSettingPrinterSelect();
 }
 
 Fl_Button *wSettingPrinterAdd=(Fl_Button *)0;
@@ -697,7 +662,7 @@ void IAVersioneerDialog::cb_wBuildPlus(Fl_Button* o, void* v) {
 
 void IAVersioneerDialog::cb_Apply_i(Fl_Button*, void*) {
   saveSettings();
-applySettings();
+  applySettings();
 }
 void IAVersioneerDialog::cb_Apply(Fl_Button* o, void* v) {
   ((IAVersioneerDialog*)(o->parent()->user_data()))->cb_Apply_i(o,v);
@@ -719,7 +684,7 @@ void IAVersioneerDialog::cb_fileopen1(Fl_Button* o, void* v) {
 
 void IAVersioneerDialog::cb_Update_i(Fl_Button*, void*) {
   saveSettings();
-updateFLTK();
+  updateFLTK();
 }
 void IAVersioneerDialog::cb_Update(Fl_Button* o, void* v) {
   ((IAVersioneerDialog*)(o->parent()->user_data()))->cb_Update_i(o,v);
@@ -741,11 +706,11 @@ void IAVersioneerDialog::cb_fileopen2(Fl_Button* o, void* v) {
 
 void IAVersioneerDialog::cb_Create_i(Fl_Button*, void*) {
   saveSettings();
-createArchive();
-// recompile in release mode
-// pack into zip archive
-// move to release folder
-// ? upload;
+  createArchive();
+  // recompile in release mode
+  // pack into zip archive
+  // move to release folder
+  // ? upload;
 }
 void IAVersioneerDialog::cb_Create(Fl_Button* o, void* v) {
   ((IAVersioneerDialog*)(o->parent()->user_data()))->cb_Create_i(o,v);
@@ -753,7 +718,7 @@ void IAVersioneerDialog::cb_Create(Fl_Button* o, void* v) {
 
 void IAVersioneerDialog::cb_git_i(Fl_Button*, void*) {
   saveSettings();
-gitTag();
+  gitTag();
 }
 void IAVersioneerDialog::cb_git(Fl_Button* o, void* v) {
   ((IAVersioneerDialog*)(o->parent()->user_data()))->cb_git_i(o,v);

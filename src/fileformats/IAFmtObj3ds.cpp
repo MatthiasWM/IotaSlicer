@@ -6,7 +6,7 @@
 
 #include "IAFmtObj3ds.h"
 
-#include <lib3ds/lib3ds.h>
+//#include <lib3ds/lib3ds.h>
 
 // ABANDONED
 
@@ -201,6 +201,6 @@ void load3ds(const char *filename)
 
 #else
 
-void load3ds(Lib3dsFile *f, Lib3dsMeshInstanceNode *node) { }
+//void load3ds(Lib3dsFile *f, Lib3dsMeshInstanceNode *node) { }
 
 #endif

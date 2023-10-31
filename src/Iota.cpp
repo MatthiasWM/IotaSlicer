@@ -45,8 +45,8 @@ IAVersioneer gVersioneer;
 const char *gVersion = /*[ver*/"v0.3.2b"/*]*/;
 
 //const int kFramebufferSize = 2048;
-const int kFramebufferSize = 4096;
-
+//const int kFramebufferSize = 4096;
+const int kFramebufferSize = 214*20;
 
 #ifdef __APPLE__
 #pragma mark -
@@ -516,7 +516,7 @@ void IAIota::loadDemoFiles()
 int main (int argc, char **argv)
 {
     Fl::scheme("gtk+");
-	Fl::args(argc, argv);
+  	Fl::args(argc, argv);
     Fl::set_color(FL_BACKGROUND_COLOR, 0xeeeeee00);
     Fl::use_high_res_GL(1);
     Fl_Tooltip::size(12);

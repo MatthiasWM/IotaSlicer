@@ -6,7 +6,7 @@ code_name {.cpp}
 decl {\#include "Iota.h"} {public global
 }
 
-decl {\#include "printer/IAPrinter.h"} {selected public global
+decl {\#include "printer/IAPrinter.h"} {public global
 }
 
 decl {\#include "widget/IASceneView.h"} {public global
@@ -56,9 +56,9 @@ Function {createIotaAppWindow()} {open
 } {
   Fl_Window wMainWindow {
     label {Iota Slicer} open
-    xywh {472 202 850 600} type Double resizable visible
+    xywh {401 324 850 600} type Double resizable visible
   } {
-    Fl_Menu_Bar {} {open
+    Fl_Menu_Bar {} {
       xywh {0 0 850 28}
     } {
       Submenu {} {
@@ -237,8 +237,7 @@ Function {createIotaAppWindow()} {open
         xywh {0 0 100 20}
       } {
         MenuItem {} {
-          label {Test Lua}
-          callback {Iota.lua.dostring("Iota:quit()");}
+          label Test
           xywh {16 16 100 20}
         }
         MenuItem {} {
@@ -278,14 +277,12 @@ Function {createIotaAppWindow()} {open
               callback {Iota.gShowTexture = !Iota.gShowTexture;
 gSceneView->redraw();}
               xywh {10 38 35 25} selection_color 236
-              class IAGLButton
             }
             Fl_Button {} {
               label slc
               callback {Iota.gShowSlice = !Iota.gShowSlice;
 gSceneView->redraw();}
               xywh {10 73 35 25} selection_color 236
-              class IAGLButton
             }
             Fl_Box {} {
               xywh {10 138 35 418} resizable
@@ -302,20 +299,18 @@ gSceneView->redraw();}
               callback {gSceneView->setPerspectiveView();
 gSceneView->redraw();}
               xywh {555 38 35 25} selection_color 236
-              class IAGLButton
             }
             Fl_Button {} {
               label top
               callback {gSceneView->setTopView();
 gSceneView->redraw();}
               xywh {555 73 35 25} selection_color 236
-              class IAGLButton
             }
             Fl_Slider zRangeSlider {
               callback {Iota.gShowSlice = true;
 if (Iota.pCurrentPrinter)
     Iota.pCurrentPrinter->rangeSliderChanged();
-gSceneView->redraw();}
+gSceneView->redraw();} selected
               xywh {555 104 35 452} maximum 250 resizable
               class IAGLRangeSlider
             }
@@ -352,7 +347,7 @@ o->redraw();} open
 Function {createIotaAboutWindow()} {} {
   Fl_Window {} {
     label {About Iota} open
-    xywh {643 176 600 400} type Double resizable modal visible
+    xywh {388 600 600 400} type Double resizable modal visible
   } {
     Fl_Group {} {open
       xywh {10 10 584 344} resizable
@@ -406,7 +401,7 @@ Function {createSettingWindow()} {open
     callback {Iota.userDialogSettingPrinterDeselect();
 o->hide();}
     comment {/// \\todo save position and size} open
-    xywh {548 249 640 400} type Double resizable modal size_range {640 320 640 2048} visible
+    xywh {449 660 640 400} type Double resizable modal size_range {640 320 640 2048} visible
   } {
     Fl_Pack {} {
       comment {/// \\todo implement the tab style selection of panes} open
@@ -501,7 +496,7 @@ class IAVersioneerDialog {open
   } {
     Fl_Window wVersionWindow {
       label {Versioneer for Iota Slicer} open
-      xywh {443 389 532 431} type Double visible
+      xywh {419 558 532 431} type Double visible
     } {
       Fl_Input wBasePath {
         label {IotaBase Path}

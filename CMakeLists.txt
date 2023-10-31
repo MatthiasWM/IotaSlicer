@@ -4,8 +4,7 @@
 ##  Copyright (c) 2013-2018 Matthias Melcher. All rights reserved.
 ##
 
-
-cmake_minimum_required (VERSION 3.1)
+cmake_minimum_required(VERSION 3.25.2)
 
 project (IotaSlicer)
 
@@ -13,29 +12,35 @@ set (IotaSlicer_VERSION_MAJOR 0)
 set (IotaSlicer_VERSION_MINOR 3)
 set (IotaSlicer_VERSION_BUILD 0)
 
-set (CMAKE_CXX_STANDARD 11)
-set (CMAKE_OSX_ARCHITECTURES=i386;x86_64)
+set (CMAKE_CXX_STANDARD 17)
 
-# APPLE WIN32 MSVC UNIX
-if (APPLE)
-	set (PLATFORM_DIR platforms/MacOS)
-    add_compile_definitions(GL_SILENCE_DEPRECATION)
-endif()
-if (UNIX AND NOT APPLE)
-	set (PLATFORM_DIR platforms/Linux)
-endif()
-if (WIN32)
-	set (PLATFORM_DIR platforms/MSWindows)
-	add_compile_definitions(_USE_MATH_DEFINES)
+## ---- Download external FLTK library ----
+
+include(FetchContent)
+
+set(FLTK_BUILD_TEST OFF CACHE BOOL " " FORCE)
+if(UNIX AND NOT APPLE) 
+    set(OPTION_USE_PANGO ON CACHE BOOL " " FORCE)
 endif()
 
-if (MSVC)
-#	set(CMAKE_CXX_FLAGS_DEBUG_INIT "/D_DEBUG /MTd /Zi /Ob0 /Od /RTC1")
-#	set(CMAKE_CXX_FLAGS_RELEASE_INIT        "/MT /O2 /Ob2 /D NDEBUG")
-endif()
+set(FLTK_BUILD_FLTK_OPTIONS OFF CACHE INTERNAL "Don't need that")
+set(FLTK_BUILD_TEST OFF CACHE INTERNAL "Don't need that")
+set(OPTION_BUILD_HTML_DOCUMENTATION OFF CACHE INTERNAL "Don't need that")
+set(OPTION_USE_GL ON CACHE INTERNAL "Yes, we want OpenGL")
+set(OPTION_PRINT_SUPPORT OFF CACHE INTERNAL "Don't need that")
 
-# configure_file ("${PROJECT_SOURCE_DIR}/TutorialConfig.h.in")
-# #define Tutorial_VERSION_MAJOR @Tutorial_VERSION_MAJOR@
+FetchContent_Declare(FLTK
+        GIT_REPOSITORY https://github.com/fltk/fltk
+        GIT_TAG master
+        GIT_SHALLOW TRUE
+        GIT_PROGRESS TRUE
+)
+FetchContent_MakeAvailable(FLTK)
+
+#set (LOCAL_FLTK_FLUID_EXECUTABLE "/Users/matt/dev/fltk-1.4.git/build/Xcode/bin/Debug/fluid")
+set (LOCAL_FLTK_FLUID_EXECUTABLE "${fltk_BINARY_DIR}/bin/Debug/fluid")
+
+message( STATUS "FLUID is at " ${LOCAL_FLTK_FLUID_EXECUTABLE})
 
 
 function(FLTK_RUN_FLUID TARGET SOURCES)
@@ -50,7 +55,7 @@ function(FLTK_RUN_FLUID TARGET SOURCES)
                 OUTPUT "${basename}.cpp" "${basename}.h"
                 COMMAND
                     cd ${srcdir_absolute} &&
-                    ${PROJECT_SOURCE_DIR}/${PLATFORM_DIR}/bin/fluid -c ${src_name}
+                    ${LOCAL_FLTK_FLUID_EXECUTABLE} -c ${src_name}
                 DEPENDS ${src}
                 MAIN_DEPENDENCY ${src}
             )
@@ -64,6 +69,10 @@ endfunction(FLTK_RUN_FLUID TARGET SOURCES)
 
 FLTK_RUN_FLUID (FLUID_VIEWS src/view/IAGUIMain.fl)
 FLTK_RUN_FLUID (FLUID_DATA src/data/binaryData.fl)
+
+
+if (0) ##
+
 
 # http://lists.qt-project.org/pipermail/qt-creator/2012-August/001191.html [^]
 function(collect_info_files)
@@ -82,15 +91,15 @@ function(collect_info_files)
     set(INFO_FILES ${_all_found} PARENT_SCOPE)
 endfunction()
 
+
 set(other_files README.md Doxyfile html/index.html html/helpAbout.html html/helpLicenses.html)
 collect_info_files(${other_files})
 # add_custom_target(docs SOURCES ${INFO_FILES})
 
-
 find_package(Doxygen)
 if (DOXYGEN_FOUND)
 message("Doxygen found: ${DOXYGEN_EXECUTABLE}")
-    add_custom_target( docs ALL
+    add_custom_target( iota_docs ALL
         COMMAND ${DOXYGEN_EXECUTABLE} ${PROJECT_SOURCE_DIR}/Doxyfile
         WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
         COMMENT "Generating API documentation with Doxygen"
@@ -100,14 +109,16 @@ else (DOXYGEN_FOUND)
     message("Doxygen need to be installed to generate the doxygen documentation")
 endif (DOXYGEN_FOUND)
 
+endif() ##
 
-link_directories (
-	${PLATFORM_DIR}/lib/
-)
+#link_directories (
+#	${CMAKE_SOURCE_DIR}/fltk/build/lib/
+#)
 
 include_directories (
-	include
-	src
+#	include/
+	src/
+  ${fltk_BINARY_DIR} ${fltk_SOURCE_DIR}
 )
 
 add_executable (IotaSlicer MACOSX_BUNDLE
@@ -149,8 +160,8 @@ add_executable (IotaSlicer MACOSX_BUNDLE
 	src/geometry/IAVector3d.h
 	src/geometry/IAVertex.cpp
 	src/geometry/IAVertex.h
-    src/lua/IALua.cpp
-    src/lua/IALua.h
+#    src/lua/IALua.cpp
+#    src/lua/IALua.h
 	src/opengl/IAFramebuffer.cpp
 	src/opengl/IAFramebuffer.h
 	src/potrace/IAPotrace.cpp
@@ -213,7 +224,7 @@ source_group(src\\controller src/controller)
 source_group(src\\data src/data)
 source_group(src\\fileformats src/fileformats)
 source_group(src\\geometry src/geometry)
-source_group(src\\lua src/lua)
+# source_group(src\\lua src/lua)
 source_group(src\\opengl src/opengl)
 source_group(src\\potrace src/potrace)
 source_group(src\\printer src/printer)
@@ -228,13 +239,16 @@ include_directories(${OPENGL_INCLUDE_DIR})
 target_link_libraries(IotaSlicer ${OPENGL_LIBRARIES})
 
 target_link_libraries (IotaSlicer 
-	fltk
+#	${CMAKE_SOURCE_DIR}/fltk/build/lib/libfltk.a
+#	${CMAKE_SOURCE_DIR}/fltk/build/lib/libfltk_gl.a
+#	fltk
 	fltk_gl
 	fltk_images
 	fltk_jpeg
 	fltk_png
 	fltk_z
-    lua53
+#    lua543
+#    lua53
 #	3ds
 )
 
@@ -242,7 +256,7 @@ target_link_libraries (IotaSlicer
 # APPLE WIN32 MSVC UNIX
 if (APPLE)
 #   set( OSX_ICON_FILES vvv.icns vvv-document.icns )
-    set_target_properties( IotaSlicer PROPERTIES MACOSX_BUNDLE_INFO_PLIST ${PROJECT_SOURCE_DIR}/${PLATFORM_DIR}/Info.plist)
+    set_target_properties( IotaSlicer PROPERTIES MACOSX_BUNDLE_INFO_PLIST ${PROJECT_SOURCE_DIR}/platforms/MacOS/Info.plist)
 	target_link_libraries (IotaSlicer
 		"-framework AppKit"
 		"-framework CoreText"
@@ -284,7 +298,4 @@ if(WIN32)
 	target_link_libraries(IotaSlicer odbccp32)
 	target_link_libraries(IotaSlicer comctl32)
 endif()
-
-
-
 

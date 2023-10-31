@@ -15,9 +15,10 @@
 
 #include <stdio.h>
 #include <math.h>
-#include <libjpeg/jpeglib.h>
-#include <libpng/png.h>
-#include <zlib.h>
+//#include <FL/images/jpeglib.h>
+#include <jpeg/jpeglib.h>
+#include <png/png.h>
+#include <zlib/zlib.h>
 
 
 const char *glIAErrorString(int err)

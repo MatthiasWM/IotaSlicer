@@ -19,6 +19,8 @@
 
 #include <math.h>
 
+#define GL_SILENCE_DEPRECATION
+
 #include <FL/gl.h>
 #include <FL/glu.h>
 #include <FL/Fl_Slider.H>
@@ -329,8 +331,10 @@ void IASceneView::draw()
 //        Iota.pCurrentPrinter->drawPreview(zRangeSlider->lowValue(),
 //                                          zRangeSlider->highValue());
 
-    // draw FLTK user interface
-    draw_children();
+    glEnable(GL_DEPTH_TEST);
+    // draw additional FLTK widgets and graphics
+    Fl_Gl_Window::draw();
+
 }
 
 
@@ -372,6 +376,9 @@ void IASceneView::draw_children()
     Fl_Widget*const* a = array();
     for (int i=children(); i--;) {
         Fl_Widget& o = **a++;
+        o.damage(FL_DAMAGE_CHILD|FL_DAMAGE_ALL);
+//        o.damage(FL_DAMAGE_EXPOSE);
+//        o.redraw();
         draw_child(o);
         draw_outside_label(o);
     }

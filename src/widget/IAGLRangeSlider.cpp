@@ -33,23 +33,23 @@ void IAGLRangeSlider::draw()
     int tx = X, ty = Y + (pHighValue-minimum())*(H/rng)+baseHeight*2, tw = W, th = baseHeight;
 
     int xx = X+2*W/3, ww = 8;
-    gl_draw_box(this, FL_DOWN_BOX, xx, Y, ww, sy-Y, color());
-    gl_draw_box(this, FL_DOWN_BOX, xx, ty+th, ww, (HH+Y)-(ty+th), color());
+    draw_box(FL_DOWN_BOX, xx, Y, ww, sy-Y, color());
+    draw_box(FL_DOWN_BOX, xx, ty+th, ww, (HH+Y)-(ty+th), color());
 
-    gl_draw_box(this, btn==1 ? FL_DOWN_BOX : FL_UP_BOX, sx, sy, sw, sh, color());
-    gl_draw_box(this, btn==2 ? FL_DOWN_BOX : FL_UP_BOX, sx+5, sy+baseHeight, sw-5, ty-sy-baseHeight, color());
-    gl_draw_box(this, btn==3 ? FL_DOWN_BOX : FL_UP_BOX, tx, ty, tw, th, color());
+    draw_box(btn==1 ? FL_DOWN_BOX : FL_UP_BOX, sx, sy, sw, sh, color());
+    draw_box(btn==2 ? FL_DOWN_BOX : FL_UP_BOX, sx+5, sy+baseHeight, sw-5, ty-sy-baseHeight, color());
+    draw_box(btn==3 ? FL_DOWN_BOX : FL_UP_BOX, tx, ty, tw, th, color());
     if (Fl::focus() == this) {
-        gl_draw_focus(this, FL_NO_BOX, sx+2, sy+2, sw-6, sh-6);
-        gl_draw_focus(this, FL_NO_BOX, tx+2, ty+2, tw-6, th-6);
+        draw_focus(FL_NO_BOX, sx+2, sy+2, sw-6, sh-6);
+        draw_focus(FL_NO_BOX, tx+2, ty+2, tw-6, th-6);
     }
 
     gl_font(FL_HELVETICA, 10);
     gl_color(0x33333300);
     char buf[32];
-    sprintf(buf, "%d", (int)highValue());
+    snprintf(buf, 30, "%d", (int)highValue());
     gl_draw(buf, X-152, sy+6, 150, sh, FL_ALIGN_RIGHT);
-    sprintf(buf, "%d", (int)lowValue());
+    snprintf(buf, 30, "%d", (int)lowValue());
     gl_draw(buf, X-152, ty+6, 150, th, FL_ALIGN_RIGHT);
 }
 

@@ -1,6 +1,10 @@
 
 /platforms/MacOS/Iota.xcodeproj/project.xcworkspace/xcuserdata/matt.xcuserdatad
 .DS_Store
+/build
+/include.bak
+/!badSTL
+/!goodSTL
 /platforms/MSWindows/VisualStudio/.vs
 /platforms/MSWindows/VisualStudio/*.user
 /platforms/MSWindows/VisualStudio/.vs

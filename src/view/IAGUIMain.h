@@ -27,6 +27,7 @@ extern Fl_Double_Window *wMainWindow;
 #include <FL/Fl_Group.H>
 extern IASceneView *gSceneView;
 #include <FL/Fl_Box.H>
+#include <FL/Fl_Button.H>
 extern IAGLRangeSlider *zRangeSlider;
 #include <FL/Fl_Choice.H>
 extern Fl_Choice *wPrinterChoice;
@@ -37,7 +38,6 @@ extern Fl_Menu_Item menu_[];
 #define wRecentFiles (menu_+4)
 #include <FL/Fl_Tabs.H>
 #include <FL/Fl_Help_View.H>
-#include <FL/Fl_Button.H>
 Fl_Double_Window* createIotaAboutWindow();
 extern Fl_Double_Window *wSettingsWindow;
 #include <FL/Fl_Pack.H>
