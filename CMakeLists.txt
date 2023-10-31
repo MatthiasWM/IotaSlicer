@@ -12,6 +12,7 @@ set (IotaSlicer_VERSION_MAJOR 0)
 set (IotaSlicer_VERSION_MINOR 3)
 set (IotaSlicer_VERSION_BUILD 0)
 
+set (CMAKE_XCODE_GENERATE_SCHEME TRUE)
 set (CMAKE_CXX_STANDARD 17)
 
 ## ---- Download external FLTK library ----
@@ -71,9 +72,6 @@ FLTK_RUN_FLUID (FLUID_VIEWS src/view/IAGUIMain.fl)
 FLTK_RUN_FLUID (FLUID_DATA src/data/binaryData.fl)
 
 
-if (0) ##
-
-
 # http://lists.qt-project.org/pipermail/qt-creator/2012-August/001191.html [^]
 function(collect_info_files)
     list(APPEND _all_found)
@@ -108,18 +106,6 @@ message("Doxygen found: ${DOXYGEN_EXECUTABLE}")
 else (DOXYGEN_FOUND)
     message("Doxygen need to be installed to generate the doxygen documentation")
 endif (DOXYGEN_FOUND)
-
-endif() ##
-
-#link_directories (
-#	${CMAKE_SOURCE_DIR}/fltk/build/lib/
-#)
-
-include_directories (
-#	include/
-	src/
-  ${fltk_BINARY_DIR} ${fltk_SOURCE_DIR}
-)
 
 add_executable (IotaSlicer MACOSX_BUNDLE
 	src/Iota.cpp
@@ -234,9 +220,21 @@ source_group(src\\view src/view)
 source_group(src\\widget src/widget)
 source_group(html\\ html/)
 
+add_dependencies ( IotaSlicer fltk fluid )
+
 find_package(OpenGL REQUIRED)
-include_directories(${OPENGL_INCLUDE_DIR})
+target_include_directories(IotaSlicer PRIVATE ${OPENGL_INCLUDE_DIR})
 target_link_libraries(IotaSlicer ${OPENGL_LIBRARIES})
+
+#target_link_directories (
+#  IotaSlicer
+#)
+
+target_include_directories (
+  IotaSlicer PRIVATE
+	src/
+  ${fltk_BINARY_DIR} ${fltk_SOURCE_DIR}
+)
 
 target_link_libraries (IotaSlicer 
 #	${CMAKE_SOURCE_DIR}/fltk/build/lib/libfltk.a
@@ -255,9 +253,13 @@ target_link_libraries (IotaSlicer
 
 # APPLE WIN32 MSVC UNIX
 if (APPLE)
-#   set( OSX_ICON_FILES vvv.icns vvv-document.icns )
-    set_target_properties( IotaSlicer PROPERTIES MACOSX_BUNDLE_INFO_PLIST ${PROJECT_SOURCE_DIR}/platforms/MacOS/Info.plist)
-	target_link_libraries (IotaSlicer
+# set( OSX_ICON_FILES vvv.icns vvv-document.icns )
+  set_target_properties ( IotaSlicer
+    PROPERTIES MACOSX_BUNDLE_INFO_PLIST ${PROJECT_SOURCE_DIR}/platforms/MacOS/Info.plist
+  )
+  target_link_libraries (
+    IotaSlicer
+    "-framework Cocoa"
 		"-framework AppKit"
 		"-framework CoreText"
 		"-framework CoreGraphics"
