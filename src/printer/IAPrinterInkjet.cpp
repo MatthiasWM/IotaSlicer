@@ -138,14 +138,14 @@ void IAPrinterInkjet::saveSlices(const char *filename)
 {
     if (!filename)
         filename = recentUpload();
-    char fn[FL_PATH_MAX];
+    char fn[FL_PATH_MAX+1];
     strcpy(fn, filename);
     char *a = (char*)fl_filename_ext(fn);
     const char *b = fl_filename_ext(filename);
     if ( a && b ) {
-        sprintf(a, "_%%04d%s", b);
+        snprintf(a, fn+FL_PATH_MAX-a, "_%%04d%s", b);
     } else {
-        strcat(fn, "_%04d");
+        strncat(fn, "_%04d", FL_PATH_MAX);
     }
 
     double hgt = Iota.pMesh->pMax.z() - Iota.pMesh->pMin.z() + 2.0*layerHeight();
@@ -171,7 +171,7 @@ void IAPrinterInkjet::saveSlices(const char *filename)
         uint8_t *rgb = gSlice.pColorbuffer->getRawImageRGBA();
 
         char imgFilename[2048];
-        sprintf(imgFilename, fn, i);
+        snprintf(imgFilename, 2047, fn, i);
         gSlice.pColorbuffer->saveAsPng(imgFilename, 4, rgb, true);
         // TODO: we should make the file format depend to the filename extension
         // for testing, we also can write jpegs or other files.

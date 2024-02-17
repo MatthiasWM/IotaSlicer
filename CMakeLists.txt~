@@ -1,7 +1,7 @@
 ##
 ##  CmakeLists.txt
 ##
-##  Copyright (c) 2013-2024 Matthias Melcher. All rights reserved.
+##  Copyright (c) 2013-2018 Matthias Melcher. All rights reserved.
 ##
 
 cmake_minimum_required(VERSION 3.25.2)
@@ -12,38 +12,41 @@ set (IotaSlicer_VERSION_MAJOR 0)
 set (IotaSlicer_VERSION_MINOR 3)
 set (IotaSlicer_VERSION_BUILD 0)
 
-set (CMAKE_CXX_STANDARD 17)
-set( CMAKE_CXX_STANDARD_REQUIRED ON )
-set( CMAKE_CXX_EXTENSIONS OFF )
-
 set (CMAKE_XCODE_GENERATE_SCHEME TRUE)
+set (CMAKE_CXX_STANDARD 17)
 
 ## ---- Download external FLTK library ----
 
 include(FetchContent)
 
-FetchContent_Declare(
-  FLTK
-  GIT_REPOSITORY  https://github.com/fltk/fltk
-  GIT_TAG         master
-  GIT_SHALLOW     TRUE
+set(FLTK_BUILD_TEST OFF CACHE BOOL " " FORCE)
+if(UNIX AND NOT APPLE) 
+    set(OPTION_USE_PANGO ON CACHE BOOL " " FORCE)
+endif()
+
+set(FLTK_BUILD_FLTK_OPTIONS OFF CACHE INTERNAL "Don't need that")
+set(FLTK_BUILD_TEST OFF CACHE INTERNAL "Don't need that")
+set(FLTK_BUILD_FLUID ON CACHE INTERNAL "I want FLUID")
+set(OPTION_BUILD_HTML_DOCUMENTATION OFF CACHE INTERNAL "Don't need that")
+set(OPTION_USE_GL ON CACHE INTERNAL "Yes, we want OpenGL")
+set(OPTION_PRINT_SUPPORT OFF CACHE INTERNAL "Don't need that")
+
+FetchContent_Declare(FLTK
+#        GIT_REPOSITORY https://github.com/Albrecht-S/fltk
+#        GIT_TAG modern-cmake
+        GIT_REPOSITORY https://github.com/fltk/fltk
+        GIT_TAG master
+        GIT_SHALLOW TRUE
+        GIT_PROGRESS TRUE
 )
-
-message(STATUS "Downloading and configuring FLTK if necessary, please wait...")
-set( FLTK_USE_SYSTEM_LIBJPEG OFF )
-set( FLTK_USE_SYSTEM_ZLIB OFF )
-set( FLTK_USE_SYSTEM_LIBPNG OFF )
-#set( FLTK_BUILD_FLUID ON )
-set( FLTK_BUILD_TEST OFF )
-set( FLTK_BUILD_GL ON )
-set( FLTK_BUILD_FORMS OFF )
-set( FLTK_BUILD_FLTK_OPTIONS OFF )
-set( FLTK_BUILD_HTML_DOCS OFF )
-set( FLTK_BUILD_PDF_DOCS OFF )
 FetchContent_MakeAvailable(FLTK)
-message(STATUS "Downloading and configuring FLTK - done.")
 
-message(STATUS "Fluid: " fltk::fluid " : " ${FLTK_FLUID_EXECUTABLE} )
+#set (LOCAL_FLTK_FLUID_EXECUTABLE "/Users/matt/dev/fltk-1.4.git/build/Xcode/bin/Debug/fluid")
+set (LOCAL_FLTK_FLUID_EXECUTABLE ${fltk_BINARY_DIR}/bin/$<CONFIG>/fluid)
+# FLTK_BINARY_DIR=/Users/matt/dev/IotaSlicer.git/build/Xcode/_deps/fltk-build
+
+message( STATUS "FLUID is at " ${LOCAL_FLTK_FLUID_EXECUTABLE})
+
 
 function(FLTK_RUN_FLUID TARGET SOURCES)
     set (FLUID_FILES ${${TARGET}})
@@ -54,11 +57,12 @@ function(FLTK_RUN_FLUID TARGET SOURCES)
             get_filename_component (src_absolute ${src} ABSOLUTE)
             get_filename_component (srcdir_absolute ${src_absolute} DIRECTORY)
             add_custom_command(
-                WORKING_DIRECTORY "${srcdir_absolute}"
-                COMMAND fltk::fluid -c ${src_name}
+                OUTPUT "${basename}.cpp" "${basename}.h"
+                COMMAND
+                    cd ${srcdir_absolute} &&
+                    $<TARGET_FILE:fluid> -c ${src_name}
                 DEPENDS ${src}
-                OUTPUT "${basename}.cpp"
-                OUTPUT "${basename}.h"
+                MAIN_DEPENDENCY ${src}
             )
             list(APPEND FLUID_FILES "${PROJECT_SOURCE_DIR}/${basename}.cpp")
             list(APPEND FLUID_FILES "${PROJECT_SOURCE_DIR}/${basename}.h")
@@ -96,13 +100,13 @@ collect_info_files(${other_files})
 
 find_package(Doxygen)
 if (DOXYGEN_FOUND)
-    message("Doxygen found: ${DOXYGEN_EXECUTABLE}")
-#    add_custom_target( iota_docs ALL
-#        COMMAND ${DOXYGEN_EXECUTABLE} ${PROJECT_SOURCE_DIR}/Doxyfile
-#        WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
-#        COMMENT "Generating API documentation with Doxygen"
-#        VERBATIM
-#    )
+message("Doxygen found: ${DOXYGEN_EXECUTABLE}")
+    add_custom_target( iota_docs ALL
+        COMMAND ${DOXYGEN_EXECUTABLE} ${PROJECT_SOURCE_DIR}/Doxyfile
+        WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+        COMMENT "Generating API documentation with Doxygen"
+        VERBATIM
+    )
 else (DOXYGEN_FOUND)
     message("Doxygen need to be installed to generate the doxygen documentation")
 endif (DOXYGEN_FOUND)
@@ -220,7 +224,7 @@ source_group(src\\view src/view)
 source_group(src\\widget src/widget)
 source_group(html\\ html/)
 
-add_dependencies ( IotaSlicer fltk::fltk fltk::fluid )
+add_dependencies ( IotaSlicer fltk fluid )
 
 #if(MSVC)
 #  target_compile_options(IotaSlicer PRIVATE /W4 /WX)
@@ -239,25 +243,26 @@ target_link_libraries(IotaSlicer ${OPENGL_LIBRARIES})
 target_include_directories (
   IotaSlicer PRIVATE
 	src/
-  ${fltk_BINARY_DIR} ${fltk_SOURCE_DIR}
+#  ${fltk_BINARY_DIR} ${fltk_SOURCE_DIR}
 )
 
 target_link_libraries (IotaSlicer 
 #	${CMAKE_SOURCE_DIR}/fltk/build/lib/libfltk.a
 #	${CMAKE_SOURCE_DIR}/fltk/build/lib/libfltk_gl.a
 #  fltk::fltk
-  fltk::gl
-  fltk::images
-  fltk::jpeg
-  fltk::png
-  fltk::z
+
+#  fltk::gl
+#  fltk::images
+#  fltk::jpeg
+#  fltk::png
+#  fltk::z
 
 #	fltk
-#	fltk_gl
-#	fltk_images
-#	fltk_jpeg
-#	fltk_png
-#	fltk_z
+	fltk_gl
+	fltk_images
+	fltk_jpeg
+	fltk_png
+	fltk_z
 #    lua543
 #    lua53
 #	3ds
@@ -270,48 +275,48 @@ if (APPLE)
   set_target_properties ( IotaSlicer
     PROPERTIES MACOSX_BUNDLE_INFO_PLIST ${PROJECT_SOURCE_DIR}/platforms/MacOS/Info.plist
   )
-#  target_link_libraries (
-#    IotaSlicer
-#    "-framework Cocoa"
+  target_link_libraries (
+    IotaSlicer
+    "-framework Cocoa"
 #		"-framework AppKit"
 #		"-framework CoreText"
 #		"-framework CoreGraphics"
 #		"-framework CoreFoundation"
 #		"-framework OpenGL"
-#	)
+	)
 endif()
 if (UNIX AND NOT APPLE)
 	target_compile_definitions(IotaSlicer PUBLIC __LINUX__)
 	target_compile_definitions(IotaSlicer PUBLIC GL_GLEXT_PROTOTYPES)
-#	find_package(X11 REQUIRED)
-#	include_directories(${X11_INCLUDE_DIR})
-#	link_directories(${X11_LIBRARIES})
-#	target_link_libraries(IotaSlicer ${X11_LIBRARIES})
-#	target_link_libraries(IotaSlicer X11)
+	find_package(X11 REQUIRED)
+	include_directories(${X11_INCLUDE_DIR})
+	link_directories(${X11_LIBRARIES})
+	target_link_libraries(IotaSlicer ${X11_LIBRARIES})
+	target_link_libraries(IotaSlicer X11)
 	target_link_libraries(IotaSlicer Xext)
-#	target_link_libraries(IotaSlicer pthread)
-#	target_link_libraries(IotaSlicer Xfixes)
-#	target_link_libraries(IotaSlicer Xft)
-#	target_link_libraries(IotaSlicer Xrender)
-#	target_link_libraries(IotaSlicer m)
-#	target_link_libraries(IotaSlicer fontconfig)
-#	target_link_libraries(IotaSlicer dl)
+	target_link_libraries(IotaSlicer pthread)
+	target_link_libraries(IotaSlicer Xfixes)
+	target_link_libraries(IotaSlicer Xft)
+	target_link_libraries(IotaSlicer Xrender)
+	target_link_libraries(IotaSlicer m)
+	target_link_libraries(IotaSlicer fontconfig)
+	target_link_libraries(IotaSlicer dl)
 endif()
 if(WIN32)
-#	target_link_libraries(IotaSlicer ws2_32)
-#	target_link_libraries(IotaSlicer kernel32)
-#	target_link_libraries(IotaSlicer user32)
-#	target_link_libraries(IotaSlicer gdi32)
-#	target_link_libraries(IotaSlicer winspool)
-#	target_link_libraries(IotaSlicer comdlg32)
-#	target_link_libraries(IotaSlicer advapi32)
-#	target_link_libraries(IotaSlicer shell32)
-#	target_link_libraries(IotaSlicer ole32)
-#	target_link_libraries(IotaSlicer oleaut32)
-#	target_link_libraries(IotaSlicer uuid)
-#	target_link_libraries(IotaSlicer odbc32)
-#	target_link_libraries(IotaSlicer odbccp32)
-#	target_link_libraries(IotaSlicer comctl32)
+	target_link_libraries(IotaSlicer ws2_32)
+	target_link_libraries(IotaSlicer kernel32)
+	target_link_libraries(IotaSlicer user32)
+	target_link_libraries(IotaSlicer gdi32)
+	target_link_libraries(IotaSlicer winspool)
+	target_link_libraries(IotaSlicer comdlg32)
+	target_link_libraries(IotaSlicer advapi32)
+	target_link_libraries(IotaSlicer shell32)
+	target_link_libraries(IotaSlicer ole32)
+	target_link_libraries(IotaSlicer oleaut32)
+	target_link_libraries(IotaSlicer uuid)
+	target_link_libraries(IotaSlicer odbc32)
+	target_link_libraries(IotaSlicer odbccp32)
+	target_link_libraries(IotaSlicer comctl32)
 endif()
 
 
@@ -332,5 +337,5 @@ function(dump_cmake_variables)
     endforeach()
 endfunction()
 
-dump_cmake_variables ( ".*FLUID.*" )
+#dump_cmake_variables ( ".*FLUID.*" )
 

@@ -28,17 +28,17 @@ class IAPrinter;
 
 
 /** Version string for this version of Iota: X.Y.XA, where X is the major
- * relase, Y is the minor release, Z is the build number, and A is an additional
+ * release, Y is the minor release, Z is the build number, and A is an additional
  * string, 'a' for alpha versions, 'b' for beta releases, or '' for no
  * further description.
  */
 extern const char *gVersion;
 
 /**
- * The resolution of all frambuffer objects.
+ * The resolution of all frame buffer objects.
  * 1024 is pretty much the minimum. 2048 brings ok results. At 4096,
- * toolpaths are really nice, but rendering time slows down considerably.
- * At higher resolutions, toolpaths are perfect, but rendering time and
+ * tool paths are really nice, but rendering time slows down considerably.
+ * At higher resolutions, tool paths are perfect, but rendering time and
  * memory usage explode.
  *
  * \todo nothing is optimized here yet. There is a great potential for

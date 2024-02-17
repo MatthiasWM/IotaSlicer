@@ -19,7 +19,9 @@
 
 #include <math.h>
 
+#ifndef GL_SILENCE_DEPRECATION
 #define GL_SILENCE_DEPRECATION
+#endif
 
 #include <FL/gl.h>
 #include <FL/glu.h>

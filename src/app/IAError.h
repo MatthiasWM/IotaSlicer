@@ -32,7 +32,7 @@ public:
     static void set(const char *loc, Error err, const char *str=nullptr);
     static bool hadError();
 
-    /** Last error, that occured since clearError().
+    /** Last error, that occurred since clearError().
      \return error code. */
     static Error error() { return pError; }
     static void showDialog();

@@ -152,7 +152,7 @@ static void xor_path(potrace_bitmap_t *bm, path_t *p) {
 
   y1 = (int)(p->priv->pt[p->priv->len-1].y);
 
-  xa = p->priv->pt[0].x & -BM_WORDBITS;
+  xa = (int)(p->priv->pt[0].x & -BM_WORDBITS);
   for (k=0; k<p->priv->len; k++) {
     x = (int)(p->priv->pt[k].x);
     y = (int)(p->priv->pt[k].y);

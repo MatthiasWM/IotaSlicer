@@ -240,13 +240,13 @@ void IAVersioneer::loadSettings()
     wFLTKPath->value(buf);
     Fl_Preferences vers( pref, "version");
     vers.get("major", v, 0);
-    sprintf(buf, "%d", v);
+    snprintf(buf, 2047, "%d", v);
     wMajor->value(buf);
     vers.get("minor", v, 0);
-    sprintf(buf, "%d", v);
+    snprintf(buf, 2047, "%d", v);
     wMinor->value(buf);
     vers.get("build", v, 0);
-    sprintf(buf, "%d", v);
+    snprintf(buf, 2047, "%d", v);
     wBuild->value(buf);
     vers.get("class", buf, "-", 8);
     wClass->value(buf);
@@ -254,7 +254,7 @@ void IAVersioneer::loadSettings()
     const char *name = "README.md";
 
     char filename[2048];
-    sprintf(filename, "%s/%s", wBasePath->value(), name);
+    snprintf(filename, 2047, "%s/%s", wBasePath->value(), name);
     FILE *f = fopen(filename, "rb");
     if (f) {
         while (!feof(f)) {
@@ -268,15 +268,15 @@ void IAVersioneer::loadSettings()
                 char cls[80];
                 int cc = sscanf(a+11, "v%d.%d.%d%s", &maj, &min, &bld, cls);
                 if (cc>0) {
-                    sprintf(buf, "%d", maj);
+                    snprintf(buf, 2047, "%d", maj);
                     wMajor->value(buf);
                 }
                 if (cc>1) {
-                    sprintf(buf, "%d", min);
+                    snprintf(buf, 2047, "%d", min);
                     wMinor->value(buf);
                 }
                 if (cc>2) {
-                    sprintf(buf, "%d", bld);
+                    snprintf(buf, 2047, "%d", bld);
                     wBuild->value(buf);
                 }
                 if (cc>3) {
@@ -527,7 +527,7 @@ void IAVersioneer::majorPlus()
     char buf[80];
     int vv = atoi(wMajor->value());
     vv++;
-    sprintf(buf, "%d", vv);
+    snprintf(buf, 79, "%d", vv);
     wMajor->value(buf);
     wMinor->value("0");
     wBuild->value("0");
@@ -542,7 +542,7 @@ void IAVersioneer::minorPlus()
     char buf[80];
     int vv = atoi(wMinor->value());
     vv++;
-    sprintf(buf, "%d", vv);
+    snprintf(buf, 79, "%d", vv);
     wMinor->value(buf);
     wBuild->value("0");
 }
@@ -556,7 +556,7 @@ void IAVersioneer::buildPlus()
     char buf[80];
     int vv = atoi(wBuild->value());
     vv++;
-    sprintf(buf, "%d", vv);
+    snprintf(buf, 79, "%d", vv);
     wBuild->value(buf);
 }
 
@@ -573,7 +573,7 @@ void IAVersioneer::applySettingsHtml(const char *name) {
     char filename[2048];
     char out[2048];
     char buf[2048];
-    sprintf(filename, "%s/%s", wBasePath->value(), name);
+    snprintf(filename, 2047, "%s/%s", wBasePath->value(), name);
     strcpy(out, filename);
     strcat(out, "~");
     FILE *fOut = fopen(out, "wb");
@@ -591,7 +591,7 @@ void IAVersioneer::applySettingsHtml(const char *name) {
             char *b = strstr(buf, "<!--]-->");
             if (a!=nullptr && b!=nullptr) {
                 char *c = strdup(b);
-                sprintf(a,
+                snprintf(a, buf+2047-a,
                         "<!--[ver-->v%d.%d.%d%s%s",
                         atoi(wMajor->value()),
                         atoi(wMinor->value()),
@@ -628,7 +628,7 @@ void IAVersioneer::applySettingsCpp(const char *name)
     char filename[2048];
     char out[2048];
     char buf[2048];
-    sprintf(filename, "%s/%s", wBasePath->value(), name);
+    snprintf(filename, 2047, "%s/%s", wBasePath->value(), name);
     strcpy(out, filename);
     strcat(out, "~");
     FILE *fOut = fopen(out, "wb");
@@ -646,7 +646,7 @@ void IAVersioneer::applySettingsCpp(const char *name)
             char *b = strstr(buf, "/*]*/");
             if (a!=nullptr && b!=nullptr) {
                 char *c = strdup(b);
-                sprintf(a,
+                snprintf(a, buf+2047-a,
                         "/*[ver*/\"v%d.%d.%d%s\"%s",
                         atoi(wMajor->value()),
                         atoi(wMinor->value()),
@@ -684,7 +684,7 @@ void IAVersioneer::applySettingsDoxyfile(const char *name)
     char filename[2048];
     char out[2048];
     char buf[2048];
-    sprintf(filename, "%s/%s", wBasePath->value(), name);
+    snprintf(filename, 2047, "%s/%s", wBasePath->value(), name);
     strcpy(out, filename);
     strcat(out, "~");
     FILE *fOut = fopen(out, "wb");
@@ -699,7 +699,7 @@ void IAVersioneer::applySettingsDoxyfile(const char *name)
             fgets(buf, 1024, f);
             if (feof(f)) break;
             if (strncmp(buf, "PROJECT_NUMBER         = ", 25)==0) {
-                sprintf(buf,
+                snprintf(buf, 2047,
                         "PROJECT_NUMBER         = %d.%d.%d%s\n",
                         atoi(wMajor->value()),
                         atoi(wMinor->value()),
@@ -729,7 +729,7 @@ void IAVersioneer::applySettingsDoxyfile(const char *name)
 void IAVersioneer::touch(const char *name)
 {
     char filename[2048];
-    sprintf(filename, "%s/%s", wBasePath->value(), name);
+    snprintf(filename, 2047, "%s/%s", wBasePath->value(), name);
     ::utime(filename, nullptr);
 }
 
@@ -748,13 +748,13 @@ void IAVersioneer::updatePlatformFiles()
     rev[7] = 0;
 
     char filename[2048];
-    sprintf(filename, "%s/platforms/MacOS/Info.plist", wBasePath->value());
+    snprintf(filename, 2047, "%s/platforms/MacOS/Info.plist", wBasePath->value());
     char cmd[2*2048];
-    sprintf(cmd,
+    snprintf(cmd, 4095,
             "/usr/libexec/PlistBuddy -c \"Set :CFBundleVersion %s\" %s",
             rev, filename);
     system(cmd);
-    sprintf(cmd,
+    snprintf(cmd, 4095,
             "/usr/libexec/PlistBuddy -c \"Set :CFBundleShortVersionString %d.%d.%d%s\" %s",
             atoi(wMajor->value()),
             atoi(wMinor->value()),
@@ -794,14 +794,14 @@ void IAVersioneer::gitTag()
 	system("echo \"Iota gitTag not available on MSWindows");
 #else
 	char buf[2048];
-    sprintf(buf, "cd %s; /usr/bin/git tag v%d.%d.%d%s",
+    snprintf(buf, 2047, "cd %s; /usr/bin/git tag v%d.%d.%d%s",
             wBasePath->value(),
             atoi(wMajor->value()),
             atoi(wMinor->value()),
             atoi(wBuild->value()),
             wClass->value());
     system(buf);
-    sprintf(buf, "cd %s; /usr/bin/git push --tags",
+    snprintf(buf, 2047, "cd %s; /usr/bin/git push --tags",
             wBasePath->value());
     system(buf);
 #endif

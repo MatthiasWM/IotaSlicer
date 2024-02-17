@@ -369,7 +369,7 @@ void IAPresetProperty::load()
     snprintf(path, FL_PATH_MAX, "%spresets/%s/",
              Iota.gPreferences.printerDefinitionsPath(),
              pPresetClass());
-    Fl_Preferences presetFile(path, "Iota Slicer Preset", pName);
+    Fl_Preferences presetFile(path, "Iota Slicer Preset", pName, Fl_Preferences::C_LOCALE);
     if (!pDatabaseInitialized) loadInitialPresets(presetFile);
     Fl_Preferences presets(presetFile, pValue);
     // kludge to tell controllers that we will now change ALL clients
@@ -389,7 +389,7 @@ void IAPresetProperty::save(const char *newTag)
     snprintf(path, FL_PATH_MAX, "%spresets/%s/",
              Iota.gPreferences.printerDefinitionsPath(),
              pPresetClass());
-    Fl_Preferences presetFile(path, "Iota Slicer Preset", pName);
+    Fl_Preferences presetFile(path, "Iota Slicer Preset", pName, Fl_Preferences::C_LOCALE);
     Fl_Preferences presets(presetFile, pValue);
     for (auto &p: pClientList) {
         p->write(presets);
@@ -404,7 +404,7 @@ void IAPresetProperty::erase(const char *tag)
     snprintf(path, FL_PATH_MAX, "%spresets/%s/",
              Iota.gPreferences.printerDefinitionsPath(),
              pPresetClass());
-    Fl_Preferences presetFile(path, "Iota Slicer Preset", pName);
+    Fl_Preferences presetFile(path, "Iota Slicer Preset", pName, Fl_Preferences::C_LOCALE);
     presetFile.deleteGroup(tag);
 }
 
@@ -415,7 +415,7 @@ void IAPresetProperty::listPresets(std::vector< std::string > &list)
     snprintf(path, FL_PATH_MAX, "%spresets/%s/",
              Iota.gPreferences.printerDefinitionsPath(),
              pPresetClass());
-    Fl_Preferences presetFile(path, "Iota Slicer Preset", pName);
+    Fl_Preferences presetFile(path, "Iota Slicer Preset", pName, Fl_Preferences::C_LOCALE);
     if (!pDatabaseInitialized) loadInitialPresets(presetFile);
     int n = presetFile.groups();
     for (int i=0; i<n; i++) {

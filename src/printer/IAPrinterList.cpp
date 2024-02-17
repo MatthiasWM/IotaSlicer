@@ -91,7 +91,7 @@ void IAPrinterList::loadCustomPrinters(IAPrinter *(&currentPrinter))
 {
     const char *path = Iota.gPreferences.printerDefinitionsPath();
     do {
-        Fl_Preferences customPrinterList(path, "Iota Printer List", "customPrinters");
+        Fl_Preferences customPrinterList(path, "Iota Printer List", "customPrinters", Fl_Preferences::C_LOCALE);
         Fl_Preferences printers(customPrinterList, "Printers");
         int i, n = printers.groups();
         for (i=0; i<n; i++) {
@@ -188,7 +188,7 @@ char *IAPrinterList::makeUniqueName(char const* name) const
 void IAPrinterList::saveCustomPrinters()
 {
     const char *path = Iota.gPreferences.printerDefinitionsPath();
-    Fl_Preferences customPrinterList(path, "Iota Printer List", "customPrinters");
+    Fl_Preferences customPrinterList(path, "Iota Printer List", "customPrinters", Fl_Preferences::C_LOCALE);
     Fl_Preferences printers(customPrinterList, "Printers");
     printers.clear();
     int i, n = (int)pPrinterList.size();

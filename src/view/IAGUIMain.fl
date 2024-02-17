@@ -21,7 +21,7 @@ decl {\#include "widget/IAGLRangeSlider.h"} {public global
 decl {\#include <FL/Fl_File_Chooser.H>} {public global
 }
 
-decl {\#include <FL/Fl_Simple_Terminal.H>} {public global
+decl {\#include <FL/Fl_Terminal.H>} {selected public global
 }
 
 declblock {\#ifdef __APPLE__} {public after {\#endif}
@@ -46,10 +46,10 @@ declblock {\#ifdef _WIN32} {public after {\#endif}
   }
 }
 
-data sHelpAbout {private local filename {../../html/helpAbout.html} textmode
+data sHelpAbout {private local filename {../../html/helpAbout.html}
 }
 
-data sHelpLicenses {private local filename {../../html/helpLicenses.html} textmode
+data sHelpLicenses {private local filename {../../html/helpLicenses.html}
 }
 
 Function {createIotaAppWindow()} {open
@@ -310,7 +310,7 @@ gSceneView->redraw();}
               callback {Iota.gShowSlice = true;
 if (Iota.pCurrentPrinter)
     Iota.pCurrentPrinter->rangeSliderChanged();
-gSceneView->redraw();} selected
+gSceneView->redraw();}
               xywh {555 104 35 452} maximum 250 resizable
               class IAGLRangeSlider
             }
@@ -332,7 +332,7 @@ gSceneView->redraw();} selected
             Fl_Choice wPrinterChoice {
               callback {Iota.userMainSelectPrinter();
 o->redraw();} open
-              xywh {605 33 240 28} box UP_BOX down_box DOWN_BOX color 47 labelsize 12 align 0 textsize 12
+              xywh {605 33 240 28} down_box DOWN_BOX color 47 labelsize 12 align 0 textsize 12
             } {}
             Fl_Tree wSessionSettings {
               xywh {605 62 240 475} resizable
@@ -492,7 +492,7 @@ Iota.userDialogSettingPrinterSelect();}
 
 class IAVersioneerDialog {open
 } {
-  Function {createWindow()} {return_type {virtual Fl_Double_Window *}
+  Function {createWindow()} {open return_type {virtual Fl_Double_Window *}
   } {
     Fl_Window wVersionWindow {
       label {Versioneer for Iota Slicer} open
@@ -568,7 +568,7 @@ applySettings();}
       }
       Fl_Text_Display wTerminal {
         xywh {12 244 510 164}
-        class Fl_Simple_Terminal
+        class Fl_Terminal
       }
       Fl_Input wFLTKPath {
         label {Path to FLTK}

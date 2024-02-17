@@ -42,7 +42,7 @@ public:
 
 
 /**
- * This is the base class for various eidatble views in a tree widget.
+ * This is the base class for various editable views in a tree widget.
  */
 class IATreeItemView : public IAView
 {

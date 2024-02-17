@@ -9,7 +9,7 @@
 #include "widget/IAGLButton.h"
 #include "widget/IAGLRangeSlider.h"
 #include <FL/Fl_File_Chooser.H>
-#include <FL/Fl_Terminal.H>
+#include <FL/Fl_Simple_Terminal.H>
 #ifdef __APPLE__
 #include <unistd.h>
 #include <utime.h>
@@ -82,7 +82,7 @@ private:
   inline void cb_Apply_i(Fl_Button*, void*);
   static void cb_Apply(Fl_Button*, void*);
 public:
-  Fl_Terminal *wTerminal;
+  Fl_Simple_Terminal *wTerminal;
   Fl_Input *wFLTKPath;
 private:
   inline void cb_wFLTKPath_i(Fl_Input*, void*);

@@ -139,7 +139,7 @@ void IAPrinter::purgeSlicesAndCaches()
 void IAPrinter::readPropertiesFile()
 {
     const char *path = Iota.gPreferences.printerDefinitionsPath();
-    Fl_Preferences printer(path, "Iota Printer Properties", uuid());
+    Fl_Preferences printer(path, "Iota Printer Properties", uuid(), Fl_Preferences::C_LOCALE);
     readProperties(printer);
 }
 
@@ -165,7 +165,7 @@ void IAPrinter::readProperties(Fl_Preferences &printer)
 void IAPrinter::writePropertiesFile()
 {
     const char *path = Iota.gPreferences.printerDefinitionsPath();
-    Fl_Preferences printer(path, "Iota Printer Properties", uuid());
+    Fl_Preferences printer(path, "Iota Printer Properties", uuid(), Fl_Preferences::C_LOCALE);
     writeProperties(printer);
 }
 
